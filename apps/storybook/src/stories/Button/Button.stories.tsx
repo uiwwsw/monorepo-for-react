@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react';
 import { createLogger, wait } from '@package-frontend/utils';
-import { Button, ButtonProps, sizes, themes } from '@library-frontend/ui';
+import { Button, ButtonProps, sizes, colors } from '@library-frontend/ui';
 const logger = createLogger('button');
 const meta = {
   title: 'Button',
@@ -23,17 +23,17 @@ const meta = {
     onClick: {
       table: { type: { summary: 'function' } },
     },
-    size: {
+    themeSize: {
       table: { type: { summary: sizes } },
     },
-    theme: {
-      table: { type: { summary: themes } },
+    themeColor: {
+      table: { type: { summary: colors } },
     },
   },
   args: {
     disabled: false,
-    theme: 'primary',
-    size: 'md',
+    themeColor: 'primary',
+    themeSize: 'md',
     smoothLoading: true,
     onClick: async () => {
       await wait();
