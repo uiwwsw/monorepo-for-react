@@ -13,8 +13,8 @@ const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
   /* ======   useEffect   ====== */
   return (
     <Button
-      size={null}
-      theme={null}
+      themeSize={null}
+      themeColor={null}
       aria-label="modal close button"
       onClick={() => onClose && onClose()}
       disabled={disabled}

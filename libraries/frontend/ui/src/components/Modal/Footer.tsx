@@ -52,13 +52,19 @@ const ModalFooter = ({ hasToast, setErrors, onEval, onLoading, disabled, smoothL
   logger('render');
   return onEval ? (
     <div className="flex gap-3 mt-auto pt-3">
-      <Button className="flex-auto" size="sm" smoothLoading={smoothLoading} disabled={disabled} onClick={adapterClick}>
+      <Button
+        className="flex-auto"
+        themeSize="sm"
+        smoothLoading={smoothLoading}
+        disabled={disabled}
+        onClick={adapterClick}
+      >
         ok
       </Button>
       <Button
         className="flex-auto"
-        size="sm"
-        data-theme="secondary"
+        themeSize="sm"
+        themeColor="secondary"
         smoothLoading={smoothLoading}
         disabled={disabled}
         onClick={adapterClick}

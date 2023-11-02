@@ -43,7 +43,7 @@ const ToastBase = ({ notClosed, onClosed, open, children, onEval, duration = 500
       <i className={toastLayerClassName} style={{ animationDuration: duration + 'ms' }} />
       <span className="flex-1">{children}</span>
       {isInfinity ? (
-        <Button onClick={onEval} className="-mr-4 ml-1" theme={null} size={null}>
+        <Button onClick={onEval} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
           <Close />
         </Button>
       ) : null}

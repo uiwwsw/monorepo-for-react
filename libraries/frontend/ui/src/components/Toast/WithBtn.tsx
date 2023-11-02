@@ -1,26 +1,16 @@
 import { createLogger } from '@package-frontend/utils';
 import { ToastBaseProps } from './Base';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Button from '@/Button';
 import ToastWithPortal from './WithPortal';
-import { Theme } from '@/Color';
-import { Size } from '@/Size';
 
 /* ======   interface   ====== */
 export interface ToastWithBtnProps extends ToastBaseProps {
-  btnName?: string;
-  btnTheme?: Theme;
-  btnSize?: Size;
+  button?: ReactNode;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ToastWithBtn');
-const ToastWithBtn = ({
-  btnName = '토스트',
-  btnTheme = 'primary',
-  btnSize = 'md',
-  onEval,
-  ...props
-}: ToastWithBtnProps) => {
+const ToastWithBtn = ({ button = <Button>토스트</Button>, onEval, ...props }: ToastWithBtnProps) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
   const handleEval = async () => {
@@ -33,9 +23,7 @@ const ToastWithBtn = ({
   logger('render');
   return (
     <>
-      <Button theme={btnTheme} size={btnSize} onClick={handleOpen}>
-        {btnName}
-      </Button>
+      <div onClick={handleOpen}>{button}</div>
       <ToastWithPortal {...props} open={open} onEval={handleEval} />
     </>
   );

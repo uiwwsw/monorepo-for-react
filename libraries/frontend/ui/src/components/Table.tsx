@@ -3,7 +3,7 @@ import Checkbox from '@/Checkbox';
 import { WithEval, WithId } from '#/componentTypes';
 import Button from './Button';
 import { createLogger } from '@package-frontend/utils';
-import { Theme } from './Color';
+import { Color } from './Color';
 import { Size } from './Size';
 /* ======   interface   ====== */
 export type Tbody = Record<string | number, string | number | boolean> & WithId & { selected?: boolean };
@@ -82,8 +82,8 @@ const Table = ({ thead, tbody, hasSelect = true, onEval }: TableProps) => {
             {onEval ? (
               <td className="p-2">
                 <Button
-                  theme={(row['theme'] ?? 'primary') as Theme}
-                  size={(row['size'] ?? 'md') as Size}
+                  themeColor={(row['theme'] ?? 'primary') as Color}
+                  themeSize={(row['size'] ?? 'md') as Size}
                   onClick={() => onEval(row.id)}
                 >
                   Action
