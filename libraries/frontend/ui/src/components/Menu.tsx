@@ -1,6 +1,6 @@
 import { createLogger } from '@package-frontend/utils';
 import Portal from '@/Portal';
-import { ReactNode, useMemo, useRef, useState } from 'react';
+import { ReactNode, cloneElement, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';
 import Button from '@/Button';
 import { usePosition } from '#/usePosition';
@@ -9,13 +9,21 @@ import { usePosition } from '#/usePosition';
 export interface MenuProps {
   width?: number;
   children?: ReactNode;
-  btnName?: string;
+  button?: ReactNode;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Menu');
 const wrapClassName = `inline-block`;
 const contentClassName = `absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full`;
-const Menu = ({ btnName = '매뉴', children, width = 200 }: MenuProps) => {
+const Menu = ({
+  button = (
+    <Button themeSize="xl" className="w-full">
+      매뉴
+    </Button>
+  ),
+  children,
+  width = 200,
+}: MenuProps) => {
   /* ======   variables   ====== */
   const widthStyle = useMemo(() => (width ? width + 'px' : 'initial'), [width]);
   const [open, setOpen] = useState(false);
@@ -31,9 +39,7 @@ const Menu = ({ btnName = '매뉴', children, width = 200 }: MenuProps) => {
   logger('render');
   return (
     <div onClick={handleToggle} className={wrapClassName} ref={wrapRef} style={{ width: widthStyle }}>
-      <Button themeSize="xl" className="w-full">
-        {btnName}
-      </Button>
+      {button}
       <Portal>
         <Smooth
           value={open}

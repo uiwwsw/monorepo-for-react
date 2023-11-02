@@ -11,7 +11,7 @@ import '@package-frontend/noto-emoji';
 import RadioGroup from '@/Radio/Group';
 import Checkbox from '@/Checkbox';
 import Chip from '@/Chip';
-import Pagination from '@/Pagination';
+import PaginationWithMenu from '@/Pagination/WithMenu';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
@@ -26,7 +26,7 @@ const App = () => {
   logger('test');
   return (
     <div className="p-10">
-      <Pagination
+      <PaginationWithMenu
         totalPageNum={29}
         hasDoubleArrow
         onChange={(e) => {

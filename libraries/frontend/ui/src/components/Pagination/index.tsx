@@ -2,12 +2,13 @@ import { createLogger } from '@package-frontend/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PaginationArrow from './Arrow';
 /* ======   interface   ====== */
-interface PaginationProps {
+export interface PaginationProps {
   totalPageNum: number;
   currentPageIndex?: number;
   maxPageNum?: number;
   onChange: (page: number) => void;
   hasDoubleArrow?: boolean; //doubleArrow 사용할지 결정
+  startPage?: number;
 }
 
 /* ======    global     ====== */
@@ -18,11 +19,15 @@ export default function Pagination({
   maxPageNum = 5,
   currentPageIndex = 0,
   hasDoubleArrow,
+  startPage: propsStartPage,
 }: PaginationProps) {
   /* ======   variables   ====== */
 
   const [currentPage, setCurrentPage] = useState<number>(currentPageIndex);
-  const startPage = useMemo(() => Math.floor(currentPage / maxPageNum) * maxPageNum + 1, [maxPageNum, currentPage]);
+  const startPage = useMemo(
+    () => Math.floor((propsStartPage ?? currentPage) / maxPageNum) * maxPageNum + 1,
+    [maxPageNum, currentPage, propsStartPage],
+  );
 
   const displayPages = useMemo(
     () =>
@@ -57,9 +62,10 @@ export default function Pagination({
   const handleRightDbArrowClick = useCallback(() => handleClick(totalPageNum - 1), [handleClick, totalPageNum]);
 
   /* ======   useEffect   ====== */
+  useEffect(() => setCurrentPage(currentPageIndex), [currentPageIndex]);
   logger('render');
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center relative w-fit">
       {hasDoubleArrow && (
         <PaginationArrow disabled={disabledLeftDbArrow} onClick={handleLeftDbArrowClick}>
           ❮❮
