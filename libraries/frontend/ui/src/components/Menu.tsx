@@ -4,9 +4,10 @@ import { ReactNode, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';
 import Button from '@/Button';
 import { usePosition } from '#/usePosition';
+import { WithEval } from '#/componentTypes';
 
 /* ======   interface   ====== */
-export interface MenuProps {
+export interface MenuProps extends WithEval {
   width?: number;
   children?: ReactNode;
   button?: ReactNode;
@@ -23,6 +24,7 @@ const Menu = ({
   ),
   children,
   width = 200,
+  onEval,
 }: MenuProps) => {
   /* ======   variables   ====== */
   const widthStyle = useMemo(() => (width ? width + 'px' : 'initial'), [width]);
@@ -43,6 +45,7 @@ const Menu = ({
       <Portal>
         <Smooth
           value={open}
+          onClosed={onEval}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
           style={{ ...position, width: widthStyle }}

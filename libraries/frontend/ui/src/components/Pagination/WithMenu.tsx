@@ -9,7 +9,7 @@ interface PaginationWithMenuProps extends PaginationProps {}
 
 /* ======    global     ====== */
 const logger = createLogger('components/Pagination/WithMenu');
-export default function PaginationWithMenu(props: PaginationWithMenuProps) {
+export default function PaginationWithMenu({ onChange, ...props }: PaginationWithMenuProps) {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
   const [index, setIndex] = useState<number | undefined>(undefined);
@@ -29,13 +29,19 @@ export default function PaginationWithMenu(props: PaginationWithMenuProps) {
     e.currentTarget.value = '';
     fakeRef.current?.click();
   };
+  const handlePageChange = (index: number) => {
+    setIndex(undefined);
+    onChange && onChange(index);
+  };
+  const handleClosed = () => index !== undefined && setIndex(undefined);
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <div className="w-fit relative m-auto">
-      <Pagination {...props} startPage={memoIndex} />
+      <Pagination {...props} onChange={handlePageChange} startPage={memoIndex} />
       <div className="absolute ml-2 left-full top-1/2 -translate-y-1/2">
         <Menu
+          onEval={handleClosed}
           button={
             <Button themeSize={null} themeColor={null}>
               🔍

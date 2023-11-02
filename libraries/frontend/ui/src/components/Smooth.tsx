@@ -7,11 +7,12 @@ export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {
   delay?: number;
   children?: ReactNode;
   className?: string;
+  onClosed?: () => unknown;
 }
 
 /* ======    global     ====== */
 const logger = createLogger('components/Smooth');
-const Smooth = ({ value, children, className, delay = 500, style, ...props }: SmoothProps) => {
+const Smooth = ({ onClosed, value, children, className, delay = 500, style, ...props }: SmoothProps) => {
   /* ======   variables   ====== */
   const elRef = useRef<HTMLDivElement>(null);
   const smoothClassName = useMemo(
@@ -23,7 +24,7 @@ const Smooth = ({ value, children, className, delay = 500, style, ...props }: Sm
   );
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  useSmooth({ value, delay, ref: elRef });
+  useSmooth({ value, delay, ref: elRef, onClosed });
   logger('render');
   return (
     <div

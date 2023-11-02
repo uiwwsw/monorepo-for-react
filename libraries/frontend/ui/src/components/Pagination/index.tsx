@@ -6,7 +6,7 @@ export interface PaginationProps {
   totalPageNum: number;
   currentPageIndex?: number;
   maxPageNum?: number;
-  onChange: (page: number) => void;
+  onChange?: (page: number) => void;
   hasDoubleArrow?: boolean; //doubleArrow 사용할지 결정
   startPage?: number;
 }
@@ -49,7 +49,7 @@ export default function Pagination({
     (newPage: number) => {
       if (newPage < 0 || newPage > totalPageNum) return;
       setCurrentPage(newPage);
-      onChange(newPage);
+      onChange && onChange(newPage);
     },
     [totalPageNum, setCurrentPage, onChange],
   );
@@ -74,18 +74,22 @@ export default function Pagination({
       <PaginationArrow disabled={disabledLeftArrow} onClick={handleLeftArrowClick}>
         ❮
       </PaginationArrow>
-      <div className="flex justify-center mx-2">
-        {displayPages.map((pageNumber) => (
-          <div
-            key={pageNumber}
-            onClick={() => handleClick(pageNumber - 1)}
-            className={`text-center px-3.5 py-2 border ${
-              pageNumber === currentPage + 1 ? 'bg-indigo-500 text-white' : 'hover:bg-gray-300 cursor-pointer'
-            }`}
-          >
-            {pageNumber}
-          </div>
-        ))}
+      <div className="flex justify-center items-center mx-2">
+        {displayPages.length ? (
+          displayPages.map((pageNumber) => (
+            <div
+              key={pageNumber}
+              onClick={() => handleClick(pageNumber - 1)}
+              className={`text-center px-3.5 py-2 border ${
+                pageNumber === currentPage + 1 ? 'bg-indigo-500 text-white' : 'hover:bg-gray-300 cursor-pointer'
+              }`}
+            >
+              {pageNumber}
+            </div>
+          ))
+        ) : (
+          <span>페이지가 존재하지 않습니다.</span>
+        )}
       </div>
       <PaginationArrow disabled={disabledRightArrow} onClick={handleRightArrowClick}>
         ❯
