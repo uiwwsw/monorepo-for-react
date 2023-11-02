@@ -3,7 +3,6 @@ import { ToastBaseProps } from './Base';
 import { ReactNode, useState } from 'react';
 import Button from '@/Button';
 import ToastWithPortal from './WithPortal';
-import { Size } from '@/Size';
 
 /* ======   interface   ====== */
 export interface ToastWithBtnProps extends ToastBaseProps {

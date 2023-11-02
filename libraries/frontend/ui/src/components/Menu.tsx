@@ -1,6 +1,6 @@
 import { createLogger } from '@package-frontend/utils';
 import Portal from '@/Portal';
-import { ReactNode, cloneElement, useMemo, useRef, useState } from 'react';
+import { ReactNode, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';
 import Button from '@/Button';
 import { usePosition } from '#/usePosition';

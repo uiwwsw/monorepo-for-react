@@ -4,7 +4,6 @@ import Pagination, { PaginationProps } from '.';
 import Menu from '@/Menu';
 import Input from '@/Input';
 import Button from '@/Button';
-import { nextTick } from 'process';
 /* ======   interface   ====== */
 interface PaginationWithMenuProps extends PaginationProps {}
 

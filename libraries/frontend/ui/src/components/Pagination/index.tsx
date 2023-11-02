@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PaginationArrow from './Arrow';
 /* ======   interface   ====== */
 export interface PaginationProps {
