@@ -1,0 +1,58 @@
+image: node:18
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - npm install -g pnpm
+  - pnpm install --frozen-lockfile
+
+stages:
+  - build
+  - dockerize
+  # - save_image
+  # - upload_to_teams
+
+build_project:
+  stage: build
+  script:
+    - pnpm build
+
+dockerize:
+  stage: dockerize
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  before_script: []
+  script:
+    - sleep 20
+    - docker build -t sp4_gui:$CI_COMMIT_SHORT_SHA .
+  only:
+    - main
+
+save_image_to_file:
+  stage: save_image
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  before_script: []
+  script:
+    - docker save -o sp4_gui_$CI_COMMIT_SHORT_SHA.tar sp4_gui:$CI_COMMIT_SHORT_SHA
+  artifacts:
+    paths:
+      - sp4_gui_$CI_COMMIT_SHORT_SHA.tar
+  only:
+    - main
+# upload_to_teams:
+#   stage: upload_to_teams
+#   image: node:18
+#   script:
+#     - >
+#       curl -X POST -H "Content-Type: application/json" -d '{
+#         "text": "이미지빌드가 완료되었습니다!\n\n커밋: '"$CI_COMMIT_SHORT_SHA"'\n\n제목: '"$CI_COMMIT_TITLE"'\n\n메시지: '"$CI_COMMIT_MESSAGE"'\n\n커밋자: '"$CI_COMMIT_AUTHOR"'\n\n[Download link](http://192.168.0.100:8080/sp4/www-sp4/-/pipelines)"
+#       }' https://semitss.webhook.office.com/webhookb2/a43c6dd8-7e4c-4889-ac10-b8122351d3c5@feaac424-1d85-43c7-9d3c-410ff00ec8f0/IncomingWebhook/2a95808d9e7448b4a33af2d4a2e75347/b0fa4d6e-ce21-4dfb-b840-925a1455661e
+#   only:
+#     - main

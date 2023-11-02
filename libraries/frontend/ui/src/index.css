@@ -1,0 +1,23 @@
+/* @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Colr+Emoji+Glyf'); */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+body {
+  font-family: pretendard, noto-emoji;
+}
+.ripple {
+  @apply absolute rounded-full pointer-events-none animate-ripple bg-white bg-opacity-60;
+}
+
+#toast {
+  @apply z-40 pointer-events-none fixed right-7 bottom-4 pl-3 [&>*]:m-3 [&>*]:ml-auto [&>*]:w-fit [&>*]:pointer-events-auto;
+}
+
+#modal {
+  @apply [&>*]:z-30 [&>*]:!fixed [&>*]:inset-0;
+}
+
+:disabled {
+  @apply !cursor-not-allowed;
+}
