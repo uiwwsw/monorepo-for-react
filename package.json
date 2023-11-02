@@ -4,7 +4,6 @@
   "description": "",
   "scripts": {
     "do": "pnpm -r -F",
-    "copy": "node copy-script",
     "prepare": "husky install"
   },
   "author": "semi-ts web",
