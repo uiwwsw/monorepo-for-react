@@ -1,6 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import '@package-frontend/pretendard';
 import '@package-frontend/noto-emoji';
+import PaginationWithSearch from '@/Pagination/WithSearch';
 // import ModalWithPortal from '@/Modal/WithPortal';
 // import ModalWithBtn from '@/Modal/WithBtn';
 /* ======   interface   ====== */
@@ -12,6 +13,10 @@ const App = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('test');
-  return <div className="p-10"></div>;
+  return (
+    <div className="p-10">
+      <PaginationWithSearch totalPageNum={549}></PaginationWithSearch>
+    </div>
+  );
 };
 export default App;

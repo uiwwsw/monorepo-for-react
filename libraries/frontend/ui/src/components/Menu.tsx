@@ -59,7 +59,7 @@ const Menu = ({
         >
           {children}
         </Smooth>
-        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full z-10" />}
+        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" />}
       </Portal>
     </div>
   );
