@@ -37,7 +37,7 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="w-fit relative m-auto">
+    <div className="w-fit relative">
       <Pagination {...props} onChange={handlePageChange} startPage={memoIndex} />
       <div className="absolute ml-2 left-full top-1/2 -translate-y-1/2">
         <Menu

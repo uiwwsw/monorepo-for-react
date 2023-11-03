@@ -4,9 +4,10 @@ import '@package-frontend/noto-emoji';
 import { useState } from 'react';
 // import ModalWithPortal from '@/Modal/WithPortal';
 // import ModalWithBtn from '@/Modal/WithBtn';
-import ToastWithBtn from '@/Toast/WithBtn';
-import ToastWithPortal from '@/Toast/WithPortal';
+import Menu from '@/Menu';
 import Calendar from '@/Calendar';
+import Pagination from '@/Pagination';
+import PaginationWithSearch from '@/Pagination/WithSearch';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
@@ -19,11 +20,12 @@ const App = () => {
   logger('test');
   return (
     <div className="p-10">
-      <button onClick={() => setOpen(true)}>dawdw</button>
-      <ToastWithBtn>dawdaw</ToastWithBtn>
-      <ToastWithPortal open={open} onClose={() => setOpen(false)}>
-        dawdaw
-      </ToastWithPortal>
+      <Menu>dddd</Menu>
+      <br />
+      <br />
+      <br />
+      <Pagination totalPageNum={30} />
+      <PaginationWithSearch totalPageNum={30} />
       <Calendar />
     </div>
   );
