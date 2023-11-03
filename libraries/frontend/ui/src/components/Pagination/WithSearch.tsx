@@ -5,11 +5,11 @@ import Menu from '@/Menu';
 import Input from '@/Input';
 import Button from '@/Button';
 /* ======   interface   ====== */
-interface PaginationWithMenuProps extends PaginationProps {}
+export interface PaginationWithSearchProps extends PaginationProps {}
 
 /* ======    global     ====== */
-const logger = createLogger('components/Pagination/WithMenu');
-export default function PaginationWithMenu({ onChange, ...props }: PaginationWithMenuProps) {
+const logger = createLogger('components/Pagination/WithSearch');
+export default function PaginationWithSearch({ onChange, ...props }: PaginationWithSearchProps) {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
   const [index, setIndex] = useState<number | undefined>(undefined);

@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import PaginationWithMenu from './WithMenu'; // 실제 경로에 맞게 변경해주세요
+import PaginationWithSearch from './WithSearch'; // 실제 경로에 맞게 변경해주세요
 
-describe('<PaginationWithMenu />', () => {
+describe('<PaginationWithSearch />', () => {
   it('displays input field when search button is clicked', () => {
-    render(<PaginationWithMenu totalPageNum={10} maxPageNum={5} />);
+    render(<PaginationWithSearch totalPageNum={10} maxPageNum={5} />);
     const searchButton = screen.getByRole('button', { name: /🔍/i });
     fireEvent.click(searchButton);
     const inputField = screen.getByRole('textbox');
@@ -13,7 +13,7 @@ describe('<PaginationWithMenu />', () => {
 
   it('triggers onChange when a page number is input', () => {
     const onChangeMock = vi.fn();
-    render(<PaginationWithMenu totalPageNum={10} maxPageNum={5} onChange={onChangeMock} />);
+    render(<PaginationWithSearch totalPageNum={10} maxPageNum={5} onChange={onChangeMock} />);
     const searchButton = screen.getByRole('button', { name: /🔍/i });
     fireEvent.click(searchButton);
     const inputField = screen.getByRole('textbox');
@@ -24,7 +24,7 @@ describe('<PaginationWithMenu />', () => {
   });
 
   it('clears input value on blur', () => {
-    render(<PaginationWithMenu totalPageNum={10} maxPageNum={5} />);
+    render(<PaginationWithSearch totalPageNum={10} maxPageNum={5} />);
     const searchButton = screen.getByRole('button', { name: /🔍/i });
     fireEvent.click(searchButton);
     const inputField = screen.getByRole<HTMLInputElement>('textbox');
