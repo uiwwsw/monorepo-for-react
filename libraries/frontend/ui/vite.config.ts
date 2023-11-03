@@ -21,7 +21,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: 'index.ts',
+      entry: 'src/index.ts',
       name: '@library-frontend/ui',
       fileName: (format) => `index.${format}.js`,
     },

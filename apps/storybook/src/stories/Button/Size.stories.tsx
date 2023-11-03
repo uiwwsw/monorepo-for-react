@@ -36,23 +36,23 @@ const meta = {
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const xl = ({ size = 'xl', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
+export const xl = ({ themeSize = 'xl', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
   return (
-    <Button {...props} size={size} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
+    <Button {...props} themeSize={themeSize} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
       안녕
     </Button>
   );
 };
-export const md = ({ size = 'md', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
+export const md = ({ themeSize = 'md', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
   return (
-    <Button {...props} size={size} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
+    <Button {...props} themeSize={themeSize} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
       안녕
     </Button>
   );
 };
-export const sm = ({ size = 'sm', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
+export const sm = ({ themeSize = 'sm', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
   return (
-    <Button {...props} size={size} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
+    <Button {...props} themeSize={themeSize} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
       안녕
     </Button>
   );
