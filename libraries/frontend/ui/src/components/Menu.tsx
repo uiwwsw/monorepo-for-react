@@ -4,13 +4,13 @@ import { MouseEvent, ReactNode, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';
 import Button from '@/Button';
 import { usePosition } from '#/usePosition';
-import { WithEval } from '#/componentTypes';
 
 /* ======   interface   ====== */
-export interface MenuProps extends WithEval {
+export interface MenuProps {
   width?: number;
   children?: ReactNode;
   button?: ReactNode;
+  onFinished?: (value: boolean) => unknown;
   isBodyClickClose?: boolean;
 }
 /* ======    global     ====== */
@@ -26,7 +26,7 @@ const Menu = ({
   isBodyClickClose = true,
   children,
   width = 200,
-  onEval,
+  onFinished,
 }: MenuProps) => {
   /* ======   variables   ====== */
   const widthStyle = useMemo(() => (width ? width + 'px' : 'initial'), [width]);
@@ -52,7 +52,7 @@ const Menu = ({
       <Portal>
         <Smooth
           value={open}
-          onClosed={onEval}
+          onFinished={onFinished}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
           style={{ ...position, width: widthStyle }}
