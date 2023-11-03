@@ -9,12 +9,12 @@ export interface ModalFooterProps {
   onLoading: (value: SetStateAction<boolean>) => void;
   setErrors: (value: SetStateAction<ModalErrors>) => void;
   disabled: boolean;
-  onEval: ModalBaseProps['onEval'];
+  onClose: ModalBaseProps['onClose'];
   smoothLoading: ButtonProps['smoothLoading'];
 }
 /* ======    global     ====== */
 const logger = createLogger('component/ModalFooter');
-const ModalFooter = ({ hasToast, setErrors, onEval, onLoading, disabled, smoothLoading }: ModalFooterProps) => {
+const ModalFooter = ({ hasToast, setErrors, onClose, onLoading, disabled, smoothLoading }: ModalFooterProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   logger('hasToast', hasToast);
@@ -33,7 +33,7 @@ const ModalFooter = ({ hasToast, setErrors, onEval, onLoading, disabled, smoothL
           break;
       }
       try {
-        onEval && (await onEval(res));
+        onClose && (await onClose(res));
       } catch {
         hasToast &&
           setErrors((prev) => ({
@@ -46,11 +46,11 @@ const ModalFooter = ({ hasToast, setErrors, onEval, onLoading, disabled, smoothL
       }
       onLoading(false);
     },
-    [onLoading, onEval, hasToast, setErrors],
+    [onLoading, onClose, hasToast, setErrors],
   );
   /* ======   useEffect   ====== */
   logger('render');
-  return onEval ? (
+  return onClose ? (
     <div className="flex gap-3 mt-auto pt-3">
       <Button
         className="flex-auto"

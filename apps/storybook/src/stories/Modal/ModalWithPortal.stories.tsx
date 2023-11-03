@@ -34,12 +34,12 @@ document.body.appendChild(toast);
 document.body.appendChild(modal);
 export const modalWithPortalHasError = ({ open, hasToast, ...props }: ModalWithPortalProps) => {
   const [_, updateArgs] = useArgs(); // onChange를 콜해야하나, 스토리에서는 컨트롤 값 동기화 처리
-  const onEval = async () => {
+  const onClose = async () => {
     if (hasToast) throw new Error('오류 발생');
     else updateArgs({ open: !open });
   };
   return (
-    <ModalWithPortal {...props} hasToast={hasToast} onEval={onEval} open={open}>
+    <ModalWithPortal {...props} hasToast={hasToast} onClose={onClose} open={open}>
       팝업내용
     </ModalWithPortal>
   );

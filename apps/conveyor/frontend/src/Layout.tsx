@@ -10,8 +10,14 @@ const Layout = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
-    <div className="p-3">
-      <Outlet />
+    <div className="flex min-h-screen">
+      <nav className="bg-red-50">네비</nav>
+      <div>
+        <header className="bg-red-400">헤더</header>
+        <main>
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

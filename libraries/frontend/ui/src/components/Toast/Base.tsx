@@ -1,21 +1,21 @@
-import { WithEval } from '#/componentTypes';
 import Button from '@/Button';
 import { useSmooth } from '#/useSmooth';
 import Close from '$/Close';
 import { createLogger } from '@package-frontend/utils';
 import { ReactNode, useEffect, useRef } from 'react';
 /* ======   interface   ====== */
-export interface ToastBaseProps extends WithEval {
+export interface ToastBaseProps {
   open?: boolean;
   children?: ReactNode;
   notClosed?: boolean;
   duration?: number;
   className?: string;
+  onClose?: () => void;
   onClosed?: () => void;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ToastBase');
-const ToastBase = ({ notClosed, onClosed, open, children, onEval, duration = 5000, className }: ToastBaseProps) => {
+const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 5000, className }: ToastBaseProps) => {
   /* ======   variables   ====== */
   const isInfinity = notClosed ?? duration === Infinity;
   const elRef = useRef<HTMLDivElement>(null);
@@ -31,7 +31,7 @@ const ToastBase = ({ notClosed, onClosed, open, children, onEval, duration = 500
   useSmooth({ value: open, delay: 500, ref: elRef, onClosed });
   useEffect(() => {
     if (!open || isInfinity) return;
-    const timer = setTimeout(() => onEval && onEval(), duration);
+    const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
   }, [open]);
   // useEffect(() => {
@@ -39,11 +39,11 @@ const ToastBase = ({ notClosed, onClosed, open, children, onEval, duration = 500
   // }, [_open])
   logger('render');
   return (
-    <div className={toastClassName} data-id="toast" ref={elRef}>
+    <div className={toastClassName} role="alert" ref={elRef}>
       <i className={toastLayerClassName} style={{ animationDuration: duration + 'ms' }} />
       <span className="flex-1">{children}</span>
       {isInfinity ? (
-        <Button onClick={onEval} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
+        <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
           <Close />
         </Button>
       ) : null}

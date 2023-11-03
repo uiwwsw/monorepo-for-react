@@ -5,11 +5,11 @@ import Menu from '@/Menu';
 import Input from '@/Input';
 import Button from '@/Button';
 /* ======   interface   ====== */
-interface PaginationWithMenuProps extends PaginationProps {}
+export interface PaginationWithSearchProps extends PaginationProps {}
 
 /* ======    global     ====== */
-const logger = createLogger('components/Pagination/WithMenu');
-export default function PaginationWithMenu(props: PaginationWithMenuProps) {
+const logger = createLogger('components/Pagination/WithSearch');
+export default function PaginationWithSearch({ onChange, ...props }: PaginationWithSearchProps) {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
   const [index, setIndex] = useState<number | undefined>(undefined);
@@ -29,13 +29,19 @@ export default function PaginationWithMenu(props: PaginationWithMenuProps) {
     e.currentTarget.value = '';
     fakeRef.current?.click();
   };
+  const handlePageChange = (index: number) => {
+    setIndex(undefined);
+    onChange && onChange(index);
+  };
+  const handleClosed = () => index !== undefined && setIndex(undefined);
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <div className="w-fit relative m-auto">
-      <Pagination {...props} startPage={memoIndex} />
+      <Pagination {...props} onChange={handlePageChange} startPage={memoIndex} />
       <div className="absolute ml-2 left-full top-1/2 -translate-y-1/2">
         <Menu
+          onEval={handleClosed}
           button={
             <Button themeSize={null} themeColor={null}>
               🔍
@@ -43,7 +49,7 @@ export default function PaginationWithMenu(props: PaginationWithMenuProps) {
           }
         >
           <i ref={fakeRef} />
-          <Input onClick={handleClick} onChange={handleChange} onBlur={handleBlur} />
+          <Input role="textbox" onClick={handleClick} onChange={handleChange} onBlur={handleBlur} />
         </Menu>
       </div>
     </div>
