@@ -65,7 +65,7 @@ export default function Pagination({
   useEffect(() => setCurrentPage(currentPageIndex), [currentPageIndex]);
   logger('render');
   return (
-    <div className="flex justify-center relative w-fit">
+    <div className="inline-flex justify-center relative w-fit">
       {hasDoubleArrow && (
         <PaginationArrow disabled={disabledLeftDbArrow} onClick={handleLeftDbArrowClick}>
           ❮❮
