@@ -49,7 +49,14 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
           }
         >
           <i ref={fakeRef} />
-          <Input role="textbox" onClick={handleClick} onChange={handleChange} onBlur={handleBlur} />
+          <Input
+            placeholder="원하는 페이지 숫자"
+            type="number"
+            role="textbox"
+            onClick={handleClick}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
         </Menu>
       </div>
     </div>
