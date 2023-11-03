@@ -50,7 +50,7 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
         >
           <i ref={fakeRef} />
           <Input
-            placeholder="이동하고자 하는 페이지를 입력해주세요"
+            placeholder="원하는 페이지 숫자"
             type="number"
             role="textbox"
             onClick={handleClick}
