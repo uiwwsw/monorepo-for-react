@@ -10,11 +10,11 @@ export interface ModalWithBtnProps extends ModalBaseProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ModalWithBtn');
-const ModalWithBtn = ({ button = <Button>팝업</Button>, onEval, ...props }: ModalWithBtnProps) => {
+const ModalWithBtn = ({ button = <Button>팝업</Button>, onClose, ...props }: ModalWithBtnProps) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
   const handleEval = async () => {
-    onEval && (await onEval());
+    onClose && (await onClose());
     setOpen(false);
   };
   const handleOpen = () => setOpen(true);
@@ -24,7 +24,7 @@ const ModalWithBtn = ({ button = <Button>팝업</Button>, onEval, ...props }: Mo
   return (
     <>
       <div onClick={handleOpen}>{button}</div>
-      <ModalWithPortal {...props} open={open} onEval={handleEval} />
+      <ModalWithPortal {...props} open={open} onClose={handleEval} />
     </>
   );
 };

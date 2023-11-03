@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import ModalBase, { ModalBaseProps } from './Base';
+import ModalBase, { ModalBaseProps, ModalResult } from './Base';
 import Portal from '@/Portal';
 import { useEffect, useState } from 'react';
 
@@ -7,11 +7,16 @@ import { useEffect, useState } from 'react';
 export interface ModalWithPortalProps extends ModalBaseProps {}
 /* ======    global     ====== */
 const logger = createLogger('components/ModalWithPortal');
-const ModalWithPortal = ({ children, onClosed, ...props }: ModalWithPortalProps) => {
+const ModalWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...props }: ModalWithPortalProps) => {
   /* ======   variables   ====== */
+  const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
+  const handleClose = (e?: ModalResult) => {
+    setOpen(false);
+    onClose && onClose(e);
+  };
   const handleClosed = () => {
     onClosed && onClosed();
     setVisible(false);
@@ -19,13 +24,16 @@ const ModalWithPortal = ({ children, onClosed, ...props }: ModalWithPortalProps)
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    props.open && setVisible(true);
-  }, [props.open]);
+    if (!defaultOpen) return;
+
+    setOpen(true);
+    setVisible(true);
+  }, [defaultOpen]);
 
   logger('render');
   return visible ? (
     <Portal root="modal">
-      <ModalBase {...props} onClosed={handleClosed}>
+      <ModalBase {...props} open={open} onClose={handleClose} onClosed={handleClosed}>
         {children}
       </ModalBase>
     </Portal>

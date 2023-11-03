@@ -49,7 +49,7 @@ export default function PaginationWithMenu({ onChange, ...props }: PaginationWit
           }
         >
           <i ref={fakeRef} />
-          <Input onClick={handleClick} onChange={handleChange} onBlur={handleBlur} />
+          <Input role="textbox" onClick={handleClick} onChange={handleChange} onBlur={handleBlur} />
         </Menu>
       </div>
     </div>

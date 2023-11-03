@@ -7,24 +7,32 @@ import { useEffect, useState } from 'react';
 export interface ToastWithPortalProps extends ToastBaseProps {}
 /* ======    global     ====== */
 const logger = createLogger('components/ToastWithPortal');
-const ToastWithPortal = ({ children, onClosed, ...props }: ToastWithPortalProps) => {
+const ToastWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...props }: ToastWithPortalProps) => {
   /* ======   variables   ====== */
+  const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
+  const handleClose = () => {
+    setOpen(false);
+    onClose && onClose();
+  };
   const handleClosed = () => {
     onClosed && onClosed();
     setVisible(false);
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    props.open && setVisible(true);
-  }, [props.open]);
+    if (!defaultOpen) return;
+
+    setOpen(true);
+    setVisible(true);
+  }, [defaultOpen]);
 
   logger('render');
   return visible ? (
     <Portal root="toast">
-      <ToastBase {...props} onClosed={handleClosed}>
+      <ToastBase {...props} open={open} onClose={handleClose} onClosed={handleClosed}>
         {children}
       </ToastBase>
     </Portal>

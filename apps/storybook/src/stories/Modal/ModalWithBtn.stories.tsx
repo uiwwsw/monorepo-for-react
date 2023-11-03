@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react';
 
-import { ModalWithBtn, ModalWithBtnProps, sizes, themes } from '@library-frontend/ui';
+import { ModalWithBtn, ModalWithBtnProps } from '@library-frontend/ui';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -22,23 +22,11 @@ const meta = {
     smoothLoading: {
       description: '내부 버튼 속성',
     },
-    btnName: {
-      table: { type: { summary: 'string' } },
-    },
-    btnSize: {
-      table: { type: { summary: sizes } },
-    },
-    btnTheme: {
-      table: { type: { summary: themes } },
-    },
   },
   args: {
     open: true,
     hasToast: false,
     smoothLoading: true,
-    btnName: '팝업',
-    btnSize: 'md',
-    btnTheme: 'primary',
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // argTypes: {
@@ -56,19 +44,15 @@ toast.id = 'toast';
 modal.id = 'modal';
 document.body.appendChild(toast);
 document.body.appendChild(modal);
-export const modalWithBtn = ({ btnName, ...props }: ModalWithBtnProps) => {
-  return (
-    <ModalWithBtn {...props} btnName={btnName}>
-      팝업내용
-    </ModalWithBtn>
-  );
+export const modalWithBtn = ({ ...props }: ModalWithBtnProps) => {
+  return <ModalWithBtn {...props}>팝업내용</ModalWithBtn>;
 };
-export const modalWithBtnHasError = ({ btnName, hasToast, ...props }: ModalWithBtnProps) => {
-  const onEval = async () => {
+export const modalWithBtnHasError = ({ hasToast, ...props }: ModalWithBtnProps) => {
+  const onClose = async () => {
     if (hasToast) throw new Error('dwdaw');
   };
   return (
-    <ModalWithBtn {...props} hasToast={hasToast} onEval={onEval} btnName={btnName}>
+    <ModalWithBtn {...props} hasToast={hasToast} onClose={onClose}>
       팝업내용
     </ModalWithBtn>
   );

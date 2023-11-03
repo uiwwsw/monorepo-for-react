@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/react';
-import { ToastWithBtn, ToastWithBtnProps, sizes, themes } from '@library-frontend/ui';
+import { ToastWithBtn, ToastWithBtnProps } from '@library-frontend/ui';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -12,12 +12,6 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
-    btnName: {
-      table: {
-        type: { summary: 'string' },
-      },
-      // description: '버튼 텍스트',
-    },
     duration: {
       table: {
         type: { summary: 'number' },
@@ -28,19 +22,10 @@ const meta = {
         type: { summary: 'string' },
       },
     },
-    btnSize: {
-      table: { type: { summary: sizes } },
-    },
-    btnTheme: {
-      table: { type: { summary: themes } },
-    },
   },
   args: {
-    btnName: '버튼',
     duration: 3000,
     children: '토스트 내용',
-    btnSize: 'md',
-    btnTheme: 'primary',
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // argTypes: {

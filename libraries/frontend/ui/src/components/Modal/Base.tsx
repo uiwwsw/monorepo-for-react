@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { WithEval } from '#/componentTypes';
 import { useSmooth } from '#/useSmooth';
 import { useAnimate } from '#/useAnimate';
 import ModalOverlay from './Overlay';
@@ -16,13 +15,14 @@ export interface ModalError {
 }
 export type ModalErrors = Record<string, ModalError>;
 export type ModalResult = 'OK' | 'CANCEL' | 'NONE';
-export interface ModalBaseProps extends WithEval<ModalResult> {
+export interface ModalBaseProps {
   hasToast?: boolean;
   children?: ReactNode;
   className?: string;
   persist?: boolean;
   hideClose?: boolean;
   open?: boolean;
+  onClose?: (value?: ModalResult) => Promise<unknown> | unknown;
   onClosed?: () => void;
   smoothLoading?: ButtonProps['smoothLoading'];
 }
@@ -32,7 +32,7 @@ const ModalBase = ({
   open,
   persist = false,
   hideClose = false,
-  onEval,
+  onClose,
   children,
   className,
   hasToast = true,
@@ -63,7 +63,7 @@ const ModalBase = ({
         : (async () => {
             logger(hasToast);
             try {
-              onEval && (await onEval('NONE'));
+              onClose && (await onClose('NONE'));
             } catch {
               hasToast &&
                 setErrors((prev) => ({
@@ -75,7 +75,7 @@ const ModalBase = ({
                 }));
             }
           })(),
-    [setAnimate, hasToast, persist, onEval, setErrors],
+    [setAnimate, hasToast, persist, onClose, setErrors],
   );
   /* ======   useEffect   ====== */
   useSmooth({
@@ -98,13 +98,13 @@ const ModalBase = ({
             disabled={loading || !open}
             onLoading={setLoading}
             setErrors={setErrors}
-            onEval={onEval}
+            onClose={onClose}
           />
         </div>
       </div>
       {memoErrors.map(([key, { msg, open }]) => (
         <ToastWithPortal
-          onEval={() =>
+          onClose={() =>
             setErrors((prev) => ({
               ...prev,
               [key]: {

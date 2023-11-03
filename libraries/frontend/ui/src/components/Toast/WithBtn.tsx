@@ -10,11 +10,11 @@ export interface ToastWithBtnProps extends ToastBaseProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ToastWithBtn');
-const ToastWithBtn = ({ button = <Button>토스트</Button>, onEval, ...props }: ToastWithBtnProps) => {
+const ToastWithBtn = ({ button = <Button>토스트</Button>, onClose, ...props }: ToastWithBtnProps) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
   const handleEval = async () => {
-    onEval && (await onEval());
+    onClose && (await onClose());
     setOpen(false);
   };
   const handleOpen = () => setOpen(true);
@@ -24,7 +24,7 @@ const ToastWithBtn = ({ button = <Button>토스트</Button>, onEval, ...props }:
   return (
     <>
       <div onClick={handleOpen}>{button}</div>
-      <ToastWithPortal {...props} open={open} onEval={handleEval} />
+      <ToastWithPortal {...props} open={open} onClose={handleEval} />
     </>
   );
 };

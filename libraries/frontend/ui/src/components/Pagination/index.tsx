@@ -78,6 +78,7 @@ export default function Pagination({
         {displayPages.length ? (
           displayPages.map((pageNumber) => (
             <div
+              role="button"
               key={pageNumber}
               onClick={() => handleClick(pageNumber - 1)}
               className={`text-center px-3.5 py-2 border ${

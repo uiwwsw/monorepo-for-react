@@ -9,17 +9,17 @@ describe('Modal component', () => {
     expect(modalContent).toBeInTheDocument();
   });
 
-  it('should call onEval function when OK button is clicked', async () => {
+  it('should call onClose function when OK button is clicked', async () => {
     const mockOnEval = vi.fn();
-    render(<Modal open={true} onEval={mockOnEval} />);
+    render(<Modal open={true} onClose={mockOnEval} />);
     const okButton = screen.getByRole('button', { name: /ok/i });
     fireEvent.click(okButton);
     expect(mockOnEval).toHaveBeenCalledWith('OK' as ModalResult);
   });
 
-  it('should call onEval function with CANCEL when Cancel button is clicked', () => {
+  it('should call onClose function with CANCEL when Cancel button is clicked', () => {
     const mockOnEval = vi.fn();
-    render(<Modal open={true} onEval={mockOnEval} />);
+    render(<Modal open={true} onClose={mockOnEval} />);
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     fireEvent.click(cancelButton);
     expect(mockOnEval).toHaveBeenCalledWith('CANCEL' as ModalResult);
@@ -47,7 +47,7 @@ describe('Modal component', () => {
 
   it('오픈되지 않은 모달은 기능을 수행할 수 없습니다.', () => {
     const mockOnEval = vi.fn();
-    render(<Modal open={false} onEval={mockOnEval} />);
+    render(<Modal open={false} onClose={mockOnEval} />);
     const okButton = screen.getByRole('button', { name: /ok/i });
     fireEvent.click(okButton);
     expect(mockOnEval).not.toHaveBeenCalled();

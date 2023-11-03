@@ -17,7 +17,7 @@ const Smooth = ({ onClosed, value, children, className, delay = 500, style, ...p
   const elRef = useRef<HTMLDivElement>(null);
   const smoothClassName = useMemo(
     () =>
-      `[&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-show [&[data-smooth="HIDING"]]:animate-hide${
+      `[&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-show [&[data-smooth="HIDING"]]:pointer-events-none [&[data-smooth="HIDING"]]:animate-hide${
         className ? ` ${className}` : ''
       }`,
     [className],
