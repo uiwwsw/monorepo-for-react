@@ -9,11 +9,11 @@ export enum Effect {
 export interface UseSmoothProps {
   value?: boolean;
   delay: number;
-  onClosed?: () => unknown;
+  onFinished?: (value: boolean) => unknown;
   ref: RefObject<HTMLElement>;
 }
 /* ======    global     ====== */
-export const useSmooth = ({ value, delay, onClosed, ref }: UseSmoothProps) => {
+export const useSmooth = ({ value, delay, onFinished, ref }: UseSmoothProps) => {
   /* ======   variables   ====== */
   let effect: Effect;
   /* ======   function    ====== */
@@ -25,7 +25,7 @@ export const useSmooth = ({ value, delay, onClosed, ref }: UseSmoothProps) => {
     const timer = setTimeout(() => {
       effect = value ? Effect.Show : Effect.Hide;
       ref.current && (ref.current.dataset.smooth = effect);
-      onClosed && !value && onClosed();
+      onFinished && onFinished(value!);
     }, delay);
 
     return () => clearTimeout(timer);

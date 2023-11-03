@@ -12,9 +12,15 @@ const logger = createLogger('components/Pagination/WithSearch');
 export default function PaginationWithSearch({ onChange, ...props }: PaginationWithSearchProps) {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [index, setIndex] = useState<number | undefined>(undefined);
   const memoIndex = useMemo(() => ((index ?? -1) >= 0 ? index : undefined), [index]);
   /* ======   function    ====== */
+  const handleFinished = (value: boolean) => {
+    if (!value) return index !== undefined && setIndex(undefined);
+    inputRef.current?.focus();
+    logger(inputRef);
+  };
   const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -33,7 +39,7 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
     setIndex(undefined);
     onChange && onChange(index);
   };
-  const handleClosed = () => index !== undefined && setIndex(undefined);
+
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -41,7 +47,7 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
       <Pagination {...props} onChange={handlePageChange} startPage={memoIndex} />
       <div className="absolute -z-10 ml-2 left-full top-1/2 -translate-y-1/2">
         <Menu
-          onEval={handleClosed}
+          onFinished={handleFinished}
           button={
             <Button themeSize={null} themeColor={null}>
               🔍
@@ -50,6 +56,7 @@ export default function PaginationWithSearch({ onChange, ...props }: PaginationW
         >
           <i ref={fakeRef} />
           <Input
+            ref={inputRef}
             placeholder="원하는 페이지 숫자"
             type="number"
             role="textbox"

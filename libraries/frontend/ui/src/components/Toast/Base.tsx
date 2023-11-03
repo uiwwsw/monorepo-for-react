@@ -27,8 +27,12 @@ const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 50
     open && !isInfinity ? ' w-full animate-countDown' : ''
   }${isInfinity ? ' w-full' : ''}`;
   /* ======   function    ====== */
+  const handleClosed = (value: boolean) => {
+    if (value) return;
+    onClosed && onClosed();
+  };
   /* ======   useEffect   ====== */
-  useSmooth({ value: open, delay: 500, ref: elRef, onClosed });
+  useSmooth({ value: open, delay: 500, ref: elRef, onFinished: handleClosed });
   useEffect(() => {
     if (!open || isInfinity) return;
     const timer = setTimeout(() => onClose && onClose(), duration);

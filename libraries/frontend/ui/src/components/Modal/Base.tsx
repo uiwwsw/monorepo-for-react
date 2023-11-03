@@ -77,12 +77,16 @@ const ModalBase = ({
           })(),
     [setAnimate, hasToast, persist, onClose, setErrors],
   );
+  const handleClosed = (value: boolean) => {
+    if (value) return;
+    onClosed && onClosed();
+  };
   /* ======   useEffect   ====== */
   useSmooth({
     value: open,
     delay: 500,
     ref: elRef,
-    onClosed,
+    onFinished: handleClosed,
   });
   logger('render');
   return (
