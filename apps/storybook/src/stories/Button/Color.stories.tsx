@@ -36,16 +36,16 @@ const meta = {
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const primary = ({ theme = 'primary', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
+export const primary = ({ themeColor = 'primary', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
   return (
-    <Button {...props} theme={theme} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
+    <Button {...props} themeColor={themeColor} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
       안녕
     </Button>
   );
 };
-export const secondary = ({ theme = 'secondary', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
+export const secondary = ({ themeColor = 'secondary', disabled, onClick, smoothLoading, ...props }: ButtonProps) => {
   return (
-    <Button {...props} theme={theme} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
+    <Button {...props} themeColor={themeColor} onClick={onClick} smoothLoading={smoothLoading} disabled={disabled}>
       안녕
     </Button>
   );
