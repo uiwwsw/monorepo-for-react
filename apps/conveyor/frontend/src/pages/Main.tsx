@@ -1,4 +1,3 @@
-import { Accordion, Button, ModalWithBtn } from '@library-frontend/ui';
 // import { createLogger } from '@package-frontend/utils';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
@@ -11,12 +10,8 @@ const Main = () => {
   /* ======   useEffect   ====== */
   return (
     <>
-      {/* <ErrorBoundary> */}
-      <ModalWithBtn>dawdwa</ModalWithBtn>
-      <Button>dawdad</Button>
-      <Accordion title="우하하">숨기는 텍스트</Accordion>
-      우하하우하하
-      {/* </ErrorBoundary> */}
+      <p>control 페이지는 tcm dwadwd, dawd aw를 조정할 수 있습니다.</p>
+      <p>statistics 페이지는 그래프등을 볼 수 있습니다.</p>
     </>
   );
 };

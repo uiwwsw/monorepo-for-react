@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import NormalLayout from './layouts/NormalLayout';
 import Main from './pages/Main';
-import About from './pages/About';
-import Layout from './Layout';
 import NotFound from './pages/NotFound';
+import { authRoutes, commonRoutes } from './routes';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -15,11 +15,16 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="*" element={<NotFound />} />
+        <Route element={<NormalLayout />}>
           <Route path="/" element={<Main />} />
-          <Route path="/about" element={<About />} />
+          {authRoutes.map((x) => (
+            <Route key={x.name} path={x.path} element={<x.node />} />
+          ))}
         </Route>
+        {commonRoutes.map((x) => (
+          <Route key={x.name} path={x.path} element={<x.node />} />
+        ))}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

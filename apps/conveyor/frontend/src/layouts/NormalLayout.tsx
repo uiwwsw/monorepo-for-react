@@ -1,25 +1,28 @@
+import Header from '@/Header';
+import Sidebar from '@/Sidebar';
 import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('Layout');
+// const logger = createLogger('NormalLayout');
 
-const Layout = () => {
+const NormalLayout = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
     <div className="flex min-h-screen">
-      <nav className="bg-red-50">네비</nav>
-      <div>
-        <header className="bg-red-400">헤더</header>
-        <main>
+      <Sidebar />
+      <div className="flex-auto flex flex-col">
+        <Header />
+        <main className="flex-auto">
           <Outlet />
+          {/* <div className="h-[9999px]"></div> */}
         </main>
       </div>
     </div>
   );
 };
 
-export default Layout;
+export default NormalLayout;

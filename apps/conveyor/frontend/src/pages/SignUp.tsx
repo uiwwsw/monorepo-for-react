@@ -2,12 +2,12 @@
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('pages/About');
-const About = () => {
+// const logger = createLogger('pages/SignUp');
+const SignUp = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return <>dasdda</>;
+  return <>회원가입</>;
 };
 
-export default About;
+export default SignUp;
