@@ -1,3 +1,4 @@
+import { useSignUp } from '!/auth/application/sign-up';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
@@ -9,9 +10,14 @@ import { useNavigate } from 'react-router-dom';
 const logger = createLogger('pages/SignUp');
 const SignUp = () => {
   /* ======   variables   ====== */
+  const { trigger } = useSignUp();
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   /* ======   function    ====== */
+  const handleSubmit = async () => {
+    await trigger({ id: '123', pw: '456' });
+    setSuccess(true);
+  };
   const fakeWait = async () => {
     await new Promise((res) => setTimeout(res, 5000));
     navigate('/sign-in?from=sign-up');
@@ -36,7 +42,7 @@ const SignUp = () => {
           <p className="font-medium">비밀번호 확인</p>
           <Input className="w-full" />
         </label>
-        <Button smoothLoading onClick={() => setSuccess(true)}>
+        <Button smoothLoading onClick={handleSubmit}>
           회원가입
         </Button>
       </div>

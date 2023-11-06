@@ -1,3 +1,4 @@
+import { useSignIn } from '!/auth/application/sign-in';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
@@ -9,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const logger = createLogger('pages/SignIn');
 const SignIn = () => {
   /* ======   variables   ====== */
+  const { trigger } = useSignIn();
   const [toast, setToast] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -17,6 +19,10 @@ const SignIn = () => {
   const fakeWait = async () => {
     await new Promise((res) => setTimeout(res, 5000));
     navigate('/');
+  };
+  const handleSubmit = async () => {
+    await trigger({ id: 'abc', pw: 'def' });
+    setSuccess(true);
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
@@ -39,7 +45,7 @@ const SignIn = () => {
           <p className="font-medium">비밀번호</p>
           <Input className="w-full" />
         </label>
-        <Button smoothLoading onClick={() => setSuccess(true)}>
+        <Button smoothLoading onClick={handleSubmit}>
           로그인
         </Button>
       </div>

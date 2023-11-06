@@ -24,7 +24,7 @@ const Nav = (_: NavProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="sticky z-10 flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl">
+    <div className="sticky z-20 flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl">
       <nav className="flex flex-col flex-auto">
         <div className="flex-auto">
           <Link to="/" className="block p-4">

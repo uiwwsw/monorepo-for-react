@@ -1,4 +1,4 @@
-import { useUploadFirmware } from '!/auth/application';
+import { useTest } from '!/test/application/test';
 import { Accordion, Tooltip } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
@@ -7,7 +7,7 @@ import { createLogger } from '@package-frontend/utils';
 const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
-  const { data } = useUploadFirmware();
+  const { data } = useTest();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render', data);
