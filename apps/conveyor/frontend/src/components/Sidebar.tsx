@@ -1,4 +1,4 @@
-// import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { createElement } from 'react';
 import logo from '../assets/logo.png';
 import { NavLink } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { authRoutes, commonRoutes } from '../routes';
 export interface NavProps {}
 
 /* ======    global     ====== */
-// const logger = createLogger('pages/Nav');
+const logger = createLogger('components/Nav');
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
   // const [openTabs, setOpenTabs] = useState<number[]>([]);
@@ -23,8 +23,9 @@ const Nav = (_: NavProps) => {
   // };
 
   /* ======   useEffect   ====== */
+  logger('render');
   return (
-    <div className="sticky flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen">
+    <div className="sticky z-10 flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen">
       <nav className="flex flex-col flex-auto">
         <div className="flex-auto">
           <Link to="/" className="block p-4">
@@ -36,7 +37,9 @@ const Nav = (_: NavProps) => {
               createElement(tab.group ? 'span' : NavLink, {
                 key: tab.path + index,
                 to: tab.path,
-                className: tab.group ? '' : ({ isActive }) => (isActive ? 'text-red-600' : ''),
+                className: tab.group
+                  ? ''
+                  : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : ''),
                 children: (
                   <>
                     <span className="mr-2">{tab.icon}</span>
@@ -44,7 +47,9 @@ const Nav = (_: NavProps) => {
                     {tab.group?.map((x) => (
                       <NavLink
                         key={x.path}
-                        className={({ isActive }) => 'block ml-3' + (isActive ? ' text-black' : '')}
+                        className={({ isActive }) =>
+                          'text-gray-400 hover:text-gray-300' + (isActive ? 'text-white' : '')
+                        }
                         to={`${tab.path}/${x.path}`}
                       >
                         {x.name}
@@ -62,16 +67,19 @@ const Nav = (_: NavProps) => {
             createElement(tab.group ? 'span' : NavLink, {
               key: tab.path + index,
               to: tab.path,
-              className: tab.group ? '' : ({ isActive }) => (isActive ? 'text-red-600' : ''),
+              className: tab.group
+                ? ''
+                : ({ isActive }) => `text-gray-400 hover:text-gray-300` + (isActive ? 'text-white' : ''),
               children: (
                 <>
                   <span className="mr-2">{tab.icon}</span>
-
                   {tab.name}
                   {tab.group?.map((x) => (
                     <NavLink
                       key={x.path}
-                      className={({ isActive }) => 'block ml-3' + (isActive ? ' text-black' : '')}
+                      className={({ isActive }) =>
+                        'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '')
+                      }
                       to={`${tab.path}/${x.path}`}
                     >
                       {x.name}

@@ -1,15 +1,43 @@
+import ChartLine from '@/Chart/Line';
+import { useHeaderContext } from '@/HeaderContext';
+import { Tab } from '@library-frontend/ui';
+import { Calendar } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
+import { Dayjs } from 'dayjs';
+import { useEffect, useState } from 'react';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
+const tabs = ['가', '나', '다', '라'];
 const logger = createLogger('pages/Stats');
 const Stats = () => {
   /* ======   variables   ====== */
+  const { setChildren } = useHeaderContext();
+  const [duration, setDuration] = useState<Dayjs[]>([]);
   /* ======   function    ====== */
+  const handleChange = (duration: Dayjs | Dayjs[]) => {
+    duration instanceof Array && setDuration(duration);
+  };
   /* ======   useEffect   ====== */
-
+  useEffect(() => {
+    setChildren(<Calendar selectRange onChange={handleChange} />);
+    return () => setChildren(undefined);
+  }, []);
   logger('render');
-  return <>통계페이지</>;
+  return (
+    <>
+      통계페이지
+      <div className="h-60">
+        <ChartLine />
+      </div>
+      <Tab header={tabs}>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+      </Tab>
+    </>
+  );
 };
 
 export default Stats;

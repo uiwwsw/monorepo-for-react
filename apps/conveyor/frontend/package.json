@@ -14,6 +14,9 @@
   },
   "dependencies": {
     "@library-frontend/ui": "workspace:^",
+    "@nivo/bar": "^0.83.0",
+    "@nivo/core": "^0.83.0",
+    "@nivo/line": "^0.83.0",
     "@package-backend/types": "workspace:^",
     "@package-frontend/noto-emoji": "workspace:^",
     "@package-frontend/pretendard": "workspace:^",

@@ -17,7 +17,7 @@ const Tooltip = ({ children }: TooltipProps) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const { setPosition, position } = usePosition({ targetRef: wrapRef });
 
-  const textClassName = `z-10 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`;
+  const textClassName = `z-40 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`;
   /* ======   function    ====== */
   const showTooltip = () => {
     logger('Show Tooltip');

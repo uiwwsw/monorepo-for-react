@@ -1,16 +1,16 @@
-import Header from '@/Header';
 import Sidebar from '@/Sidebar';
 import { Outlet } from 'react-router-dom';
+import { createLogger } from '@package-frontend/utils';
 // import AsyncBoundary from '@/AsyncBoundary';
-// import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('PublicLayout');
+const logger = createLogger('layout/PublicLayout');
 
 const PublicLayout = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
+  logger('render');
   return (
     <div className="flex min-h-screen">
       <Sidebar />
