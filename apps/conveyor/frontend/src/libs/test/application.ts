@@ -14,7 +14,7 @@ async function fetcher(
   // return {
   //   test: '1234',
   // };
-  return http<{ name: string }>(url);
+  return http<{ name: string }>({ url });
 }
 
 export function useTest(arg: GetUserRequest) {

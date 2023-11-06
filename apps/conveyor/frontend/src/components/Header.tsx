@@ -9,7 +9,7 @@ const Header = (_: HeaderProps) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
-  return <header className="sticky top-0 h-24 z-50 bg-slate-400">스테이터스바</header>;
+  return <header className="sticky top-0 h-24 z-50 p-3 bg-slate-400">스테이터스바</header>;
 };
 
 export default Header;

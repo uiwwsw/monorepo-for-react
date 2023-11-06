@@ -5,9 +5,9 @@ import { Outlet } from 'react-router-dom';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('NormalLayout');
+// const logger = createLogger('PublicLayout');
 
-const NormalLayout = () => {
+const PublicLayout = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -15,14 +15,12 @@ const NormalLayout = () => {
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-auto flex flex-col">
-        <Header />
-        <main className="flex-auto">
+        <main className="flex-auto p-3 max-w-5xl m-auto w-full">
           <Outlet />
-          {/* <div className="h-[9999px]"></div> */}
         </main>
       </div>
     </div>
   );
 };
 
-export default NormalLayout;
+export default PublicLayout;

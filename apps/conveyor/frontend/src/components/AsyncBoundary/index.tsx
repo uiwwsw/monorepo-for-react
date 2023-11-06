@@ -13,13 +13,7 @@ export interface AsyncBoundaryProps extends ErrorBoundaryProps {
 // const logger = createLogger('components/Accordion');
 const AsyncBoundary = ({
   children,
-  loading = (
-    <div className="absolute top-0 left-0 w-full h-full flex items-center">
-      <span className="m-auto">
-        <Spinner />
-      </span>
-    </div>
-  ),
+  loading = <iframe src="/loading" className="w-screen h-screen"></iframe>,
   error,
 }: AsyncBoundaryProps) => {
   /* ======   variables   ====== */

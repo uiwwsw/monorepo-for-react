@@ -13,13 +13,13 @@ export const authRoutes: ParentTab[] = [
   {
     icon: '🖥️',
     path: 'control',
-    name: 'Control',
+    name: '조작',
     node: Control,
   },
   {
     icon: '🧮',
     path: 'stats',
-    name: 'Statistics',
+    name: '통계',
     node: Stats,
   },
 ];
@@ -27,19 +27,19 @@ export const commonRoutes: ParentTab[] = [
   {
     icon: '🗝️',
     path: 'sign-up',
-    name: 'SignUp',
+    name: '회원가입',
     node: SignUp,
   },
   {
     icon: '🔓',
     path: 'sign-in',
-    name: 'SignIn',
+    name: '로그인',
     node: SignIn,
   },
   {
     icon: '💊',
     path: 'help',
-    name: 'Help',
+    name: '도움말',
     node: Help,
   },
 ];

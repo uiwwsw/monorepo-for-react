@@ -1,3 +1,4 @@
+import { useUploadFirmware } from '!/auth/application';
 import { Accordion, Tooltip } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
@@ -6,10 +7,10 @@ import { createLogger } from '@package-frontend/utils';
 const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
+  const { data } = useUploadFirmware();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-
-  logger('render');
+  logger('render', data);
   return (
     <div className="grid grid-cols-2 grid-rows-2 h-screen gap-3 bg-black">
       <div className="bg-white">
