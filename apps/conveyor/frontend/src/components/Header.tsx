@@ -1,15 +1,15 @@
 import { createLogger } from '@package-frontend/utils';
-
 /* ======   interface   ====== */
-export interface ComponentNameProps {}
+export interface HeaderProps {}
+
 /* ======    global     ====== */
-const logger = createLogger('components/Test');
-const ComponentName = (props: ComponentNameProps) => {
+const logger = createLogger('pages/Header');
+const Header = (_: HeaderProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
-  return <div {...props}>ComponentName Component</div>;
+  return <header className="sticky top-0 z-50 bg-slate-400">스테이터스바</header>;
 };
 
-export default ComponentName;
+export default Header;

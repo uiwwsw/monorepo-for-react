@@ -1,16 +1,13 @@
 // import { createLogger } from '@package-frontend/utils';
+
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('pages/NotFound');
-const NotFound = () => {
+// const logger = createLogger('pages/Control');
+const Control = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return (
-    <>
-      <div style={{ height: '9999px' }}></div>
-    </>
-  );
+  return <>컨트롤페이지</>;
 };
 
-export default NotFound;
+export default Control;
