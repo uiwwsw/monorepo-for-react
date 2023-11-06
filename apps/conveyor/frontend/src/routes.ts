@@ -7,38 +7,38 @@ type Tab = {
   name: string;
   path: string;
 };
-type ParentTab = Tab & { group?: Tab[]; icon: string; node: () => JSX.Element };
+export type ParentTab = Tab & { group?: Tab[]; icon: string; node: () => JSX.Element };
 
 export const authRoutes: ParentTab[] = [
   {
     icon: '🖥️',
-    path: 'control',
+    path: '/control',
     name: '조작',
     node: Control,
   },
   {
     icon: '🧮',
-    path: 'stats',
+    path: '/stats',
     name: '통계',
     node: Stats,
   },
 ];
 export const commonRoutes: ParentTab[] = [
   {
-    icon: '🗝️',
-    path: 'sign-up',
+    icon: '🔓',
+    path: '/sign-up',
     name: '회원가입',
     node: SignUp,
   },
   {
-    icon: '🔓',
-    path: 'sign-in',
+    icon: '🗝️',
+    path: '/sign-in',
     name: '로그인',
     node: SignIn,
   },
   {
     icon: '💊',
-    path: 'help',
+    path: '/help',
     name: '도움말',
     node: Help,
   },

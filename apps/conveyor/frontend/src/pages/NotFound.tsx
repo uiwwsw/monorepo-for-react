@@ -1,3 +1,4 @@
+import PageCenter from '@/PageCenter';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -7,7 +8,11 @@ const NotFound = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
-  return <>주소가 잘못됐을거에요 아마... 뒤로가기나 주소를 확인해주세요</>;
+  return (
+    <PageCenter icon="😜" title="페이지를 찾을 수 없어요.">
+      <p className="">주소를 확인해주세요</p>
+    </PageCenter>
+  );
 };
 
 export default NotFound;

@@ -1,7 +1,7 @@
 import { Auth } from '!/auth/domain';
 import Header from '@/Header';
 import HeaderContext from '@/HeaderContext';
-import Sidebar from '@/Sidebar';
+import Sidebar from '@/Sidebar/index';
 import { ReactNode, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
