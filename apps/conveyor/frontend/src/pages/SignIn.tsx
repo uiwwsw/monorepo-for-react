@@ -2,8 +2,8 @@ import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/SignUp');
-const SignUp = () => {
+const logger = createLogger('pages/SignIn');
+const SignIn = () => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -11,4 +11,4 @@ const SignUp = () => {
   return <>회원가입</>;
 };
 
-export default SignUp;
+export default SignIn;

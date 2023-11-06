@@ -13,8 +13,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@package-backend/types": "workspace:^",
     "@library-frontend/ui": "workspace:^",
+    "@package-backend/types": "workspace:^",
+    "@package-frontend/noto-emoji": "workspace:^",
+    "@package-frontend/pretendard": "workspace:^",
     "@package-frontend/utils": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

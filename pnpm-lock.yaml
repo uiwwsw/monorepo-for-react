@@ -109,6 +109,12 @@ importers:
       '@package-backend/types':
         specifier: workspace:^
         version: link:../../../packages/backend/types
+      '@package-frontend/noto-emoji':
+        specifier: workspace:^
+        version: link:../../../packages/frontend/noto-emoji
+      '@package-frontend/pretendard':
+        specifier: workspace:^
+        version: link:../../../packages/frontend/pretendard
       '@package-frontend/utils':
         specifier: workspace:^
         version: link:../../../packages/frontend/utils
