@@ -1,4 +1,4 @@
-import { MouseEvent, SetStateAction, useCallback } from 'react';
+import { MouseEvent, SetStateAction, useCallback, useMemo } from 'react';
 import Button, { ButtonProps } from '@/Button';
 import { ModalBaseProps, ModalErrors, ModalResult } from './Base';
 import { createLogger } from '@package-frontend/utils';
@@ -11,11 +11,22 @@ export interface ModalFooterProps {
   disabled: boolean;
   onClose: ModalBaseProps['onClose'];
   smoothLoading: ButtonProps['smoothLoading'];
+  hasButton: Exclude<ModalBaseProps['hasButton'], 'NONE'>;
 }
 /* ======    global     ====== */
 const logger = createLogger('component/ModalFooter');
-const ModalFooter = ({ hasToast, setErrors, onClose, onLoading, disabled, smoothLoading }: ModalFooterProps) => {
+const ModalFooter = ({
+  hasButton,
+  hasToast,
+  setErrors,
+  onClose,
+  onLoading,
+  disabled,
+  smoothLoading,
+}: ModalFooterProps) => {
   /* ======   variables   ====== */
+  const hasOkBtn = useMemo(() => hasButton?.includes('OK'), [hasButton]);
+  const hasCancelBtn = useMemo(() => hasButton?.includes('CANCEL'), [hasButton]);
   /* ======   function    ====== */
   logger('hasToast', hasToast);
   const adapterClick = useCallback(
@@ -25,7 +36,7 @@ const ModalFooter = ({ hasToast, setErrors, onClose, onLoading, disabled, smooth
       const value = e.currentTarget.textContent;
       let res: ModalResult = 'OK';
       switch (value) {
-        case 'ok':
+        case '확인':
           res;
           break;
         default:
@@ -50,29 +61,33 @@ const ModalFooter = ({ hasToast, setErrors, onClose, onLoading, disabled, smooth
   );
   /* ======   useEffect   ====== */
   logger('render');
-  return onClose ? (
+  return (
     <div className="flex gap-3 mt-auto pt-3">
-      <Button
-        className="flex-auto"
-        themeSize="sm"
-        smoothLoading={smoothLoading}
-        disabled={disabled}
-        onClick={adapterClick}
-      >
-        ok
-      </Button>
-      <Button
-        className="flex-auto"
-        themeSize="sm"
-        themeColor="secondary"
-        smoothLoading={smoothLoading}
-        disabled={disabled}
-        onClick={adapterClick}
-      >
-        cancel
-      </Button>
+      {hasOkBtn && (
+        <Button
+          className="flex-auto"
+          themeSize="sm"
+          smoothLoading={smoothLoading}
+          disabled={disabled}
+          onClick={adapterClick}
+        >
+          확인
+        </Button>
+      )}
+      {hasCancelBtn && (
+        <Button
+          className="flex-auto"
+          themeSize="sm"
+          themeColor="secondary"
+          smoothLoading={smoothLoading}
+          disabled={disabled}
+          onClick={adapterClick}
+        >
+          취소
+        </Button>
+      )}
     </div>
-  ) : null;
+  );
 };
 
 export default ModalFooter;

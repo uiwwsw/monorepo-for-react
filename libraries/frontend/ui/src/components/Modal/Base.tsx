@@ -20,8 +20,8 @@ export interface ModalBaseProps {
   children?: ReactNode;
   className?: string;
   persist?: boolean;
-  hideClose?: boolean;
   open?: boolean;
+  hasButton?: ModalResult[];
   onClose?: (value?: ModalResult) => Promise<unknown> | unknown;
   onClosed?: () => void;
   smoothLoading?: ButtonProps['smoothLoading'];
@@ -31,12 +31,12 @@ const logger = createLogger('components/ModalBase');
 const ModalBase = ({
   open,
   persist = false,
-  hideClose = false,
   onClose,
   children,
   className,
   hasToast = true,
   onClosed,
+  hasButton = ['OK', 'CANCEL', 'NONE'],
   smoothLoading = true,
 }: ModalBaseProps) => {
   /* ======   variables   ====== */
@@ -44,6 +44,9 @@ const ModalBase = ({
   const [errors, setErrors] = useState<ModalErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const { animate, setAnimate } = useAnimate();
+  const hasClose = useMemo(() => hasButton.includes('NONE'), [hasButton]);
+  const hasFooterButton = useMemo(() => hasButton.filter((x) => x !== 'NONE'), [hasButton]);
+  const hasFooter = useMemo(() => hasFooterButton.length > 0, [hasButton]);
   const memoErrors: [string, ModalError][] = useMemo(() => {
     const arr = Object.entries(errors);
     if (open) return arr;
@@ -57,24 +60,7 @@ const ModalBase = ({
   }`;
   /* ======   function    ====== */
   const adapterClose: () => void = useCallback(
-    () =>
-      persist
-        ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true)
-        : (async () => {
-            logger(hasToast);
-            try {
-              onClose && (await onClose('NONE'));
-            } catch {
-              hasToast &&
-                setErrors((prev) => ({
-                  ...prev,
-                  [new Date().valueOf()]: {
-                    msg: '팝업을 닫는 중 오류가 발생했어요.',
-                    open: true,
-                  },
-                }));
-            }
-          })(),
+    () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose('NONE')),
     [setAnimate, hasToast, persist, onClose, setErrors],
   );
   const handleClosed = (value: boolean) => {
@@ -94,16 +80,19 @@ const ModalBase = ({
       <div className={modalClassName} role="dialog" ref={elRef}>
         <ModalOverlay onClose={adapterClose} />
         <div className={modalContentClassName}>
-          {hideClose ? null : <ModalClose onClose={adapterClose} disabled={loading} />}
+          {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
           <div>{children}</div>
-          <ModalFooter
-            hasToast={hasToast}
-            smoothLoading={smoothLoading}
-            disabled={loading || !open}
-            onLoading={setLoading}
-            setErrors={setErrors}
-            onClose={onClose}
-          />
+          {hasFooter && (
+            <ModalFooter
+              hasButton={hasFooterButton}
+              hasToast={hasToast}
+              smoothLoading={smoothLoading}
+              disabled={loading || !open}
+              onLoading={setLoading}
+              setErrors={setErrors}
+              onClose={onClose}
+            />
+          )}
         </div>
       </div>
       {memoErrors.map(([key, { msg, open }]) => (
