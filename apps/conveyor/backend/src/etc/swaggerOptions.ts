@@ -1,0 +1,27 @@
+import swaggerJsdoc from 'swagger-jsdoc';
+
+// Swagger 정의
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Express API with Swagger',
+    version: '1.0.0',
+    description: 'A REST API using swagger-ui-express and swagger-jsdoc.',
+  },
+  servers: [
+    {
+      url: 'http://localhost:3000',
+      description: 'Development server',
+    },
+  ],
+};
+
+// 옵션 설정, 'apis' 배열 안에 문서화하고 싶은 경로를 넣습니다.
+const options = {
+  swaggerDefinition,
+  apis: ['./src/routes/*.ts'], // 여기에 문서화할 라우트 파일 경로를 지정합니다.
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+
+export default swaggerSpec;

@@ -1,29 +1,20 @@
-import express, { Request, Response } from 'express';
-import swaggerUi from 'swagger-ui-express';
-import * as swaggerDocument from './swagger_output.json';
-import routes from './routes';
+import express, { Express } from 'express';
+import cors from 'cors';
 
-const app = express();
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './etc/swaggerOptions';
+
+import userRouter from './routes/userRoutes';
+const app: Express = express();
 const port = 3000;
 
-/**
- * @swagger
- * /:
- *   get:
- *     ... (swagger 설정)
- */
-app.get('/', (_: Request, res: Response) => {
-  res.send('Hello World!');
-});
+app.use(express.json());    // body-parser 기능 포함
+app.use(cors());            // CORS 미들웨어 추가
 
-// API 라우트 불러오기
-app.use('/', routes);
-
-// Swagger UI
-// TODO 설정 환경에 따라 해당 코드 제거
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// 라우터를 사용하여 '/api/users' 엔드포인트 설정
+app.use('/users', userRouter);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });
-module.exports = app; // 이 부분이 중요합니다.

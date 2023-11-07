@@ -1,0 +1,18 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceFolder}/src/app.ts", // 여기서 시작 파일 경로를 정확히 설정하세요
+            "preLaunchTask": "tsc: build - tsconfig.json", // TypeScript 컴파일
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"] // 컴파일된 JS 파일 위치      
+        }
+    ]
+}

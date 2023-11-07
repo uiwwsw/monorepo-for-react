@@ -1,74 +1,73 @@
 import { Router, Request, Response } from 'express';
-import { GetUserRequest, GetUserResponse, STResponse } from '@package-backend/types';
+import { SignInRequest, SignInResponse, STResponse } from '../packages/backend/types/src/index';
 
-const router = Router();
-// /**
-//  * @swagger
-//  * /:
-//  *   get:
-//  *     description: Get users
-//  *     parameters:
-//  *       - name: username
-//  *         in: query
-//  *         required: false
-//  *         description: The username to filter by
-//  *         schema:
-//  *           type: string
-//  *     responses:
-//  *       200:
-//  *         description: An array of users
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: array
-//  *               items:
-//  *                 type: string
-//  *       400:
-//  *         description: Bad Request.
-//  */
-// router.get('/', (req: Request, res: Response) => {
-//   const { username } = req.query;
-//   // 로직 구현
-//   console.log(username);
-//   res.send(['John', 'Doe']);
-// });
+const router: Router = Router();
 
 /**
  * @swagger
- * /{id}:
- *   get:
- *     description: Get user by ID
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: The ID of the user to get
- *         schema:
- *           type: integer
+ * /users/sign-in:
+ *   post:
+ *     summary: User sign-in
+ *     description: Allows users to sign in to the application.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SignInRequest'
  *     responses:
  *       200:
- *         description: The user information
+ *         description: Successful sign-in
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 name:
- *                   type: string
- *                 age:
- *                   type: integer
- *       404:
- *         description: User not found.
+ *               $ref: '#/components/schemas/STResponseSignInResponse'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ * components:
+ *   schemas:
+ *     SignInRequest:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           example: johndoe
+ *         password:
+ *           type: string
+ *           example: MySecurePassword123!
+ *     SignInResponse:
+ *       type: object
+ *       properties:
+ *         grade:
+ *           type: string
+ *           example: 1
+ *         session:
+ *           type: string
+ *           example: abc123
+ *     STResponseSignInResponse:
+ *       type: object
+ *       properties:
+ *         result:
+ *           type: boolean
+ *           example: true
+ *         data:
+ *           $ref: '#/components/schemas/SignInResponse'
  */
-router.get('/:id', async (req: Request<GetUserRequest>, res: Response<STResponse<GetUserResponse>>) => {
-  const { id } = req.params;
-  // 로직 구현
-  if (id === '1234') {
-    await new Promise((res) => setTimeout(res, 5000));
-    res.json({ data: { name: 'John' } });
-  } else {
-    res.status(500).json({ message: '우하호호호호' });
-  }
-  // throw new Error('dddddd');
+router.post('/sign-in', async (req: Request<SignInRequest>, res: Response<STResponse<SignInResponse>>) => {
+    res.json({
+        message: "OK",
+        data: {
+            grade: '1',
+            session: '1'
+        }
+    })
 });
+
 export default router;
