@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ placeholder = '내용을 입력하세요.', className, error, type, ...props }, ref) => {
     /* ======   variables   ====== */
     const wrapClassName = `inline-flex items-center relative${className ? ` ${className}` : ''}`;
-    const inputClassName = `w-full focus:outline-none ${focusClassName} p-3 bg-transparent outline-none`;
+    const inputClassName = `w-full focus:outline-none ${focusClassName} p-1 bg-transparent outline-none`;
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
     logger('render');
