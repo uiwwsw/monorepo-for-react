@@ -30,10 +30,7 @@ const SignUp = () => {
     await trigger(arg);
     setSuccess(true);
   };
-  const fakeWait = async () => {
-    await fakeApi();
-    navigate('/sign-in?from=/sign-up');
-  };
+  const fakeWait = () => navigate('/sign-in?from=/sign-up');
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -42,6 +39,8 @@ const SignUp = () => {
 
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
         회원가입이 완료됐어요.
+        <br />
+        확인을 누르면 로그인 페이지로 이동합니다.
       </ModalWithPortal>
       <div className="flex flex-col gap-3 min-w-[500px]">
         <label>

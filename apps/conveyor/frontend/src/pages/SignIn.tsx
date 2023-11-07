@@ -53,6 +53,8 @@ const SignIn = () => {
       <ToastWithPortal open={signUpAfterToast}>방금 가입한 아이디로 로그인 해보세요~</ToastWithPortal>
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
         로그인이 완료됐어요.
+        <br />
+        확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.
       </ModalWithPortal>
       <div className="flex flex-col gap-3 min-w-[500px]">
         <label>
