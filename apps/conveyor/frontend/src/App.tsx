@@ -19,7 +19,6 @@ const App = () => {
     <Router>
       <Routes>
         <Route element={<PrivateLayout />}>
-          <Route path="/" element={<Main />} />
           {authRoutes.map((x) => (
             <Route key={x.name} path={x.path} element={<x.node />} />
           ))}
@@ -30,6 +29,7 @@ const App = () => {
           {commonRoutes.map((x) => (
             <Route key={x.name} path={x.path} element={<x.node />} />
           ))}
+          <Route path="/" element={<Main />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="*" element={<NotFound />} />
         </Route>

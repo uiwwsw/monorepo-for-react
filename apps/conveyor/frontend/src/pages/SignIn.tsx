@@ -2,7 +2,7 @@ import { useSignIn } from '!/auth/application/sign-in';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -27,10 +27,11 @@ const SignIn = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const url = useMemo(() => new URLSearchParams(location.search), [location]);
+  const from = useMemo(() => url.get('from'), [location]);
   /* ======   function    ====== */
-  const fakeWait = async () => {
-    await fakeApi();
-    navigate('/');
+  const fakeWait = () => {
+    navigate(from === '/sign-up' || !from ? '/' : from);
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
@@ -39,16 +40,15 @@ const SignIn = () => {
   const handleGoSignup = () => navigate('/sign-up');
   /* ======   useEffect   ====== */
   useEffect(() => {
-    const url = new URLSearchParams(location.search);
-    if (url.get('from')) setSignupAfterToast(true);
-    if (url.get('auth')) setLostAuthToast(true);
+    if (url.get('from') === '/sign-up') setSignupAfterToast(true);
+    if (url.get('sign-out') === 'true') setLostAuthToast(true);
   }, [location]);
   logger('render');
   return (
     <PageCenter title="로그인" icon="🗝️">
       {error?.message && <p className="text-red-500">💥 {error?.message}</p>}
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
-        로그인 정보가 사라졌어요. 다시 로그인해보세요~
+        로그아웃에 성공했습니다.
       </ToastWithPortal>
       <ToastWithPortal open={signUpAfterToast}>방금 가입한 아이디로 로그인 해보세요~</ToastWithPortal>
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>

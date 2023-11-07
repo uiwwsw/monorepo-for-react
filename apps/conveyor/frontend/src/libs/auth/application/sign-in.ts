@@ -2,6 +2,7 @@
 import useSWR from 'swr/mutation';
 import { Auth, mockData } from '../domain';
 import { LocalStorage, createLogger, fakeApi } from '@package-frontend/utils';
+import { mutate } from 'swr';
 const logger = createLogger('auth/useSignIn');
 
 async function fetcher(
@@ -18,6 +19,7 @@ async function fetcher(
   logger(url, arg);
   const res = await fakeApi(mockData);
   LocalStorage.set('/check-auth', res);
+  await mutate('/check-auth', res);
   return res;
   //   return await http({ url });
 }

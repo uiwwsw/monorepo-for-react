@@ -9,7 +9,7 @@ async function fetcher(url: string) {
   logger(url);
   const res = await fakeApi(mockData);
   LocalStorage.set('/check-auth', '');
-  mutate('/check-auth');
+  await mutate('/check-auth', undefined);
   return res;
   //   return await http({ url });
 }
