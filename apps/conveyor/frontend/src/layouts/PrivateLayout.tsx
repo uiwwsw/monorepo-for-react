@@ -1,22 +1,27 @@
-import { Auth } from '!/auth/domain';
 import Header from '@/Header';
 import HeaderContext from '@/HeaderContext';
 import Sidebar from '@/Sidebar/index';
-import { ReactNode, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { ReactNode, useEffect, useState } from 'react';
+import { Outlet, redirectDocument, useNavigate } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 import { createLogger } from '@package-frontend/utils';
+import { useCheckAuth } from '!/auth/application/check-auth';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('layout/PrivateLayout');
 
 const PrivateLayout = () => {
   /* ======   variables   ====== */
+  const navigate = useNavigate();
+  const { data } = useCheckAuth();
   const [headerSlot, setHeaderSlot] = useState<ReactNode>(undefined);
-  const [auth, setAuth] = useState<Auth | undefined>(undefined);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
+  logger(data);
+  useEffect(() => {
+    if (!data) navigate('/sign-in?auth=false');
+  }, [data]);
+
   return (
     <div className="flex min-h-screen">
       <Sidebar />
@@ -25,8 +30,6 @@ const PrivateLayout = () => {
           value={{
             children: headerSlot,
             setChildren: setHeaderSlot,
-            auth,
-            setAuth,
           }}
         >
           <Header />

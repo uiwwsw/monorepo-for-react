@@ -1,5 +1,5 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 const logger = createLogger('auth/useSignUp');
 async function fetcher(
@@ -14,8 +14,7 @@ async function fetcher(
   },
 ) {
   logger(url, arg);
-  await new Promise((res) => setTimeout(res, 5000));
-  return true;
+  return fakeApi(true);
   //   return await http({ url });
 }
 

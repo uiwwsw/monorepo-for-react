@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { mockData } from '../domain';
-import { createLogger } from '@package-frontend/utils';
+import { Auth, mockData } from '../domain';
+import { LocalStorage, createLogger, fakeApi } from '@package-frontend/utils';
 const logger = createLogger('auth/useSignIn');
 
 async function fetcher(
@@ -16,8 +16,9 @@ async function fetcher(
   },
 ) {
   logger(url, arg);
-  await new Promise((res) => setTimeout(res, 5000));
-  return mockData;
+  const res = await fakeApi(mockData);
+  LocalStorage.set('/check-auth', res);
+  return res;
   //   return await http({ url });
 }
 
