@@ -11,7 +11,9 @@ export interface NavProps {}
 const logger = createLogger('components/Nav');
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
-  const isInIframe = window.top !== window.self;
+  const location = useLocation();
+  const url = new URLSearchParams(location.search);
+  const isInIframe = url.get('side-nav') === 'disabled';
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');

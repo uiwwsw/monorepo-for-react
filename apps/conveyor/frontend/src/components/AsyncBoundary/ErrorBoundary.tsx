@@ -25,7 +25,8 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   public render() {
-    if (this.state.message) return <iframe className="w-screen h-screen" src={`/error#${this.state.message}`}></iframe>;
+    if (this.state.message)
+      return <iframe className="w-screen h-screen" src={`/error?side-nav=disabled#${this.state.message}`}></iframe>;
 
     return this.props.children;
   }
