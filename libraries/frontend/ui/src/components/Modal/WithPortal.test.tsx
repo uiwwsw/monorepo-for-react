@@ -15,10 +15,32 @@ describe('<ModalWithPortal />', () => {
     await waitFor(() => expect(modal).toBeInTheDocument());
   });
 
-  it('hideClose가 true일 때 닫기 버튼이 보이지 않아야 함', async () => {
-    render(<ModalWithPortal open={true} hideClose={true} />);
+  it('hasButton에 따라 버튼이 노출되야함 1/3', async () => {
+    render(<ModalWithPortal open={true} hasButton={[]} />);
     const closeButton = screen.queryByLabelText(/modal close button/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const yesButton = screen.queryByText(/확인/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const cancelButton = screen.queryByText(/취소/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
     await waitFor(() => expect(closeButton).not.toBeInTheDocument());
+    await waitFor(() => expect(yesButton).not.toBeInTheDocument());
+    await waitFor(() => expect(cancelButton).not.toBeInTheDocument());
+  });
+  it('hasButton에 따라 버튼이 노출되야함 2/3', async () => {
+    render(<ModalWithPortal open={true} hasButton={['NONE']} />);
+    const closeButton = screen.queryByLabelText(/modal close button/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const yesButton = screen.queryByText(/확인/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const cancelButton = screen.queryByText(/취소/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    await waitFor(() => expect(closeButton).toBeInTheDocument());
+    await waitFor(() => expect(yesButton).not.toBeInTheDocument());
+    await waitFor(() => expect(cancelButton).not.toBeInTheDocument());
+  });
+  it('hasButton에 따라 버튼이 노출되야함 3/3', async () => {
+    render(<ModalWithPortal open={true} hasButton={['OK', 'CANCEL']} />);
+    const closeButton = screen.queryByLabelText(/modal close button/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const yesButton = screen.queryByText(/확인/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    const cancelButton = screen.queryByText(/취소/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
+    await waitFor(() => expect(closeButton).not.toBeInTheDocument());
+    await waitFor(() => expect(yesButton).toBeInTheDocument());
+    await waitFor(() => expect(cancelButton).toBeInTheDocument());
   });
 
   it('닫기 버튼 클릭 시 모달이 닫혀야 함', async () => {

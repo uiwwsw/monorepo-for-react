@@ -1,44 +1,44 @@
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
 import { createLogger } from './logger';
 const logger = createLogger('utils/http');
-export const http = async <T>(
-  url: string,
-  params?: {
-    arg?: unknown;
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
-  },
-) => {
-  let requestHeaders = {
+export const http = async <T>({
+  url,
+  arg,
+  method = 'GET',
+  file,
+}: {
+  url: string;
+  arg?: unknown;
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
+}) => {
+  let headers = {
     'Content-type': 'application/json',
   };
 
-  const requestMethod = params?.method ?? 'GET';
-  let requestBody: string | null = params?.arg ? JSON.stringify(params?.arg) : null;
-  let requestUrl = url;
+  let body: string | null = arg ? JSON.stringify(arg) : null;
 
   // GET 메소드에 대한 처리
-  if (requestMethod === 'GET' && requestBody) {
-    const urlObj = new URLSearchParams(params?.arg as Record<string, string>).toString();
-    requestUrl = url + '?' + urlObj.toString();
-    requestBody = null; // GET 요청에는 보통 body가 없습니다.
+  if (method === 'GET' && body) {
+    const urlObj = new URLSearchParams(arg as Record<string, string>).toString();
+    url += urlObj.toString();
+    body = null; // GET 요청에는 보통 body가 없습니다.
   }
 
   // 나머지 메소드에 대한 처리 (TODO: 파일 처리, 다른 컨텐트 타입 등)
-  if (params?.file) {
+  if (file) {
     // 파일 처리 로직
   }
 
   logger({
-    headers: requestHeaders,
-    method: requestMethod,
-    body: requestBody,
+    headers,
+    body,
   });
 
-  const res = await fetch(requestUrl, {
-    headers: requestHeaders,
-    method: requestMethod,
-    body: requestBody,
+  const res = await fetch(url, {
+    headers,
+    method,
+    body,
   });
 
   try {

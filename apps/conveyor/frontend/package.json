@@ -13,11 +13,17 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@package-backend/types": "workspace:^",
     "@library-frontend/ui": "workspace:^",
+    "@nivo/bar": "^0.83.0",
+    "@nivo/core": "^0.83.0",
+    "@nivo/line": "^0.83.0",
+    "@package-backend/types": "workspace:^",
+    "@package-frontend/noto-emoji": "workspace:^",
+    "@package-frontend/pretendard": "workspace:^",
     "@package-frontend/utils": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2",
     "react-router-dom": "^6.15.0",
     "swr": "^2.2.2"
   },

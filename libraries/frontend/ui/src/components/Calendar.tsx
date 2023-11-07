@@ -1,11 +1,12 @@
 import { MouseEvent, useMemo, useRef, useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import { Dayjs } from 'dayjs';
-import { FORMAT, createLogger, newDate } from '@package-frontend/utils';
+import { FORMAT, FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
 import Button from './Button';
 import 'react-calendar/dist/Calendar.css';
 import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 import Menu from './Menu';
+import Tooltip from './Tooltip';
 /* ======   interface   ====== */
 export interface CalendarProps {
   selectRange?: boolean;
@@ -25,7 +26,7 @@ const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
   const memoValueForDisplay = useMemo(() => {
     if (selectRange)
       return value instanceof Array
-        ? `${newDate(value[0]).format(FORMAT)} ~ ${newDate(value[1]).format(FORMAT)}`
+        ? `${newDate(value[0]).format(FORMAT_WITHOUT_TIME)} ~ ${newDate(value[1]).format(FORMAT_WITHOUT_TIME)}`
         : '기간을 선택해 주세요.';
     return value ? `${newDate(value).format(FORMAT)}` : '날짜를 선택해주세요.';
   }, [value]);
@@ -48,6 +49,7 @@ const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
       button={
         <Button className="w-[300px]" themeSize="sm">
           {memoValueForDisplay}
+          {selectRange && <Tooltip>시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.</Tooltip>}
         </Button>
       }
     >

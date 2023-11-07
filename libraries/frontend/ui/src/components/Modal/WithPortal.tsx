@@ -13,9 +13,10 @@ const ModalWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
-  const handleClose = (e?: ModalResult) => {
+  const handleClose = async (e?: ModalResult) => {
+    if (e === 'NONE') onClose && onClose(e);
+    else onClose && (await onClose(e));
     setOpen(false);
-    onClose && onClose(e);
   };
   const handleClosed = () => {
     onClosed && onClosed();

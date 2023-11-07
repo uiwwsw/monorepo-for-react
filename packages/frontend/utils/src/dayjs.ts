@@ -13,6 +13,14 @@ export const FORMAT = (() => {
       return 'MMMM DD, YYYY HH:mm:ss';
   }
 })();
+export const FORMAT_WITHOUT_TIME = (() => {
+  switch (getLang()) {
+    case 'ko':
+      return 'YYYY년 MM월 DD일';
+    case 'en':
+      return 'MMMM DD, YYYY';
+  }
+})();
 export const newDate = (str?: unknown) => {
   if (str === undefined) return dayjs();
   if (str instanceof Array) return dayjs().add(str[0], str[1]);

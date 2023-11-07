@@ -22,11 +22,15 @@ const meta = {
     smoothLoading: {
       description: '내부 버튼 속성',
     },
+    hasButton: {
+      description: '버튼 노출 여부',
+    },
   },
   args: {
     open: true,
     hasToast: false,
     smoothLoading: true,
+    hasButton: ['OK', 'CANCEL', 'NONE'],
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   // argTypes: {

@@ -1,9 +1,9 @@
-import { useSignUp } from '!/auth/application/sign-up';
+import { useSignIn } from '!/auth/application/sign-in';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
+import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 /* ======   interface   ====== */
@@ -13,35 +13,46 @@ interface FormState {
   rpw: string;
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/SignUp');
-const SignUp = () => {
+const logger = createLogger('pages/SignIn');
+const SignIn = () => {
   /* ======   variables   ====== */
   const {
     register,
     handleSubmit: useFormSumit,
     formState: { errors },
-    watch,
   } = useForm<FormState>();
-  const { trigger, error } = useSignUp();
+  const { trigger, error } = useSignIn();
+  const [lostAuthToast, setLostAuthToast] = useState(false);
+  const [signUpAfterToast, setSignupAfterToast] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   /* ======   function    ====== */
+  const fakeWait = async () => {
+    await fakeApi();
+    navigate('/');
+  };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
   };
-  const fakeWait = async () => {
-    await fakeApi();
-    navigate('/sign-in?from=sign-up');
-  };
+  const handleGoSignup = () => navigate('/sign-up');
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    const url = new URLSearchParams(location.search);
+    if (url.get('from')) setSignupAfterToast(true);
+    if (url.get('auth')) setLostAuthToast(true);
+  }, [location]);
   logger('render');
   return (
-    <PageCenter title="회원가입" icon="🔓">
+    <PageCenter title="로그인" icon="🗝️">
       {error?.message && <p className="text-red-500">💥 {error?.message}</p>}
-
+      <ToastWithPortal open={lostAuthToast} duration={Infinity}>
+        로그인 정보가 사라졌어요. 다시 로그인해보세요~
+      </ToastWithPortal>
+      <ToastWithPortal open={signUpAfterToast}>방금 가입한 아이디로 로그인 해보세요~</ToastWithPortal>
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
-        회원가입이 완료됐어요.
+        로그인이 완료됐어요.
       </ModalWithPortal>
       <div className="flex flex-col gap-3 min-w-[500px]">
         <label>
@@ -65,27 +76,15 @@ const SignUp = () => {
           />
           {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
         </label>
-        <label>
-          <p className="font-medium">비밀번호 확인</p>
-          <Input
-            {...register('rpw', {
-              required: '동일한 비밀번호를 한번 더 입력해주세요.',
-              validate: (val: string) => {
-                if (watch('pw') != val) {
-                  return '비밀번호가 일치하지 않아요.';
-                }
-              },
-            })}
-            className="w-full"
-          />
-          {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
-        </label>
         <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
-          회원가입
+          로그인
         </Button>
       </div>
+      <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
+        회원가입 하러가기
+      </Button>
     </PageCenter>
   );
 };
 
-export default SignUp;
+export default SignIn;

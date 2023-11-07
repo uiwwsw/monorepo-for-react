@@ -25,11 +25,11 @@ describe('Modal component', () => {
     expect(mockOnEval).toHaveBeenCalledWith('CANCEL' as ModalResult);
   });
 
-  it('hideClose props는 클로즈버튼을 노출하지 않습니다.', () => {
-    render(<Modal open={true} hideClose={true} />);
-    const closeButton = screen.queryByLabelText('modal close button');
-    expect(closeButton).not.toBeInTheDocument();
-  });
+  // it('hideClose props는 클로즈버튼을 노출하지 않습니다.', () => {
+  //   render(<Modal open={true} hideClose={true} />);
+  //   const closeButton = screen.queryByLabelText('modal close button');
+  //   expect(closeButton).not.toBeInTheDocument();
+  // });
 
   it('persist props true는 레이어 클릭 시 닫을 수 없습니다.', () => {
     const mockOnClose = vi.fn();

@@ -5,12 +5,13 @@ import { ReactNode, useRef, useState } from 'react';
 /* ======   interface   ====== */
 export interface AccordionProps {
   children: ReactNode;
+  className?: string;
   title: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Accordion');
 const inputClassName = 'pointer-events-none p-3 outline-none w-full h-full text-left';
-const Accordion = ({ children, title }: AccordionProps) => {
+const Accordion = ({ className, children, title }: AccordionProps) => {
   /* ======   variables   ====== */
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0);
@@ -27,7 +28,7 @@ const Accordion = ({ children, title }: AccordionProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <>
+    <div className={className}>
       <div className="flex relative" onClick={onToggle}>
         <input role="button" type="button" className={inputClassName} value={title} readOnly />
         <Caret active={!!height} />
@@ -38,7 +39,7 @@ const Accordion = ({ children, title }: AccordionProps) => {
           {children}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
