@@ -5,6 +5,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -16,12 +17,13 @@ interface FormState {
 const logger = createLogger('pages/SignIn');
 const SignIn = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit: useFormSumit,
     formState: { errors },
   } = useForm<FormState>();
-  const { trigger, error } = useSignIn();
+  const { trigger, error, isMutating } = useSignIn();
   const [lostAuthToast, setLostAuthToast] = useState(false);
   const [signUpAfterToast, setSignupAfterToast] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -45,43 +47,47 @@ const SignIn = () => {
   }, [location]);
   logger('render');
   return (
-    <PageCenter title="로그인" icon="🗝️">
-      {error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+    <PageCenter title={t('로그인')} icon="🗝️">
+      {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
-        로그아웃에 성공했습니다.
+        {t('로그아웃에 성공했습니다.')}
       </ToastWithPortal>
-      <ToastWithPortal open={signUpAfterToast}>방금 가입한 아이디로 로그인 해보세요~</ToastWithPortal>
+      <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
-        로그인이 완료됐어요.
+        {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
       </ModalWithPortal>
       <div className="flex flex-col gap-3 min-w-[500px]">
         <label>
-          <p className="font-medium">아이디</p>
+          <p className="font-medium">{t('아이디')}</p>
           <Input
             {...register('id', {
-              required: '아이디를 입력해주세요.',
+              required: t('아이디를 입력해주세요.'),
             })}
+            placeholder={t('아이디를 입력해주세요.')}
+            error={!!errors?.id?.message}
             className="w-full"
           />
           {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
         </label>
         <label>
-          <p className="font-medium">비밀번호</p>
+          <p className="font-medium">{t('비밀번호')}</p>
           <Input
             {...register('pw', {
-              required: '비밀번호를 입력해주세요.',
+              required: t('비밀번호를 입력해주세요.'),
             })}
+            placeholder={t('비밀번호를 입력해주세요.')}
+            error={!!errors?.pw?.message}
             type="password"
             className="w-full"
           />
           {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
         </label>
         <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
-          로그인
+          {t('로그인')}
         </Button>
       </div>
       <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
-        회원가입 하러가기
+        {t('회원가입 하러가기')}
       </Button>
     </PageCenter>
   );

@@ -1,6 +1,6 @@
 import { createLogger } from '@package-frontend/utils';
 import logo from '../../assets/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { authRoutes, commonRoutes } from '../../routes';
 import GroupLink from './GroupLink';
 /* ======   interface   ====== */
@@ -10,22 +10,19 @@ export interface NavProps {}
 const logger = createLogger('components/Nav');
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
-  // const [openTabs, setOpenTabs] = useState<number[]>([]);
-
+  const location = useLocation();
+  const url = new URLSearchParams(location.search);
+  const isInIframe = url.get('side-nav') === 'disabled';
   /* ======   function    ====== */
-  // const handleTabClick = (index: number) => {
-  //   if (openTabs.includes(index)) {
-  //     setOpenTabs(openTabs.filter((x) => x !== index));
-  //   } else {
-  //     setOpenTabs([...openTabs, index]);
-  //   }
-  // };
-
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="sticky z-20 flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl">
-      <nav className="flex flex-col flex-auto">
+    <div
+      className={`sticky z-20 flex flex-col top-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
+        isInIframe ? ' cursor-not-allowed' : ''
+      }`}
+    >
+      <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
         <div className="flex-auto">
           <Link to="/" className="block p-4">
             <img src={logo} alt="Logo" className="block w-32 m-auto" />

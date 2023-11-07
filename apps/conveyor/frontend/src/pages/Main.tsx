@@ -1,3 +1,5 @@
+import PageCenter from '@/PageCenter';
+import { useTranslation } from 'react-i18next';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -5,14 +7,14 @@ const logger = createLogger('pages/Main');
 
 const Main = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <>
-      <p>control 페이지는 tcm dwadwd, dawd aw를 조정할 수 있습니다.</p>
-      <p>statistics 페이지는 그래프등을 볼 수 있습니다.</p>
-    </>
+    <PageCenter icon="🧑🏻‍💻" title={t('컨베이어 for YMTC')}>
+      {t('컨베이어 웹 서비스에 오신걸 환영합니다.')}
+    </PageCenter>
   );
 };
 

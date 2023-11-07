@@ -23,7 +23,6 @@ const App = () => {
             <Route key={x.name} path={x.path} element={<x.node />} />
           ))}
         </Route>
-        <Route path="/error" element={<Error />} />
 
         <Route element={<PublicLayout />}>
           {commonRoutes.map((x) => (
@@ -31,6 +30,7 @@ const App = () => {
           ))}
           <Route path="/" element={<Main />} />
           <Route path="/loading" element={<Loading />} />
+          <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

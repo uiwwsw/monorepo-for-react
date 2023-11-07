@@ -2,6 +2,7 @@ import { createLogger } from '@package-frontend/utils';
 import { createElement } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ParentTab } from '../../routes';
+import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 export interface GroupLinkProps {
   routes: ParentTab[];
@@ -11,6 +12,8 @@ export interface GroupLinkProps {
 const logger = createLogger('components/GroupLink');
 const GroupLink = ({ routes }: GroupLinkProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
@@ -21,19 +24,19 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
           key: tab.path + index,
           to: tab.path,
           className: tab.group
-            ? ''
+            ? 'text-gray-400'
             : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : ''),
           children: (
             <>
               <span className="mr-2">{tab.icon}</span>
-              {tab.name}
+              {t(tab.name)}
               {tab.group?.map((x) => (
                 <NavLink
                   key={x.path}
                   className={({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '')}
                   to={`${x.path}`}
                 >
-                  {x.name}
+                  {t(x.name)}
                 </NavLink>
               ))}
             </>
