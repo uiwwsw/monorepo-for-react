@@ -7,6 +7,7 @@ const logger = createLogger('auth/useCheckAuth');
 function fetcher(url: string) {
   const res = LocalStorage.get<Auth>(url);
   logger(res);
+
   return res;
   //   return await http({ url });
 }
