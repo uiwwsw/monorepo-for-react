@@ -7,5 +7,6 @@ export const fakeApi = async <T>(res?: T) => {
   logger(random, time);
   await wait(time);
   if (!random) throw new Error('fakeApi 에러발생');
+  if (res instanceof Array) return res.filter((_) => Math.round(Math.random()) > 0);
   return res;
 };

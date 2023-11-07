@@ -17,7 +17,7 @@ const PageCenter = ({ title, children, icon }: PageCenterProps) => {
   logger('render');
   return (
     <div className="min-h-screen max-w-5xl m-auto flex flex-row items-center">
-      <div className="flex items-top">
+      <div className="flex items-top gap-4">
         <span className="text-9xl">{icon}</span>
         <div className="w-full text-left gap-4 flex flex-col">
           <h1 className="text-2xl font-bold ">{title}</h1>

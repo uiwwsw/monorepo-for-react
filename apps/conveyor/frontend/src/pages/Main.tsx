@@ -1,3 +1,4 @@
+import PageCenter from '@/PageCenter';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -9,10 +10,9 @@ const Main = () => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <>
-      <p>control 페이지는 tcm dwadwd, dawd aw를 조정할 수 있습니다.</p>
-      <p>statistics 페이지는 그래프등을 볼 수 있습니다.</p>
-    </>
+    <PageCenter icon="🧑🏻‍💻" title="컨베이어 for YMTC">
+      컨베이어 웹 서비스에 오신걸 환영합니다.
+    </PageCenter>
   );
 };
 
