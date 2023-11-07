@@ -2,7 +2,7 @@ import Header from '@/Header';
 import HeaderContext from '@/HeaderContext';
 import Sidebar from '@/Sidebar/index';
 import { ReactNode, useEffect, useState } from 'react';
-import { Outlet, redirectDocument, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 import { createLogger } from '@package-frontend/utils';
 import { useCheckAuth } from '!/auth/application/check-auth';
@@ -13,13 +13,14 @@ const logger = createLogger('layout/PrivateLayout');
 const PrivateLayout = () => {
   /* ======   variables   ====== */
   const navigate = useNavigate();
+  const location = useLocation();
   const { data } = useCheckAuth();
   const [headerSlot, setHeaderSlot] = useState<ReactNode>(undefined);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger(data);
   useEffect(() => {
-    if (!data) navigate('/sign-in?auth=false');
+    logger(data);
+    if (!data) navigate(`/sign-in?from=${location.pathname}`);
   }, [data]);
 
   return (

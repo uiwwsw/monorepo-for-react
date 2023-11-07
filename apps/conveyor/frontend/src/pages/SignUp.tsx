@@ -32,7 +32,7 @@ const SignUp = () => {
   };
   const fakeWait = async () => {
     await fakeApi();
-    navigate('/sign-in?from=sign-up');
+    navigate('/sign-in?from=/sign-up');
   };
   /* ======   useEffect   ====== */
   logger('render');
@@ -76,6 +76,7 @@ const SignUp = () => {
                 }
               },
             })}
+            type="password"
             className="w-full"
           />
           {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
