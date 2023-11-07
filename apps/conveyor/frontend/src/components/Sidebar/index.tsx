@@ -3,7 +3,6 @@ import logo from '../../assets/logo.png';
 import { Link, useLocation } from 'react-router-dom';
 import { authRoutes, commonRoutes } from '../../routes';
 import GroupLink from './GroupLink';
-import { MouseEvent, useMemo } from 'react';
 /* ======   interface   ====== */
 export interface NavProps {}
 

@@ -6,6 +6,7 @@ import Help from './pages/Help';
 type Tab = {
   name: string;
   path: string;
+  node: () => JSX.Element;
 };
 export type ParentTab = Tab & { group?: Tab[]; icon: string; node: () => JSX.Element };
 
@@ -15,6 +16,7 @@ export const authRoutes: ParentTab[] = [
     path: '/control',
     name: '조작',
     node: Control,
+    // group: [{ path: '/control/control', name: '조작', node: Control }],
   },
   {
     icon: '🧮',

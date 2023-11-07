@@ -5,6 +5,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -16,6 +17,7 @@ interface FormState {
 const logger = createLogger('pages/SignUp');
 const SignUp = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit: useFormSumit,
@@ -34,32 +36,32 @@ const SignUp = () => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <PageCenter title="회원가입" icon="🔓">
+    <PageCenter title={t('회원가입')} icon="🔓">
       {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
 
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
-        회원가입이 완료됐어요.
-        <br />
-        확인을 누르면 로그인 페이지로 이동합니다.
+        <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
       <div className="flex flex-col gap-3 min-w-[500px]">
         <label>
-          <p className="font-medium">아이디</p>
+          <p className="font-medium uppercase">{t('아이디')}</p>
           <Input
             {...register('id', {
-              required: '아이디를 입력해주세요.',
+              required: t('아이디를 입력해주세요.'),
             })}
+            placeholder={t('아이디를 입력해주세요.')}
             error={!!errors?.id?.message}
             className="w-full"
           />
           {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
         </label>
         <label>
-          <p className="font-medium">비밀번호</p>
+          <p className="font-medium uppercase">{t('비밀번호')}</p>
           <Input
             {...register('pw', {
-              required: '비밀번호를 입력해주세요.',
+              required: t('비밀번호를 입력해주세요.'),
             })}
+            placeholder={t('비밀번호를 입력해주세요.')}
             error={!!errors?.pw?.message}
             type="password"
             className="w-full"
@@ -67,16 +69,17 @@ const SignUp = () => {
           {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
         </label>
         <label>
-          <p className="font-medium">비밀번호 확인</p>
+          <p className="font-medium uppercase">{t('비밀번호 확인')}</p>
           <Input
             {...register('rpw', {
-              required: '동일한 비밀번호를 한번 더 입력해주세요.',
+              required: t('동일한 비밀번호를 한번 더 입력해주세요.'),
               validate: (val: string) => {
                 if (watch('pw') != val) {
-                  return '비밀번호가 일치하지 않아요.';
+                  return t('비밀번호가 일치하지 않아요.');
                 }
               },
             })}
+            placeholder={t('동일한 비밀번호를 한번 더 입력해주세요.')}
             error={!!errors?.rpw?.message}
             type="password"
             className="w-full"
@@ -84,7 +87,7 @@ const SignUp = () => {
           {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
         </label>
         <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
-          회원가입
+          {t('회원가입')}
         </Button>
       </div>
     </PageCenter>
