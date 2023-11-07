@@ -1,17 +1,17 @@
-import { useState, useRef, ReactNode } from 'react';
+import { useState, useRef, ReactNode, HTMLAttributes } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import Portal from './Portal';
 import Smooth from './Smooth';
 import { usePosition } from '#/usePosition';
 
 /* ======   interface   ====== */
-export interface TooltipProps {
+export interface TooltipProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
 /* ======    global     ====== */
 const logger = createLogger('components/Tooltip');
-const Tooltip = ({ children }: TooltipProps) => {
+const Tooltip = ({ children, ...props }: TooltipProps) => {
   /* ======   variables   ====== */
   const [visible, setVisible] = useState<boolean>(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,7 @@ const Tooltip = ({ children }: TooltipProps) => {
   logger('render');
 
   return (
-    <div className="inline-block" ref={wrapRef} onMouseLeave={hideTooltip} onMouseEnter={showTooltip}>
+    <div className="inline-block" {...props} ref={wrapRef} onMouseLeave={hideTooltip} onMouseEnter={showTooltip}>
       <span className="pointer-events-none block w-6 h-6 leading-6 text-md box-content font-bold rounded-full text-center text-red-600 border-red-600 border-2">
         ❓
       </span>

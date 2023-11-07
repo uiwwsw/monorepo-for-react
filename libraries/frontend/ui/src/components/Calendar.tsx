@@ -9,6 +9,9 @@ import Menu from './Menu';
 import Tooltip from './Tooltip';
 /* ======   interface   ====== */
 export interface CalendarProps {
+  placeholder?: string;
+  selectRangeHolder?: string;
+  tooltipMsg?: string;
   selectRange?: boolean;
   defaultValue?: LooseValue;
   onChange?: (value: Dayjs | Dayjs[]) => void;
@@ -17,7 +20,14 @@ export interface CalendarProps {
 const convertFromValueToDate = (value: unknown) =>
   value instanceof Array ? value.map((x) => newDate(x)) : newDate(value);
 const logger = createLogger('components/Calendar');
-const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
+const Calendar = ({
+  selectRange,
+  defaultValue,
+  onChange,
+  placeholder = '날짜를 선택해주세요.',
+  selectRangeHolder = '기간을 선택해 주세요.',
+  tooltipMsg = '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.',
+}: CalendarProps) => {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
   const [value, setValue] = useState<undefined | Dayjs | Dayjs[]>(
@@ -27,8 +37,8 @@ const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
     if (selectRange)
       return value instanceof Array
         ? `${newDate(value[0]).format(FORMAT_WITHOUT_TIME)} ~ ${newDate(value[1]).format(FORMAT_WITHOUT_TIME)}`
-        : '기간을 선택해 주세요.';
-    return value ? `${newDate(value).format(FORMAT)}` : '날짜를 선택해주세요.';
+        : selectRangeHolder;
+    return value ? `${newDate(value).format(FORMAT)}` : placeholder;
   }, [value]);
   /* ======   function    ====== */
   const handleClick = (e: MouseEvent) => {
@@ -41,6 +51,10 @@ const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
     fakeRef.current?.click();
     onChange && onChange(value);
   };
+  const handleTooltipClick = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -49,7 +63,11 @@ const Calendar = ({ selectRange, defaultValue, onChange }: CalendarProps) => {
       button={
         <Button className="w-[300px]" themeSize="sm">
           {memoValueForDisplay}
-          {selectRange && <Tooltip>시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.</Tooltip>}
+          {selectRange && (
+            <span className="ml-2">
+              <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
+            </span>
+          )}
         </Button>
       }
     >
