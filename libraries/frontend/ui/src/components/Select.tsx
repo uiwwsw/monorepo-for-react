@@ -25,7 +25,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     ];
     const selectClassName = `${decoratorClassName} ${caretClassName} focus:outline-none pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
       className ? ` ${className}` : ''
-    }${value === '' && !init ? ' text-gray-400' : ''}`;
+    }${value === '' && !init ? ' text-gray-400' : ''} w-full`;
 
     /* ======   function    ====== */
     const adapterChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -41,7 +41,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     /* ======   useEffect   ====== */
     logger('render');
     return (
-      <span className="inline-flex items-center relative">
+      <span className="inline-flex items-center relative w-full">
         <select
           {...props}
           disabled={disabled}
