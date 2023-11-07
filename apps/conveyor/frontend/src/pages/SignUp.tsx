@@ -22,7 +22,7 @@ const SignUp = () => {
     formState: { errors },
     watch,
   } = useForm<FormState>();
-  const { trigger, error } = useSignUp();
+  const { trigger, error, isMutating } = useSignUp();
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   /* ======   function    ====== */
@@ -38,7 +38,7 @@ const SignUp = () => {
   logger('render');
   return (
     <PageCenter title="회원가입" icon="🔓">
-      {error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+      {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
 
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
         회원가입이 완료됐어요.
@@ -50,6 +50,7 @@ const SignUp = () => {
             {...register('id', {
               required: '아이디를 입력해주세요.',
             })}
+            error={!!errors?.id?.message}
             className="w-full"
           />
           {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
@@ -60,6 +61,7 @@ const SignUp = () => {
             {...register('pw', {
               required: '비밀번호를 입력해주세요.',
             })}
+            error={!!errors?.pw?.message}
             type="password"
             className="w-full"
           />
@@ -76,6 +78,7 @@ const SignUp = () => {
                 }
               },
             })}
+            error={!!errors?.rpw?.message}
             type="password"
             className="w-full"
           />

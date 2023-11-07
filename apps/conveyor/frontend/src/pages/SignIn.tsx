@@ -21,7 +21,7 @@ const SignIn = () => {
     handleSubmit: useFormSumit,
     formState: { errors },
   } = useForm<FormState>();
-  const { trigger, error } = useSignIn();
+  const { trigger, error, isMutating } = useSignIn();
   const [lostAuthToast, setLostAuthToast] = useState(false);
   const [signUpAfterToast, setSignupAfterToast] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -46,7 +46,7 @@ const SignIn = () => {
   logger('render');
   return (
     <PageCenter title="로그인" icon="🗝️">
-      {error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+      {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
         로그아웃에 성공했습니다.
       </ToastWithPortal>
@@ -61,6 +61,7 @@ const SignIn = () => {
             {...register('id', {
               required: '아이디를 입력해주세요.',
             })}
+            error={!!errors?.id?.message}
             className="w-full"
           />
           {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
@@ -71,6 +72,7 @@ const SignIn = () => {
             {...register('pw', {
               required: '비밀번호를 입력해주세요.',
             })}
+            error={!!errors?.pw?.message}
             type="password"
             className="w-full"
           />
