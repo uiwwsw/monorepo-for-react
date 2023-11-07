@@ -8,19 +8,20 @@ const xlsx      = require('xlsx');
 const async     = require('async');
 const __        = require('underscore');
 const fs        = require('fs');
+const path     = require('path');
 
 global.argv = require('optimist').argv;
 
-global.argv.nofile = true;
-global.argv.baseDir = '../src';
+global.argv.nofile = false;
+global.argv.baseDir = '../src/orm';
 
 let schemas = [];
-let cfg = '../cfg/prop.json';
+let cfg = '../src/cfg/prop.json';
 const prop = require(cfg).MySQL;
 ['R301'].forEach(name => {
     schemas.push({
         Name: name,
-        DataBase: prop.DataBase,
+        DataBase: prop.Database,
         Host: prop.Host,
         Port: prop.Port,
         User:  prop.User,
@@ -144,65 +145,57 @@ function initSchema(schema, cb) {
 }
 
 function saveDomain(schema, data, cb) {
+    if (global.argv.nofile) {
+        return cb(null);
+    }
+
     var iDomain = data.Domain;
-    var domains = {};
+    var schemas = [];
+
+    schemas.push(`import { RowDataPacket } from 'mysql2';`)
 
     __.without(iDomain, null).forEach(function(item) {
-        var domain = domains[item.Domain] || (domains[item.Domain] = []);
-        var row = {table : util.format("'%s'", item.TableName), name : util.format("'%s'", item.Name), key : "''", pk : [], cols : []};
         var table = data[item.TableName];
+        if (!table) return;
+
+        let ary = [];
+        ary.push(`export interface ${item.Name}Row extends RowDataPacket {`);
         table.forEach(function(col) {
-            var name = util.format("'%s'", col.Name);
-            if (col.Name)
-                row.cols.push(name);
-            col.IsKey || (col.IsKey = '');
-            var isKey = util.format('%s', col.IsKey);
-            if (isKey.toLowerCase() == 'true') {
-                row.key = name;
-                row.pk.push(name);
+            if (col.Name) {
+                let type = col.DataType.split('(')[0].toLowerCase();
+                switch(type) {
+                    case 'bigint':
+                    case 'smallint':
+                    case 'tinyint':
+                    case 'int':
+                        type = 'number';
+                        break;
+                    case 'varchar':
+                    case 'char':
+                    case 'text':
+                    case 'longtext':
+                    case 'mediumtext':
+                        type = 'string';
+                        break;
+                    case 'datetime':
+                    case 'timestamp':
+                    case 'date':
+                        type = 'Date';
+                        break;
+                    default:
+                        throw new Error(`unknown table:${item.TableName}, col:${col.Name}, type:${type}`);
+                }
+                ary.push(util.format('    %s : %s;', col.Name, type));
             }
         });
+        ary.push('}');
 
-        row.parent = item.Hierarchy ? util.format("'%s'", item.Hierarchy) : 'null';
-        row.action = item.ActionList ?  util.format("'%s'", item.ActionList) : 'null';
-        domain.push(row);
+        schemas.push(ary.join('\n'));
     });
 
-    var baseDir = global.argv.baseDir;
-    Object.keys(domains).forEach(function(name) {
-        var iName = schema.Name.split('_');
-        var iDir = baseDir + '/' + iName[iName.length-1];
-        var iKey = util.format('__%s_%s', iName[iName.length-1], name);
-        var primaryKey = {};
-
-        var iCtx = [];
-        iCtx.push('{');
-        iCtx.push(util.format('  var %s = exports.%s = function() {', name, name));
-        iCtx.push(util.format('    this.domain = \'%s\';', name));
-        iCtx.push('    this.tables = [];');
-        var domain = domains[name];
-        domain.forEach(function(item) {
-            primaryKey[item.name] = item.pk.join(',');
-            iCtx.push(util.format('    this.tables.push({ table : %s, name : %s, key : %s, pk : [%s], parent : {name:%s, keys:[%s]}, cols : [%s], action : %s });',
-                item.table, item.name, item.key, item.pk.join(', '), item.parent, primaryKey[item.parent], item.cols.join(', '), item.action));
-        });
-        iCtx.push('  };');
-        iCtx.push('');
-        iCtx.push(util.format('  %s.prototype.get = function() { var self = this; return { domain : self.domain.toUpperCase(), tables : this.tables }; };', name));
-        iCtx.push('}');
-        iCtx.push('');
-        iCtx.push('exports.getDictionary = function () {');
-        iCtx.push('  global.__schema || (global.__schema = {});');
-        iCtx.push(util.format('  return global.__schema[\'%s\'] || (global.__schema[\'%s\'] = (new %s()).get());', iKey, iKey, name));
-        iCtx.push('};');
-        
-        if (!global.argv.nofile) {
-            var iFile = iDir + '/' + name + '.js';
-            try { fs.mkdirSync(iDir); } catch (ex) {}
-            fs.writeFileSync(iFile, iCtx.join('\n'), 'utf8');
-            console.log('saved %s', iFile);
-        }
-    });
+    let iFile = path.join(global.argv.baseDir, schema.Name + '.ts');
+    fs.writeFileSync(iFile, schemas.join('\n\n'), 'utf8');
+    console.log('saved %s', iFile);
 
     cb(null);
 }

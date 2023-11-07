@@ -4,6 +4,9 @@ export interface SignInRequest {
 }
 
 export interface SignInResponse {
-  grade: string;
+  uid : number;
+  username : string;
+  grade: number;
   session: string;
+  last_access: Date;
 }
