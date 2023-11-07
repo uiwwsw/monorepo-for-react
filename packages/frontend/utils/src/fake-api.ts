@@ -6,7 +6,10 @@ export const fakeApi = async <T>(res?: T) => {
   const time = 1000 * (Math.floor(Math.random() * 3) + 1);
   logger(`랜덤 성공실패:${random}. 타이머: ${time}`);
   await wait(time);
-  if (!random) throw new Error('fakeApi 에러발생');
+  if (!random) {
+    alert('fakeApi 에러발생');
+    throw new Error('fakeApi 에러발생');
+  }
   if (res instanceof Array) return res.filter((_) => Math.round(Math.random()) > 0);
   return res;
 };
