@@ -59,22 +59,12 @@ const Stats = () => {
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
           selectRange
           onChange={handleChange}
+          themeColor="secondary"
         />
-        <div>
-          {!showDownloadBtn && <Chip labels={['ZONE', 'ALARM', 'CARRIER']} />}
-          <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
-        </div>
-        {showDownloadBtn && (
-          <div>
-            <Button themeColor={'secondary'} themeSize={'sm'}>
-              Download
-            </Button>
-          </div>
-        )}
       </div>,
     );
     return () => setChildren(undefined);
-  }, [showDownloadBtn]);
+  }, []);
   logger('render');
   return (
     <>
@@ -90,7 +80,18 @@ const Stats = () => {
           <div className={graphChartClassName}>Alarm Average : {}</div>
         </div>
       </div>
-      <Tab header={tabs} changeTabIndex={onChangeTabIndex}>
+      <div className="flex my-5 place-content-end gap-5">
+        {!showDownloadBtn && <Chip labels={['ZONE', 'ALARM', 'CARRIER']} multiChoice={false} themeSize={'md'} />}
+        {showDownloadBtn && (
+          <div>
+            <Button themeColor={'secondary'} themeSize={'md'}>
+              Download
+            </Button>
+          </div>
+        )}
+        <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
+      </div>
+      <Tab header={tabs} onChange={onChangeTabIndex}>
         <div>1</div>
         <div>2</div>
         <div>3</div>

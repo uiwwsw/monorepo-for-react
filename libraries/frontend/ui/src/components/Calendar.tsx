@@ -15,6 +15,7 @@ export interface CalendarProps {
   selectRange?: boolean;
   defaultValue?: LooseValue;
   onChange?: (value: Dayjs | Dayjs[]) => void;
+  themeColor?: 'primary' | 'secondary' | 'tertiary';
 }
 /* ======    global     ====== */
 const convertFromValueToDate = (value: unknown) =>
@@ -27,6 +28,7 @@ const Calendar = ({
   placeholder = '날짜를 선택해주세요.',
   selectRangeHolder = '기간을 선택해 주세요.',
   tooltipMsg = '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.',
+  themeColor = 'primary',
 }: CalendarProps) => {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
@@ -61,7 +63,7 @@ const Calendar = ({
     <Menu
       width={300}
       button={
-        <Button className="w-[300px]" themeSize="sm">
+        <Button className="w-[300px]" themeSize="sm" themeColor={themeColor}>
           {memoValueForDisplay}
           {selectRange && (
             <span className="ml-2">
