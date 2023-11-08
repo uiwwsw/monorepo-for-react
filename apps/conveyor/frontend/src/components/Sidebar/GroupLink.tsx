@@ -25,21 +25,23 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
           to: tab.path,
           className: tab.group
             ? 'text-gray-400'
-            : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : ''),
+            : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '') + ' text-xl',
           children: (
-            <>
-              <span className="mr-2">{tab.icon}</span>
+            <div className="text-xl">
+              <span className="mr-2 text-lg">{tab.icon}</span>
               {t(tab.name)}
               {tab.group?.map((x) => (
                 <NavLink
                   key={x.path}
-                  className={({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '')}
+                  className={({ isActive }) =>
+                    'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '') + ' flex ml-7 text-base my-2'
+                  }
                   to={`${x.path}`}
                 >
                   {t(x.name)}
                 </NavLink>
               ))}
-            </>
+            </div>
           ),
         }),
       )}

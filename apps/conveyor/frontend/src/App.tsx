@@ -19,9 +19,13 @@ const App = () => {
     <Router>
       <Routes>
         <Route element={<PrivateLayout />}>
-          {authRoutes.map((x) => (
-            <Route key={x.name} path={x.path} element={<x.node />} />
-          ))}
+          {authRoutes.map((x) =>
+            x.group ? (
+              x.group.map((y) => <Route key={y.name} path={y.path} element={<y.node />} />)
+            ) : (
+              <Route key={x.name} path={x.path} element={<x.node />} />
+            ),
+          )}
         </Route>
 
         <Route element={<PublicLayout />}>

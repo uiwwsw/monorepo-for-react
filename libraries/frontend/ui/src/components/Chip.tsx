@@ -10,10 +10,11 @@ export interface ChipProps extends WithEval<number> {
   defaultValue?: number[];
   multiChoice?: boolean;
   themeSize?: 'xl' | 'md' | 'sm' | 'xs' | null | undefined;
+  onChange?: (index: number) => void;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Chip');
-const Chip = ({ labels, className, defaultValue = [], onEval, multiChoice = true, themeSize = 'xs' }: ChipProps) => {
+const Chip = ({ labels, className, defaultValue = [], multiChoice = true, themeSize = 'xs', onChange }: ChipProps) => {
   /* ======   variables   ====== */
   const [active, setActive] = useState(defaultValue);
   const chipClassName = `[&>*+*]:ml-2 ${className ? ` ${className}` : ''}`;
@@ -22,7 +23,7 @@ const Chip = ({ labels, className, defaultValue = [], onEval, multiChoice = true
     multiChoice
       ? setActive((prev) => (prev.includes(index) ? prev.filter((x) => x !== index) : [...prev, index]))
       : setActive([index]);
-    onEval && onEval(index);
+    onChange && onChange(index);
   };
   /* ======   useEffect   ====== */
   logger('render');

@@ -23,6 +23,11 @@ export const authRoutes: ParentTab[] = [
     path: '/stats',
     name: '통계',
     node: Stats,
+    group: [
+      { path: '/stats/zone', name: 'ZONE', node: Stats },
+      { path: '/stats/alarm', name: 'ALARM', node: Stats },
+      { path: '/stats/carrier', name: 'CARRIER', node: Stats },
+    ],
   },
 ];
 export const commonRoutes: ParentTab[] = [

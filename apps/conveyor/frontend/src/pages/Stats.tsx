@@ -6,10 +6,10 @@ import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { statsZone } from '!/zone/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const tabs = ['ALL', 'INPUT_OUTPUT', 'ALARM', 'CARRIER', 'WARNING'];
 const logger = createLogger('pages/Stats');
 const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2';
 const sortBtnClassName = 'border-2 px-2 mx-1 align-middle rounded-lg text-gray-200 cursor-pointer py-2 text-sm h-fit';
@@ -20,7 +20,6 @@ const Stats = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([]);
-  const [showDownloadBtn, setShowDownloadBtn] = useState<boolean>(false);
   const options = [
     {
       label: 'All',
@@ -31,6 +30,12 @@ const Stats = () => {
       value: '2',
     },
   ];
+
+  const zones: statsZone[] = [
+    { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
+    { zoneID: 10102, displayName: '10102', alarmNum: 1, carrierNum: 0, warningNum: 3 },
+  ];
+
   /* ======   function    ====== */
   const handleChange = (duration: Dayjs | Dayjs[]) => {
     duration instanceof Array && setDuration(duration);
@@ -44,11 +49,6 @@ const Stats = () => {
     /** find data with keyword */
   };
 
-  const onChangeTabIndex = (index: number) => {
-    console.log(index);
-    if (index < 2) setShowDownloadBtn(false);
-    else setShowDownloadBtn(true);
-  };
   /* ======   useEffect   ====== */
   useEffect(() => {
     setChildren(
@@ -81,23 +81,15 @@ const Stats = () => {
         </div>
       </div>
       <div className="flex my-5 place-content-end gap-5">
-        {!showDownloadBtn && <Chip labels={['ZONE', 'ALARM', 'CARRIER']} multiChoice={false} themeSize={'md'} />}
-        {showDownloadBtn && (
-          <div>
-            <Button themeColor={'secondary'} themeSize={'md'}>
-              Download
-            </Button>
-          </div>
-        )}
+        <Chip labels={['ZONE ID', 'ALARM', 'CARRIER']} multiChoice={false} themeSize={'md'} />
         <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
       </div>
-      <Tab header={tabs} onChange={onChangeTabIndex}>
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-      </Tab>
+      {zones.map((zone: statsZone) => (
+        <div className="flex border border-slate-400 my-5 p-3 rounded-md">
+          {zone.displayName}
+          {'   ' + zone.carrierNum}
+        </div>
+      ))}
     </>
   );
 };
