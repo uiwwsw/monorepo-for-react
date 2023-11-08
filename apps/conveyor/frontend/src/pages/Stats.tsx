@@ -6,7 +6,7 @@ import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { statsZone } from '!/zone/domain';
+import { statsZone } from '!/stats/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
