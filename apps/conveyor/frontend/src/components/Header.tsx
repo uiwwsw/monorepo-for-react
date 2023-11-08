@@ -29,7 +29,7 @@ const Header = (_: HeaderProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <header className="sticky flex items-center top-0 h-24 z-10 p-3 bg-slate-400 gap-2">
+    <header className="sticky flex items-center top-0 h-24 z-10 p-3 bg-slate-400 gap-2 shadow-sm">
       <ToastWithPortal open={error}>로그인에 실패했습니다.</ToastWithPortal>
       <div className="flex-auto">{children}</div>
       <div>{data?.name}</div>
