@@ -22,7 +22,8 @@ const Control = () => {
         thead={['firstName', 'lastName', 'age', 'visits', 'status', 'progress']}
         data={data}
         useSelect={true}
-        usePagination={false}
+        usePagination={true}
+        useColumnSelect={true}
       ></ReusableTable>
     </div>
   );

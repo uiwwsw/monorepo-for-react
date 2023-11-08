@@ -17,15 +17,19 @@ interface ReusableTableProps<T> {
   data: T[];
   useSelect?: boolean;
   usePagination?: boolean;
+  useColumnSelect?: boolean;
 }
 /* ======    global     ====== */
-//const logger = createLogger('Component/Table2');
+const logger = createLogger('Component/Table2');
 
-export function ReusableTable<T>({ thead, data, useSelect = false, usePagination = false }: ReusableTableProps<T>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const columns = React.useMemo<ColumnDef<T>[]>(
+export function ReusableTable<T>({
+  thead,
+  data,
+  useSelect = false,
+  usePagination = false,
+  useColumnSelect = false,
+}: ReusableTableProps<T>) {
+  const defaultColumns = React.useMemo<ColumnDef<T>[]>(
     () => [
       // Conditionally include 'select' column based on useSelect value
       ...(useSelect
@@ -62,13 +66,19 @@ export function ReusableTable<T>({ thead, data, useSelect = false, usePagination
         footer: (props) => props.column.id,
       })),
     ],
-    [thead],
+    [thead, useSelect],
   );
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [columns] = React.useState<typeof defaultColumns>(() => [...defaultColumns]);
+  const [columnVisibility, setColumnVisibility] = React.useState({});
 
   const table = useReactTable({
     data,
     columns,
     state: {
+      columnVisibility,
       sorting,
       rowSelection,
     },
@@ -77,11 +87,46 @@ export function ReusableTable<T>({ thead, data, useSelect = false, usePagination
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: usePagination ? getPaginationRowModel() : undefined,
+    onColumnVisibilityChange: useColumnSelect ? setColumnVisibility : undefined,
     debugTable: true,
   });
 
   return (
     <div className="p-4 bg-white shadow rounded-lg">
+      {useColumnSelect && (
+        <div className="border border-gray-300 rounded-lg">
+          <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
+            <label className="flex items-center space-x-2">
+              <input
+                {...{
+                  type: 'checkbox',
+                  className: 'form-checkbox h-5 w-5 text-blue-600',
+                  checked: table.getIsAllColumnsVisible(),
+                  onChange: table.getToggleAllColumnsVisibilityHandler(),
+                }}
+              />
+              <span className="text-gray-700 font-medium">Toggle All</span>
+            </label>
+          </div>
+          <div className="px-2 py-1 flex flex-wrap">
+            {table.getAllLeafColumns().map((column) => {
+              return (
+                <label key={column.id} className="flex items-center space-x-2 mr-4">
+                  <input
+                    {...{
+                      type: 'checkbox',
+                      className: 'form-checkbox h-5 w-5 text-blue-600',
+                      checked: column.getIsVisible(),
+                      onChange: column.getToggleVisibilityHandler(),
+                    }}
+                  />
+                  <span className="text-gray-700 font-medium">{column.id}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="mb-4">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
