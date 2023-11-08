@@ -1,6 +1,6 @@
 import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
-import { Tab, Select, Input, Button } from '@library-frontend/ui';
+import { Tab, Select, Input, Button, Chip } from '@library-frontend/ui';
 import { Calendar } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
@@ -52,7 +52,7 @@ const Stats = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     setChildren(
-      <div className="flex w-full align-middle">
+      <div className="flex items-center gap-2">
         <Calendar
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}
@@ -60,24 +60,17 @@ const Stats = () => {
           selectRange
           onChange={handleChange}
         />
-        {!showDownloadBtn && (
-          <div className="flex ml-10">
-            <div className={sortBtnClassName}>ZONE</div>
-            <div className={sortBtnClassName}>ALARM</div>
-            <div className={sortBtnClassName}>CARRIER</div>
-          </div>
-        )}
-        {showDownloadBtn && (
-          <div className="flex ml-10">
-            <div className={sortBtnClassName}>DOWNLOAD</div>
-          </div>
-        )}
-        <div className="border text-gray-200 rounded-md px-2 overflow-hidden h-10">
-          <Input placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
-          <Button themeSize={null} themeColor={null}>
-            🔍
-          </Button>
+        <div>
+          {!showDownloadBtn && <Chip labels={['ZONE', 'ALARM', 'CARRIER']} />}
+          <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
         </div>
+        {showDownloadBtn && (
+          <div>
+            <Button themeColor={'secondary'} themeSize={'sm'}>
+              Download
+            </Button>
+          </div>
+        )}
       </div>,
     );
     return () => setChildren(undefined);
@@ -90,9 +83,7 @@ const Stats = () => {
           <ChartLine />
         </div>
         <div className="h-full w-1/5 p-1 pl-3 border-l-2">
-          <div className="flex w-full ml-1 overflow-hidden pr-2">
-            <Select options={options} onChange={onChangeGraphPort} />
-          </div>
+          <Select options={options} onChange={onChangeGraphPort} />
           <div className={graphChartClassName}>Transport Total : {}</div>
           <div className={graphChartClassName}>Transport Average : {}</div>
           <div className={graphChartClassName}>Alarm Total : {}</div>
