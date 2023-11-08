@@ -7,6 +7,7 @@ import '@package-frontend/noto-emoji/notoemojivariable.css';
 import '@package-frontend/pretendard/pretendardvariable.css';
 import AsyncBoundary from '@/AsyncBoundary';
 import './i18n';
+import './fetch';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AsyncBoundary>

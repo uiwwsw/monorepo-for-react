@@ -1,6 +1,7 @@
+import { faker } from '@faker-js/faker';
 export const mockData = {
-  session: 'abcde12345',
-  name: '윤창원',
+  session: faker.string.uuid(),
+  name: faker.person.fullName(),
 };
 
 export type Auth = typeof mockData;

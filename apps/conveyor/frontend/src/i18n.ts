@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 // the translations
 // (tip move them in a JSON file and import them,
@@ -17,6 +18,11 @@ const resources = {
       아이디: 'Username',
       비밀번호: 'Password',
       '비밀번호 확인': 'Confirm Password',
+      //gram
+      '기간을 선택해 주세요.': 'Please select a date range.',
+      '날짜를 선택해 주세요.': 'Please select a duration.',
+      '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.':
+        'The time of 00:00:00 on the start date and 23:59:59 on the end date will be omitted.',
       //main page
       '컨베이어 for YMTC': 'Conveyor for YMTC',
       '컨베이어 웹 서비스에 오신걸 환영합니다.': 'Welcome to the Conveyor Web Service.',
@@ -52,6 +58,13 @@ const resources = {
     아이디: '用户名',
     비밀번호: '密码',
     '비밀번호 확인': '确认密码',
+
+    //gram
+    '기간을 선택해 주세요.': '请选择日期范围。',
+    '날짜를 선택해 주세요.': '请选择日期。',
+    '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.':
+      '起始日期的00:00:00和结束日期的23:59:59将被省略。',
+
     //main page
     '컨베이어 for YMTC': 'YMTC 传送带',
     '컨베이어 웹 서비스에 오신걸 환영합니다.': '欢迎来到传送带网络服务。',
@@ -77,10 +90,10 @@ const resources = {
 };
 
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(initReactI18next)
+  .use(LanguageDetector)
   .init({
     resources,
-
     interpolation: {
       escapeValue: false,
     },
