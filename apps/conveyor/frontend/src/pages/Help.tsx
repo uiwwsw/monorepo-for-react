@@ -39,7 +39,7 @@ const Help = () => {
         <h2 id="layout" className="font-bold text-xl bg-white">
           레이아웃 설명
         </h2>
-        <iframe src="/" className="w-full h-[600px] border-2 my-8"></iframe>
+        <iframe src="/" className="w-full h-[600px] border-2 my-8" />
         <span className="absolute bg-opacity-25 text-5xl after:absolute after:text-white after:w-fit after:h-fit after:m-auto after:inset-0 bg-gray-700 left-44 -right-8 top-36 bottom-0 after:content-['컨텐츠']" />
         <span className="absolute bg-opacity-25 text-5xl after:absolute after:text-white after:w-fit after:h-fit after:m-auto after:inset-0 bg-red-700 -left-8 w-60 top-8 bottom-0 after:content-['사이드바']" />
         <span className="absolute bg-opacity-25 text-5xl after:absolute after:text-white after:w-fit after:h-fit after:m-auto after:inset-0 bg-green-700 left-44 -right-8 top-8 h-36 after:content-['헤더']" />
@@ -49,7 +49,7 @@ const Help = () => {
         <h2 id="stats" className="font-bold text-xl bg-white">
           통계 페이지 설명
         </h2>
-        <iframe src="/stats?side-nav=disabled" className="w-full h-[600px] border-2 my-8"></iframe>
+        <iframe src="/stats?side-nav=disabled" className="w-full h-[600px] border-2 my-8" />
         <span className="absolute bg-opacity-25 text-5xl after:absolute after:text-white after:w-fit after:h-fit after:m-auto after:inset-0 bg-gray-700 left-44 -right-8 top-36 bottom-0 after:content-['그래프']" />
       </div>
     </div>

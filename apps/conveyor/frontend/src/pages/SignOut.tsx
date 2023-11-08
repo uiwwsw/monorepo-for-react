@@ -1,0 +1,35 @@
+import { useSignout } from '!/auth/application/sign-out';
+import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { useEffect } from 'react';
+import { redirect, useNavigate } from 'react-router-dom';
+
+/* ======   interface   ====== */
+/* ======    global     ====== */
+const logger = createLogger('pages/SignOut');
+const SignOut = () => {
+  /* ======   variables   ====== */
+  let count = 10;
+  const navigate = useNavigate();
+  const { trigger } = useSignout();
+
+  /* ======   function    ====== */
+  const tryUntilSuccess = async () => {
+    logger('사인아웃 호출');
+    try {
+      await trigger();
+    } catch {
+      logger('사인아웃 오류', count);
+      if (count-- > 0) await tryUntilSuccess();
+    }
+  };
+  /* ======   useEffect   ====== */
+  useEffect(() => {
+    (async () => {
+      await tryUntilSuccess();
+      navigate('/');
+    })();
+  }, []);
+  return <iframe className="w-screen h-screen" src="/loading" />;
+};
+
+export default SignOut;
