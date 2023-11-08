@@ -20,7 +20,7 @@ const SignUp = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: useFormSumit,
+    handleSubmit: handleAdapterSubmit,
     formState: { errors },
     watch,
   } = useForm<FormState>();
@@ -42,7 +42,7 @@ const SignUp = () => {
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
-      <div className="flex flex-col gap-3 min-w-[500px]">
+      <form className="flex flex-col gap-3 min-w-[500px]">
         <label>
           <p className="font-medium uppercase">{t('아이디')}</p>
           <Input
@@ -86,10 +86,10 @@ const SignUp = () => {
           />
           {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
         </label>
-        <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
+        <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
           {t('회원가입')}
         </Button>
-      </div>
+      </form>
     </PageCenter>
   );
 };

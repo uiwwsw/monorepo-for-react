@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSmooth } from '#/useSmooth';
 import { useAnimate } from '#/useAnimate';
 import ModalOverlay from './Overlay';
@@ -68,6 +68,7 @@ const ModalBase = ({
     onClosed && onClosed();
   };
   /* ======   useEffect   ====== */
+  useEffect(() => elRef.current?.focus(), []);
   useSmooth({
     value: open,
     delay: 500,
@@ -77,7 +78,7 @@ const ModalBase = ({
   logger('render');
   return (
     <>
-      <div className={modalClassName} role="dialog" ref={elRef}>
+      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0}>
         <ModalOverlay onClose={adapterClose} />
         <div className={modalContentClassName}>
           {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
