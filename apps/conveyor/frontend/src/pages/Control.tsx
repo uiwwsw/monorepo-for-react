@@ -22,7 +22,7 @@ const Control = () => {
         thead={['firstName', 'lastName', 'age', 'visits', 'status', 'progress']}
         data={data}
         useSelect={true}
-        usePagination={true}
+        usePagination={false}
       ></ReusableTable>
     </div>
   );

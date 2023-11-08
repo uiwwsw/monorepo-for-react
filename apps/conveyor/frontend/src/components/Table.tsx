@@ -81,67 +81,68 @@ export function ReusableTable<T>({ thead, data, useSelect = false, usePagination
   });
 
   return (
-    <div className="p-2">
-      <div className="h-2" />
-      <table>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : (
-                      <div
-                        {...{
-                          className: header.column.getCanSort() ? 'cursor-pointer select-none' : '',
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {{
-                          asc: ' 🔼',
-                          desc: ' 🔽',
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    )}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>;
+    <div className="p-4 bg-white shadow rounded-lg">
+      <div className="mb-4">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div
+                          {...{
+                            className: header.column.getCanSort() ? 'cursor-pointer select-none' : '',
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          <span>
+                            {header.column.getIsSorted() === 'asc' && ' 🔼'}
+                            {header.column.getIsSorted() === 'desc' && ' 🔽'}
+                          </span>
+                        </div>
+                      )}
+                    </th>
+                  );
                 })}
               </tr>
-            );
-          })}
-        </tbody>
-        <tfoot>
-          {useSelect && (
-            <tr>
-              <td className="p-1">
-                <IndeterminateCheckbox
-                  {...{
-                    checked: table.getIsAllPageRowsSelected(),
-                    indeterminate: table.getIsSomePageRowsSelected(),
-                    onChange: table.getToggleAllPageRowsSelectedHandler(),
-                  }}
-                />
-              </td>
-              <td colSpan={thead.length + (useSelect ? 1 : 0)}>Page Rows ({table.getRowModel().rows.length})</td>
-              <td colSpan={thead.length + (useSelect ? 1 : 0)}>
-                {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} Total Rows Selected
-              </td>
-            </tr>
-          )}
-        </tfoot>
-      </table>
-      <div className="h-2" />
+            ))}
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {table.getRowModel().rows.map((row) => {
+              return (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot className="bg-gray-50">
+            {useSelect && (
+              <tr>
+                <td
+                  colSpan={thead.length + (useSelect ? 1 : 0)}
+                  className="px-6 py-3 text-sm font-medium text-gray-500"
+                >
+                  {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} Total Rows Selected
+                </td>
+              </tr>
+            )}
+          </tfoot>
+        </table>
+      </div>
       {usePagination && (
         <div className="flex items-center gap-2">
           <button
@@ -200,9 +201,7 @@ export function ReusableTable<T>({ thead, data, useSelect = false, usePagination
           </select>
         </div>
       )}
-      <br />
       <hr />
-      <br />
     </div>
   );
 }
