@@ -8,35 +8,40 @@ import {
   getSortedRowModel,
   SortingState,
   flexRender,
-  Row,
   getExpandedRowModel,
+  FilterFn,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
 import React from 'react';
+import { rankItem } from '@tanstack/match-sorter-utils';
+import { Button, Input, Select } from '@library-frontend/ui';
+import IndeterminateCheckbox from './IndeterminateCheckbox';
+import DebouncedInput from './DebouncedInput';
 
 /* ======   interface   ====== */
-interface ReusableTableProps<T> {
+export interface ReusableTableProps<T> {
   thead: string[];
   data: T[];
-  useSelect?: boolean;
-  usePagination?: boolean;
-  useColumnSelect?: boolean;
-  renderSubComponent: () => React.ReactElement;
+  makePagination?: boolean;
+  makeColumnSelect?: boolean;
+  renderSelectComponent?: () => React.ReactElement | null;
+  renderSubComponent?: () => React.ReactElement | null;
 }
+
 /* ======    global     ====== */
-const logger = createLogger('Component/Table2');
+const logger = createLogger('Component/ReusableTable');
 
 export function ReusableTable<T>({
   thead,
   data,
-  useSelect = false,
-  usePagination = false,
-  useColumnSelect = false,
+  makePagination = false,
+  makeColumnSelect = false,
   renderSubComponent,
+  renderSelectComponent,
 }: ReusableTableProps<T>) {
   const defaultColumns = React.useMemo<ColumnDef<T>[]>(
     () => [
-      // Conditionally include 'select' column based on useSelect value
-      ...(useSelect
+      ...(renderSelectComponent
         ? [
             {
               id: 'select',
@@ -70,28 +75,33 @@ export function ReusableTable<T>({
         header: key.replace(/^\w/, (c) => c.toUpperCase()),
         footer: (props) => props.column.id,
       })),
-      {
-        id: 'expander',
-        header: () => null,
-        cell: ({ row }) => {
-          return row.getCanExpand() ? (
-            <button
-              {...{
-                onClick: row.getToggleExpandedHandler(),
-                style: { cursor: 'pointer' },
-              }}
-            >
-              {row.getIsExpanded() ? '👇' : '👉'}
-            </button>
-          ) : (
-            '🔵'
-          );
-        },
-      },
+      ...(renderSubComponent
+        ? [
+            {
+              id: 'expander',
+              header: () => null,
+              cell: ({ row }) => {
+                return row.getCanExpand() ? (
+                  <button
+                    {...{
+                      onClick: row.getToggleExpandedHandler(),
+                      style: { cursor: 'pointer' },
+                    }}
+                  >
+                    {row.getIsExpanded() ? '👇' : '👉'}
+                  </button>
+                ) : (
+                  '🔵'
+                );
+              },
+            },
+          ]
+        : []),
     ],
-    [thead, useSelect],
+    [thead, renderSelectComponent, renderSubComponent],
   );
 
+  const [globalFilter, setGlobalFilter] = React.useState('');
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columns] = React.useState<typeof defaultColumns>(() => [...defaultColumns]);
@@ -104,21 +114,33 @@ export function ReusableTable<T>({
       columnVisibility,
       sorting,
       rowSelection,
+      globalFilter,
     },
     onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: usePagination ? getPaginationRowModel() : undefined,
-    onColumnVisibilityChange: useColumnSelect ? setColumnVisibility : undefined,
+    getPaginationRowModel: makePagination ? getPaginationRowModel() : undefined,
+    onColumnVisibilityChange: makeColumnSelect ? setColumnVisibility : undefined,
     debugTable: true,
     getRowCanExpand: () => true,
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const pageSizeOptions = [
+    { value: '10', label: '10개씩 보기' },
+    { value: '20', label: '20개씩 보기' },
+    { value: '30', label: '30개씩 보기' },
+    { value: '40', label: '40개씩 보기' },
+    { value: '50', label: '50개씩 보기' },
+  ];
+
   return (
-    <div className="p-4 bg-white shadow rounded-lg">
-      {useColumnSelect && (
+    <div className="p-4 bg-white shadow rounded-lg space-y-3">
+      {makeColumnSelect && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
             <label className="flex items-center space-x-2">
@@ -130,7 +152,7 @@ export function ReusableTable<T>({
                   onChange: table.getToggleAllColumnsVisibilityHandler(),
                 }}
               />
-              <span className="text-gray-700 font-medium">Toggle All</span>
+              <span className="text-gray-700 font-medium">전체 선택</span>
             </label>
           </div>
           <div className="px-2 py-1 flex flex-wrap">
@@ -152,6 +174,17 @@ export function ReusableTable<T>({
           </div>
         </div>
       )}
+      <div className="flex justify-between items-center">
+        <DebouncedInput
+          value={globalFilter ?? ''}
+          onChange={(value) => setGlobalFilter(String(value))}
+          className="p-2 font-lg shadow border border-block"
+          placeholder="검색어를 입력하세요"
+        />
+        {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
+          <div className="flex items-center">{renderSelectComponent()}</div>
+        )}
+      </div>
       <div className="mb-4">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -187,93 +220,96 @@ export function ReusableTable<T>({
           <tbody className="bg-white divide-y divide-gray-200">
             {table.getRowModel().rows.map((row) => {
               return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    );
-                  })}
+                <React.Fragment key={row.id}>
+                  <tr>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      );
+                    })}
+                  </tr>
                   {row.getIsExpanded() && (
-                    <tr>
-                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent()}</td>
+                    <tr key={row.id + 'expanded'}>
+                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent ? renderSubComponent() : null}</td>
                     </tr>
                   )}
-                </tr>
+                </React.Fragment>
               );
             })}
           </tbody>
           <tfoot className="bg-gray-50">
-            {useSelect && (
+            {renderSelectComponent && (
               <tr>
-                <td
-                  colSpan={thead.length + (useSelect ? 1 : 0)}
-                  className="px-6 py-3 text-sm font-medium text-gray-500"
-                >
-                  {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} Total Rows Selected
+                <td colSpan={table.getAllFlatColumns().length} className="px-6 py-3 text-sm font-medium text-gray-500">
+                  {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} 행이 선택되었습니다
                 </td>
               </tr>
             )}
           </tfoot>
         </table>
       </div>
-      {usePagination && (
+      {makePagination && (
         <div className="flex items-center gap-2">
-          <button
-            className="border rounded p-1"
+          <Button
+            themeColor="secondary"
+            themeSize="sm"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
             {'<<'}
-          </button>
-          <button
-            className="border rounded p-1"
+          </Button>
+          <Button
+            themeColor="secondary"
+            themeSize="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             {'<'}
-          </button>
-          <button className="border rounded p-1" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          </Button>
+          <Button
+            themeColor="secondary"
+            themeSize="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
             {'>'}
-          </button>
-          <button
-            className="border rounded p-1"
+          </Button>
+          <Button
+            themeColor="secondary"
+            themeSize="sm"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
             {'>>'}
-          </button>
+          </Button>
           <span className="flex items-center gap-1">
-            <div>Page</div>
+            <div>페이지</div>
             <strong>
               {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </strong>
           </span>
           <span className="flex items-center gap-1">
-            | Go to page:
-            <input
+            | 페이지 이동:
+            <Input
               type="number"
               defaultValue={table.getState().pagination.pageIndex + 1}
               onChange={(e) => {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 table.setPageIndex(page);
               }}
-              className="border p-1 rounded w-16"
+              className="border rounded w-24"
+              placeholder="page"
             />
           </span>
-          <select
-            value={table.getState().pagination.pageSize}
+          <Select
+            value={String(table.getState().pagination.pageSize)}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
+            options={pageSizeOptions}
+          />
         </div>
       )}
       <hr />
@@ -281,20 +317,14 @@ export function ReusableTable<T>({
   );
 }
 
-function IndeterminateCheckbox({
-  indeterminate,
-  className = '',
-  ...rest
-}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
-  const ref = React.useRef<HTMLInputElement>(null!);
 
-  React.useEffect(() => {
-    if (typeof indeterminate === 'boolean') {
-      ref.current.indeterminate = !rest.checked && indeterminate;
-    }
-  }, [ref, indeterminate, rest.checked]);
 
-  return <input type="checkbox" ref={ref} className={className + ' cursor-pointer'} {...rest} />;
-}
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value);
+  addMeta({
+    itemRank,
+  });
+  return itemRank.passed;
+};
 
 export default ReusableTable;
