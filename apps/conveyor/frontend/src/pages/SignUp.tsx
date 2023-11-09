@@ -2,7 +2,7 @@ import { useSignUp } from '!/auth/application/sign-up';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ const SignUp = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: useFormSumit,
+    handleSubmit: handleAdapterSubmit,
     formState: { errors },
     watch,
   } = useForm<FormState>();
@@ -34,15 +34,16 @@ const SignUp = () => {
   };
   const fakeWait = () => navigate('/sign-in?from=/sign-up');
   /* ======   useEffect   ====== */
+
   logger('render');
   return (
     <PageCenter title={t('회원가입')} icon="🔓">
       {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
 
-      <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
+      <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
-      <div className="flex flex-col gap-3 min-w-[500px]">
+      <form className="flex flex-col gap-3 min-w-[500px]">
         <label>
           <p className="font-medium uppercase">{t('아이디')}</p>
           <Input
@@ -86,10 +87,10 @@ const SignUp = () => {
           />
           {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
         </label>
-        <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
+        <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
           {t('회원가입')}
         </Button>
-      </div>
+      </form>
     </PageCenter>
   );
 };

@@ -2,7 +2,7 @@ import { useSignIn } from '!/auth/application/sign-in';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { KeyboardEvent, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 interface FormState {
   id: string;
   pw: string;
-  rpw: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/SignIn');
@@ -20,7 +19,7 @@ const SignIn = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: useFormSumit,
+    handleSubmit: handleAdapterSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
@@ -53,10 +52,10 @@ const SignIn = () => {
         {t('로그아웃에 성공했습니다.')}
       </ToastWithPortal>
       <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
-      <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
+      <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
       </ModalWithPortal>
-      <div className="flex flex-col gap-3 min-w-[500px]">
+      <form className="flex flex-col gap-3 min-w-[500px]">
         <label>
           <p className="font-medium">{t('아이디')}</p>
           <Input
@@ -82,10 +81,10 @@ const SignIn = () => {
           />
           {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
         </label>
-        <Button smoothLoading onClick={useFormSumit(handleSubmit)}>
+        <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
           {t('로그인')}
         </Button>
-      </div>
+      </form>
       <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
         {t('회원가입 하러가기')}
       </Button>

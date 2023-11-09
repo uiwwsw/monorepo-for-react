@@ -7,9 +7,9 @@ const logger = createLogger('auth/useSignout');
 
 async function fetcher(url: string) {
   logger(url);
-  const res = await fakeApi(mockData);
   LocalStorage.set('/check-auth', '');
   await mutate('/check-auth', undefined);
+  const res = await fakeApi(mockData);
   return res;
   //   return await http({ url });
 }

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSmooth } from '#/useSmooth';
 import { useAnimate } from '#/useAnimate';
 import ModalOverlay from './Overlay';
@@ -14,13 +14,15 @@ export interface ModalError {
   open: boolean;
 }
 export type ModalErrors = Record<string, ModalError>;
-export type ModalResult = 'OK' | 'CANCEL' | 'NONE';
+export type ModalResult = string | 'NONE';
 export interface ModalBaseProps {
   hasToast?: boolean;
   children?: ReactNode;
   className?: string;
   persist?: boolean;
+  hasCloseBtn?: boolean;
   open?: boolean;
+  errorToastMsg?: (value: ModalResult) => string;
   hasButton?: ModalResult[];
   onClose?: (value?: ModalResult) => Promise<unknown> | unknown;
   onClosed?: () => void;
@@ -29,6 +31,7 @@ export interface ModalBaseProps {
 /* ======    global     ====== */
 const logger = createLogger('components/ModalBase');
 const ModalBase = ({
+  errorToastMsg = (value) => `${value} 버튼 클릭 이벤트에 오류가 발생했습니다.`,
   open,
   persist = false,
   onClose,
@@ -68,6 +71,7 @@ const ModalBase = ({
     onClosed && onClosed();
   };
   /* ======   useEffect   ====== */
+  useEffect(() => elRef.current?.focus(), []);
   useSmooth({
     value: open,
     delay: 500,
@@ -77,13 +81,14 @@ const ModalBase = ({
   logger('render');
   return (
     <>
-      <div className={modalClassName} role="dialog" ref={elRef}>
+      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0}>
         <ModalOverlay onClose={adapterClose} />
         <div className={modalContentClassName}>
           {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
           <div>{children}</div>
           {hasFooter && (
             <ModalFooter
+              errorToastMsg={errorToastMsg}
               hasButton={hasFooterButton}
               hasToast={hasToast}
               smoothLoading={smoothLoading}

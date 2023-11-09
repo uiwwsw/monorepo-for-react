@@ -1,3 +1,4 @@
+import { useGetAlarmGraph } from '!/alarm/application/get-graph';
 import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
 import { Tab } from '@library-frontend/ui';
@@ -13,7 +14,7 @@ const logger = createLogger('pages/Stats');
 const Stats = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-
+  const { data } = useGetAlarmGraph();
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([]);
@@ -39,7 +40,7 @@ const Stats = () => {
     <>
       통계페이지
       <div className="h-60">
-        <ChartLine />
+        <ChartLine data={data} />
       </div>
       <Tab header={tabs}>
         <div>1</div>
