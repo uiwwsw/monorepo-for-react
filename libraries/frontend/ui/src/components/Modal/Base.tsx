@@ -14,13 +14,15 @@ export interface ModalError {
   open: boolean;
 }
 export type ModalErrors = Record<string, ModalError>;
-export type ModalResult = 'OK' | 'CANCEL' | 'NONE';
+export type ModalResult = string | 'NONE';
 export interface ModalBaseProps {
   hasToast?: boolean;
   children?: ReactNode;
   className?: string;
   persist?: boolean;
+  hasCloseBtn?: boolean;
   open?: boolean;
+  errorToastMsg?: (value: ModalResult) => string;
   hasButton?: ModalResult[];
   onClose?: (value?: ModalResult) => Promise<unknown> | unknown;
   onClosed?: () => void;
@@ -29,6 +31,7 @@ export interface ModalBaseProps {
 /* ======    global     ====== */
 const logger = createLogger('components/ModalBase');
 const ModalBase = ({
+  errorToastMsg = (value) => `${value} 버튼 클릭 이벤트에 오류가 발생했습니다.`,
   open,
   persist = false,
   onClose,
@@ -85,6 +88,7 @@ const ModalBase = ({
           <div>{children}</div>
           {hasFooter && (
             <ModalFooter
+              errorToastMsg={errorToastMsg}
               hasButton={hasFooterButton}
               hasToast={hasToast}
               smoothLoading={smoothLoading}

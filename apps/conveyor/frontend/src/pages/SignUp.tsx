@@ -40,7 +40,7 @@ const SignUp = () => {
     <PageCenter title={t('회원가입')} icon="🔓">
       {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
 
-      <ModalWithPortal onClose={fakeWait} open={success} hasButton={['OK']} persist>
+      <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
       <form className="flex flex-col gap-3 min-w-[500px]">
