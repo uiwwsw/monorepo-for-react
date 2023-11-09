@@ -5,3 +5,8 @@ export interface statsZone {
   carrierNum: number;
   warningNum: number;
 }
+
+export interface searchArg {
+  startTime: string;
+  endTime: string;
+}

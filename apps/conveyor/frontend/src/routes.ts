@@ -1,7 +1,7 @@
 import Control from './pages/Control';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
-import Stats from './pages/Stats';
+import StatsZone from './pages/StatsZone';
 import Help from './pages/Help';
 type Tab = {
   name: string;
@@ -22,11 +22,11 @@ export const authRoutes: ParentTab[] = [
     icon: '🧮',
     path: '/stats',
     name: '통계',
-    node: Stats,
+    node: StatsZone,
     group: [
-      { path: '/stats/zone', name: 'ZONE', node: Stats },
-      { path: '/stats/alarm', name: 'ALARM', node: Stats },
-      { path: '/stats/carrier', name: 'CARRIER', node: Stats },
+      { path: '/stats/zone', name: 'ZONE', node: StatsZone },
+      { path: '/stats/alarm', name: 'ALARM', node: StatsZone },
+      { path: '/stats/carrier', name: 'CARRIER', node: StatsZone },
     ],
   },
 ];
