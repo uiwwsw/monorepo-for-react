@@ -8,6 +8,8 @@ import {
   getSortedRowModel,
   SortingState,
   flexRender,
+  Row,
+  getExpandedRowModel,
 } from '@tanstack/react-table';
 import React from 'react';
 
@@ -18,6 +20,7 @@ interface ReusableTableProps<T> {
   useSelect?: boolean;
   usePagination?: boolean;
   useColumnSelect?: boolean;
+  renderSubComponent: () => React.ReactElement;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table2');
@@ -28,6 +31,7 @@ export function ReusableTable<T>({
   useSelect = false,
   usePagination = false,
   useColumnSelect = false,
+  renderSubComponent,
 }: ReusableTableProps<T>) {
   const defaultColumns = React.useMemo<ColumnDef<T>[]>(
     () => [
@@ -60,11 +64,30 @@ export function ReusableTable<T>({
             },
           ]
         : []),
+
       ...thead.map((key) => ({
         accessorKey: key,
         header: key.replace(/^\w/, (c) => c.toUpperCase()),
         footer: (props) => props.column.id,
       })),
+      {
+        id: 'expander',
+        header: () => null,
+        cell: ({ row }) => {
+          return row.getCanExpand() ? (
+            <button
+              {...{
+                onClick: row.getToggleExpandedHandler(),
+                style: { cursor: 'pointer' },
+              }}
+            >
+              {row.getIsExpanded() ? '👇' : '👉'}
+            </button>
+          ) : (
+            '🔵'
+          );
+        },
+      },
     ],
     [thead, useSelect],
   );
@@ -89,6 +112,8 @@ export function ReusableTable<T>({
     getPaginationRowModel: usePagination ? getPaginationRowModel() : undefined,
     onColumnVisibilityChange: useColumnSelect ? setColumnVisibility : undefined,
     debugTable: true,
+    getRowCanExpand: () => true,
+    getExpandedRowModel: getExpandedRowModel(),
   });
 
   return (
@@ -170,6 +195,11 @@ export function ReusableTable<T>({
                       </td>
                     );
                   })}
+                  {row.getIsExpanded() && (
+                    <tr>
+                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent()}</td>
+                    </tr>
+                  )}
                 </tr>
               );
             })}
