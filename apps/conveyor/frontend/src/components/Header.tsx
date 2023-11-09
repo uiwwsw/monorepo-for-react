@@ -17,22 +17,15 @@ const Header = (_: HeaderProps) => {
   const location = useLocation();
   const { data } = useCheckAuth();
   const { children } = useHeaderContext();
-  const { trigger, error } = useSignout();
   const url = new URLSearchParams(location.search);
   const isInIframe = url.get('side-nav') === 'disabled';
 
   /* ======   function    ====== */
-  const handleLogout = async () => {
-    await trigger();
-    navigate('/');
-  };
+  const handleLogout = () => navigate('/sign-out');
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <header className="sticky flex items-center top-0 h-24 z-10 p-3 bg-slate-400 gap-2">
-      <ToastWithPortal duration={1000} open={error}>
-        {t('로그인에 실패했습니다.')}
-      </ToastWithPortal>
       <div className="flex-auto">{children}</div>
       <div>{data?.name}</div>
       <Button smoothLoading themeColor={'secondary'} onClick={handleLogout} disabled={isInIframe}>

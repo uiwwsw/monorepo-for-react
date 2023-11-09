@@ -72,7 +72,7 @@ const Calendar = ({
       }
     >
       <i ref={fakeRef} />
-      <div onClick={handleClick}>
+      <div onClick={handleClick} aria-label="react-calendar">
         <ReactCalendar defaultValue={defaultValue} selectRange={selectRange} onChange={handleChange} />
       </div>
     </Menu>

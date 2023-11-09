@@ -14,6 +14,7 @@ async function fetcher(
   },
 ) {
   logger(url, arg);
+
   return fakeApi(true);
   //   return await http({ url });
 }

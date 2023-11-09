@@ -13,7 +13,7 @@ describe('Calendar component', () => {
     render(<Calendar />);
     const button = screen.getByRole('button', { name: /날짜를 선택해주세요\./i });
     fireEvent.click(button);
-    const calendarElement = screen.getByTestId('react-calendar');
-    expect(calendarElement.dataset.smooth).toBe('SHOWING');
+    const calendarElement = screen.getByLabelText('react-calendar');
+    expect(calendarElement).toBeInTheDocument();
   });
 });

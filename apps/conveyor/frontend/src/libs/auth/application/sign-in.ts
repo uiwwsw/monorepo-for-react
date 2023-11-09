@@ -17,11 +17,12 @@ async function fetcher(
   },
 ) {
   logger(url, arg);
+  if (arg.id !== 'admin' || arg.pw !== 'admin') throw new Error('아이디 또는 비번이 틀렸습니다.');
+
   const res = await fakeApi(mockData);
   LocalStorage.set('/check-auth', res);
   await mutate('/check-auth', res);
   return res;
-  //   return await http({ url });
 }
 
 export function useSignIn() {
