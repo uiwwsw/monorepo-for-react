@@ -14,7 +14,7 @@ import { HTMLProps } from "react";
     }
   }, [ref, indeterminate, rest.checked]);
 
-  return <input type="checkbox" ref={ref} className={className + ' cursor-pointer'} {...rest} />;
+  return <input type="checkbox" ref={ref} className={className + ' cursor-pointer w-5 h-5'} {...rest} />;
 }
 
 export default IndeterminateCheckbox;
