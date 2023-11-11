@@ -6,5 +6,9 @@
         "User" : "root",
         "Password" : "paSSw0rd",
         "Database" : "R301"
+    },
+    "JWT": {
+        "Secret": "EAF606C87569B2F97E230E792049833E",
+        "ExpiresIn" : "1d"
     }
 }

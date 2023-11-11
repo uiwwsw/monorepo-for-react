@@ -8,6 +8,7 @@ import swaggerSpec from './etc/swaggerOptions';
 import { Service } from './service';
 import logger from './libs/logger';
 import userRouter from './routes/userRoutes';
+import { errorHandler } from './routes/error';
 
 async function main() {
     await Service.Inst.ready();
@@ -43,9 +44,12 @@ async function main() {
         next();
     });
 
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
     // 라우터를 사용하여 '/api/users' 엔드포인트 설정
     app.use('/users', userRouter);
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+    app.use(errorHandler);
 
     app.listen(prop.PortNum, () => {
         logger.info(`Server running on http://localhost:${prop.PortNum}`);

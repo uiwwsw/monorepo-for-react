@@ -14,6 +14,7 @@ global.argv = require('optimist').argv;
 
 global.argv.nofile = false;
 global.argv.baseDir = '../src/orm';
+global.argv.dataDir = '../src/packages/backend/types/src/data';
 
 let schemas = [];
 let cfg = '../src/cfg/prop.json';
@@ -151,6 +152,7 @@ function saveDomain(schema, data, cb) {
 
     var iDomain = data.Domain;
     var schemas = [];
+    let dataAry = [];
 
     schemas.push(`import { RowDataPacket } from 'mysql2';`)
 
@@ -159,7 +161,9 @@ function saveDomain(schema, data, cb) {
         if (!table) return;
 
         let ary = [];
+        let ary2 = [];
         ary.push(`export interface ${item.Name}Row extends RowDataPacket {`);
+        ary2.push(`export interface I${item.Name} {`);
         table.forEach(function(col) {
             if (col.Name) {
                 let type = col.DataType.split('(')[0].toLowerCase();
@@ -186,16 +190,23 @@ function saveDomain(schema, data, cb) {
                         throw new Error(`unknown table:${item.TableName}, col:${col.Name}, type:${type}`);
                 }
                 ary.push(util.format('    %s : %s;', col.Name, type));
+                ary2.push(util.format('    %s : %s;', col.Name, type));
             }
         });
         ary.push('}');
+        ary2.push('}');
 
         schemas.push(ary.join('\n'));
+        dataAry.push(ary2.join('\n'));
     });
 
     let iFile = path.join(global.argv.baseDir, schema.Name + '.ts');
     fs.writeFileSync(iFile, schemas.join('\n\n'), 'utf8');
     console.log('saved %s', iFile);
+
+    let iFile2 = path.join(global.argv.dataDir, schema.Name + '.ts');
+    fs.writeFileSync(iFile2, dataAry.join('\n\n'), 'utf8');
+    console.log('saved %s', iFile2);
 
     cb(null);
 }
