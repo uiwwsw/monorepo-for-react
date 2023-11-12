@@ -21,7 +21,3 @@ body {
 :disabled {
   @apply !cursor-not-allowed;
 }
-
-:read-only {
-  @apply cursor-default;
-}
