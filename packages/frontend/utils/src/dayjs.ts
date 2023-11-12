@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import { getLang } from './locale';
 // import utc from 'dayjs/plugin/utc';
@@ -21,7 +21,7 @@ export const FORMAT_WITHOUT_TIME = (() => {
       return 'MMMM DD, YYYY';
   }
 })();
-export const newDate = (str?: unknown) => {
+export const newDate = (str?: string | Dayjs | [value: number, unit?: dayjs.ManipulateType | undefined]) => {
   if (str === undefined) return dayjs();
   if (str instanceof Array) return dayjs().add(str[0], str[1]);
   return dayjs(`${str}`);
