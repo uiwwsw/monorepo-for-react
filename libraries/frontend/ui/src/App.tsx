@@ -1,6 +1,9 @@
 import { createLogger } from '@package-frontend/utils';
 import '@package-frontend/pretendard';
 import '@package-frontend/noto-emoji';
+import Calendar from '@/Calendar';
+import Select from '@/Select';
+import Combo from '@/Combo';
 // import ModalWithPortal from '@/Modal/WithPortal';
 // import ModalWithBtn from '@/Modal/WithBtn';
 /* ======   interface   ====== */
@@ -12,6 +15,24 @@ const App = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('test');
-  return <div className="p-10"></div>;
+  return (
+    <div className="p-10">
+      <Calendar />
+      <Select
+        placeholder="시간"
+        options={Array(24)
+          .fill(null)
+          .map((_, x) => ({ label: `${x}시`, value: `${x}` }))}
+      />
+      <br />
+      <Combo
+        defaultValue="0"
+        placeholder="시간"
+        options={Array(24)
+          .fill(null)
+          .map((_, x) => ({ label: `${x}시`, value: `${x}` }))}
+      />
+    </div>
+  );
 };
 export default App;

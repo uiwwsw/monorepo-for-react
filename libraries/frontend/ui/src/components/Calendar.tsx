@@ -1,10 +1,9 @@
 import { MouseEvent, useMemo, useRef, useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import { Dayjs } from 'dayjs';
-import { FORMAT, FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
+import { FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
 import Button from './Button';
 import 'react-calendar/dist/Calendar.css';
-import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
 /* ======   interface   ====== */
@@ -13,11 +12,11 @@ export interface CalendarProps {
   selectRangeHolder?: string;
   tooltipMsg?: string;
   selectRange?: boolean;
-  defaultValue?: LooseValue;
+  defaultValue?: string;
   onChange?: (value: Dayjs | Dayjs[]) => void;
 }
 /* ======    global     ====== */
-const convertFromValueToDate = (value: unknown) =>
+const convertFromValueToDate = (value: string | string[]) =>
   value instanceof Array ? value.map((x) => newDate(x)) : newDate(value);
 const logger = createLogger('components/Calendar');
 const Calendar = ({
@@ -26,7 +25,7 @@ const Calendar = ({
   onChange,
   placeholder = '날짜를 선택해주세요.',
   selectRangeHolder = '기간을 선택해 주세요.',
-  tooltipMsg = '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.',
+  tooltipMsg = '00시 00분 00초 ~ 23시 59분 59초는 생략됩니다.',
 }: CalendarProps) => {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
@@ -38,7 +37,9 @@ const Calendar = ({
       return value instanceof Array
         ? `${newDate(value[0]).format(FORMAT_WITHOUT_TIME)} ~ ${newDate(value[1]).format(FORMAT_WITHOUT_TIME)}`
         : selectRangeHolder;
-    return value ? `${newDate(value).format(FORMAT)}` : placeholder;
+    if (value instanceof Array) return;
+
+    return value ? `${newDate(value).format(FORMAT_WITHOUT_TIME)}` : placeholder;
   }, [value]);
   /* ======   function    ====== */
   const handleClick = (e: MouseEvent) => {
@@ -46,7 +47,7 @@ const Calendar = ({
     e.stopPropagation();
   };
   const handleChange = (e: unknown) => {
-    const value = convertFromValueToDate(e);
+    const value = convertFromValueToDate(e as string | string[]);
     setValue(value);
     fakeRef.current?.click();
     onChange && onChange(value);
