@@ -3,5 +3,5 @@ export enum UserGrade {
     OPERATOR = 2,
     USER = 3,
     PENDING = 8,
-    GUEST = 9,
+    REJECTED = 9,
 }

@@ -15,33 +15,47 @@ const getToken = (session : UserSession ) => {
 
 // 인증 토큰 분석,,
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers['x-access-token'] as string || req.headers.authorization;
-
-    if (!token) {
-        return res.status(403).send('A token is required for authentication');
-    }
-
     try {
-        // 토큰 분석
-        const decoded = jwt.verify(token, Service.Inst.Prop.JWT.Secret);
-        const session = decoded as UserSession;
+        const token = req.headers['x-access-token'] as string || req.headers.authorization;
 
-        // 세션 유효성 검사(중복 로그인 방지)
-        const [rows] = await Service.Inst.MySQL.query<UserRow[]>('select grade from users where user_id = ? and session = ?', [session.user_id, session.key]);
-        if (rows.length < 1) {
-            return res.status(401).send('Expired session');
+        if (!token) {
+            //throw new Error('NEED_AUTH_TOKEN');
+            return res.status(403).send('NEED_AUTH_TOKEN');
         }
-        const row = rows[0];
-        if (row.grade !== session.grade as number) {
-            return res.status(403).send('Grade mismatch');
+    
+        try {
+            // 토큰 분석
+            const decoded = jwt.verify(token, Service.Inst.Prop.JWT.Secret);
+            const session = decoded as UserSession;
+    
+            // 세션 유효성 검사(중복 로그인 방지)
+            const [rows] = await Service.Inst.MySQL.query<UserRow[]>('select grade from users where user_id = ? and session = ?', [session.user_id, session.key]);
+            if (rows.length < 1) {
+                return res.status(401).send('EXPIRED_SESSION');
+            }
+            const row = rows[0];
+            if (row.grade !== session.grade as number) {
+                return res.status(403).send('EXPIRED_SESSION');
+            }
+    
+            res.locals.session = session;
+        } catch (err) {
+            return res.status(401).send('INVALID_AUTH_TOKEN');
         }
-
-        res.locals.session = session;
-    } catch (err) {
-        return res.status(401).send('Invalid Token');
+    
+        return next();
+    } catch (ex) {
+        let message = '';
+        if (ex instanceof Error) {
+            message = ex.message;
+        } else {
+            message = (ex as object).toString();
+        }
+        res.json({
+            message : message,
+            data : null
+        })
     }
-
-    return next();
 }
 
 export {

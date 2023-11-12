@@ -1,4 +1,5 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import { Service } from '../service';
 
 // Swagger 정의
 const swaggerDefinition = {
@@ -10,7 +11,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: `http://localhost:${Service.Inst.Prop.PortNum}`,
       description: 'Development server',
     },
   ],
