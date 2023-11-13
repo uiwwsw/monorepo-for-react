@@ -75,4 +75,5 @@ export * from './components/Size';
 export * from './utils/dateContext';
 export * from './utils/useAnimate';
 export * from './utils/useDebouce';
+export * from './utils/useCounter';
 export * from './utils/useSmooth';
