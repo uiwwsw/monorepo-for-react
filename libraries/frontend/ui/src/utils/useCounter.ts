@@ -12,7 +12,11 @@ const useCounter = (limit: number, step: number = 1) => {
     }, 1000);
     return () => clearInterval(sti);
   }, [tick]);
-  return tick;
+  return {
+    increase: tick,
+    decrease: limit - tick,
+    done: limit <= tick,
+  };
 };
 
 export default useCounter;

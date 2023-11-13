@@ -1,4 +1,4 @@
-import { useAnimate, useCounter } from '@library-frontend/ui';
+import { useCounter } from '@library-frontend/ui';
 import { useMemo } from 'react';
 const meta = {
   title: 'custom/use-api',
@@ -7,13 +7,13 @@ const meta = {
 
   argTypes: {
     children: {
-      table: {
-        type: { summary: 'string' },
+      timer: {
+        type: { summary: 'number' },
       },
     },
   },
   args: {
-    children: '내용',
+    timer: 6,
   },
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 };
@@ -21,18 +21,34 @@ const meta = {
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const UseCounter = () => {
-  const counter = useCounter(60);
-  const memo = useMemo(
+export const UseCounter = ({ timer }: { timer: number }) => {
+  const { increase, decrease, done } = useCounter(timer);
+  const memo2 = useMemo(
     () =>
-      Math.floor(counter / 60)
+      Math.floor(decrease / 60)
         .toString()
         .padStart(2, '0') +
       ':' +
-      Math.floor(counter % 60)
+      Math.floor(decrease % 60)
         .toString()
         .padStart(2, '0'),
-    [counter],
+    [decrease],
   );
-  return <>타이머: {memo}</>;
+  const memo = useMemo(
+    () =>
+      Math.floor(increase / 60)
+        .toString()
+        .padStart(2, '0') +
+      ':' +
+      Math.floor(increase % 60)
+        .toString()
+        .padStart(2, '0'),
+    [increase],
+  );
+  return (
+    <>
+      <p>타이머: {done ? '완료' : memo}</p>
+      <p>타이머: {done ? '완료' : memo2}</p>
+    </>
+  );
 };
