@@ -1,14 +1,14 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { searchArg } from '../domain';
+import { SearchArg } from '../domain';
 const logger = createLogger('stats/useGetZoneInfo');
 async function fetcher(
   url: string,
   {
     arg,
   }: {
-    arg: searchArg;
+    arg: SearchArg;
   },
 ) {
   logger(url, arg);

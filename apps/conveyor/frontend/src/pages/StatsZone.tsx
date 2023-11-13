@@ -6,11 +6,12 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { searchArg, statsZone } from '!/stats/domain';
+import { SearchArg, StatsZoneData } from '!/stats/domain';
 import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
+import { useGetGraphInfo } from '!/stats/application/get-graphInfo';
 import { Pagination } from '@library-frontend/ui';
 
-const zones: statsZone[] = [
+const zones: StatsZoneData[] = [
   { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
   { zoneID: 10102, displayName: '10102', alarmNum: 1, carrierNum: 0, warningNum: 3 },
   { zoneID: 10103, displayName: '10103', alarmNum: 0, carrierNum: 31, warningNum: 0 },
@@ -34,7 +35,7 @@ const StatsZone = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>();
-  const [renderZone, setRenderZone] = useState<statsZone[]>(zones);
+  const [renderZone, setRenderZone] = useState<StatsZoneData[]>(zones);
   const [totalPageNum, setTotalPageNum] = useState<number>(1);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const options = [
@@ -49,6 +50,7 @@ const StatsZone = () => {
   ];
 
   const { trigger, error, isMutating } = useGetZoneInfo();
+  const { trigger: graphTrigger, error: graphError, isMutating: graphMutating } = useGetGraphInfo();
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -74,8 +76,9 @@ const StatsZone = () => {
     /** find data with keyword */
   };
 
-  const handleSearch = async (arg: searchArg) => {
+  const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
+    const newGraphData = await graphTrigger(arg);
     //setRenderZone(newRenderZone)
     setTotalPageNum(Math.floor(renderZone.length / 5) + 1);
 
@@ -91,6 +94,10 @@ const StatsZone = () => {
     const newSetRenderZone = zones.slice(startIndex, endIndex);
     setCurrentPageIndex(index);
     setRenderZone(newSetRenderZone);
+  };
+
+  const onClickZoneCard = (zoneID: number) => {
+    //find data with zoneID
   };
 
   /* ======   useEffect   ====== */
@@ -141,8 +148,13 @@ const StatsZone = () => {
         />
         <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
       </div>
-      {renderZone.map((zone: statsZone) => (
-        <div className="grid border border-slate-300 my-5 p-3 rounded-md grid-cols-5 content-evenly text-center">
+      {renderZone.map((zone: StatsZoneData) => (
+        <div
+          className="grid border border-slate-300 my-5 p-3 rounded-md grid-cols-5 content-evenly text-center cursor-pointer"
+          onClick={() => {
+            onClickZoneCard(zone.zoneID);
+          }}
+        >
           <div className={colClassName + ' bg-slate-500 text-white rounded-lg'}>{zone.displayName}</div>
           <div className={colClassName}>Carrier: {zone.carrierNum}</div>
           <div className={colClassName + ' text-red-400'}>Alarm: {zone.alarmNum}</div>

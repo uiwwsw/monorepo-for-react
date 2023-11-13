@@ -2,6 +2,8 @@ import Control from './pages/Control';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import StatsZone from './pages/StatsZone';
+import StatsAlarm from './pages/StatsAlarm';
+import StatsCarrier from './pages/StatsCarrier';
 import Help from './pages/Help';
 type Tab = {
   name: string;
@@ -25,8 +27,8 @@ export const authRoutes: ParentTab[] = [
     node: StatsZone,
     group: [
       { path: '/stats/zone', name: 'ZONE', node: StatsZone },
-      { path: '/stats/alarm', name: 'ALARM', node: StatsZone },
-      { path: '/stats/carrier', name: 'CARRIER', node: StatsZone },
+      { path: '/stats/alarm', name: 'ALARM', node: StatsAlarm },
+      { path: '/stats/carrier', name: 'CARRIER', node: StatsCarrier },
     ],
   },
 ];
