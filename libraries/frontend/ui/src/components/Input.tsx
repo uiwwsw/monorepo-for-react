@@ -1,7 +1,7 @@
 import { ChangeEvent, InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 import Underbar from '$/Underbar';
 import { createLogger } from '@package-frontend/utils';
-import useDebounce from '#/useDebouce';
+import useDebounce from '#/useDebounce';
 
 /* ======   interface   ====== */
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

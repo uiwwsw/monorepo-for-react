@@ -1,5 +1,6 @@
-import { useCounter } from '@library-frontend/ui';
-import { useMemo } from 'react';
+import { Spinner, useCounter, useInfiniteScroll } from '@library-frontend/ui';
+import { wait } from '@package-frontend/utils';
+import { useMemo, useState } from 'react';
 const meta = {
   title: 'custom/use-api',
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
@@ -49,6 +50,32 @@ export const UseCounter = ({ timer }: { timer: number }) => {
     <>
       <p>타이머: {done ? '완료' : memo}</p>
       <p>타이머: {done ? '완료' : memo2}</p>
+    </>
+  );
+};
+
+export const UseInfiniteScroll = () => {
+  const [data, setData] = useState<number[]>([0]);
+  const action = async () => {
+    await wait(1000);
+    setData((prev) => [...prev, prev.length]);
+  };
+  const loading = useInfiniteScroll(action);
+
+  return (
+    <>
+      <div>
+        {data.map((x) => (
+          <div className="h-screen bg-slate-400 text-9xl flex items-center justify-center">
+            <span>{x}</span>
+          </div>
+        ))}
+        {loading && (
+          <span className="fixed inset-0 flex items-center justify-center">
+            <Spinner />
+          </span>
+        )}
+      </div>
     </>
   );
 };
