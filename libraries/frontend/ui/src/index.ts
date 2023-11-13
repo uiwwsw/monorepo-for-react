@@ -12,6 +12,9 @@ export * from './components/Calendar';
 export { default as Checkbox } from './components/Checkbox';
 export * from './components/Checkbox';
 
+export { default as Combo } from './components/Combo';
+export * from './components/Combo';
+
 export { default as Input } from './components/Input';
 export * from './components/Input';
 
@@ -71,4 +74,5 @@ export * from './components/Size';
 
 export * from './utils/dateContext';
 export * from './utils/useAnimate';
+export * from './utils/useDebouce';
 export * from './utils/useSmooth';

@@ -1,6 +1,6 @@
 import { ChangeEvent, SelectHTMLAttributes, forwardRef, useCallback, useState } from 'react';
-import Underbar, { focusClassName as decoratorClassName } from '$/Underbar';
-import Caret, { focusClassName as caretClassName } from '$/Caret';
+import Underbar from '$/Underbar';
+import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -23,7 +23,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       { disabled: true, hidden: true, label: placeholder, value: '' },
       ...options,
     ];
-    const selectClassName = `${decoratorClassName} ${caretClassName} focus:outline-none pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
+    const selectClassName = `focus:outline-none pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
       className ? ` ${className}` : ''
     }${value === '' && !init ? ' text-gray-400' : ''}`;
 
