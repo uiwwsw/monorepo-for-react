@@ -72,8 +72,9 @@ export * from './components/Toast/WithPortal';
 export * from './components/Color';
 export * from './components/Size';
 
-export * from './utils/dateContext';
 export * from './utils/useAnimate';
 export * from './utils/useDebouce';
 export * from './utils/useCounter';
+export * from './utils/usePosition';
 export * from './utils/useSmooth';
+export * from './utils/useThrottle';

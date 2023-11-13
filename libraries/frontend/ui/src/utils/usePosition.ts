@@ -1,6 +1,6 @@
 import { RefObject, useState } from 'react';
 /* ======   interface   ====== */
-export interface UseSmoothProps {
+export interface UsePositionProps {
   targetRef: RefObject<HTMLElement>;
 }
 /* ======    global     ====== */
@@ -19,7 +19,7 @@ const getScrollbarWidth = () => {
 
   return scrollbarWidth;
 };
-export const usePosition = ({ targetRef }: UseSmoothProps) => {
+const usePosition = ({ targetRef }: UsePositionProps) => {
   /* ======   variables   ====== */
   const [position, _setPosition] = useState<{
     top?: string;
@@ -62,3 +62,5 @@ export const usePosition = ({ targetRef }: UseSmoothProps) => {
 
   return { setPosition, position };
 };
+
+export default usePosition;

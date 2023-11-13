@@ -3,7 +3,7 @@ import Portal from '@/Portal';
 import { MouseEvent, ReactNode, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';
 import Button from '@/Button';
-import { usePosition } from '#/usePosition';
+import usePosition from '#/usePosition';
 
 /* ======   interface   ====== */
 export interface MenuProps {
