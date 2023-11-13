@@ -11,6 +11,6 @@ async function fetcher(url: string) {
   //   return await http({ url });
 }
 
-export function useTcmInfo() {
-  return useSWR('/tcmInfo', fetcher);
+export function useServerInfo() {
+  return useSWR('/serverInfo', fetcher);
 }
