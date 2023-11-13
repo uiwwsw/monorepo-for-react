@@ -1,4 +1,4 @@
-import { useSmooth } from '#/useSmooth';
+import useSmooth from '#/useSmooth';
 import { createLogger } from '@package-frontend/utils';
 import { HTMLAttributes, ReactNode, useMemo, useRef } from 'react';
 /* ======   interface   ====== */

@@ -72,9 +72,9 @@ export * from './components/Toast/WithPortal';
 export * from './components/Color';
 export * from './components/Size';
 
-export * from './utils/useAnimate';
-export * from './utils/useDebouce';
-export * from './utils/useCounter';
-export * from './utils/usePosition';
-export * from './utils/useSmooth';
-export * from './utils/useThrottle';
+export { default as useAnimate } from './utils/useAnimate';
+export { default as useDebouce } from './utils/useDebouce';
+export { default as useCounter } from './utils/useCounter';
+export { default as usePosition } from './utils/usePosition';
+export { default as useSmooth } from './utils/useSmooth';
+export { default as useThrottle } from './utils/useThrottle';

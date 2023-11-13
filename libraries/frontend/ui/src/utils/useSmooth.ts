@@ -13,7 +13,7 @@ export interface UseSmoothProps {
   ref: RefObject<HTMLElement>;
 }
 /* ======    global     ====== */
-export const useSmooth = ({ value, delay, onFinished, ref }: UseSmoothProps) => {
+const useSmooth = ({ value, delay, onFinished, ref }: UseSmoothProps) => {
   /* ======   variables   ====== */
   let effect: Effect;
   /* ======   function    ====== */
@@ -31,3 +31,5 @@ export const useSmooth = ({ value, delay, onFinished, ref }: UseSmoothProps) => 
     return () => clearTimeout(timer);
   }, [value]);
 };
+
+export default useSmooth;

@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, MouseEvent, useCallback, useRef, useState } from 'react';
 import { wait } from '@package-frontend/utils';
-import { useSmooth } from '#/useSmooth';
+import useSmooth from '#/useSmooth';
 import Spinner from '$/Spinner';
-import { generateRipple } from '#/generateRipple';
+import generateRipple from '#/generateRipple';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
