@@ -45,22 +45,18 @@ const Table = <T,>({
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
                 <Checkbox
-                  {...{
-                    checked: table.getIsAllRowsSelected(),
-                    indeterminate: table.getIsSomeRowsSelected(),
-                    onChange: table.getToggleAllRowsSelectedHandler(),
-                  }}
+                  checked={table.getIsAllRowsSelected()}
+                  indeterminate={table.getIsSomeRowsSelected()}
+                  onChange={table.getToggleAllRowsSelectedHandler()}
                 />
               ),
               cell: ({ row }: { row: Row<T> }) => (
                 <div className="px-1">
                   <Checkbox
-                    {...{
-                      checked: row.getIsSelected(),
-                      disabled: !row.getCanSelect(),
-                      indeterminate: row.getIsSomeSelected(),
-                      onChange: row.getToggleSelectedHandler(),
-                    }}
+                    checked={row.getIsSelected()}
+                    disabled={!row.getCanSelect()}
+                    indeterminate={row.getIsSomeSelected()}
+                    onChange={row.getToggleSelectedHandler()}
                   />
                 </div>
               ),
@@ -83,10 +79,8 @@ const Table = <T,>({
                   <Button
                     themeColor={null}
                     themeSize={null}
-                    {...{
-                      onClick: row.getToggleExpandedHandler(),
-                      style: { cursor: 'pointer' },
-                    }}
+                    onClick={row.getToggleExpandedHandler()}
+                    style={{ cursor: 'pointer' }}
                   >
                     {row.getIsExpanded() ? '👇' : '👉'}
                   </Button>
@@ -194,10 +188,8 @@ const Table = <T,>({
                     >
                       {header.isPlaceholder ? null : (
                         <div
-                          {...{
-                            className: header.column.getCanSort() ? 'flex cursor-pointer select-none gap-1' : '',
-                            onClick: header.column.getToggleSortingHandler(),
-                          }}
+                          className={header.column.getCanSort() ? 'flex cursor-pointer select-none gap-1' : ''}
+                          onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           <span>

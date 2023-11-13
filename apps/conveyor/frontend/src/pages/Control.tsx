@@ -3,8 +3,8 @@ import { mockData } from '!/tcm/domain';
 import { createLogger } from '@package-frontend/utils';
 import React from 'react';
 import { makeData } from '!/test/makeData';
-import ReusableTable from '@/Table/ReusableTable';
 import { Button } from '@library-frontend/ui';
+import Table from '@/Table';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -19,14 +19,14 @@ const Control = () => {
 
   return (
     <div className="p-2">
-      <ReusableTable
+      <Table
         thead={['firstName', 'lastName', 'age', 'visits', 'status', 'progress']}
         data={data}
         makePagination={true}
         makeColumnSelect={true}
         renderSelectComponent={renderSelectComponent}
         renderSubComponent={renderSubComponent}
-      ></ReusableTable>
+      ></Table>
     </div>
   );
 };

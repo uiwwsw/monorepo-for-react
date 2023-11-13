@@ -1,10 +1,11 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef, useEffect, useRef } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {
   children?: string;
+  indeterminate?: boolean;
 }
 /* ======    global     ====== */
 const commonClassName = `
@@ -48,10 +49,17 @@ const colorClassName = `
 `;
 const logger = createLogger('components/Checkbox');
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ children, themeColor = 'primary', themeSize = 'md', ...props }, ref) => {
+  ({ children, themeColor = 'primary', themeSize = 'md', indeterminate, ...props }) => {
     /* ======   variables   ====== */
+    const inputRef = useRef<HTMLInputElement>(null);
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.indeterminate = indeterminate ?? false;
+      }
+    }, [indeterminate]);
+
     logger('render');
 
     return (
@@ -59,10 +67,14 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         data-color={themeColor}
         data-size={themeSize}
         role="button"
-        className="inline-flex align-middle items-center"
+        className="inline-flex align-middle items-center relative"
       >
-        <input type="checkbox" ref={ref} className="hidden" {...props} />
-        <i className={commonClassName + sizeClassName + colorClassName} />
+        <input type="checkbox" ref={inputRef} className="hidden" {...props} />
+        <i className={`${commonClassName} ${sizeClassName} ${colorClassName}`}>
+          {indeterminate && !props.checked && (
+            <span className="absolute inset-0 flex justify-center items-center">—</span>
+          )}
+        </i>
         {children && (
           <span className="ml-2 text-xs" role="textbox">
             {children}
