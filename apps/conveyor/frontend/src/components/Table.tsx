@@ -1,5 +1,4 @@
 import { createLogger } from '@package-frontend/utils';
-import { HTMLProps } from 'react';
 import {
   useReactTable,
   ColumnDef,
@@ -9,17 +8,17 @@ import {
   SortingState,
   flexRender,
   getExpandedRowModel,
-  FilterFn,
   getFilteredRowModel,
+  Table,
+  Row,
+  Column,
 } from '@tanstack/react-table';
 import React from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Input, Select } from '@library-frontend/ui';
-import IndeterminateCheckbox from './IndeterminateCheckbox';
-import DebouncedInput from './DebouncedInput';
+import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 
 /* ======   interface   ====== */
-export interface ReusableTableProps<T> {
+export interface TableProps<T> {
   thead: string[];
   data: T[];
   makePagination?: boolean;
@@ -27,26 +26,25 @@ export interface ReusableTableProps<T> {
   renderSelectComponent?: () => React.ReactElement | null;
   renderSubComponent?: () => React.ReactElement | null;
 }
-
 /* ======    global     ====== */
-const logger = createLogger('Component/ReusableTable');
+const logger = createLogger('Component/Table');
 
-export function ReusableTable<T>({
+const Table = <T,>({
   thead,
   data,
   makePagination = false,
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
-}: ReusableTableProps<T>) {
+}: TableProps<T>) => {
   const defaultColumns = React.useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
         ? [
             {
               id: 'select',
-              header: ({ table }) => (
-                <IndeterminateCheckbox
+              header: ({ table }: { table: Table<T> }) => (
+                <Checkbox
                   {...{
                     checked: table.getIsAllRowsSelected(),
                     indeterminate: table.getIsSomeRowsSelected(),
@@ -54,9 +52,9 @@ export function ReusableTable<T>({
                   }}
                 />
               ),
-              cell: ({ row }) => (
+              cell: ({ row }: { row: Row<T> }) => (
                 <div className="px-1">
-                  <IndeterminateCheckbox
+                  <Checkbox
                     {...{
                       checked: row.getIsSelected(),
                       disabled: !row.getCanSelect(),
@@ -73,23 +71,25 @@ export function ReusableTable<T>({
       ...thead.map((key) => ({
         accessorKey: key,
         header: key.replace(/^\w/, (c) => c.toUpperCase()),
-        footer: (props) => props.column.id,
+        footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent
         ? [
             {
               id: 'expander',
               header: () => null,
-              cell: ({ row }) => {
+              cell: ({ row }: { row: Row<T> }) => {
                 return row.getCanExpand() ? (
-                  <button
+                  <Button
+                    themeColor={null}
+                    themeSize={null}
                     {...{
                       onClick: row.getToggleExpandedHandler(),
                       style: { cursor: 'pointer' },
                     }}
                   >
                     {row.getIsExpanded() ? '👇' : '👉'}
-                  </button>
+                  </Button>
                 ) : (
                   '🔵'
                 );
@@ -118,7 +118,13 @@ export function ReusableTable<T>({
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
+    globalFilterFn: (row, columnId, value, addMeta) => {
+      const itemRank = rankItem(row.getValue(columnId), value);
+      addMeta({
+        itemRank,
+      });
+      return itemRank.passed;
+    },
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -144,14 +150,11 @@ export function ReusableTable<T>({
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
             <label className="flex items-center space-x-2">
-              <input
-                {...{
-                  type: 'checkbox',
-                  className: 'form-checkbox h-5 w-5 text-blue-600',
-                  checked: table.getIsAllColumnsVisible(),
-                  onChange: table.getToggleAllColumnsVisibilityHandler(),
-                }}
+              <Checkbox
+                checked={table.getIsAllColumnsVisible()}
+                onChange={table.getToggleAllColumnsVisibilityHandler()}
               />
+
               <span className="text-gray-700 font-medium">전체 선택</span>
             </label>
           </div>
@@ -159,14 +162,7 @@ export function ReusableTable<T>({
             {table.getAllLeafColumns().map((column) => {
               return (
                 <label key={column.id} className="flex items-center space-x-2 mr-4">
-                  <input
-                    {...{
-                      type: 'checkbox',
-                      className: 'form-checkbox h-5 w-5 text-blue-600',
-                      checked: column.getIsVisible(),
-                      onChange: column.getToggleVisibilityHandler(),
-                    }}
-                  />
+                  <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()} />
                   <span className="text-gray-700 font-medium">{column.id}</span>
                 </label>
               );
@@ -175,10 +171,9 @@ export function ReusableTable<T>({
         </div>
       )}
       <div className="flex justify-between items-center">
-        <DebouncedInput
+        <Input
           value={globalFilter ?? ''}
-          onChange={(value) => setGlobalFilter(String(value))}
-          className="p-2 font-lg shadow border border-block"
+          onChange={({ currentTarget }) => setGlobalFilter(currentTarget.value)}
           placeholder="검색어를 입력하세요"
         />
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
@@ -200,14 +195,14 @@ export function ReusableTable<T>({
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
-                            className: header.column.getCanSort() ? 'cursor-pointer select-none' : '',
+                            className: header.column.getCanSort() ? 'flex cursor-pointer select-none gap-1' : '',
                             onClick: header.column.getToggleSortingHandler(),
                           }}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           <span>
-                            {header.column.getIsSorted() === 'asc' && ' 🔼'}
-                            {header.column.getIsSorted() === 'desc' && ' 🔽'}
+                            {header.column.getIsSorted() === 'asc' && '🔼'}
+                            {header.column.getIsSorted() === 'desc' && '🔽'}
                           </span>
                         </div>
                       )}
@@ -258,7 +253,7 @@ export function ReusableTable<T>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            {'<<'}
+            ❮❮
           </Button>
           <Button
             themeColor="secondary"
@@ -266,7 +261,7 @@ export function ReusableTable<T>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {'<'}
+            ❮
           </Button>
           <Button
             themeColor="secondary"
@@ -274,7 +269,7 @@ export function ReusableTable<T>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            {'>'}
+            ❯
           </Button>
           <Button
             themeColor="secondary"
@@ -282,7 +277,7 @@ export function ReusableTable<T>({
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            {'>>'}
+            ❯❯
           </Button>
           <span className="flex items-center gap-1">
             <div>페이지</div>
@@ -315,16 +310,6 @@ export function ReusableTable<T>({
       <hr />
     </div>
   );
-}
-
-
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value);
-  addMeta({
-    itemRank,
-  });
-  return itemRank.passed;
 };
 
-export default ReusableTable;
+export default Table;
