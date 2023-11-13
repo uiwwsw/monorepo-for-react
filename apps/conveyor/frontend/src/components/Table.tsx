@@ -1,5 +1,4 @@
 import { createLogger } from '@package-frontend/utils';
-import { HTMLProps } from 'react';
 import {
   useReactTable,
   ColumnDef,
@@ -9,7 +8,6 @@ import {
   SortingState,
   flexRender,
   getExpandedRowModel,
-  FilterFn,
   getFilteredRowModel,
   Table,
   Row,
@@ -18,11 +16,9 @@ import {
 import React from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
-import IndeterminateCheckbox from './IndeterminateCheckbox';
-import DebouncedInput from './DebouncedInput';
 
 /* ======   interface   ====== */
-export interface ReusableTableProps<T> {
+export interface TableProps<T> {
   thead: string[];
   data: T[];
   makePagination?: boolean;
@@ -30,18 +26,17 @@ export interface ReusableTableProps<T> {
   renderSelectComponent?: () => React.ReactElement | null;
   renderSubComponent?: () => React.ReactElement | null;
 }
-
 /* ======    global     ====== */
-const logger = createLogger('Component/ReusableTable');
+const logger = createLogger('Component/Table');
 
-export function ReusableTable<T>({
+const Table = <T,>({
   thead,
   data,
   makePagination = false,
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
-}: ReusableTableProps<T>) {
+}: TableProps<T>) => {
   const defaultColumns = React.useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
@@ -49,7 +44,7 @@ export function ReusableTable<T>({
             {
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
-                <IndeterminateCheckbox
+                <Checkbox
                   {...{
                     checked: table.getIsAllRowsSelected(),
                     indeterminate: table.getIsSomeRowsSelected(),
@@ -59,7 +54,7 @@ export function ReusableTable<T>({
               ),
               cell: ({ row }: { row: Row<T> }) => (
                 <div className="px-1">
-                  <IndeterminateCheckbox
+                  <Checkbox
                     {...{
                       checked: row.getIsSelected(),
                       disabled: !row.getCanSelect(),
@@ -123,7 +118,13 @@ export function ReusableTable<T>({
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
+    globalFilterFn: (row, columnId, value, addMeta) => {
+      const itemRank = rankItem(row.getValue(columnId), value);
+      addMeta({
+        itemRank,
+      });
+      return itemRank.passed;
+    },
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -309,14 +310,6 @@ export function ReusableTable<T>({
       <hr />
     </div>
   );
-}
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value);
-  addMeta({
-    itemRank,
-  });
-  return itemRank.passed;
 };
 
-export default ReusableTable;
+export default Table;
