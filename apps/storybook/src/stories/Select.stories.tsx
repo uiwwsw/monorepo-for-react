@@ -5,7 +5,6 @@ const meta = {
   component: Select,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
-    layout: 'centered',
     componentSubtitle: '클릭 시 보기 제공',
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
@@ -58,4 +57,7 @@ export default meta;
 
 export const normal = ({ error, options }: SelectProps) => {
   return <Select error={error} options={options} onChange={(x) => alert(x.target.value)} />;
+};
+export const block = ({ error, options }: SelectProps) => {
+  return <Select className="w-full" error={error} options={options} onChange={(x) => alert(x.target.value)} />;
 };

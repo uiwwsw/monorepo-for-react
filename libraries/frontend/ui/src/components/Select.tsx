@@ -23,9 +23,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       { disabled: true, hidden: true, label: placeholder, value: '' },
       ...options,
     ];
-    const selectClassName = `focus:outline-none pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
-      className ? ` ${className}` : ''
-    }${value === '' && !init ? ' text-gray-400' : ''}`;
 
     /* ======   function    ====== */
     const adapterChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -41,14 +38,16 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     /* ======   useEffect   ====== */
     logger('render');
     return (
-      <span className="inline-flex items-center relative">
+      <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
         <select
           {...props}
           disabled={disabled}
           defaultValue={value}
           onChange={adapterChange}
           ref={ref}
-          className={selectClassName}
+          className={`flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
+            value === '' && !init ? ' text-gray-400' : ''
+          }`}
         >
           {adapterOption.map((x, i) => (
             <option className={getOptionClassName(x)} key={i} value={x.value} disabled={x.disabled} hidden={x.hidden}>
@@ -58,7 +57,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </select>
         <Caret disabled={disabled} className="!w-0 -translate-x-6" />
         <Underbar disabled={disabled} error={error} />
-      </span>
+      </label>
     );
   },
 );

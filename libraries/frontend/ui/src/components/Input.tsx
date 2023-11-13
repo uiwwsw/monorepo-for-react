@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     /* ======   variables   ====== */
     const handleChange = debounceTime ? useDebounce<ChangeEvent<HTMLInputElement>>(onChange, debounceTime) : onChange;
-    const wrapClassName = `flex items-center relative${className ? ` ${className}` : ''}`;
+    const wrapClassName = `inline-flex items-center relative${className ? ` ${className}` : ''}`;
     const inputClassName = `w-full focus:outline-none p-3 bg-transparent outline-none`;
 
     /* ======   function    ====== */

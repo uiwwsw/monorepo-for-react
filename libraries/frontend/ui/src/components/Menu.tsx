@@ -7,7 +7,7 @@ import { usePosition } from '#/usePosition';
 
 /* ======   interface   ====== */
 export interface MenuProps {
-  width?: number;
+  width?: string;
   children?: ReactNode;
   button?: ReactNode;
   onFinished?: (value: boolean) => unknown;
@@ -15,7 +15,6 @@ export interface MenuProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Menu');
-const wrapClassName = `inline-block`;
 const contentClassName = `z-20 absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full`;
 const Menu = ({
   button = (
@@ -25,11 +24,11 @@ const Menu = ({
   ),
   isBodyClickClose = true,
   children,
-  width = 200,
+  width = '200px',
   onFinished,
 }: MenuProps) => {
   /* ======   variables   ====== */
-  const widthStyle = useMemo(() => (width ? width + 'px' : 'initial'), [width]);
+  const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const { setPosition, position } = usePosition({ targetRef: wrapRef });
@@ -47,8 +46,10 @@ const Menu = ({
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div onClick={handleClose} className={wrapClassName} ref={wrapRef} style={{ width: widthStyle }}>
-      <span onClick={handleOpen}>{button}</span>
+    <div onClick={handleClose} className="inline-flex" ref={wrapRef} style={{ width: widthStyle }}>
+      <span className="flex-1" onClick={handleOpen}>
+        {button}
+      </span>
       <Portal>
         <Smooth
           value={open}
