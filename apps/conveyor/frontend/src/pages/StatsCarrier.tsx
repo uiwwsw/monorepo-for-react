@@ -5,7 +5,8 @@ import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SearchArg, StatsZoneData } from '!/stats/domain';
-import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
+import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
+import { StatsCarrierData } from '!/stats/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -16,17 +17,42 @@ const StatsCarrier = () => {
 
   const { setChildren } = useHeaderContext();
 
-  const [duration, setDuration] = useState<Dayjs[]>();
+  const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
+  const [renderCarrierList, setRenderCarrierList] = useState<StatsCarrierData[]>([]);
 
-  const { trigger, error, isMutating } = useGetZoneInfo();
+  const { trigger, error, isMutating } = useGetCarrierInfo();
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const onChangeSearchKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    /** find data with keyword */
+  const onChangeSearchKeyword = async (character: string) => {
+    if (character === '') return;
+
+    const regex1 = new RegExp(character);
+    const find = [...renderCarrierList.values()].filter((carrier) => {
+      let str = JSON.stringify(carrier);
+      if (regex1.exec(str) !== null) return true;
+      else return false;
+    });
+
+    const arg: SearchArg = {
+      startTime: duration[0].toString(),
+      endTime: duration[1].toString(),
+      character: character,
+    };
+
+    const searchedCarrierList = await trigger(arg);
+
+    if (searchedCarrierList && searchedCarrierList.length > 0) {
+      setRenderCarrierList(searchedCarrierList.concat(find));
+      return;
+    }
+
+    if (find.length > 0) {
+      setRenderCarrierList(find);
+    }
   };
 
   const handleSearch = async (arg: SearchArg) => {

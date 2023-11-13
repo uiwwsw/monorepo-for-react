@@ -4,8 +4,8 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg } from '!/stats/domain';
-import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
+import { SearchArg, StatsAlarmData } from '!/stats/domain';
+import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -16,17 +16,42 @@ const StatsAlarm = () => {
 
   const { setChildren } = useHeaderContext();
 
-  const [duration, setDuration] = useState<Dayjs[]>();
+  const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
+  const [renderAlarmList, setRenderAlarmList] = useState<StatsAlarmData[]>([]);
 
-  const { trigger, error, isMutating } = useGetZoneInfo();
+  const { trigger, error, isMutating } = useGetAlarmInfo();
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const onChangeSearchKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    /** find data with keyword */
+  const onChangeSearchKeyword = async (character: string) => {
+    if (character === '') return;
+
+    const regex1 = new RegExp(character);
+    const find = [...renderAlarmList.values()].filter((carrier) => {
+      let str = JSON.stringify(carrier);
+      if (regex1.exec(str) !== null) return true;
+      else return false;
+    });
+
+    const arg: SearchArg = {
+      startTime: duration[0].toString(),
+      endTime: duration[1].toString(),
+      character: character,
+    };
+
+    const searchedAlarmList = await trigger(arg);
+
+    if (searchedAlarmList && searchedAlarmList.length > 0) {
+      setRenderAlarmList(searchedAlarmList.concat(find));
+      return;
+    }
+
+    if (find.length > 0) {
+      setRenderAlarmList(find);
+    }
   };
 
   const handleSearch = async (arg: SearchArg) => {

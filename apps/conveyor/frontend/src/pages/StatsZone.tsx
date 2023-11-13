@@ -26,7 +26,7 @@ const zones: StatsZoneData[] = [
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats');
-const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2';
+const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-sm';
 const colClassName = 'flex justify-center flex-col';
 const StatsZone = () => {
   /* ======   variables   ====== */
@@ -34,7 +34,7 @@ const StatsZone = () => {
 
   const { setChildren } = useHeaderContext();
 
-  const [duration, setDuration] = useState<Dayjs[]>();
+  const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [renderZone, setRenderZone] = useState<StatsZoneData[]>(zones);
   const [totalPageNum, setTotalPageNum] = useState<number>(1);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
@@ -57,15 +57,9 @@ const StatsZone = () => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const handleChipChange = (index: number) => {
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        break;
-      case 2:
-        break;
-    }
+  const handleChipChange = async (index: number) => {
+    const arg: SearchArg = { startTime: duration[0].toString(), endTime: duration[1].toString(), sortValue: index };
+    const newRenderZone = await trigger(arg);
   };
 
   const onChangeGraphPort = (e: ChangeEvent<HTMLSelectElement>) => {

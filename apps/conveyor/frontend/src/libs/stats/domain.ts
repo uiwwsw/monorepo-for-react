@@ -10,6 +10,7 @@ export interface SearchArg {
   startTime: string;
   endTime: string;
   sortValue?: number;
+  character?: string;
 }
 
 export interface GraphDataDetail {
@@ -39,8 +40,23 @@ export interface StatsCarrierData {
   completeTime: string;
 }
 
-export enum sortValue {
+export enum SortValue {
   zoneID = 0,
   alarmNum,
   carrierNum,
+}
+
+export enum KeywordFunction {
+  ZONE = 0,
+  ALARM,
+  CARRIER,
+}
+
+export interface searchWithKeywordProps {
+  keyword: string;
+  currentRenderList: [];
+  setRenderList: ([]) => void;
+  startTime: string;
+  endTime: string;
+  functionValue: KeywordFunction;
 }
