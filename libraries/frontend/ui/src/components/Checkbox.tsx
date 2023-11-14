@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, useEffect, useRef } from 'react';
+import { InputHTMLAttributes, forwardRef } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
@@ -11,7 +11,7 @@ export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, Wi
 const commonClassName = `
 overflow-hidden
  relative
- [:checked+&:before]:scale-0
+ [:not([data-indeterminate]):checked+&:before]:scale-0
  shadow-sm 
   shadow-gray-400
   before:absolute
@@ -37,6 +37,10 @@ overflow-hidden
  after:w-2
  after:h-3
  after:origin-center
+ [[data-indeterminate]+&:after]:rotate-90
+ [[data-indeterminate]+&:after]:border-b-0
+ [[data-indeterminate]+&:after]:-mt-2.5
+ [[data-indeterminate]+&:after]:border-gray-500
 `;
 const sizeClassName = `
 [[data-size="sm"]>&]:w-5 [[data-size="sm"]>&]:h-5
@@ -49,17 +53,10 @@ const colorClassName = `
 `;
 const logger = createLogger('components/Checkbox');
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ children, themeColor = 'primary', themeSize = 'md', indeterminate, ...props }) => {
+  ({ indeterminate, children, themeColor = 'primary', themeSize = 'md', ...props }, ref) => {
     /* ======   variables   ====== */
-    const inputRef = useRef<HTMLInputElement>(null);
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
-    useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.indeterminate = indeterminate ?? false;
-      }
-    }, [indeterminate]);
-
     logger('render');
 
     return (
@@ -67,14 +64,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         data-color={themeColor}
         data-size={themeSize}
         role="button"
-        className="inline-flex align-middle items-center relative"
+        className="inline-flex align-middle items-center"
       >
-        <input type="checkbox" ref={inputRef} className="hidden" {...props} />
-        <i className={`${commonClassName} ${sizeClassName} ${colorClassName}`}>
-          {indeterminate && !props.checked && (
-            <span className="absolute inset-0 flex justify-center items-center">—</span>
-          )}
-        </i>
+        <input data-indeterminate={indeterminate} type="checkbox" ref={ref} className="hidden" {...props} />
+        <i className={commonClassName + sizeClassName + colorClassName} />
         {children && (
           <span className="ml-2 text-xs" role="textbox">
             {children}
