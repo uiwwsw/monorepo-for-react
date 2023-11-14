@@ -57,9 +57,6 @@ export * from './styles/Spinner';
 export { default as Tab } from './components/Tab';
 export * from './components/Tab';
 
-export { default as Table } from './components/Table';
-export * from './components/Table';
-
 export { default as Tooltip } from './components/Tooltip';
 export * from './components/Tooltip';
 

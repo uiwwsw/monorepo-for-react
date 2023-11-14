@@ -26,7 +26,7 @@ const PrivateLayout = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-auto flex flex-col">
+      <div className="flex-auto flex flex-col max-w-full">
         <HeaderContext.Provider
           value={{
             children: headerSlot,
