@@ -59,19 +59,21 @@ const StatsZone = () => {
   const handleChipChange = async (index: number) => {
     const arg: SearchArg = { startTime: duration[0].toString(), endTime: duration[1].toString(), sortValue: index };
     const newRenderZone = await trigger(arg);
+    logger(newRenderZone);
   };
 
-  const onChangeGraphPort = (e: ChangeEvent<HTMLSelectElement>) => {
+  const onChangeGraphPort = (_: ChangeEvent<HTMLSelectElement>) => {
     /* find data with selected port */
   };
 
-  const onChangeSearchKeyword = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearchKeyword = (_: ChangeEvent<HTMLInputElement>) => {
     /** find data with keyword */
   };
 
   const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
     const newGraphData = await graphTrigger(arg);
+    logger(newRenderZone, newGraphData);
     //setRenderZone(newRenderZone)
     setTotalPageNum(Math.floor(renderZone.length / 5) + 1);
 
@@ -89,7 +91,7 @@ const StatsZone = () => {
     setRenderZone(newSetRenderZone);
   };
 
-  const onClickZoneCard = (zoneID: number) => {
+  const onClickZoneCard = (_: number) => {
     //find data with zoneID
   };
 
@@ -110,7 +112,7 @@ const StatsZone = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render');
+  logger('render', error, isMutating, graphError, graphMutating, totalPageNum, currentPageIndex);
   return (
     <>
       <div className="h-60 flex rounded-xl border mb-3">

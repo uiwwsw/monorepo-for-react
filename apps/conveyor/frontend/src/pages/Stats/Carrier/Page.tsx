@@ -2,9 +2,9 @@ import { useHeaderContext } from '@/HeaderContext';
 import { Calendar } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg, StatsZoneData } from '!/stats/domain';
+import { SearchArg } from '!/stats/domain';
 import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
 import { StatsCarrierData } from '!/stats/domain';
 
@@ -57,6 +57,7 @@ const StatsCarrier = () => {
 
   const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
+    logger(newRenderZone);
     //setRenderZone(newRenderZone)
   };
 
@@ -76,7 +77,7 @@ const StatsCarrier = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render');
+  logger('render', onChangeSearchKeyword, error, isMutating);
   return <></>;
 };
 

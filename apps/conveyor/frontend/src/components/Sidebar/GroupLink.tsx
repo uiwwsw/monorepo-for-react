@@ -1,5 +1,4 @@
 import { createLogger } from '@package-frontend/utils';
-import { createElement } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tab } from 'src/routes';

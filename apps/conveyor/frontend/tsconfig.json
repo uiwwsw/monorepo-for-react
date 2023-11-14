@@ -7,6 +7,7 @@
     "baseUrl": ".",
     "moduleResolution": "bundler",
     "paths": {
+      "src/*": ["./src/*"],
       "!/*": ["./src/libs/*"],
       "@/*": ["./src/components/*"],
       "#/*": ["./src/utils/*"]

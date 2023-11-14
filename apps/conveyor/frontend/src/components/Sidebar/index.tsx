@@ -1,10 +1,10 @@
 import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import { Link, useLocation } from 'react-router-dom';
-import { authRoutes, commonRoutes } from '../../routes';
 import GroupLink from './GroupLink';
 import { Button } from '@library-frontend/ui';
 import { useState } from 'react';
+import { authRoutes, commonRoutes } from 'src/routes';
 
 /* ======   interface   ====== */
 export interface NavProps {}
@@ -48,9 +48,7 @@ const Nav = (_: NavProps) => {
         <GroupLink routes={commonRoutes} />
       </nav>
       <hr />
-      <footer className="text-white text-[10px] p-2 pt-0 text-center">
-        © 2023 semi-ts, Inc. all rights reserved.
-      </footer>
+      <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>
     </div>
   );
 };

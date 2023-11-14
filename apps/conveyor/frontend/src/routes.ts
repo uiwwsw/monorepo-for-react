@@ -4,9 +4,9 @@ const Control = lazy(() => import('./pages/Control/Page'));
 const SignUp = lazy(() => import('./pages/SignUp'));
 const SignIn = lazy(() => import('./pages/SignIn'));
 const Stats = lazy(() => import('./pages/Stats/Page'));
-const StatsZone = lazy(() => import('./pages/Stats/StatsZone'));
-const StatsAlarm = lazy(() => import('./pages/Stats/StatsAlarm'));
-const StatsCarrier = lazy(() => import('./pages/Stats/StatsCarrier'));
+const StatsZone = lazy(() => import('./pages/Stats/Zone/Page'));
+const StatsAlarm = lazy(() => import('./pages/Stats/Alarm/Page'));
+const StatsCarrier = lazy(() => import('./pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('./pages/Help'));
 export interface Group {
   name: string;

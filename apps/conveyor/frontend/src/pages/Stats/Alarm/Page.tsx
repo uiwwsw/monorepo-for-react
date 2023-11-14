@@ -2,7 +2,7 @@ import { useHeaderContext } from '@/HeaderContext';
 import { Calendar } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SearchArg, StatsAlarmData } from '!/stats/domain';
 import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
@@ -56,6 +56,7 @@ const StatsAlarm = () => {
 
   const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
+    logger(newRenderZone);
     //setRenderZone(newRenderZone)
   };
 
@@ -75,7 +76,7 @@ const StatsAlarm = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render');
+  logger('render', error, isMutating, onChangeSearchKeyword);
   return <></>;
 };
 
