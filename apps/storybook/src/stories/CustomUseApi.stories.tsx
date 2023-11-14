@@ -66,7 +66,7 @@ export const UseInfiniteScroll = () => {
     <>
       <div>
         {data.map((x) => (
-          <div className="h-screen bg-slate-400 text-9xl flex items-center justify-center">
+          <div key={x} className="h-screen bg-slate-400 text-9xl flex items-center justify-center">
             <span>{x}</span>
           </div>
         ))}

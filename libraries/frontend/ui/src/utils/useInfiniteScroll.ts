@@ -1,15 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDebounce from './useDebounce';
 
 const useInfiniteScroll = (fn: () => Promise<unknown>) => {
   const [loading, setLoading] = useState(false);
-  const prevScroll = useRef(0);
   const onScroll = useDebounce(async () => {
     const { scrollY, innerHeight } = window;
-    const direct = scrollY > prevScroll.current;
-    prevScroll.current = scrollY;
     const { clientHeight } = document.body;
-    if (scrollY + innerHeight >= clientHeight - 50 && !loading && direct) {
+    if (scrollY + innerHeight >= clientHeight - 50 && !loading) {
       setLoading(true);
       await fn();
       setLoading(false);
