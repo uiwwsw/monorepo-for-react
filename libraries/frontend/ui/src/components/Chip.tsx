@@ -8,17 +8,22 @@ export interface ChipProps extends WithEval<number> {
   labels: (string | number)[];
   className?: string;
   defaultValue?: number[];
+  multiChoice?: boolean;
+  themeSize?: 'xl' | 'md' | 'sm' | 'xs' | null | undefined;
+  onChange?: (index: number) => void;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Chip');
-const Chip = ({ labels, className, defaultValue = [], onEval }: ChipProps) => {
+const Chip = ({ labels, className, defaultValue = [], multiChoice = true, themeSize = 'xs', onChange }: ChipProps) => {
   /* ======   variables   ====== */
   const [active, setActive] = useState(defaultValue);
   const chipClassName = `[&>*+*]:ml-2 ${className ? ` ${className}` : ''}`;
   /* ======   function    ====== */
   const handleClick = (index: number) => {
-    setActive((prev) => (prev.includes(index) ? prev.filter((x) => x !== index) : [...prev, index]));
-    onEval && onEval(index);
+    multiChoice
+      ? setActive((prev) => (prev.includes(index) ? prev.filter((x) => x !== index) : [...prev, index]))
+      : setActive([index]);
+    onChange && onChange(index);
   };
   /* ======   useEffect   ====== */
   logger('render');
@@ -29,7 +34,7 @@ const Chip = ({ labels, className, defaultValue = [], onEval }: ChipProps) => {
           key={`${x}_${index}`}
           onClick={() => handleClick(index)}
           themeColor={active.includes(index) ? 'secondary' : 'tertiary'}
-          themeSize="xs"
+          themeSize={themeSize}
           // className='bg-transparent'
         >
           {x}

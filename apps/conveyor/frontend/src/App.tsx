@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy, Fragment } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateLayout from './layouts/PrivateLayout';
 import PublicLayout from './layouts/PublicLayout';
@@ -22,7 +22,12 @@ const App = () => {
       <Routes>
         <Route element={<PrivateLayout />}>
           {authRoutes.map((x) => (
-            <Route key={x.name} path={x.path} element={<x.node />} />
+            <>
+              <Fragment key={x.name}>
+                <Route path={x.path} element={<x.node />} />
+                {x.group && x.group.map((y) => <Route key={y.name} path={y.path} element={<y.node />} />)}
+              </Fragment>
+            </>
           ))}
         </Route>
 
