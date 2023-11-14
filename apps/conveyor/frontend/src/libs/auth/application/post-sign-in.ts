@@ -1,8 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { Auth, mockData } from '../domain';
-import { LocalStorage, createLogger, fakeApi } from '@package-frontend/utils';
-import { mutate } from 'swr';
+import { mockData } from '../domain';
+import { createLogger, fakeApi } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
 const logger = createLogger('auth/useSignIn');
 
