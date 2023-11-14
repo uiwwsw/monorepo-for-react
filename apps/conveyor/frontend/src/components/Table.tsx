@@ -13,18 +13,18 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import React from 'react';
+import { ReactNode, useMemo, useState, Fragment } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
-  data: T[];
+  data?: T[];
   makePagination?: boolean;
   makeColumnSelect?: boolean;
-  renderSelectComponent?: () => React.ReactElement | null;
-  renderSubComponent?: () => React.ReactElement | null;
+  renderSelectComponent?: ReactNode;
+  renderSubComponent?: ReactNode;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
@@ -37,7 +37,8 @@ const Table = <T,>({
   renderSubComponent,
   renderSelectComponent,
 }: TableProps<T>) => {
-  const defaultColumns = React.useMemo<ColumnDef<T>[]>(
+  if (!data) return;
+  const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
         ? [
@@ -82,7 +83,7 @@ const Table = <T,>({
                     onClick={row.getToggleExpandedHandler()}
                     style={{ cursor: 'pointer' }}
                   >
-                    {row.getIsExpanded() ? '👇' : '👉'}
+                    {row.getIsExpanded() ? '🗁' : '🗀'}
                   </Button>
                 ) : (
                   '🔵'
@@ -95,11 +96,11 @@ const Table = <T,>({
     [thead, renderSelectComponent, renderSubComponent],
   );
 
-  const [globalFilter, setGlobalFilter] = React.useState('');
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columns] = React.useState<typeof defaultColumns>(() => [...defaultColumns]);
-  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const table = useReactTable({
     data,
@@ -171,7 +172,7 @@ const Table = <T,>({
           placeholder="검색어를 입력하세요"
         />
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
-          <div className="flex items-center">{renderSelectComponent()}</div>
+          <div className="flex items-center">{renderSelectComponent}</div>
         )}
       </div>
       <div className="mb-4">
@@ -207,7 +208,7 @@ const Table = <T,>({
           <tbody className="bg-white divide-y divide-gray-200">
             {table.getRowModel().rows.map((row) => {
               return (
-                <React.Fragment key={row.id}>
+                <Fragment key={row.id}>
                   <tr>
                     {row.getVisibleCells().map((cell) => {
                       return (
@@ -218,11 +219,11 @@ const Table = <T,>({
                     })}
                   </tr>
                   {row.getIsExpanded() && (
-                    <tr key={row.id + 'expanded'}>
-                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent ? renderSubComponent() : null}</td>
+                    <tr>
+                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent}</td>
                     </tr>
                   )}
-                </React.Fragment>
+                </Fragment>
               );
             })}
           </tbody>
@@ -271,13 +272,13 @@ const Table = <T,>({
           >
             ❯❯
           </Button>
-          <span className="flex items-center gap-1">
-            <div>페이지</div>
+          <div className="flex items-center gap-1">
+            <span>페이지</span>
             <strong>
               {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </strong>
-          </span>
-          <span className="flex items-center gap-1">
+          </div>
+          <div className="flex items-center gap-1">
             | 페이지 이동:
             <Input
               type="number"
@@ -289,7 +290,7 @@ const Table = <T,>({
               className="border rounded w-24"
               placeholder="page"
             />
-          </span>
+          </div>
           <Select
             value={String(table.getState().pagination.pageSize)}
             onChange={(e) => {

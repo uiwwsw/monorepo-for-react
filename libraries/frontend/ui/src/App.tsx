@@ -1,6 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import '@package-frontend/pretendard';
 import '@package-frontend/noto-emoji';
+import Checkbox from '@/Checkbox';
 // import ModalWithPortal from '@/Modal/WithPortal';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -11,6 +12,10 @@ const App = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('test');
-  return <>test</>;
+  return (
+    <>
+      <Checkbox indeterminate />
+    </>
+  );
 };
 export default App;

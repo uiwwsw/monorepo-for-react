@@ -1,4 +1,4 @@
-import Control from './pages/Control';
+import Control from './pages/Control/Page';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Stats from './pages/Stats';

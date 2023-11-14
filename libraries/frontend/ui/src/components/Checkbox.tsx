@@ -66,7 +66,13 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         role="button"
         className="inline-flex align-middle items-center"
       >
-        <input data-indeterminate={indeterminate} type="checkbox" ref={ref} className="hidden" {...props} />
+        <input
+          data-indeterminate={indeterminate === true ? true : null}
+          type="checkbox"
+          ref={ref}
+          className="hidden"
+          {...props}
+        />
         <i className={commonClassName + sizeClassName + colorClassName} />
         {children && (
           <span className="ml-2 text-xs" role="textbox">
