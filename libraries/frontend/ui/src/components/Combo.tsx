@@ -1,12 +1,18 @@
-import { ChangeEvent, MouseEvent, SelectHTMLAttributes, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useMemo, useRef, useState } from 'react';
 import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 import Input from './Input';
 import Menu from './Menu';
 import Button from './Button';
+import Underbar from '$/Underbar';
 /* ======   interface   ====== */
-export interface ComboProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface ComboProps {
   error?: boolean;
+  emptyResult?: string;
+  emptyOptions?: string;
+  onChange?: (val: string) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
   options?: {
     value: string;
     label: string;
@@ -17,7 +23,16 @@ export interface ComboProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Combo');
-const Combo = ({ placeholder = 'Combo box', defaultValue = '', options = [], error }: ComboProps) => {
+const Combo = ({
+  emptyResult = '검색결과가 없습니다.',
+  emptyOptions = '비었습니다.',
+  onChange,
+  placeholder = 'Combo box',
+  searchPlaceholder = '검색어를 입력하세요.',
+  defaultValue = '',
+  options = [],
+  error,
+}: ComboProps) => {
   /* ======   variables   ====== */
   const ref = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
@@ -27,8 +42,12 @@ const Combo = ({ placeholder = 'Combo box', defaultValue = '', options = [], err
   const label = useMemo(() => options.find((x) => x.value === value)?.label ?? '', [value, options]);
   /* ======   function    ====== */
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => setSearch(e.currentTarget.value);
-  const handleClick = (value: string) => setValue(value);
-  const handleFinished = () => {
+  const handleClick = (value: string) => {
+    setValue(value);
+    onChange && onChange(value);
+  };
+  const handleFinished = (val: any) => {
+    logger(val);
     ref.current!.value = '';
     setSearch('');
   };
@@ -41,34 +60,46 @@ const Combo = ({ placeholder = 'Combo box', defaultValue = '', options = [], err
     <Menu
       onFinished={handleFinished}
       button={
-        <div className="flex items-center relative">
-          <Input value={label} readOnly placeholder={placeholder} />
-          <Caret className="!w-0 -translate-x-6" />
-        </div>
+        <Input
+          value={label}
+          readOnly
+          placeholder={placeholder}
+          slots={
+            <>
+              <Caret error={error} />
+              <Underbar error={error} />
+            </>
+          }
+        />
       }
     >
-      <Input
-        type="search"
-        ref={ref}
-        error={error}
-        placeholder="검색어를 입력하세요."
-        onChange={handleChange}
-        onClick={handleInputClick}
-      />
-      <div
-        className={`flex flex-col gap-1 after:block after:text-center [&:empty::after]:content-[attr(data-text)]`}
-        data-text={memoOptions.length ? '검색결과가 없습니다.' : '비었습니다.'}
-      >
-        {memoSearchOptions.map((x) => (
-          <Button
-            themeSize={'xs'}
-            disabled={x.disabled}
-            themeColor={x.value === value ? 'primary' : 'secondary'}
-            onClick={() => handleClick(x.value)}
-          >
-            {x.label}
-          </Button>
-        ))}
+      <div className="bg-white shadow-sm">
+        <Input
+          type="search"
+          ref={ref}
+          error={error}
+          placeholder={searchPlaceholder}
+          onChange={handleChange}
+          onClick={handleInputClick}
+          role="search"
+        />
+        <div
+          role="list"
+          className="flex flex-col gap-1 after:block after:text-center [&:empty::after]:content-[attr(data-text)]"
+          data-text={memoOptions.length ? emptyResult : emptyOptions}
+        >
+          {memoSearchOptions.map((x) => (
+            <Button
+              key={x.label}
+              themeSize={'xs'}
+              disabled={x.disabled}
+              themeColor={x.value === value ? 'primary' : 'secondary'}
+              onClick={() => handleClick(x.value)}
+            >
+              {x.label}
+            </Button>
+          ))}
+        </div>
       </div>
     </Menu>
   );

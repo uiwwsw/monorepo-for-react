@@ -1,11 +1,12 @@
 import type { Meta } from '@storybook/react';
-import { Select, SelectProps } from '@library-frontend/ui';
+import { Combo, ComboProps } from '@library-frontend/ui';
 const meta = {
-  title: 'Select',
-  component: Select,
+  title: 'Combo',
+  component: Combo,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
-    componentSubtitle: '클릭 시 보기 제공',
+    layout: 'centered',
+    componentSubtitle: '커스터마이징 셀렉트박스',
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
@@ -21,7 +22,7 @@ const meta = {
     placeholder: {
       table: { type: { summary: 'string' } },
     },
-    value: {
+    defaultValue: {
       table: { type: { summary: 'string' } },
     },
   },
@@ -49,15 +50,12 @@ const meta = {
     ],
   },
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-} satisfies Meta<typeof Select>;
+} satisfies Meta<typeof Combo>;
 
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const normal = ({ error, options }: SelectProps) => {
-  return <Select error={error} options={options} onChange={(x) => alert(x.target.value)} />;
-};
-export const block = ({ error, options }: SelectProps) => {
-  return <Select className="w-full" error={error} options={options} onChange={(x) => alert(x.target.value)} />;
+export const normal = ({ error, options }: ComboProps) => {
+  return <Combo error={error} options={options} onChange={(x) => alert(x)} />;
 };
