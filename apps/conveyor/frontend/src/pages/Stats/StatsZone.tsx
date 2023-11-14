@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { SearchArg, StatsZoneData } from '!/stats/domain';
 import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
 import { useGetGraphInfo } from '!/stats/application/get-graphInfo';
-import { Pagination } from '@library-frontend/ui';
 
 const zones: StatsZoneData[] = [
   { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
@@ -96,7 +95,7 @@ const StatsZone = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate(1).toString() });
+    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
     handleChangePage(0);
     setChildren(
       <div className="flex items-center gap-2">
@@ -106,7 +105,6 @@ const StatsZone = () => {
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
           selectRange
           onChange={handleCalenderChange}
-          themeColor="secondary"
         />
       </div>,
     );
@@ -120,7 +118,7 @@ const StatsZone = () => {
           <ChartLine />
         </div>
         <div className="h-full w-1/5 p-1 pl-3 border-l-2">
-          <Select options={options} onChange={onChangeGraphPort} />
+          <Select className="w-full" options={options} onChange={onChangeGraphPort} />
           <div className={graphChartClassName}>Transport Total : {}</div>
           <div className={graphChartClassName}>Transport Average : {}</div>
           <div className={graphChartClassName}>Alarm Total : {}</div>
@@ -128,12 +126,12 @@ const StatsZone = () => {
         </div>
       </div>
       <div className="flex my-5 place-content-end gap-5">
-        <Pagination
+        {/* <Pagination
           onChange={handleChangePage}
           totalPageNum={totalPageNum}
           currentPageIndex={currentPageIndex}
           hasDoubleArrow={true}
-        />
+        /> */}
         <Chip
           labels={['ZONE ID', 'ALARM', 'CARRIER']}
           multiChoice={false}
@@ -142,7 +140,7 @@ const StatsZone = () => {
         />
         <Input type="search" placeholder="search" role="textbox" onChange={onChangeSearchKeyword} />
       </div>
-      {renderZone.map((zone: StatsZoneData) => (
+      {renderZone.map((zone) => (
         <div
           className="grid border border-slate-300 my-5 p-3 rounded-md grid-cols-5 content-evenly text-center cursor-pointer"
           onClick={() => {

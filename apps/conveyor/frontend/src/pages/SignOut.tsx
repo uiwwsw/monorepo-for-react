@@ -26,7 +26,7 @@ const SignOut = () => {
   useEffect(() => {
     (async () => {
       await tryUntilSuccess();
-      navigate('/');
+      navigate('/', { replace: true });
     })();
   }, []);
   return <iframe className="w-screen h-screen" src="/loading" />;
