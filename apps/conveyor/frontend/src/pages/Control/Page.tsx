@@ -20,7 +20,7 @@ const Control = () => {
   logger('render');
   return (
     <>
-      <div className="p-4 bg-gray-100 max-w-4xl mx-auto">
+      <div className="">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Server Control</h2>
         <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
           <Table
