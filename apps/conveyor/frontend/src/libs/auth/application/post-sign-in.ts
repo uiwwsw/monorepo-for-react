@@ -1,8 +1,8 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { Auth, mockData } from '../domain';
-import { LocalStorage, createLogger, fakeApi } from '@package-frontend/utils';
-import { mutate } from 'swr';
+import { mockData } from '../domain';
+import { createLogger, fakeApi } from '@package-frontend/utils';
+import { usePostAuth } from './post-auth';
 const logger = createLogger('auth/useSignIn');
 
 async function fetcher(
@@ -20,8 +20,8 @@ async function fetcher(
   if (arg.id !== 'admin' || arg.pw !== 'admin') throw new Error('아이디 또는 비번이 틀렸습니다.');
 
   const res = await fakeApi(mockData);
-  LocalStorage.set('/check-auth', res);
-  await mutate('/check-auth', res);
+  const trigger = usePostAuth();
+  await trigger(res);
   return res;
 }
 

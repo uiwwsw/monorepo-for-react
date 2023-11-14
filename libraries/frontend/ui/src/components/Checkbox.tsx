@@ -5,12 +5,13 @@ import { WithTheme } from '#/componentTypes';
 /* ======   interface   ====== */
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {
   children?: string;
+  indeterminate?: boolean;
 }
 /* ======    global     ====== */
 const commonClassName = `
 overflow-hidden
  relative
- [:checked+&:before]:scale-0
+ [:not([data-indeterminate]):checked+&:before]:scale-0
  shadow-sm 
   shadow-gray-400
   before:absolute
@@ -19,7 +20,7 @@ overflow-hidden
   before:absolute
   before:transition
   before:origin-center
- before:scale-[10]
+ before:scale-[15]
  before:border-2
  before:border
  before:border-white
@@ -36,6 +37,10 @@ overflow-hidden
  after:w-2
  after:h-3
  after:origin-center
+ [[data-indeterminate]+&:after]:rotate-90
+ [[data-indeterminate]+&:after]:border-b-0
+ [[data-indeterminate]+&:after]:-mt-2.5
+ [[data-indeterminate]+&:after]:border-gray-500
 `;
 const sizeClassName = `
 [[data-size="sm"]>&]:w-5 [[data-size="sm"]>&]:h-5
@@ -48,7 +53,7 @@ const colorClassName = `
 `;
 const logger = createLogger('components/Checkbox');
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ children, themeColor = 'primary', themeSize = 'md', ...props }, ref) => {
+  ({ indeterminate, children, themeColor = 'primary', themeSize = 'md', ...props }, ref) => {
     /* ======   variables   ====== */
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
@@ -61,7 +66,13 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         role="button"
         className="inline-flex align-middle items-center"
       >
-        <input type="checkbox" ref={ref} className="hidden" {...props} />
+        <input
+          data-indeterminate={indeterminate === true ? true : null}
+          type="checkbox"
+          ref={ref}
+          className="hidden"
+          {...props}
+        />
         <i className={commonClassName + sizeClassName + colorClassName} />
         {children && (
           <span className="ml-2 text-xs" role="textbox">

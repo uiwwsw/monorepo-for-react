@@ -1,8 +1,8 @@
-import { useSignUp } from '!/auth/application/sign-up';
+import { useSignUp } from '!/auth/application/post-sign-up';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
-import { createLogger, fakeApi } from '@package-frontend/utils';
-import { useEffect, useState } from 'react';
+import { createLogger } from '@package-frontend/utils';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,7 @@ const SignUp = () => {
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
-      <form className="flex flex-col gap-3 min-w-[500px]">
+      <form className="flex flex-col gap-3">
         <label>
           <p className="font-medium uppercase">{t('아이디')}</p>
           <Input

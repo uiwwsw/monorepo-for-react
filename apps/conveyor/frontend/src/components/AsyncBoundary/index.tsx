@@ -18,6 +18,7 @@ const AsyncBoundary = ({
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
+  logger('render');
   return (
     <SWRConfig
       value={{

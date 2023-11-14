@@ -1,10 +1,9 @@
 import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from './HeaderContext';
-import { Button, ToastWithPortal } from '@library-frontend/ui';
-import { useCheckAuth } from '!/auth/application/check-auth';
-import { useSignout } from '!/auth/application/sign-out';
+import { Button } from '@library-frontend/ui';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useGetAuth } from '!/auth/application/get-auth';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 
@@ -15,29 +14,24 @@ const Header = (_: HeaderProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data } = useCheckAuth();
+  const { data } = useGetAuth();
   const { children } = useHeaderContext();
-  const { trigger, error } = useSignout();
   const url = new URLSearchParams(location.search);
   const isInIframe = url.get('side-nav') === 'disabled';
 
   /* ======   function    ====== */
-  const handleLogout = async () => {
-    await trigger();
-    navigate('/');
-  };
+  const handleLogout = () => navigate('/sign-out');
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <header className="sticky flex items-center top-0 h-24 z-10 p-3 bg-slate-300 gap-2">
-      <ToastWithPortal duration={1000} open={error}>
-        {t('로그인에 실패했습니다.')}
-      </ToastWithPortal>
       <div className="flex-auto">{children}</div>
-      <div>{data?.name}</div>
-      <Button smoothLoading themeColor={'secondary'} onClick={handleLogout} disabled={isInIframe}>
-        {t('로그아웃')}
-      </Button>
+      <div className="flex gap-2 items-center max-md:flex-col">
+        <div>{data?.name}</div>
+        <Button smoothLoading themeColor={'secondary'} onClick={handleLogout} disabled={isInIframe}>
+          {t('로그아웃')}
+        </Button>
+      </div>
     </header>
   );
 };

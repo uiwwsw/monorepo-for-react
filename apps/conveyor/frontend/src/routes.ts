@@ -1,16 +1,16 @@
-import Control from './pages/Control';
-import SignUp from './pages/SignUp';
-import SignIn from './pages/SignIn';
-import StatsZone from './pages/StatsZone';
-import StatsAlarm from './pages/StatsAlarm';
-import StatsCarrier from './pages/StatsCarrier';
-import Help from './pages/Help';
+import { LazyExoticComponent, lazy } from 'react';
+
+const Control = lazy(() => import('./pages/Control/Page'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const SignIn = lazy(() => import('./pages/SignIn'));
+const Stats = lazy(() => import('./pages/Stats'));
+const Help = lazy(() => import('./pages/Help'));
 type Tab = {
   name: string;
   path: string;
-  node: () => JSX.Element;
+  node: LazyExoticComponent<() => JSX.Element>;
 };
-export type ParentTab = Tab & { group?: Tab[]; icon: string; node: () => JSX.Element };
+export type ParentTab = Tab & { group?: Tab[]; icon: string };
 
 export const authRoutes: ParentTab[] = [
   {
@@ -24,12 +24,7 @@ export const authRoutes: ParentTab[] = [
     icon: '🧮',
     path: '/stats',
     name: '통계',
-    node: StatsZone,
-    group: [
-      { path: '/stats/zone', name: 'ZONE', node: StatsZone },
-      { path: '/stats/alarm', name: 'ALARM', node: StatsAlarm },
-      { path: '/stats/carrier', name: 'CARRIER', node: StatsCarrier },
-    ],
+    node: Stats,
   },
 ];
 export const commonRoutes: ParentTab[] = [

@@ -21,6 +21,8 @@
     "@package-frontend/noto-emoji": "workspace:^",
     "@package-frontend/pretendard": "workspace:^",
     "@package-frontend/utils": "workspace:^",
+    "@tanstack/match-sorter-utils": "^8.8.4",
+    "@tanstack/react-table": "^8.10.7",
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",
     "react": "^18.2.0",

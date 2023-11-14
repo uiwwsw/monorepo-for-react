@@ -4,6 +4,9 @@ import { fileURLToPath, URL } from 'node:url';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    chunkSizeWarningLimit: 1024 * 1024, // 1 MB
+  },
   resolve: {
     alias: {
       $: fileURLToPath(new URL('./src/assets', import.meta.url)),

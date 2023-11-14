@@ -1,12 +1,13 @@
+import { lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateLayout from './layouts/PrivateLayout';
 import PublicLayout from './layouts/PublicLayout';
-import Main from './pages/Main';
-import NotFound from './pages/NotFound';
 import { authRoutes, commonRoutes } from './routes';
-import Loading from './pages/Loading';
-import Error from './pages/Error';
-import SignOut from './pages/SignOut';
+const Main = lazy(() => import('./pages/Main'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Loading = lazy(() => import('./pages/Loading'));
+const Error = lazy(() => import('./pages/Error'));
+const SignOut = lazy(() => import('./pages/SignOut'));
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
