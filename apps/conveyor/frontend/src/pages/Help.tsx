@@ -1,5 +1,5 @@
 import { useTest } from '!/test/application/test';
-import { Accordion, Tooltip } from '@library-frontend/ui';
+import { Accordion, ToastWithPortal, Tooltip } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
@@ -16,10 +16,11 @@ const Help = () => {
   //   trigger();
   // }, []);
   return (
-    <div className="flex flex-col gap-24 py-3">
+    <div className="flex flex-col gap-24">
+      <ToastWithPortal open={error}>{error?.message}</ToastWithPortal>
       <div className="flex flex-col sticky top-0 bg-black text-white p-4 z-10">
-        <div>{error ? error?.message : ''}</div>
-        <div>{isValidating ? 'loading' : data}</div>
+        {/* <div>{error ? error?.message : ''}</div>
+        <div>{isValidating ? 'loading' : data}</div> */}
         <a href="#qna">자주하는 질문</a>
         <a href="#layout">레이아웃</a>
         <a href="#stats">통계 페이지</a>

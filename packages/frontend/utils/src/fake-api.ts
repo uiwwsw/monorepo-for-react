@@ -18,9 +18,9 @@ const makeErrorBtn = () => {
     else if (error >= 1) error = -0.1;
     error = Math.ceil((error + 0.1) * 10) / 10;
     LocalStorage.set('fake-error', error);
-    btn.textContent = `에러발생 빈도 ${error}`;
+    btn.textContent = `에러 ${+error * 100}%`;
   };
-  btn.textContent = `에러발생 빈도 ${error ?? 0}`;
+  btn.textContent = `에러 ${+(error ?? 0) * 100}%`;
   document.body.appendChild(btn);
 };
 export const fakeApi = async <T>(res?: T): Promise<T | undefined> => {
@@ -34,6 +34,5 @@ export const fakeApi = async <T>(res?: T): Promise<T | undefined> => {
     throw new Error('fakeApi 에러발생');
   }
   await wait(time);
-  if (res instanceof Array) return res.filter((_) => Math.round(Math.random()) > 0) as T;
   return res;
 };

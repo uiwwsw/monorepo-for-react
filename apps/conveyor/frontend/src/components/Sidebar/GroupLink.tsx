@@ -25,7 +25,7 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
           to: tab.path,
           className: tab.group
             ? 'text-gray-400'
-            : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : ''),
+            : ({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' !text-white' : ''),
           children: (
             <>
               <span className="mr-2">{tab.icon}</span>
@@ -33,7 +33,7 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
               {tab.group?.map((x) => (
                 <NavLink
                   key={x.path}
-                  className={({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' text-white' : '')}
+                  className={({ isActive }) => 'text-gray-400 hover:text-gray-300' + (isActive ? ' !text-white' : '')}
                   to={`${x.path}`}
                 >
                   {t(x.name)}
