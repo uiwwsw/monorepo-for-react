@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, MouseEvent, useCallback, useRef, useState } from 'react';
 import { wait } from '@package-frontend/utils';
-import { useSmooth } from '#/useSmooth';
+import useSmooth from '#/useSmooth';
 import Spinner from '$/Spinner';
-import { generateRipple } from '#/generateRipple';
+import generateRipple from '#/generateRipple';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
@@ -17,7 +17,7 @@ const textClassName =
   '[[data-smooth="SHOW"]>&]:invisible [[data-smooth="SHOWING"]>&]:animate-hide [[data-smooth="HIDING"]>&]:animate-show';
 const spinnerClassName =
   'text-inherit absolute top-1/2 left-1/2 -m-2.5 [:not([data-smooth])>&]:hidden [[data-smooth="HIDE"]>&]:hidden [[data-smooth="SHOWING"]>&]:animate-show [[data-smooth="HIDING"]>&]:animate-hide';
-const commonButtonClassName = `overflow-hidden relative transition outline-none border border-transparent`;
+const commonButtonClassName = `justify-center overflow-hidden relative transition border border-transparent`;
 const ableButtonClassName = `
 [&[data-color="primary"]]:bg-blue-500 [&[data-color="primary"]]:hover:bg-blue-600 
 [&[data-color="secondary"]]:bg-slate-500 [&[data-color="secondary"]]:hover:bg-slate-600

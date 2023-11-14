@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound';
 import { authRoutes, commonRoutes } from './routes';
 import Loading from './pages/Loading';
 import Error from './pages/Error';
+import SignOut from './pages/SignOut';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="/sign-out" element={<SignOut />} />
       </Routes>
     </Router>
   );

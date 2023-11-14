@@ -2,7 +2,6 @@ import { createLogger } from '@package-frontend/utils';
 import '@package-frontend/pretendard';
 import '@package-frontend/noto-emoji';
 // import ModalWithPortal from '@/Modal/WithPortal';
-// import ModalWithBtn from '@/Modal/WithBtn';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
@@ -12,6 +11,6 @@ const App = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('test');
-  return <div className="p-10"></div>;
+  return <>test</>;
 };
 export default App;

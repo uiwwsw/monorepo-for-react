@@ -34,7 +34,7 @@ describe('<ModalWithPortal />', () => {
     await waitFor(() => expect(cancelButton).not.toBeInTheDocument());
   });
   it('hasButton에 따라 버튼이 노출되야함 3/3', async () => {
-    render(<ModalWithPortal open={true} hasButton={['OK', 'CANCEL']} />);
+    render(<ModalWithPortal open={true} hasButton={['확인', '취소']} />);
     const closeButton = screen.queryByLabelText(/modal close button/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
     const yesButton = screen.queryByText(/확인/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음
     const cancelButton = screen.queryByText(/취소/i); // '닫기' 텍스트나 적절한 역할/라벨로 변경해야 할 수 있음

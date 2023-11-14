@@ -1,5 +1,5 @@
 import { Auth } from '!/auth/domain';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { LocalStorage } from '@package-frontend/utils';
 const originalFetch = window.fetch;
 
 window.fetch = function (input, init) {

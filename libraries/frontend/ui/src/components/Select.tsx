@@ -1,6 +1,6 @@
 import { ChangeEvent, SelectHTMLAttributes, forwardRef, useCallback, useState } from 'react';
-import Underbar, { focusClassName as decoratorClassName } from '$/Underbar';
-import Caret, { focusClassName as caretClassName } from '$/Caret';
+import Underbar from '$/Underbar';
+import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -38,16 +38,16 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     /* ======   useEffect   ====== */
     logger('render');
     return (
-      <span className="flex items-center relative">
+      <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
         <select
           {...props}
           disabled={disabled}
           defaultValue={value}
           onChange={adapterChange}
           ref={ref}
-          className={`${decoratorClassName} ${caretClassName} text-ellipsis flex-auto max-w-full focus:outline-none pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
-            className ? ` ${className}` : ''
-          }${value === '' && !init ? ' text-gray-400' : ''}`}
+          className={`flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
+            value === '' && !init ? ' text-gray-400' : ''
+          }`}
         >
           {adapterOption.map((x, i) => (
             <option className={getOptionClassName(x)} key={i} value={x.value} disabled={x.disabled} hidden={x.hidden}>
@@ -57,7 +57,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </select>
         <Caret disabled={disabled} className="!w-0 -translate-x-6" />
         <Underbar disabled={disabled} error={error} />
-      </span>
+      </label>
     );
   },
 );

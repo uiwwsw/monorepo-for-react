@@ -15,6 +15,9 @@ export * from './components/Chip';
 export { default as Checkbox } from './components/Checkbox';
 export * from './components/Checkbox';
 
+export { default as Combo } from './components/Combo';
+export * from './components/Combo';
+
 export { default as Input } from './components/Input';
 export * from './components/Input';
 
@@ -72,6 +75,10 @@ export * from './components/Toast/WithPortal';
 export * from './components/Color';
 export * from './components/Size';
 
-export * from './utils/dateContext';
-export * from './utils/useAnimate';
-export * from './utils/useSmooth';
+export { default as useAnimate } from './utils/useAnimate';
+export { default as useDebouce } from './utils/useDebounce';
+export { default as useCounter } from './utils/useCounter';
+export { default as usePosition } from './utils/usePosition';
+export { default as useSmooth } from './utils/useSmooth';
+export { default as useThrottle } from './utils/useThrottle';
+export { default as useInfiniteScroll } from './utils/useInfiniteScroll';
