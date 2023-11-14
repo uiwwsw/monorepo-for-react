@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 
-export const useAnimate = () => {
+const useAnimate = () => {
   /* ======   variables   ====== */
   const [animate, setAnimate] = useState(false);
   const listener = () => setAnimate(false);
@@ -17,3 +17,5 @@ export const useAnimate = () => {
     setAnimate,
   };
 };
+
+export default useAnimate;

@@ -1,4 +1,6 @@
-export const generateRipple = (e: React.MouseEvent) => {
+import { MouseEvent } from 'react';
+
+const generateRipple = (e: MouseEvent) => {
   const target = e.currentTarget;
   const ripple = document.createElement('i');
   const rect = target.getBoundingClientRect();
@@ -14,3 +16,5 @@ export const generateRipple = (e: React.MouseEvent) => {
     ripple.remove();
   });
 };
+
+export default generateRipple;

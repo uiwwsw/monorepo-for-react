@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/react';
-import { Button, Menu, MenuProps } from '@library-frontend/ui';
+import { Button, Menu } from '@library-frontend/ui';
 const meta = {
   title: 'Menu',
   component: Menu,
@@ -13,12 +13,6 @@ const meta = {
     width: {
       table: { type: { summary: 'number' } },
     },
-    btnName: {
-      table: { type: { summary: 'string' } },
-    },
-  },
-  args: {
-    btnName: '매뉴',
   },
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } satisfies Meta<typeof Menu>;
@@ -27,9 +21,19 @@ export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const normal = ({ btnName }: MenuProps) => {
+export const normal = () => {
   return (
-    <Menu btnName={btnName}>
+    <Menu>
+      <Button onClick={() => alert('1')}>1번버튼</Button>
+      <Button onClick={() => alert('2')}>2번버튼</Button>
+      <Button onClick={() => alert('3')}>3번버튼</Button>
+      <Button onClick={() => alert('4')}>4번버튼</Button>
+    </Menu>
+  );
+};
+export const size = () => {
+  return (
+    <Menu width="30vw">
       <Button onClick={() => alert('1')}>1번버튼</Button>
       <Button onClick={() => alert('2')}>2번버튼</Button>
       <Button onClick={() => alert('3')}>3번버튼</Button>

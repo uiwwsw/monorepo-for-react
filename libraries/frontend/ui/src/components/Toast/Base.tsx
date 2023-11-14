@@ -1,5 +1,5 @@
 import Button from '@/Button';
-import { useSmooth } from '#/useSmooth';
+import useSmooth from '#/useSmooth';
 import Close from '$/Close';
 import { createLogger } from '@package-frontend/utils';
 import { ReactNode, useEffect, useRef } from 'react';

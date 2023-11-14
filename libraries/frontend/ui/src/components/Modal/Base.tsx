@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSmooth } from '#/useSmooth';
-import { useAnimate } from '#/useAnimate';
+import useSmooth from '#/useSmooth';
+import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
 import ModalFooter from './Footer';

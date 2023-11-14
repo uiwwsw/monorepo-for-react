@@ -60,7 +60,7 @@ const Calendar = ({
   logger('render');
   return (
     <Menu
-      width={300}
+      width="300px"
       button={
         <Button className="w-[300px]" themeSize="sm">
           {memoValueForDisplay}

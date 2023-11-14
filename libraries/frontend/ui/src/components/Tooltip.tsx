@@ -2,7 +2,7 @@ import { useState, useRef, ReactNode, HTMLAttributes } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import Portal from './Portal';
 import Smooth from './Smooth';
-import { usePosition } from '#/usePosition';
+import usePosition from '#/usePosition';
 
 /* ======   interface   ====== */
 export interface TooltipProps extends HTMLAttributes<HTMLElement> {
