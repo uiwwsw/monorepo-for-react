@@ -28,7 +28,13 @@ export interface TableProps<T> {
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
-
+const pageSizeOptions = [
+  { value: '10', label: '10개씩 보기' },
+  { value: '20', label: '20개씩 보기' },
+  { value: '30', label: '30개씩 보기' },
+  { value: '40', label: '40개씩 보기' },
+  { value: '50', label: '50개씩 보기' },
+];
 const Table = <T,>({
   thead,
   data,
@@ -38,6 +44,8 @@ const Table = <T,>({
   renderSelectComponent,
 }: TableProps<T>) => {
   if (!data) return;
+  /* ======   variables   ====== */
+
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
@@ -131,14 +139,9 @@ const Table = <T,>({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  const pageSizeOptions = [
-    { value: '10', label: '10개씩 보기' },
-    { value: '20', label: '20개씩 보기' },
-    { value: '30', label: '30개씩 보기' },
-    { value: '40', label: '40개씩 보기' },
-    { value: '50', label: '50개씩 보기' },
-  ];
-
+  /* ======   function    ====== */
+  /* ======   useEffect   ====== */
+  logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
       {makeColumnSelect && (
@@ -167,8 +170,9 @@ const Table = <T,>({
       )}
       <div className="flex justify-between items-center">
         <Input
-          value={globalFilter ?? ''}
-          onChange={({ currentTarget }) => setGlobalFilter(currentTarget.value)}
+          defaultValue={globalFilter}
+          debounceTime={300}
+          onChange={({ target }) => setGlobalFilter(target.value)}
           placeholder="검색어를 입력하세요"
         />
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (

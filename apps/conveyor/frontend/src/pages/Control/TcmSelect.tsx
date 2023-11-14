@@ -1,20 +1,23 @@
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface T1Props {}
+export interface TcmSelectProps {}
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/T1');
-const T1 = (_: T1Props) => {
+const logger = createLogger('pages/Control/TcmSelect');
+const TcmSelect = (_: TcmSelectProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <div className="flex justify-end space-x-2">
-      <Button>Logs</Button>
-      <Button>Firmware</Button>
+      <Button>Start</Button>
+      <Button>Stop</Button>
+      <Button>Restart</Button>
+      <Button>Reload</Button>
+      <Button>Update</Button>
     </div>
   );
 };
 
-export default T1;
+export default TcmSelect;

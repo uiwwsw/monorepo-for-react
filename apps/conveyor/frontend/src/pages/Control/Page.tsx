@@ -1,11 +1,11 @@
-import { useTcmInfo } from '!/tcm/application/tcm-info';
+import { useTcmInfo } from '!/tcm/application/get-tcm-info';
 import { createLogger } from '@package-frontend/utils';
 import Table from '@/Table';
-import { useServerInfo } from '!/server/application/server-info';
-import T1 from './T1';
-import T2 from './T2';
-import T3 from './T3';
-import T4 from './T4';
+import { useServerInfo } from '!/server/application/get-server-info';
+import TcmSub from './TcmSub';
+import TcmSelect from './TcmSelect';
+import ServerSelect from './ServerSelect';
+import ServerSub from './ServerSub';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -28,8 +28,8 @@ const Control = () => {
             data={serverData}
             makePagination={false}
             makeColumnSelect={false}
-            renderSelectComponent={<T3 />}
-            renderSubComponent={<T4 />}
+            renderSelectComponent={<ServerSelect />}
+            renderSubComponent={<ServerSub />}
           ></Table>
         </div>
 
@@ -40,8 +40,8 @@ const Control = () => {
             data={tcmData}
             makePagination={true}
             makeColumnSelect={false}
-            renderSelectComponent={<T2 />}
-            renderSubComponent={<T1 />}
+            renderSelectComponent={<TcmSelect />}
+            renderSubComponent={<TcmSub />}
           ></Table>
         </div>
       </div>

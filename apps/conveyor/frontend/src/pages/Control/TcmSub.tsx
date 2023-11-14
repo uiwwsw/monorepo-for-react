@@ -1,10 +1,10 @@
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface T4Props {}
+export interface TcmSubProps {}
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/T4');
-const T4 = (_: T4Props) => {
+const logger = createLogger('pages/Control/TcmSub');
+const TcmSub = (_: TcmSubProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -12,8 +12,9 @@ const T4 = (_: T4Props) => {
   return (
     <div className="flex justify-end space-x-2">
       <Button>Logs</Button>
+      <Button>Firmware</Button>
     </div>
   );
 };
 
-export default T4;
+export default TcmSub;

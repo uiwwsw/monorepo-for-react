@@ -2,7 +2,7 @@
 import useSWR from 'swr';
 import { mockData } from '../domain';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-const logger = createLogger('auth/useSignIn');
+const logger = createLogger('server/useServerInfo');
 
 async function fetcher(url: string) {
   logger(url);
@@ -11,6 +11,6 @@ async function fetcher(url: string) {
   //   return await http({ url });
 }
 
-export function useTcmInfo() {
-  return useSWR('/tcmInfo', fetcher);
+export function useServerInfo() {
+  return useSWR('/serverInfo', fetcher);
 }

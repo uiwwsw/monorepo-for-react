@@ -1,22 +1,19 @@
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface T3Props {}
+export interface ServerSubProps {}
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/T3');
-const T3 = (_: T3Props) => {
+const logger = createLogger('pages/Control/ServerSub');
+const ServerSub = (_: ServerSubProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <div className="flex justify-end space-x-2">
-      <Button>Start</Button>
-      <Button>Stop</Button>
-      <Button>Restart</Button>
-      <Button>Reload</Button>
+      <Button>Logs</Button>
     </div>
   );
 };
 
-export default T3;
+export default ServerSub;

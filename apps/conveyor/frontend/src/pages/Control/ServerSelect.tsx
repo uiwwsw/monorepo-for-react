@@ -1,10 +1,10 @@
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface T2Props {}
+export interface ServerSelectProps {}
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/T2');
-const T2 = (_: T2Props) => {
+const logger = createLogger('pages/Control/ServerSelect');
+const ServerSelect = (_: ServerSelectProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -15,9 +15,8 @@ const T2 = (_: T2Props) => {
       <Button>Stop</Button>
       <Button>Restart</Button>
       <Button>Reload</Button>
-      <Button>Update</Button>
     </div>
   );
 };
 
-export default T2;
+export default ServerSelect;
