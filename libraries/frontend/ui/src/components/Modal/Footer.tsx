@@ -58,6 +58,7 @@ const ModalFooter = ({
     <div className="flex gap-3 mt-auto pt-3">
       {hasButton?.map((x, i) => (
         <Button
+          key={x}
           className="flex-auto"
           themeSize="sm"
           themeColor={i === 0 ? 'primary' : 'secondary'}

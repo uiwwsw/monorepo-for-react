@@ -71,7 +71,9 @@ const ModalBase = ({
     onClosed && onClosed();
   };
   /* ======   useEffect   ====== */
-  useEffect(() => elRef.current?.focus(), []);
+  useEffect(() => {
+    open && setTimeout(() => elRef.current?.focus(), 0);
+  }, [open]);
   useSmooth({
     value: open,
     delay: 500,
@@ -81,7 +83,7 @@ const ModalBase = ({
   logger('render');
   return (
     <>
-      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0}>
+      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0} autoFocus>
         <ModalOverlay onClose={adapterClose} />
         <div className={modalContentClassName}>
           {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
