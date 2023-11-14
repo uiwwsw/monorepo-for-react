@@ -1,11 +1,11 @@
-import { MouseEvent, useMemo, useRef, useState } from 'react';
+import { MouseEvent, ReactElement, cloneElement, useMemo, useRef, useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import { Dayjs } from 'dayjs';
 import { FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
-import Button from './Button';
 import 'react-calendar/dist/Calendar.css';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
+import Button from './Button';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
@@ -14,12 +14,14 @@ export interface CalendarProps {
   selectRange?: boolean;
   defaultValue?: string;
   onChange?: (value: Dayjs | Dayjs[]) => void;
+  button?: ReactElement;
 }
 /* ======    global     ====== */
 const convertFromValueToDate = (value: string | string[]) =>
   value instanceof Array ? value.map((x) => newDate(x)) : newDate(value);
 const logger = createLogger('components/Calendar');
 const Calendar = ({
+  button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
   selectRange,
   defaultValue,
   onChange,
@@ -61,16 +63,18 @@ const Calendar = ({
   return (
     <Menu
       width="300px"
-      button={
-        <Button className="w-[300px]" themeSize="sm">
-          {memoValueForDisplay}
-          {selectRange && (
-            <span className="ml-2">
-              <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
-            </span>
-          )}
-        </Button>
-      }
+      button={cloneElement(button, {
+        children: (
+          <>
+            {memoValueForDisplay}
+            {selectRange && (
+              <span className="ml-2">
+                <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
+              </span>
+            )}
+          </>
+        ),
+      })}
     >
       <i ref={fakeRef} />
       <div onClick={handleClick} aria-label="react-calendar">

@@ -1,6 +1,6 @@
 import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
-import { Select, Input, Chip } from '@library-frontend/ui';
+import { Select, Input, Chip, Button } from '@library-frontend/ui';
 import { Calendar } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
@@ -107,6 +107,7 @@ const StatsZone = () => {
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
           selectRange
           onChange={handleCalenderChange}
+          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
         />
       </div>,
     );
