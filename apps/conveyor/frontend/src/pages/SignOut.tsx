@@ -1,7 +1,7 @@
-import { useSignout } from '!/auth/application/sign-out';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { useSignout } from '!/auth/application/post-sign-out';
+import { createLogger } from '@package-frontend/utils';
 import { useEffect } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */

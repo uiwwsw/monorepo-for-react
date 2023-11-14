@@ -1,10 +1,9 @@
 import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from './HeaderContext';
-import { Button, ToastWithPortal } from '@library-frontend/ui';
-import { useCheckAuth } from '!/auth/application/check-auth';
-import { useSignout } from '!/auth/application/sign-out';
+import { Button } from '@library-frontend/ui';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useGetAuth } from '!/auth/application/get-auth';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 
@@ -15,7 +14,7 @@ const Header = (_: HeaderProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data } = useCheckAuth();
+  const { data } = useGetAuth();
   const { children } = useHeaderContext();
   const url = new URLSearchParams(location.search);
   const isInIframe = url.get('side-nav') === 'disabled';

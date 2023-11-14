@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 import { createLogger } from '@package-frontend/utils';
-import { useCheckAuth } from '!/auth/application/check-auth';
+import { useGetAuth } from '!/auth/application/get-auth';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('layout/PrivateLayout');
@@ -14,7 +14,7 @@ const PrivateLayout = () => {
   /* ======   variables   ====== */
   const navigate = useNavigate();
   const location = useLocation();
-  const { data } = useCheckAuth();
+  const { data } = useGetAuth();
   const [headerSlot, setHeaderSlot] = useState<ReactNode>(undefined);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */

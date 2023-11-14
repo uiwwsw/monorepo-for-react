@@ -3,9 +3,9 @@ export class Storage {
   constructor(storage?: globalThis.Storage) {
     this.storage = storage;
   }
-  get<T>(key: string): T | null {
+  get<T>(key: string): T | undefined {
     const value = this.storage?.getItem(key);
-    if (!value) return null;
+    if (!value) return undefined;
 
     try {
       return JSON.parse(value) as T;
@@ -14,10 +14,15 @@ export class Storage {
     }
   }
 
-  set(key: string, value: unknown): void {
-    if (value instanceof Array && value.length === 0) this.storage?.removeItem(key);
-    else if (value instanceof Object && Object.keys(value).length === 0) this.storage?.removeItem(key);
-    else if (typeof value === 'string' && !value) this.storage?.removeItem(key);
+  set(key: string, value?: unknown): void {
+    if (
+      (value instanceof Array && value.length === 0) ||
+      (value instanceof Object && Object.keys(value).length === 0) ||
+      (typeof value === 'string' && !value) ||
+      value === undefined ||
+      value === null
+    )
+      this.storage?.removeItem(key);
     else this.storage?.setItem(key, JSON.stringify(value));
   }
 
