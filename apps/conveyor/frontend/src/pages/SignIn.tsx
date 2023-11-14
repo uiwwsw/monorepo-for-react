@@ -55,7 +55,7 @@ const SignIn = () => {
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
       </ModalWithPortal>
-      <form className="flex flex-col gap-3 min-w-[500px]">
+      <form className="flex flex-col gap-3">
         <label>
           <p className="font-medium">{t('아이디')}</p>
           <Input

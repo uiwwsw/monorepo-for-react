@@ -43,7 +43,7 @@ const Table = <T,>({
   renderSubComponent,
   renderSelectComponent,
 }: TableProps<T>) => {
-  if (!data) return;
+  if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
@@ -179,8 +179,8 @@ const Table = <T,>({
           <div className="flex items-center">{renderSelectComponent}</div>
         )}
       </div>
-      <div className="mb-4">
-        <table className="min-w-full divide-y divide-gray-200">
+      <div className="mb-4 overflow-auto">
+        <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>

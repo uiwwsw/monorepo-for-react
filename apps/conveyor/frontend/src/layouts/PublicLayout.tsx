@@ -14,7 +14,7 @@ const PublicLayout = () => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-auto max-w-5xl mx-auto w-full">
+      <main className="flex-auto flex flex-col max-w-full">
         <Outlet />
       </main>
     </div>

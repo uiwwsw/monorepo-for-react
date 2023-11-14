@@ -6,7 +6,7 @@ const logger = createLogger('alarm/useGetGraph');
 
 async function fetcher(url: string) {
   const res = await fakeApi(mockDataGraph);
-  logger(res);
+  logger(url, res);
   return res;
   //   return await http({ url });
 }
