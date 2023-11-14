@@ -17,7 +17,7 @@ const Stats = () => {
   const { data } = useGetAlarmGraph();
   const { setChildren } = useHeaderContext();
 
-  const [duration, setDuration] = useState<Dayjs[]>([]);
+  const [_, setDuration] = useState<Dayjs[]>([]);
   /* ======   function    ====== */
   const handleChange = (duration: Dayjs | Dayjs[]) => {
     duration instanceof Array && setDuration(duration);

@@ -43,7 +43,7 @@ const Table = <T,>({
   renderSubComponent,
   renderSelectComponent,
 }: TableProps<T>) => {
-  if (!data) return;
+  if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(

@@ -20,7 +20,7 @@ overflow-hidden
   before:absolute
   before:transition
   before:origin-center
- before:scale-[10]
+ before:scale-[15]
  before:border-2
  before:border
  before:border-white
