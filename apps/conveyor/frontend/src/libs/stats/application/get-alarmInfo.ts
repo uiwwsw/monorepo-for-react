@@ -16,14 +16,24 @@ async function fetcher(
   //temporary
   const data: StatsAlarmData[] = [
     {
+      no: 1,
       carrierID: 'UNKNOWN_1',
       zoneID: 10101,
-      setTime: '2023-11-11 01:00:00',
-      clearTime: '2023-11-11 01:10:00',
+      setTime: '2023-11-01 01:01:01',
+      clearTime: '2023-11-01 01:13:29',
       description: 'unknown error',
     },
+    {
+      no: 2,
+      carrierID: 'UNKNOWN_1',
+      zoneID: 10102,
+      setTime: '2023-11-01 02:01:01',
+      clearTime: '2023-11-01 02:15:32',
+      description: '',
+    },
   ];
-  return fakeApi(data);
+  const res = await fakeApi(data);
+  return res;
   //   return await http({ url });
 }
 

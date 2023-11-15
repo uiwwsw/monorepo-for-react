@@ -25,6 +25,7 @@ export interface StatsGraphData {
 }
 
 export interface StatsAlarmData {
+  no: number;
   carrierID: string;
   zoneID: number;
   setTime: string;
@@ -33,6 +34,7 @@ export interface StatsAlarmData {
 }
 
 export interface StatsCarrierData {
+  no: number;
   carrierID: string;
   input: string;
   installedTime: string;

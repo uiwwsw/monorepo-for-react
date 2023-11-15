@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SearchArg, StatsAlarmData } from '!/stats/domain';
 import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
+import Table from '@/Table';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -19,7 +20,7 @@ const StatsAlarm = () => {
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [renderAlarmList, setRenderAlarmList] = useState<StatsAlarmData[]>([]);
 
-  const { trigger, error, isMutating } = useGetAlarmInfo();
+  const { trigger, error, isMutating, data } = useGetAlarmInfo();
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -78,7 +79,29 @@ const StatsAlarm = () => {
     return () => setChildren(undefined);
   }, []);
   logger('render', error, isMutating, onChangeSearchKeyword);
-  return <>alarm</>;
+  return (
+    <>
+      <Table
+        thead={['no', 'carrierID', 'zoneID', 'setTime', 'clearTime', 'description']}
+        data={
+          data
+            ? data
+            : [
+                {
+                  no: 0,
+                  carrierID: '-',
+                  zoneID: 0,
+                  setTime: '-',
+                  clearTime: '-',
+                  description: '-',
+                },
+              ]
+        }
+        makePagination={true}
+        makeColumnSelect={false}
+      ></Table>
+    </>
+  );
 };
 
 export default StatsAlarm;

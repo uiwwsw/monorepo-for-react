@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { SearchArg } from '!/stats/domain';
 import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
 import { StatsCarrierData } from '!/stats/domain';
+import Table from '@/Table';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -20,7 +21,7 @@ const StatsCarrier = () => {
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [renderCarrierList, setRenderCarrierList] = useState<StatsCarrierData[]>([]);
 
-  const { trigger, error, isMutating } = useGetCarrierInfo();
+  const { trigger, error, isMutating, data } = useGetCarrierInfo();
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -79,7 +80,29 @@ const StatsCarrier = () => {
     return () => setChildren(undefined);
   }, []);
   logger('render', onChangeSearchKeyword, error, isMutating);
-  return <>carrier</>;
+  return (
+    <>
+      <Table
+        thead={['no', 'carrierID', 'input', 'installedTime', 'output', 'completeTime']}
+        data={
+          data
+            ? data
+            : [
+                {
+                  no: 0,
+                  carrierID: '-',
+                  input: '-',
+                  installedTime: '-',
+                  output: '-',
+                  completeTime: '-',
+                },
+              ]
+        }
+        makePagination={true}
+        makeColumnSelect={false}
+      ></Table>
+    </>
+  );
 };
 
 export default StatsCarrier;

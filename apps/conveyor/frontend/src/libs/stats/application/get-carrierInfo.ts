@@ -16,6 +16,7 @@ async function fetcher(
   //temporary
   const data: StatsCarrierData[] = [
     {
+      no: 1,
       carrierID: 'UNKNOWN_1',
       input: '4AFC3301A_IN02',
       installedTime: '2023-11-11 01:00:00',
