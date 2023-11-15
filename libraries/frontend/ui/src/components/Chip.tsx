@@ -2,6 +2,7 @@ import { createLogger } from '@package-frontend/utils';
 import Button from './Button';
 import { useState } from 'react';
 import { WithEval } from '#/componentTypes';
+import { Size } from './Size';
 
 /* ======   interface   ====== */
 export interface ChipProps extends WithEval<number> {
@@ -9,7 +10,7 @@ export interface ChipProps extends WithEval<number> {
   className?: string;
   defaultValue?: number[];
   multiChoice?: boolean;
-  themeSize?: 'xl' | 'md' | 'sm' | 'xs' | null | undefined;
+  themeSize?: Size;
   onChange?: (index: number) => void;
 }
 /* ======    global     ====== */

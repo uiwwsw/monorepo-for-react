@@ -2,5 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  @apply min-w-[1024px];
+  @apply min-w-[375px];
 }
