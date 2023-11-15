@@ -1,6 +1,6 @@
 import { Spinner, useCounter, useInfiniteScroll } from '@library-frontend/ui';
 import { wait } from '@package-frontend/utils';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 const meta = {
   title: 'custom/use-api',
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
@@ -56,25 +56,30 @@ export const UseCounter = ({ timer }: { timer: number }) => {
 
 export const UseInfiniteScroll = () => {
   const [data, setData] = useState<number[]>([0]);
-  const loading = useInfiniteScroll(action);
-  async function action() {
+  const [loading, setLoading] = useState(false);
+  const scrollDeps = useInfiniteScroll();
+  const action = async () => {
+    console.log('123123123', data);
+    setLoading(true);
     await wait(1000);
     setData((prev) => [...prev, prev.length]);
-  }
+    setLoading(false);
+  };
+  useEffect(() => {
+    action();
+  }, [scrollDeps]);
   return (
-    <>
-      <div>
-        {data.map((x) => (
-          <div key={x} className="h-screen bg-slate-400 text-9xl flex items-center justify-center">
-            <span>{x}</span>
-          </div>
-        ))}
-        {loading && (
-          <span className="fixed inset-0 flex items-center justify-center">
-            <Spinner />
-          </span>
-        )}
-      </div>
-    </>
+    <div>
+      {data.map((x) => (
+        <div key={x} className="h-[150vh] bg-slate-400 text-9xl flex items-center justify-center">
+          <span>{x}</span>
+        </div>
+      ))}
+      {loading && (
+        <span className="fixed inset-0 flex items-center justify-center">
+          <Spinner />
+        </span>
+      )}
+    </div>
   );
 };
