@@ -10,7 +10,7 @@ import {
     UserPasswordRequest, UserPasswordResponse,
     UserSession } from '@package-backend/types';
 import { UserGrade } from './grade';
-import { UserRow } from '../orm/R301';
+import { UserRow } from '../model/R301';
 
 import { Service } from '../service';
 import { getToken, verifyToken } from './session';       //verifyToken

@@ -13,7 +13,7 @@ const path     = require('path');
 global.argv = require('optimist').argv;
 
 global.argv.nofile = false;
-global.argv.baseDir = '../src/orm';
+global.argv.baseDir = '../src/model';
 global.argv.dataDir = '../src/packages/backend/types/src/data';
 
 let schemas = [];
@@ -162,7 +162,8 @@ function saveDomain(schema, data, cb) {
 
         let ary = [];
         let ary2 = [];
-        ary.push(`export interface ${item.Name}Row extends RowDataPacket {`);
+        let name = item.Name[0].toUpperCase() + item.Name.substring(1);
+        ary.push(`export interface ${name}Row extends RowDataPacket {`);
         ary2.push(`export interface I${item.Name} {`);
         table.forEach(function(col) {
             if (col.Name) {
@@ -409,12 +410,12 @@ function getAlterQry(schema, desc, ref, obj) {
             if (iDef) {
                 if (!isEqualDataType(iDef.DataType.trim(), col.DataType.trim()) || !isEqualNull(iDef.IsNull, col.IsNull)) {
                     console.log(iDef.DataType, col.DataType, iDef.IsNull, col.IsNull);
-                    qry.push(util.format('alter table `%s`.`%s` modify column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name.trim(), col.DataType, col.IsNull?'NOT':'', col.Description));
+                    qry.push(util.format('alter table `%s`.`%s` modify column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name.trim(), col.DataType, col.IsNull?'NOT':'', col.Description || ''));
                 }
                 delete ref[col.Name];
             } else {
                 // 컬럼 추가..
-                qry.push(util.format('alter table `%s`.`%s` add column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name, col.DataType, col.IsNull?'NOT':'', col.Description));
+                qry.push(util.format('alter table `%s`.`%s` add column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name, col.DataType, col.IsNull?'NOT':'', col.Description || ''));
             }
         }
     });

@@ -166,3 +166,12 @@ export interface ZoneOccupiedAttributesRow extends RowDataPacket {
     CurrentLevel : number;
     AlarmSerialNumber : number;
 }
+
+export interface MsgQueueRow extends RowDataPacket {
+    No : number;
+    Date : Date;
+    State : number;
+    Channel : string;
+    Message : string;
+    Result : string;
+}

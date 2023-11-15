@@ -1,6 +1,7 @@
 export interface Prop {
     PortNum : number;
     MySQL : MySQL;
+    Redis : Redis;
     JWT : JWT;
 }
 
@@ -10,6 +11,11 @@ export interface MySQL {
     User : string;
     Password : string;
     Database : string;
+}
+
+export interface Redis {
+    Host : string;
+    Port : number;
 }
 
 export interface JWT {

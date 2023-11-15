@@ -164,3 +164,12 @@ export interface IZoneOccupiedAttributes {
     CurrentLevel : number;
     AlarmSerialNumber : number;
 }
+
+export interface IMsgQueue {
+    No : number;
+    Date : Date;
+    State : number;
+    Channel : string;
+    Message : string;
+    Result : string;
+}
