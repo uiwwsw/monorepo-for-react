@@ -11,19 +11,16 @@ export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, Wi
 const commonClassName = `
 overflow-hidden
  relative
- [:not([data-indeterminate]):checked+&:before]:scale-0
+ [:not([data-indeterminate]):checked+&:before]:scale-[0]
+ [:not([data-indeterminate]):checked+&:before]:opacity-0
  shadow-sm 
   shadow-gray-400
   before:absolute
-  before:left-1/2
-  before:top-1/2
-  before:absolute
+  before:w-full
+  before:h-full
   before:transition
   before:origin-center
- before:scale-[15]
- before:border-2
- before:border
- before:border-white
+  before:bg-white
  after:border-white
  after:absolute
  after:border-2
