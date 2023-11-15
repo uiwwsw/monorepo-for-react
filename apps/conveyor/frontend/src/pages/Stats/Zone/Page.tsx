@@ -1,6 +1,6 @@
 import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
-import { Select, Input, Chip, Button, useInfiniteScroll, Calendar } from '@library-frontend/ui';
+import { Select, Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
 import { createLogger, newDate, wait } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent } from 'react';
@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { SearchArg, StatsZoneData } from '!/stats/domain';
 import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
 import { useGetGraphInfo } from '!/stats/application/get-graphInfo';
-import { Spinner } from '@library-frontend/ui';
 
 const zones: StatsZoneData[] = [
   { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
@@ -52,8 +51,8 @@ const StatsZone = () => {
   const { setChildren } = useHeaderContext();
   const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([...zones.slice(0, 6)]);
-  const tick = useInfiniteScroll();
+  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([...zones.slice(0, 5)]);
+  const scrollDeps = useInfiniteScroll();
   const [totalPageNum, setTotalPageNum] = useState<number>(1);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
 
@@ -105,8 +104,9 @@ const StatsZone = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
+    if (!scrollDeps) return; // mount 시 실행여부
     handleChangePage();
-  }, [tick]);
+  }, [scrollDeps]);
   useEffect(() => {
     handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
     setChildren(
@@ -126,7 +126,6 @@ const StatsZone = () => {
   logger('render', error, isMutating, graphError, graphMutating, totalPageNum, currentPageIndex);
   return (
     <div>
-      {renderZone.length}
       {loading && (
         <span className="fixed inset-0 z-10 flex items-center justify-center">
           <Spinner />

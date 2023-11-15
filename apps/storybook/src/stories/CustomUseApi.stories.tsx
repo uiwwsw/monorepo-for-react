@@ -59,13 +59,14 @@ export const UseInfiniteScroll = () => {
   const [loading, setLoading] = useState(false);
   const scrollDeps = useInfiniteScroll();
   const action = async () => {
-    console.log('123123123', data);
     setLoading(true);
     await wait(1000);
     setData((prev) => [...prev, prev.length]);
     setLoading(false);
   };
   useEffect(() => {
+    if (!scrollDeps) return; // mount 시 실행여부
+
     action();
   }, [scrollDeps]);
   return (
