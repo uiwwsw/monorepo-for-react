@@ -7,7 +7,7 @@ const Stats = lazy(() => import('./pages/Stats/Page'));
 const StatsZone = lazy(() => import('./pages/Stats/Zone/Page'));
 const StatsAlarm = lazy(() => import('./pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('./pages/Stats/Carrier/Page'));
-const Help = lazy(() => import('./pages/Help'));
+// const Help = lazy(() => import('./pages/Help'));
 export interface Group {
   name: string;
   path: string;
@@ -51,10 +51,10 @@ export const commonRoutes: Tab[] = [
     name: '로그인',
     node: SignIn,
   },
-  {
-    icon: '💊',
-    path: '/help',
-    name: '도움말',
-    node: Help,
-  },
+  // {
+  //   icon: '💊',
+  //   path: '/help',
+  //   name: '도움말',
+  //   node: Help,
+  // },
 ];

@@ -21,13 +21,11 @@ const App = () => {
     <Router>
       <Routes>
         <Route element={<PrivateLayout />}>
-          {authRoutes.map((x) => (
-            <>
-              <Fragment key={x.name}>
-                <Route path={x.path} element={<x.node />} />
-                {x.group && x.group.map((y) => <Route key={y.name} path={y.path} element={<y.node />} />)}
-              </Fragment>
-            </>
+          {authRoutes.map((x, i) => (
+            <Fragment key={x.name + i}>
+              <Route path={x.path} element={<x.node />} />
+              {x.group && x.group.map((y) => <Route key={x.name + y.name} path={y.path} element={<y.node />} />)}
+            </Fragment>
           ))}
         </Route>
 

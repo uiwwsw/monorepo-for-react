@@ -10,7 +10,7 @@ import { StatsCarrierData } from '!/stats/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Stats');
+const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
@@ -79,7 +79,7 @@ const StatsCarrier = () => {
     return () => setChildren(undefined);
   }, []);
   logger('render', onChangeSearchKeyword, error, isMutating);
-  return <></>;
+  return <>carrier</>;
 };
 
 export default StatsCarrier;

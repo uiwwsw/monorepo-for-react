@@ -1,11 +1,10 @@
-import { fakeApi, createLogger, http } from '@package-frontend/utils';
+import { fakeApi, createLogger } from '@package-frontend/utils';
 import { faker } from '@faker-js/faker';
 import useSWR from 'swr';
 const logger = createLogger('test/useTest');
 
 async function fetcher(url: string) {
   fetch(url);
-  http({ url });
   await fakeApi(true);
   logger('test');
   return faker.person.fullName();

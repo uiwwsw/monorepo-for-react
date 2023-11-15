@@ -9,7 +9,7 @@ import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Stats');
+const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
@@ -78,7 +78,7 @@ const StatsAlarm = () => {
     return () => setChildren(undefined);
   }, []);
   logger('render', error, isMutating, onChangeSearchKeyword);
-  return <></>;
+  return <>alarm</>;
 };
 
 export default StatsAlarm;

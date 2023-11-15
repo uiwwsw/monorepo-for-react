@@ -24,7 +24,7 @@ const zones: StatsZoneData[] = [
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Stats');
+const logger = createLogger('pages/Stats/Zone');
 const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-sm';
 const colClassName = 'flex justify-center flex-col';
 const StatsZone = () => {
@@ -145,6 +145,7 @@ const StatsZone = () => {
       </div>
       {renderZone.map((zone) => (
         <div
+          key={zone.zoneID}
           className="grid border border-slate-300 my-5 p-3 rounded-md grid-cols-5 content-evenly text-center cursor-pointer"
           onClick={() => {
             onClickZoneCard(zone.zoneID);
