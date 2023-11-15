@@ -56,12 +56,11 @@ export const UseCounter = ({ timer }: { timer: number }) => {
 
 export const UseInfiniteScroll = () => {
   const [data, setData] = useState<number[]>([0]);
-  const action = async () => {
+  const loading = useInfiniteScroll(action);
+  async function action() {
     await wait(1000);
     setData((prev) => [...prev, prev.length]);
-  };
-  const loading = useInfiniteScroll(action);
-
+  }
   return (
     <>
       <div>
