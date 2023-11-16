@@ -16,8 +16,7 @@ overflow-hidden
  shadow-sm 
   shadow-gray-400
   before:absolute
-  before:w-full
-  before:h-full
+  before:inset-0
   before:transition
   before:origin-center
   before:bg-white

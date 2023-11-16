@@ -26,7 +26,6 @@ const Control = () => {
           thead={['sid', 'name', 'status', 'version', 'StartedTime']}
           data={serverData}
           makePagination={false}
-          makeColumnSelect={false}
           renderSelectComponent={<ServerSelect />}
           renderSubComponent={<ServerSub />}
         ></Table>
@@ -38,7 +37,6 @@ const Control = () => {
           thead={['tid', 'status', 'version', 'StartedTime', 'AdjTCMConnection']}
           data={tcmData}
           makePagination={true}
-          makeColumnSelect={false}
           renderSelectComponent={<TcmSelect />}
           renderSubComponent={<TcmSub />}
         ></Table>
