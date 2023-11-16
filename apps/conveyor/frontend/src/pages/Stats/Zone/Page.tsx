@@ -5,9 +5,10 @@ import { createLogger, newDate, wait } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg, StatsZoneData } from '!/stats/domain';
+import { SearchArg, StatsGraphData, StatsZoneData } from '!/stats/domain';
 import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
 import { useGetGraphInfo } from '!/stats/application/get-graphInfo';
+import { LineProps } from '@nivo/line';
 
 const zones: StatsZoneData[] = [
   { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
@@ -45,16 +46,18 @@ const options = [
 const logger = createLogger('pages/Stats/Zone');
 const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-sm';
 const colClassName = 'flex justify-center flex-col';
+
 const StatsZone = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { setChildren } = useHeaderContext();
   const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([...zones.slice(0, 5)]);
+  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([...zones.slice(0, 6)]);
   const scrollDeps = useInfiniteScroll();
   const [totalPageNum, setTotalPageNum] = useState<number>(1);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const [graphData, setGraphData] = useState<LineProps['data']>();
 
   const { trigger, error, isMutating } = useGetZoneInfo();
   const { trigger: graphTrigger, error: graphError, isMutating: graphMutating } = useGetGraphInfo();
@@ -78,12 +81,31 @@ const StatsZone = () => {
     /** find data with keyword */
   };
 
+  const dataToChartData = (loadedData: StatsGraphData) => {
+    let lineData: LineProps['data'] = [
+      { id: 'alarm', data: [] },
+      { id: 'carrier', data: [] },
+    ];
+    loadedData.data.map((i) => {
+      lineData[0].data
+        ? lineData[0].data.push({ x: i.date, y: i.alarm })
+        : (lineData[0].data = [{ x: i.date, y: i.alarm }]);
+      lineData[1].data
+        ? lineData[1].data.push({ x: i.date, y: i.transfer })
+        : (lineData[1].data = [{ x: i.date, y: i.transfer }]);
+    });
+    logger(lineData);
+    return lineData;
+  };
+
   const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
-    const newGraphData = await graphTrigger(arg);
-    logger(newRenderZone, newGraphData);
+    const loadedData = await graphTrigger(arg);
+    const newGraphData = dataToChartData(loadedData);
+    logger(newRenderZone, loadedData, newGraphData);
     //setRenderZone(newRenderZone)
     setTotalPageNum(Math.floor(renderZone.length / 5) + 1);
+    setGraphData(newGraphData);
 
     setCurrentPageIndex(0);
   };
@@ -93,7 +115,7 @@ const StatsZone = () => {
     setLoading(true);
     await wait(1000);
     const length = renderZone.length;
-    setRenderZone([...zones.slice(0, length + 1)]);
+    setRenderZone([...zones.slice(0, length + 3)]);
     setLoading(false);
     return renderZone;
   }
@@ -134,12 +156,12 @@ const StatsZone = () => {
       <div className="sticky top-16 bg-white">
         <div className="h-60 flex rounded-xl border mb-3">
           <div className="h-full w-4/5">
-            <ChartLine />
+            <ChartLine data={graphData} />
           </div>
           <div className="h-full w-1/5 p-1 pl-3 border-l-2">
             <Select className="w-full" options={options} onChange={onChangeGraphPort} />
-            <div className={graphChartClassName}>Transport Total : {}</div>
-            <div className={graphChartClassName}>Transport Average : {}</div>
+            <div className={graphChartClassName}>Carrier Total : {}</div>
+            <div className={graphChartClassName}>Carrier Average : {}</div>
             <div className={graphChartClassName}>Alarm Total : {}</div>
             <div className={graphChartClassName}>Alarm Average : {}</div>
           </div>

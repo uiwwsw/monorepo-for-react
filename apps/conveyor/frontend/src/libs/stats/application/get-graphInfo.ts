@@ -18,13 +18,23 @@ async function fetcher(
     port: 'All',
     data: [
       {
-        transfer: 100,
-        alarm: 100,
+        transfer: 177,
+        alarm: 0,
         date: '2023-11-13',
+      },
+      {
+        transfer: 213,
+        alarm: 2,
+        date: '2023-11-14',
+      },
+      {
+        transfer: 165,
+        alarm: 1,
+        date: '2023-11-15',
       },
     ],
   };
-  return fakeApi(data);
+  return data;
   //   return await http({ url });
 }
 
