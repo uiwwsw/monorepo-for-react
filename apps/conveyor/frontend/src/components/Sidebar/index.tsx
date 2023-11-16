@@ -2,7 +2,7 @@ import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import { Link, useLocation } from 'react-router-dom';
 import GroupLink from './GroupLink';
-import { Button } from '@library-frontend/ui';
+import { Button, Image } from '@library-frontend/ui';
 import { useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
@@ -40,7 +40,7 @@ const Nav = (_: NavProps) => {
       <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
         <div className="flex-auto">
           <Link to="/" className="block p-4">
-            <img src={logo} alt="Logo" className="block w-32 m-auto" />
+            <Image block src={logo} alt="logo" width={128} />
           </Link>
           <hr />
           <GroupLink routes={authRoutes} />

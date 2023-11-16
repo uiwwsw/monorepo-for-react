@@ -12,5 +12,5 @@ export default defineConfig({
       '!': fileURLToPath(new URL('./src/libs', import.meta.url)),
     },
   },
-  base: './',
+  base: '/',
 });

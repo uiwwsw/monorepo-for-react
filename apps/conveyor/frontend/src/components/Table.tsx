@@ -34,7 +34,7 @@ const Table = <T,>({
   thead,
   data,
   makePagination = false,
-  makeColumnSelect = true,
+  makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
 }: TableProps<T>) => {
