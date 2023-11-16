@@ -25,6 +25,8 @@ export interface TableProps<T> {
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
   renderSubComponent?: ReactNode;
+  onSearch?: (keyword: string) => void;
+  filterWithEnter?: boolean;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
@@ -42,6 +44,8 @@ const Table = <T,>({
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
+  onSearch,
+  filterWithEnter = false,
 }: TableProps<T>) => {
   if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
@@ -172,8 +176,13 @@ const Table = <T,>({
         <Input
           defaultValue={globalFilter}
           debounceTime={300}
-          onChange={({ target }) => setGlobalFilter(target.value)}
+          onChange={({ target }) => !filterWithEnter && setGlobalFilter(target.value)}
           placeholder="검색어를 입력하세요"
+          onKeyUp={(e) => {
+            if (e.code === 'Enter') {
+              onSearch && onSearch(e.currentTarget.value);
+            }
+          }}
         />
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
           <div className="flex items-center">{renderSelectComponent}</div>

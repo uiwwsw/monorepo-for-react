@@ -32,8 +32,9 @@ const StatsAlarm = () => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const onChangeSearchKeyword = async (character: string) => {
+  const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
+    logger(character);
 
     const arg: SearchArg = {
       startTime: duration[0].toString(),
@@ -43,19 +44,17 @@ const StatsAlarm = () => {
     };
 
     setArg(arg);
-    mutate();
   };
 
   const handleSearch = async (arg: SearchArg) => {
     setArg(arg);
-    mutate();
     //setRenderZone(newRenderZone)
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    data && setRenderAlarmList(data);
-  }, [data]);
+    mutate();
+  }, [arg]);
   useEffect(() => {
     handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
     setChildren(
@@ -72,7 +71,7 @@ const StatsAlarm = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', error, mutate, onChangeSearchKeyword);
+  logger('render', error, mutate, handleSearchKeyword);
   return (
     <>
       <Table
@@ -93,6 +92,8 @@ const StatsAlarm = () => {
         }
         makePagination={true}
         makeColumnSelect={false}
+        onSearch={handleSearchKeyword}
+        filterWithEnter={true}
       ></Table>
     </>
   );

@@ -3,7 +3,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { SearchArg } from '../domain';
 import { StatsAlarmData } from '../domain';
-const logger = createLogger('stats/useGetGraphInfo');
+const logger = createLogger('stats/useGetAlarmInfo');
 async function fetcher(
   url: string,
   {

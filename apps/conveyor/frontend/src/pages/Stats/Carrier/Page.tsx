@@ -33,7 +33,7 @@ const StatsCarrier = () => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const onChangeSearchKeyword = async (character: string) => {
+  const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
 
     const arg: SearchArg = {
@@ -42,21 +42,18 @@ const StatsCarrier = () => {
       character: character,
       page: 0,
     };
-
     setArg(arg);
-    mutate();
   };
 
   const handleSearch = async (arg: SearchArg) => {
     setArg(arg);
-    mutate();
     //setRenderZone(newRenderZone)
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    data && setRenderCarrierList(data);
-  }, [data]);
+    mutate();
+  }, [arg]);
   useEffect(() => {
     handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
     setChildren(
@@ -73,7 +70,7 @@ const StatsCarrier = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', onChangeSearchKeyword, error, mutate);
+  logger('render', handleSearchKeyword, error, mutate);
   return (
     <>
       <Table
@@ -94,6 +91,8 @@ const StatsCarrier = () => {
         }
         makePagination={true}
         makeColumnSelect={false}
+        onSearch={handleSearchKeyword}
+        filterWithEnter={true}
       ></Table>
     </>
   );
