@@ -12,6 +12,7 @@ const resources = {
       한글: 'Korean',
       영어: 'English',
       중국어: 'Chinese',
+      조작: 'Control',
       통계: 'Statistics',
       회원가입: 'Register',
       로그인: 'Login',
