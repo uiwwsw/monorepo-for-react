@@ -3,7 +3,7 @@ import Underbar from '$/Underbar';
 import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value'> {
   error?: boolean;
   options?: {
     value: string;
@@ -16,7 +16,10 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 const logger = createLogger('components/Select');
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ placeholder = 'Select box', disabled, value = '', onChange, className, error, options = [], ...props }, ref) => {
+  (
+    { defaultValue = '', placeholder = 'Select box', disabled, onChange, className, error, options = [], ...props },
+    ref,
+  ) => {
     /* ======   variables   ====== */
     const [init, setInit] = useState(false);
     const adapterOption: SelectProps['options'] = [
@@ -41,12 +44,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
         <select
           {...props}
+          defaultValue={defaultValue}
           disabled={disabled}
-          defaultValue={value}
           onChange={adapterChange}
           ref={ref}
           className={`flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
-            value === '' && !init ? ' text-gray-400' : ''
+            !defaultValue && !init ? ' text-gray-400' : ''
           }`}
         >
           {adapterOption.map((x, i) => (

@@ -23,7 +23,10 @@ export class Storage {
       value === null
     )
       this.storage?.removeItem(key);
-    else this.storage?.setItem(key, JSON.stringify(value));
+    else {
+      if (typeof value === 'string') this.storage?.setItem(key, value);
+      else this.storage?.setItem(key, JSON.stringify(value));
+    }
   }
 
   clear() {

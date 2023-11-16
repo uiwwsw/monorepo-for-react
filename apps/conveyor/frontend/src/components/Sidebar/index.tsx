@@ -5,6 +5,7 @@ import GroupLink from './GroupLink';
 import { Button } from '@library-frontend/ui';
 import { useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
+import Language from './Language';
 
 /* ======   interface   ====== */
 export interface NavProps {}
@@ -47,7 +48,8 @@ const Nav = (_: NavProps) => {
         <hr className="border-dashed" />
         <GroupLink routes={commonRoutes} />
       </nav>
-      <hr />
+      <hr className="border-dashed" />
+      <Language />
       <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>
     </div>
   );

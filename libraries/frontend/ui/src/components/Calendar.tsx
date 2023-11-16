@@ -65,14 +65,14 @@ const Calendar = ({
       width="300px"
       button={cloneElement(button, {
         children: (
-          <>
-            {memoValueForDisplay}
+          <span className="flex w-fit m-auto items-center">
+            <span>{memoValueForDisplay}</span>
             {selectRange && (
               <span className="ml-2">
                 <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
               </span>
             )}
-          </>
+          </span>
         ),
       })}
     >
