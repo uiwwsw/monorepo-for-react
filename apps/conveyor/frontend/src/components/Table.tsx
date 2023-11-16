@@ -296,7 +296,7 @@ const Table = <T,>({
             />
           </div>
           <Select
-            value={String(table.getState().pagination.pageSize)}
+            defaultValue={String(table.getState().pagination.pageSize)}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
