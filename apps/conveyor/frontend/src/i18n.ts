@@ -9,7 +9,9 @@ const resources = {
   en: {
     translation: {
       //word
-      조작: 'Control',
+      한글: 'Korean',
+      영어: 'English',
+      중국어: 'Chinese',
       통계: 'Statistics',
       회원가입: 'Register',
       로그인: 'Login',
@@ -50,6 +52,9 @@ const resources = {
   'zh-CN': {
     translation: {
       //word
+      한글: '韩国人',
+      영어: '英语',
+      중국어: '中国人',
       조작: '控制',
       통계: '统计',
       회원가입: '注册',
