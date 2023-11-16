@@ -19,8 +19,13 @@ const StatsAlarm = () => {
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [renderAlarmList, setRenderAlarmList] = useState<StatsAlarmData[]>([]);
+  const [arg, setArg] = useState<SearchArg>({
+    startTime: newDate().toString(),
+    endTime: newDate([1, 'day']).toString(),
+    page: 0,
+  });
 
-  const { trigger, error, isMutating, data } = useGetAlarmInfo();
+  const { error, mutate, data } = useGetAlarmInfo({ arg: arg });
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -30,40 +35,29 @@ const StatsAlarm = () => {
   const onChangeSearchKeyword = async (character: string) => {
     if (character === '') return;
 
-    const regex1 = new RegExp(character);
-    const find = [...renderAlarmList.values()].filter((carrier) => {
-      let str = JSON.stringify(carrier);
-      if (regex1.exec(str) !== null) return true;
-      else return false;
-    });
-
     const arg: SearchArg = {
       startTime: duration[0].toString(),
       endTime: duration[1].toString(),
       character: character,
+      page: 0,
     };
 
-    const searchedAlarmList = await trigger(arg);
-
-    if (searchedAlarmList && searchedAlarmList.length > 0) {
-      setRenderAlarmList(searchedAlarmList.concat(find));
-      return;
-    }
-
-    if (find.length > 0) {
-      setRenderAlarmList(find);
-    }
+    setArg(arg);
+    mutate();
   };
 
   const handleSearch = async (arg: SearchArg) => {
-    const newRenderZone = await trigger(arg);
-    logger(newRenderZone);
+    setArg(arg);
+    mutate();
     //setRenderZone(newRenderZone)
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
+    data && setRenderAlarmList(data);
+  }, [data]);
+  useEffect(() => {
+    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -78,7 +72,7 @@ const StatsAlarm = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', error, isMutating, onChangeSearchKeyword);
+  logger('render', error, mutate, onChangeSearchKeyword);
   return (
     <>
       <Table

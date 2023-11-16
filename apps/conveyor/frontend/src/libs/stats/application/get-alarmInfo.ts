@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import useSWR from 'swr/mutation';
+import useSWR from 'swr';
 import { SearchArg } from '../domain';
 import { StatsAlarmData } from '../domain';
 const logger = createLogger('stats/useGetGraphInfo');
@@ -37,6 +37,6 @@ async function fetcher(
   //   return await http({ url });
 }
 
-export function useGetAlarmInfo() {
-  return useSWR('/get-alarmInfo', fetcher);
+export function useGetAlarmInfo({ arg }: { arg: SearchArg }) {
+  return useSWR('/get-alarmInfo', (url) => fetcher(url, { arg }));
 }

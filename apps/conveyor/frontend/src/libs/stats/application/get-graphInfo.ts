@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import useSWR from 'swr/mutation';
+import useSWR from 'swr';
 import { SearchArg } from '../domain';
 import { StatsGraphData } from '../domain';
 const logger = createLogger('stats/useGetGraphInfo');
@@ -34,10 +34,10 @@ async function fetcher(
       },
     ],
   };
-  return data;
+  return fakeApi(data);
   //   return await http({ url });
 }
 
-export function useGetGraphInfo() {
-  return useSWR('/get-graphInfo', fetcher);
+export function useGetGraphInfo({ arg }: { arg: SearchArg }) {
+  return useSWR('/get-graphInfo', (url) => fetcher(url, { arg }));
 }

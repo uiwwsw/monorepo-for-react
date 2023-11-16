@@ -9,6 +9,7 @@ export interface StatsZoneData {
 export interface SearchArg {
   startTime: string;
   endTime: string;
+  page: number;
   sortValue?: number;
   character?: string;
 }

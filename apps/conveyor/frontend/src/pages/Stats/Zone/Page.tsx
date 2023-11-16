@@ -57,10 +57,15 @@ const StatsZone = () => {
   const scrollDeps = useInfiniteScroll();
   const [totalPageNum, setTotalPageNum] = useState<number>(1);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
-  const [graphData, setGraphData] = useState<LineProps['data']>();
+  const [lineData, setLineData] = useState<LineProps['data']>();
+  const [arg, setArg] = useState<SearchArg>({
+    startTime: newDate().toString(),
+    endTime: newDate([1, 'day']).toString(),
+    page: 0,
+  });
 
   const { trigger, error, isMutating } = useGetZoneInfo();
-  const { trigger: graphTrigger, error: graphError, isMutating: graphMutating } = useGetGraphInfo();
+  const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: arg });
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -68,7 +73,12 @@ const StatsZone = () => {
   };
 
   const handleChipChange = async (index: number) => {
-    const arg: SearchArg = { startTime: duration[0].toString(), endTime: duration[1].toString(), sortValue: index };
+    const arg: SearchArg = {
+      startTime: duration[0].toString(),
+      endTime: duration[1].toString(),
+      sortValue: index,
+      page: 0,
+    };
     const newRenderZone = await trigger(arg);
     logger(newRenderZone);
   };
@@ -100,12 +110,11 @@ const StatsZone = () => {
 
   const handleSearch = async (arg: SearchArg) => {
     const newRenderZone = await trigger(arg);
-    const loadedData = await graphTrigger(arg);
-    const newGraphData = dataToChartData(loadedData);
-    logger(newRenderZone, loadedData, newGraphData);
+    await setArg(arg);
+    graphMutate();
+    logger(newRenderZone);
     //setRenderZone(newRenderZone)
     setTotalPageNum(Math.floor(renderZone.length / 5) + 1);
-    setGraphData(newGraphData);
 
     setCurrentPageIndex(0);
   };
@@ -130,7 +139,11 @@ const StatsZone = () => {
     handleChangePage();
   }, [scrollDeps]);
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
+    const newLineData = graphData ? dataToChartData(graphData) : [];
+    setLineData(newLineData);
+  }, [graphData]);
+  useEffect(() => {
+    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -145,7 +158,7 @@ const StatsZone = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', error, isMutating, graphError, graphMutating, totalPageNum, currentPageIndex);
+  logger('render', error, isMutating, graphError, graphMutate, totalPageNum, currentPageIndex);
   return (
     <div>
       {loading && (
@@ -156,7 +169,7 @@ const StatsZone = () => {
       <div className="sticky top-16 bg-white">
         <div className="h-60 flex rounded-xl border mb-3">
           <div className="h-full w-4/5">
-            <ChartLine data={graphData} />
+            <ChartLine data={lineData} />
           </div>
           <div className="h-full w-1/5 p-1 pl-3 border-l-2">
             <Select className="w-full" options={options} onChange={onChangeGraphPort} />
