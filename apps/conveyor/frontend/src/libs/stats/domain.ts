@@ -9,9 +9,16 @@ export interface StatsZoneData {
 export interface SearchArg {
   startTime: string;
   endTime: string;
-  page: number;
-  sortValue?: number;
   character?: string;
+}
+export interface SearchZoneArg {
+  startTime: string;
+  endTime: string;
+  pageNum: number; // 전체 데이터를 count갯수만큼이 1page라고 했을때 원하는 page
+  pagePerCount: number; // 한번에 가져올 데이터 갯수
+  character?: string;
+  sortValue?: number;
+  zoneID?: number;
 }
 
 export interface GraphDataDetail {
@@ -41,25 +48,4 @@ export interface StatsCarrierData {
   installedTime: string;
   output: string;
   completeTime: string;
-}
-
-export enum SortValue {
-  zoneID = 0,
-  alarmNum,
-  carrierNum,
-}
-
-export enum KeywordFunction {
-  ZONE = 0,
-  ALARM,
-  CARRIER,
-}
-
-export interface searchWithKeywordProps {
-  keyword: string;
-  currentRenderList: [];
-  setRenderList: ([]) => void;
-  startTime: string;
-  endTime: string;
-  functionValue: KeywordFunction;
 }

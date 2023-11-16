@@ -4,7 +4,7 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg, StatsAlarmData } from '!/stats/domain';
+import { SearchArg } from '!/stats/domain';
 import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
 import Table from '@/Table';
 
@@ -18,29 +18,34 @@ const StatsAlarm = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderAlarmList, setRenderAlarmList] = useState<StatsAlarmData[]>([]);
   const [arg, setArg] = useState<SearchArg>({
     startTime: newDate().toString(),
     endTime: newDate([1, 'day']).toString(),
-    page: 0,
   });
 
   const { error, mutate, data } = useGetAlarmInfo({ arg: arg });
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
-    duration instanceof Array && setDuration(duration);
+    if (duration instanceof Array) {
+      setDuration(duration);
+
+      const arg: SearchArg = {
+        startTime: duration[0].toString(),
+        endTime: duration[1].toString(),
+      };
+
+      setArg(arg);
+    }
   };
 
   const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
-    logger(character);
 
     const arg: SearchArg = {
       startTime: duration[0].toString(),
       endTime: duration[1].toString(),
       character: character,
-      page: 0,
     };
 
     setArg(arg);
@@ -48,7 +53,6 @@ const StatsAlarm = () => {
 
   const handleSearch = async (arg: SearchArg) => {
     setArg(arg);
-    //setRenderZone(newRenderZone)
   };
 
   /* ======   useEffect   ====== */
@@ -56,7 +60,7 @@ const StatsAlarm = () => {
     mutate();
   }, [arg]);
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
+    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar

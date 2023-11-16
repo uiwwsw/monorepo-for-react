@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SearchArg } from '!/stats/domain';
 import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
-import { StatsCarrierData } from '!/stats/domain';
 import Table from '@/Table';
 
 /* ======   interface   ====== */
@@ -19,11 +18,9 @@ const StatsCarrier = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderCarrierList, setRenderCarrierList] = useState<StatsCarrierData[]>([]);
   const [arg, setArg] = useState<SearchArg>({
     startTime: newDate().toString(),
     endTime: newDate([1, 'day']).toString(),
-    page: 0,
   });
 
   const { error, data, mutate } = useGetCarrierInfo({ arg: arg });
@@ -40,14 +37,12 @@ const StatsCarrier = () => {
       startTime: duration[0].toString(),
       endTime: duration[1].toString(),
       character: character,
-      page: 0,
     };
     setArg(arg);
   };
 
   const handleSearch = async (arg: SearchArg) => {
     setArg(arg);
-    //setRenderZone(newRenderZone)
   };
 
   /* ======   useEffect   ====== */
@@ -55,7 +50,7 @@ const StatsCarrier = () => {
     mutate();
   }, [arg]);
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString(), page: 0 });
+    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
