@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import { ModalBaseProps } from './Base';
+import { ModalBaseProps, ModalResult } from './Base';
 import { ReactNode, useState } from 'react';
 import Button from '@/Button';
 import ModalWithPortal from './WithPortal';
@@ -13,8 +13,8 @@ const logger = createLogger('components/ModalWithBtn');
 const ModalWithBtn = ({ button = <Button>팝업</Button>, onClose, ...props }: ModalWithBtnProps) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
-  const handleEval = async () => {
-    onClose && (await onClose());
+  const handleEval = async (e?: ModalResult) => {
+    onClose && (await onClose(e));
     setOpen(false);
   };
   const handleOpen = () => setOpen(true);
