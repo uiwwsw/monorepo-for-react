@@ -8,6 +8,6 @@ const App = () => {
   /* ======   variables   ====== */
   /* ======   useEffect   ====== */
   logger('test');
-  return <>test</>;
+  return <></>;
 };
 export default App;
