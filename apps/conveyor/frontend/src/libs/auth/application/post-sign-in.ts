@@ -16,12 +16,13 @@ async function fetcher(
     };
   },
 ) {
-  logger(url, arg);
   if (arg.id !== 'admin' || arg.pw !== 'admin') throw new Error('아이디 또는 비번이 틀렸습니다.');
 
   const res = await fakeApi(mockData);
   const trigger = usePostAuth();
   await trigger(res);
+  logger(url, arg, res);
+
   return res;
 }
 
