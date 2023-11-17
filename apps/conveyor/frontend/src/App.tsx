@@ -15,6 +15,7 @@ const SignOut = lazy(() => import('src/pages/SignOut'));
 
 const App = () => {
   /* ======   variables   ====== */
+  // const t = import.meta.env.VITE_APP
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
