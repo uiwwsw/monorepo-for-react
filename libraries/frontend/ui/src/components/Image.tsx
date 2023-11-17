@@ -12,22 +12,26 @@ const logger = createLogger('components/Image');
 
 const Image = ({ width, height, block, ...props }: ImageProps) => {
   /* ======   variables   ====== */
-  const stoRef = useRef<NodeJS.Timeout>();
+  const stoRef = useRef<NodeJS.Timeout | undefined | null>();
   const full = width === '100%';
   const [load, setLoad] = useState<boolean | undefined>(undefined);
   const [error, setError] = useState(false);
   const complete = useMemo(() => load || error, [load, error]);
   /* ======   function    ====== */
   const handleLazyLoad = (value?: boolean) => {
+    if (stoRef.current === null) return;
+
     clearTimeout(stoRef.current);
-    if (value) setLoad(value);
-    else stoRef.current = setTimeout(() => setLoad(value), 100);
+    if (value) {
+      setLoad(value);
+      stoRef.current = null;
+    } else stoRef.current = setTimeout(() => setLoad(value), 100);
   };
   const handleLoad = () => handleLazyLoad(true);
   const handleError = () => setError(true);
   /* ======   useEffect   ====== */
   useLayoutEffect(() => {
-    load === undefined && handleLazyLoad(false);
+    load !== true && handleLazyLoad(false);
   }, []);
   logger('render');
   return (

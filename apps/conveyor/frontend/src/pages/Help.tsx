@@ -2,12 +2,14 @@ import { Accordion, Button } from '@library-frontend/ui';
 import { LocalStorage, createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';
+import { useTest } from 'src/libs/test/application/test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
+  const { data } = useTest();
   const { t } = useTranslation();
   /* ======   function    ====== */
   const handleReset = () => {
@@ -18,7 +20,7 @@ const Help = () => {
   // useEffect(() => {
   //   trigger();
   // }, []);
-  logger('render');
+  logger('render', data);
   return (
     <PageCenter title={t('도움말')}>
       <Accordion title={t('리셋 / 언어 설정 테스트')}>
