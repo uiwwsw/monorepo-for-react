@@ -1,10 +1,14 @@
-import { Button } from '@library-frontend/ui';
+import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
+import ModalContent from './ModalContent';
 /* ======   interface   ====== */
-export interface TcmSelectProps {}
+export interface TcmSelectProps {
+  selectedFile?: string;
+  selectedRows?: number[];
+}
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSelect');
-const TcmSelect = (_: TcmSelectProps) => {
+const TcmSelect = ({ selectedFile, selectedRows }: TcmSelectProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -15,7 +19,9 @@ const TcmSelect = (_: TcmSelectProps) => {
       <Button>Stop</Button>
       <Button>Restart</Button>
       <Button>Reload</Button>
-      <Button>Update</Button>
+      <ModalWithBtn button={<Button>Update</Button>} hasButton={['CANCEL']}>
+        <ModalContent selectedFile={selectedFile} selectedRows={selectedRows} />
+      </ModalWithBtn>
     </div>
   );
 };

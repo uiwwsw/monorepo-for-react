@@ -13,7 +13,7 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState, Fragment } from 'react';
+import { ReactNode, useMemo, useState, Fragment, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ export interface TableProps<T> {
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
   renderSubComponent?: ReactNode;
+  rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
@@ -37,6 +38,7 @@ const Table = <T,>({
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
+  rowSelectionChange,
 }: TableProps<T>) => {
   if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
@@ -145,6 +147,11 @@ const Table = <T,>({
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    if (rowSelectionChange) {
+      rowSelectionChange(rowSelection);
+    }
+  }, [rowSelection, rowSelectionChange]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">

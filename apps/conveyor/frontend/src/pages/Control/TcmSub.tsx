@@ -11,8 +11,9 @@ const TcmSub = (_: TcmSubProps) => {
   logger('render');
   return (
     <div className="flex justify-end space-x-2">
+      <Button>Update</Button>
+      <Button>Process Kill</Button>
       <Button>Logs</Button>
-      <Button>Firmware</Button>
     </div>
   );
 };
