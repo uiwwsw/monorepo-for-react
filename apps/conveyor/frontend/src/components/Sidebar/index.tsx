@@ -39,7 +39,6 @@ const Nav = (_: NavProps) => {
       <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
         <div className="flex-auto">
           <Link to="/" className="block p-4">
-            <img src={logo} alt="ddsd" />
             <Image block src={logo} alt="logo" height={37} />
           </Link>
           <hr />

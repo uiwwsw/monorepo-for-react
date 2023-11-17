@@ -1,5 +1,5 @@
 import { fakeApi, createLogger } from '@package-frontend/utils';
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
 import useSWR from 'swr';
 const logger = createLogger('test/useTest');
 
