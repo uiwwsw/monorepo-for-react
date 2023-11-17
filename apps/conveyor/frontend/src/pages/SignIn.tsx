@@ -32,7 +32,7 @@ const SignIn = () => {
   const from = useMemo(() => url.get('from'), [location]);
   /* ======   function    ====== */
   const fakeWait = () => {
-    navigate(from === '/sign-up' || !from ? '/' : from);
+    navigate(from === '/sign-up' || !from ? '/control' : from);
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
@@ -46,8 +46,12 @@ const SignIn = () => {
   }, [location]);
   logger('render');
   return (
-    <PageCenter title={t('로그인')} icon="🗝️">
-      {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+    <>
+      <ToastWithPortal open={true} duration={Infinity}>
+        현재는 목업 로그인만 가능합니다.
+        <br />
+        id: admin, pw: admin 로 로그인 후 사용해보세요.
+      </ToastWithPortal>
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
         {t('로그아웃에 성공했습니다.')}
       </ToastWithPortal>
@@ -55,40 +59,44 @@ const SignIn = () => {
       <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
         {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
       </ModalWithPortal>
-      <form className="flex flex-col gap-3">
-        <label>
-          <p className="font-medium">{t('아이디')}</p>
-          <Input
-            {...register('id', {
-              required: t('아이디를 입력해주세요.'),
-            })}
-            placeholder={t('아이디를 입력해주세요.')}
-            error={!!errors?.id?.message}
-            className="w-full"
-          />
-          {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
-        </label>
-        <label>
-          <p className="font-medium">{t('비밀번호')}</p>
-          <Input
-            {...register('pw', {
-              required: t('비밀번호를 입력해주세요.'),
-            })}
-            placeholder={t('비밀번호를 입력해주세요.')}
-            error={!!errors?.pw?.message}
-            type="password"
-            className="w-full"
-          />
-          {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
-        </label>
-        <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
-          {t('로그인')}
+      <PageCenter title={t('로그인')} icon="🗝️">
+        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+
+        <form className="flex flex-col gap-3">
+          <label>
+            <p className="font-medium">{t('아이디')}</p>
+            <Input
+              {...register('id', {
+                required: t('아이디를 입력해주세요.'),
+              })}
+              placeholder={t('아이디를 입력해주세요.')}
+              error={!!errors?.id?.message}
+              className="w-full"
+            />
+            {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
+          </label>
+          <label>
+            <p className="font-medium">{t('비밀번호')}</p>
+            <Input
+              {...register('pw', {
+                required: t('비밀번호를 입력해주세요.'),
+              })}
+              placeholder={t('비밀번호를 입력해주세요.')}
+              error={!!errors?.pw?.message}
+              type="password"
+              className="w-full"
+            />
+            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+          </label>
+          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+            {t('로그인')}
+          </Button>
+        </form>
+        <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
+          {t('회원가입 하러가기')}
         </Button>
-      </form>
-      <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
-        {t('회원가입 하러가기')}
-      </Button>
-    </PageCenter>
+      </PageCenter>
+    </>
   );
 };
 
