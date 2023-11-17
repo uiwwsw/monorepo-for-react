@@ -19,9 +19,17 @@ async function copyDir(src, dest) {
       await copyFile(srcPath, destPath);
   }
 }
-
+async function deleteDir(dir) {
+    try {
+      await fs.rm(dir, { recursive: true, force: true });
+    } catch (err) {
+      console.error(`Error deleting directory ${dir}:`, err);
+    }
+  }
+  
 async function main() {
   try {
+    await deleteDir('./deploy');
     // pnpm build 명령 실행
     execSync('pnpm do @library* build', { stdio: 'inherit' });
     execSync('pnpm do @app-conveyor/frontend build', { stdio: 'inherit' });

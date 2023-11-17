@@ -6,12 +6,11 @@ import { Button, Image } from '@library-frontend/ui';
 import { useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
-
 /* ======   interface   ====== */
 export interface NavProps {}
 
 /* ======    global     ====== */
-export let sideWidth = 210;
+
 const logger = createLogger('components/Nav');
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
@@ -40,7 +39,7 @@ const Nav = (_: NavProps) => {
       <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
         <div className="flex-auto">
           <Link to="/" className="block p-4">
-            <Image block src={logo} alt="logo" width={128} />
+            <Image block src={logo} alt="logo" height={37} />
           </Link>
           <hr />
           <GroupLink routes={authRoutes} />
