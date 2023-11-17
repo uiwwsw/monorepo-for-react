@@ -1,7 +1,8 @@
 import { createLogger } from '@package-frontend/utils';
-import { ImgHTMLAttributes, useMemo, useState } from 'react';
+import { ImgHTMLAttributes, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from './Skeleton';
 import Smooth from './Smooth';
+
 /* ======   interface   ====== */
 export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   block?: boolean;
@@ -11,14 +12,23 @@ const logger = createLogger('components/Image');
 
 const Image = ({ width, height, block, ...props }: ImageProps) => {
   /* ======   variables   ====== */
+  const stoRef = useRef<NodeJS.Timeout>();
   const full = width === '100%';
-  const [load, setLoad] = useState(false);
+  const [load, setLoad] = useState<boolean | undefined>(undefined);
   const [error, setError] = useState(false);
   const complete = useMemo(() => load || error, [load, error]);
   /* ======   function    ====== */
-  const handleLoad = () => setLoad(true);
+  const handleLazyLoad = (value?: boolean) => {
+    clearTimeout(stoRef.current);
+    if (value) setLoad(value);
+    else stoRef.current = setTimeout(() => setLoad(value), 100);
+  };
+  const handleLoad = () => handleLazyLoad(true);
   const handleError = () => setError(true);
   /* ======   useEffect   ====== */
+  useLayoutEffect(() => {
+    load === undefined && handleLazyLoad(false);
+  }, []);
   logger('render');
   return (
     <div className={block || full ? 'flex items-center justify-center' : 'inline-flex'}>
@@ -26,7 +36,7 @@ const Image = ({ width, height, block, ...props }: ImageProps) => {
         className={`inline-flex relative${full ? ' !w-full' : ''}`}
         style={{ width: !complete ? width : 'initial', height: !complete ? height : 'initial' }}
       >
-        <Smooth value={!load} className="absolute w-full h-full">
+        <Smooth value={load === false} className="absolute w-full h-full">
           <Skeleton className="w-full h-full">
             <i className="w-full h-full" />
           </Skeleton>
@@ -37,10 +47,10 @@ const Image = ({ width, height, block, ...props }: ImageProps) => {
         <img
           {...props}
           width={width}
-          height={height}
           onError={handleError}
           onLoad={handleLoad}
-          className={`${full ? 'w-full ' : ''}${load ? 'visible' : 'invisible'}`}
+          style={{ height: height }}
+          className={`${full ? 'w-full' : ''}${load === false ? 'invisible' : 'visible'}`}
         />
       </div>
     </div>
