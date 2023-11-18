@@ -87,6 +87,7 @@ export interface E84JobStatesRow extends RowDataPacket {
 export interface LogsRow extends RowDataPacket {
     No : number;
     TimeStamp : Date;
+    EventCode : string;
     Level : number;
     TCMID : number;
     TaskID : number;

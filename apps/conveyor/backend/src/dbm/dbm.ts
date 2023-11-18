@@ -1,9 +1,15 @@
 import { Service } from '../service';
 import { Redis } from 'ioredis';
 import logger from '../libs/logger';
-import { MsgQueueRow,  } from '../model/R301';
-import { ITaskTransferInfo } from '../model/taskTransferInfo';
-import { ITcsEventSet } from '../model/tcsEventSet';
+import { MsgQueueRow, TaskTransferInfoRow, CompleteCarrierRow, DestinationZoneRow } from '../models/R301';
+import { ITaskTransferInfoRow, ICompleteCarrierRow, IDestinationZoneRow } from '@package-backend/types';
+import { TITAN_INTERNAL_EVENT_ID } from '../models/tcmEventId';
+import { ITaskTransferInfo } from '../models/taskTransferInfo';
+import { ITcsEventSet } from '../models/tcsEventSet';
+import { IWarningInfo } from '../models/warningInfo';
+import { IZoneDynamicattributes } from '../models/zoneDynamicattributes';
+import { IZoneOccupiedAttributes } from '../models/zoneOccupiedAttributes';
+import { e84BitStateNum } from '../models/e84BitStates';
 
 class TransItem {
     public No : number;
@@ -19,33 +25,39 @@ class TransItem {
 export class DBM {
     private subs!: Redis;
     private transList:TransItem[] = [];
+    private taskTransferInfos:{[key:number]:ITaskTransferInfoRow} = {};
+    private completeCarriers:{[key:number]:ICompleteCarrierRow} = {};
+    private destinationZones:{[key:number]:IDestinationZoneRow} = {};
 
     public constructor(redis:Redis) {
         this.subs = redis;
 
-        this.subs.on('message', (channel, message) => {
-            this.onRecvMessage(channel, message);
-        });
-
-        this.subs.on('pmessage', (pattern, channel, message) => {
-            this.onRecvMessage(channel, message);
-        });
-
-        this.subs.subscribe('AlarmEventCh');
-        this.subs.subscribe('AlarmEventCh');
-        this.subs.subscribe('TransferInfoCh');
-        this.subs.subscribe('UIMCh');
-        this.subs.subscribe('Logs');
-        this.subs.psubscribe('TCMZoneCh:*');
-
         process.nextTick(async () => {
             await this.checkSkip();
+            await this.getTransferInfos();
+            await this.getCompleteCarriers();
+            await this.getDestinationZones();
 
+            this.subs.subscribe('AlarmEventCh');
+            this.subs.subscribe('AlarmEventCh');
+            this.subs.subscribe('TransferInfoCh');
+            this.subs.subscribe('UIMCh');
+            this.subs.subscribe('Logs');
+            this.subs.psubscribe('TCMZoneCh:*');
+
+            this.subs.on('message', (channel, message) => {
+                this.onRecvMessage(channel, message);
+            });
+    
+            this.subs.on('pmessage', (pattern, channel, message) => {
+                this.onRecvMessage(channel, message);
+            });
+    
             this.run();
         });
     }
 
-    // Redis에 등록되어 있는데, MySQL에 등록되지 않은 TaskTransferInfo 정보를 등록 함
+    // Redis에 등록되어 있는데, MySQL에 등록되지 않은 TaskTransferInfo 정보를 등록
     private async checkSkip() {
         try {
             const keys = await Service.Inst.Redis.keys('TransferInfo:*[0-9]');
@@ -86,6 +98,45 @@ export class DBM {
                 await conn.rollback();
             } finally {
                 await conn.end();
+            }
+        } catch (ex) {
+            logger.error(ex as Error);
+        }
+    }
+
+    // 진행 중인 Task가 있으면 캐슁
+    private async getTransferInfos() {
+        try {
+            const [rows] = await Service.Inst.MySQL.query<TaskTransferInfoRow[]>('SELECT * FROM taskTransferInfo where EndTime is null');
+            for(let i=0, iLen=rows.length; i<iLen; i++) {
+                const row = rows[i];
+                this.taskTransferInfos[row.taskID] = row;
+            }
+        } catch (ex) {
+            logger.error(ex as Error);
+        }
+    }
+
+    // 보관중인 CompleteCarrier 정보 캐슁
+    private async getCompleteCarriers() {
+        try {
+            const [rows] = await Service.Inst.MySQL.query<CompleteCarrierRow[]>('SELECT * FROM completecarrier');
+            for(let i=0, iLen=rows.length; i<iLen; i++) {
+                const row = rows[i];
+                this.completeCarriers[row.ZoneID] = row;
+            }
+        } catch (ex) {
+            logger.error(ex as Error);
+        }
+    }
+
+    // 보관중인 DestinationZone 정보 캐슁
+    private async getDestinationZones() {
+        try {
+            const [rows] = await Service.Inst.MySQL.query<DestinationZoneRow[]>('SELECT * FROM destinationzone');
+            for(let i=0, iLen=rows.length; i<iLen; i++) {
+                const row = rows[i];
+                this.destinationZones[row.ZoneID] = row;
             }
         } catch (ex) {
             logger.error(ex as Error);
@@ -191,9 +242,15 @@ export class DBM {
                             zoneIDFrom : tcminfo.ZoneIDFrom ? tcminfo.ZoneIDFrom : null,
                             startTime : row.Date
                         }]));
+                        this.taskTransferInfos[tcminfo.TaskID] = {
+                            TaskID : tcminfo.TaskID,
+                            ZoneIDFrom : tcminfo.ZoneIDFrom ? tcminfo.ZoneIDFrom : 0,
+                            StartTime : row.Date,
+                        };
                     } else if (tcminfo.ZoneIDTo) {
                         // DESTINATION UPDATE
                         this.transList.push(new TransItem(row.No, 'update taskTransferInfo set zoneIDTo = ? where taskID = ?', [tcminfo.ZoneIDTo, tcminfo.TaskID]));
+                        this.taskTransferInfos[tcminfo.TaskID] && (this.taskTransferInfos[tcminfo.TaskID].ZoneIDTo = tcminfo.ZoneIDTo);
                     }
                     this.transList.push(new TransItem(row.No, 'insert into tasktransferinfostatus set ?', [{
                         taskID : tcminfo.TaskID,
@@ -208,12 +265,196 @@ export class DBM {
                     const tcmEvent: ITcsEventSet = msg.MessageData;
                     if (tcmEvent.CommandID) {
                         this.transList.push(new TransItem(row.No, 'update taskTransferInfo set commandId = ? where taskID = ?', [tcmEvent.CommandID, tcmEvent.TaskID]));
+                        this.taskTransferInfos[tcmEvent.TaskID] && (this.taskTransferInfos[tcmEvent.TaskID].CommandID = tcmEvent.CommandID);
                     }
+                    this.handleEventLogs(tcmEvent, row);
+                }
+                break;
+            case 'tcsLogsMessage':
+                this.transList.push(new TransItem(row.No, 'insert into logs set ?', [{
+                    TimeStamp: row.Date,
+                    Level: msg.MessageData.Level,
+                    TCMID: msg.MessageData.TCMID,
+                    TaskID: msg.MessageData.TaskID,
+                    ZoneID: msg.MessageData.ZoneID,
+                    Comment: msg.MessageData.Comment
+                }]));
+                break;
+            case 'tcsWarningSet':
+                {
+                    const tcmWarning: IWarningInfo = msg.MessageData;
+                    this.transList.push(new TransItem(row.No, 'insert into warninginfo set ?', [{
+                        serialNo: tcmWarning.SerialNo,
+                        warningCode: tcmWarning.EventCode ? +tcmWarning.EventCode : -1,
+                        taskId: +tcmWarning.TaskID,
+                        location: tcmWarning.Location ? +tcmWarning.Location : -1,
+                        reason: tcmWarning.Reason ? +tcmWarning.Reason : -1,
+                        commanId: tcmWarning.CommandID,
+                        carrierId: tcmWarning.CarrierID,
+                        setTime: row.Date
+                    }]));
+                }
+                break;
+            case 'tcmZoneStateAttributes':
+                {
+                    const zone: IZoneDynamicattributes = msg.MessageData.Object;
+                    this.transList.push(new TransItem(0, 'insert into zonedynamicattributes set ?', [{
+                        motorState: zone.MotorState,
+                        state: zone.State,
+                        prevState: zone.PrevState,
+                        zoneId: zone.ZoneID,
+                        timeStamp: row.Date,
+                    }]));
+                    this.saveE84States(zone);
+                }
+                break;
+            case 'tcmZoneOccupiedAttributes':
+                {
+                    const occupiedInfo: IZoneOccupiedAttributes = msg.MessageData.Object;
+                    this.transList.push(new TransItem(0, 'insert into zoneOccupie set ?', [{
+                        zoneId: occupiedInfo.ZoneID,
+                        reservedTaskId: occupiedInfo.ReservedTaskID === -1 ? 0 : occupiedInfo.ReservedTaskID,
+                        occupiedSensor1: occupiedInfo.OccupiedSensor1 ? +occupiedInfo.OccupiedSensor1 : -1,
+                        occupiedSensor2: occupiedInfo.OccupiedSensor2 ? +occupiedInfo.OccupiedSensor2 : -1,
+                        occupiedSensor3: occupiedInfo.OccupiedSensor3 ? +occupiedInfo.OccupiedSensor3 : -1,
+                        currentDirection: occupiedInfo.CurrentDirection ? +occupiedInfo.CurrentDirection : -1,
+                        currentLevel: occupiedInfo.CurrentLevel ? +occupiedInfo.CurrentLevel : -1,
+                        alarmSerialNumber: +occupiedInfo.AlarmSerialNumber,
+                        timeStamp: row.Date
+                    }]));
                 }
                 break;
             default:
                 logger.error(`processMessage. Unknown message ID: ${obj.MessageID}`);
                 break;
+        }
+    }
+
+    private handleEventLogs(tcmEvent: ITcsEventSet, row : MsgQueueRow) {
+        let comment = '';
+        switch (tcmEvent.EventCode) {
+            case TITAN_INTERNAL_EVENT_ID.EVENT_READ_RFID:
+                this.transList.push(new TransItem(row.No, 'update tasktransferinfo set carrierId = ? where taskId = ?', [ tcmEvent.CarrierID, tcmEvent.TaskID ]));
+                comment = `read RFID zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_INSTALLED:
+                /**CARRIER ID 화인 될 경우 CARRIER ID UPDATE */
+                this.transList.push(new TransItem(row.No, 'update tasktransferinfo set carrierId = ?, zoneIdFrom = ? where taskId = ?', [ tcmEvent.CarrierID, tcmEvent.Location, tcmEvent.TaskID ]));
+                comment = `carrier installed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_ABORTED:
+                /** MANUAL ABORT 할 경우 DB에 저장 */
+                comment = `transfer aborted zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_COMPLETED:
+                /** 이송 완료 될 경우 DB에 저장 */
+                this.transList.push(new TransItem(row.No, 'update tasktransferinfo set zoneIdTo=?, endTime = ? where taskId = ?', [ tcmEvent.Location, row.Date, tcmEvent.TaskID ]));
+
+                // CompleteCarrier, DestinationZone에 저장
+                if (this.completeCarriers[tcmEvent.Location]) {
+                    this.transList.push(new TransItem(row.No, 'update completecarrier set useCount = useCount + 1, timeStamp = ? where zoneId = ?', [ row.Date, tcmEvent.Location ]));
+                } else {
+                    this.transList.push(new TransItem(row.No, 'insert into completecarrier set ?', [ {
+                        zoneId : tcmEvent.Location,
+                        useCount : 1,
+                        timeStamp : row.Date,
+                    }]));
+                    this.completeCarriers[tcmEvent.Location] = {
+                        ZoneID : tcmEvent.Location,
+                        UseCount : 1,
+                        TimeStamp : row.Date,
+                    };
+                }
+                if (this.destinationZones[tcmEvent.Location]) {
+                    this.transList.push(new TransItem(row.No, 'update destinationzone set useCount = useCount + 1, timeStamp = ? where zoneId = ?', [ row.Date, tcmEvent.Location ]));
+                } else {
+                    this.transList.push(new TransItem(row.No, 'insert into destinationzone set ?', [ {
+                        zoneId : tcmEvent.Location,
+                        useCount : 1,
+                        timeStamp : row.Date,
+                    }]));
+                    this.destinationZones[tcmEvent.Location] = {
+                        ZoneID : tcmEvent.Location,
+                        UseCount : 1,
+                        TimeStamp : row.Date,
+                    };
+                }
+
+                // CompleteCarrierCount에 저장
+                this.transList.push(new TransItem(row.No, 'insert into completecarriercount set ?', [{
+                    carrierId : this.taskTransferInfos[tcmEvent.TaskID] ? this.taskTransferInfos[tcmEvent.TaskID].CarrierID : 'UNKNOWN',
+                    zoneId : tcmEvent.Location,
+                    timeStamp : row.Date
+                }]));
+                delete this.taskTransferInfos[tcmEvent.TaskID];
+                comment = `transfer completed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_INITIATED:
+                comment = `transfer initiated zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_RESUMED:
+                comment = `transfer resumed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_READ_RFID_FAILED:
+                comment = `read RFID failed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_ARRIVED:
+                comment = `carrier arrived zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_REMOVED:
+                comment = `carrier removed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_ID_DUPLICATED:
+                comment = `carrier ID duplicated zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_STORE_COMPLETED:
+                comment = `carrier store completed zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_TRANSFERRING:
+                comment = `transfer transferring zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_PAUSED:
+                comment = `transfer paused zone[${tcmEvent.Location}]`;
+                break;
+            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_DETECTED:
+                comment = `carrier detected zone[${tcmEvent.Location}]`;
+                break;
+        }
+
+        comment.length > 0 && this.transList.push(new TransItem(row.No, 'insert into logs set ?', [{
+            TimeStamp: row.Date,
+            Level: 0,
+            EventCode : tcmEvent.EventCode,
+            TCMID: tcmEvent.Location ? `${Math.floor(+tcmEvent.Location / 100)}` : `-1`,
+            TaskID: tcmEvent.TaskID ? +tcmEvent.TaskID : -1,
+            ZoneID: tcmEvent.Location,
+            Comment: comment
+        }]));
+    }
+
+    private async saveE84States(dynamicAttributes: IZoneDynamicattributes) {
+        try {
+            if (dynamicAttributes.E84JobID === -1 || dynamicAttributes.E84BitState === undefined) {
+                return;
+            }
+            const E84BitState = dynamicAttributes.E84BitState.split(',');
+            this.transList.push(new TransItem(0, 'insert into e84state set ?', [{
+                e84JobId: dynamicAttributes.E84JobID,
+                sequenceState: dynamicAttributes.E84Sequence,
+                lReq: E84BitState[e84BitStateNum.E84_BIT_L_REQ] === 'on' ? 1 : 0,
+                uReq: E84BitState[e84BitStateNum.E84_BIT_U_REQ] === 'on' ? 1 : 0,
+                ready: E84BitState[e84BitStateNum.E84_BIT_READY] === 'on' ? 1 : 0,
+                hoAvbl: E84BitState[e84BitStateNum.E84_BIT_HO_AVBL] === 'on' ? 1 : 0,
+                es: E84BitState[e84BitStateNum.E84_BIT_ES] === 'on' ? 1 : 0,
+                valid: E84BitState[e84BitStateNum.E84_BIT_VALID] === 'on' ? 1 : 0,
+                cs_0: E84BitState[e84BitStateNum.E84_BIT_CS_0] === 'on' ? 1 : 0,
+                trReq: E84BitState[e84BitStateNum.E84_BIT_TR_REQ] === 'on' ? 1 : 0,
+                busy: E84BitState[e84BitStateNum.E84_BIT_BUSY] === 'on' ? 1 : 0,
+                compt: E84BitState[e84BitStateNum.E84_BIT_COMPT] === 'on' ? 1 : 0,
+                timestamp: new Date(),
+            }]));
+        } catch (ex) {
+            logger.error(ex as Error);
         }
     }
 }

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { UserSession } from '@package-backend/types';
 
 import { Service } from '../service';
-import { UserRow } from '../model/R301';
+import { UserRow } from '../models/R301';
 
 // 인증 토큰 생성,,
 const getToken = (session : UserSession ) => {

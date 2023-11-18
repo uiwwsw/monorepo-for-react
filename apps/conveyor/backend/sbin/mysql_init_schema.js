@@ -164,7 +164,7 @@ function saveDomain(schema, data, cb) {
         let ary2 = [];
         let name = item.Name[0].toUpperCase() + item.Name.substring(1);
         ary.push(`export interface ${name}Row extends RowDataPacket {`);
-        ary2.push(`export interface I${item.Name} {`);
+        ary2.push(`export interface I${item.Name}Row {`);
         table.forEach(function(col) {
             if (col.Name) {
                 let type = col.DataType.split('(')[0].toLowerCase();
@@ -191,7 +191,7 @@ function saveDomain(schema, data, cb) {
                         throw new Error(`unknown table:${item.TableName}, col:${col.Name}, type:${type}`);
                 }
                 ary.push(util.format('    %s : %s;', col.Name, type));
-                ary2.push(util.format('    %s : %s;', col.Name, type));
+                ary2.push(util.format('    %s? : %s;', col.Name, type));
             }
         });
         ary.push('}');
