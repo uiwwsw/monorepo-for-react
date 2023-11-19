@@ -1,5 +1,5 @@
 import { UserGrade } from './grade';
-import { IUser } from '../data';
+import { IUserRow } from '../data';
 
 
 // 사용자 로그인 요청
@@ -41,7 +41,7 @@ export interface SignUpResponse {
 export interface UserListRequest {
 }
 export interface UserListResponse {
-  users: IUser[];
+  users: IUserRow[];
 }
 
 

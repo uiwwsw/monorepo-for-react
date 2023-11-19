@@ -28,6 +28,7 @@ export class DBM {
     private taskTransferInfos:{[key:number]:ITaskTransferInfoRow} = {};
     private completeCarriers:{[key:number]:ICompleteCarrierRow} = {};
     private destinationZones:{[key:number]:IDestinationZoneRow} = {};
+    private e84jobs:{[key:string]:Date} = {};
 
     public constructor(redis:Redis) {
         this.subs = redis;
@@ -192,6 +193,14 @@ export class DBM {
                      // trasaction 처리가 실패 했을 경우, 개별로 처리를 실행 함,,
                     await this.eachTransQuery();
                 }
+
+                // E84JobID가 있는 경우, 10분 이상 지난 경우 삭제
+                const now = new Date();
+                for (const key in this.e84jobs) {
+                    if (this.e84jobs[key].getTime() + 600000 < now.getTime()) {
+                        delete this.e84jobs[key];
+                    }
+                }
             } catch (ex) {
                 logger.error(ex as Error);
             }
@@ -305,7 +314,7 @@ export class DBM {
                         zoneId: zone.ZoneID,
                         timeStamp: row.Date,
                     }]));
-                    this.saveE84States(zone);
+                    this.saveE84States(zone, row);
                 }
                 break;
             case 'tcmZoneOccupiedAttributes':
@@ -432,14 +441,24 @@ export class DBM {
         }]));
     }
 
-    private async saveE84States(dynamicAttributes: IZoneDynamicattributes) {
+    private async saveE84States(dynamicAttributes: IZoneDynamicattributes, row : MsgQueueRow) {
         try {
-            if (dynamicAttributes.E84JobID === -1 || dynamicAttributes.E84BitState === undefined) {
+            if (!dynamicAttributes.E84JobID || dynamicAttributes.E84JobID === -1 || dynamicAttributes.E84BitState === undefined) {
+                logger.warn(`saveE84States. Invalid E84JobID: ${dynamicAttributes.E84JobID}`);
                 return;
             }
+            const E84JobID = `${dynamicAttributes.E84JobID}`;
+            if (!this.e84jobs[E84JobID]) {
+                this.e84jobs[E84JobID] = row.Date;
+                this.transList.push(new TransItem(row.No, 'insert into e84jobs set ? ON DUPLICATE KEY UPDATE startTime = startTime', [{
+                    e84JobId: E84JobID,
+                    zoneId: dynamicAttributes.ZoneID,
+                    startTime: row.Date,
+                }]));
+            }
             const E84BitState = dynamicAttributes.E84BitState.split(',');
-            this.transList.push(new TransItem(0, 'insert into e84state set ?', [{
-                e84JobId: dynamicAttributes.E84JobID,
+            this.transList.push(new TransItem(row.No, 'insert into e84state set ?', [{
+                e84JobId: E84JobID,
                 sequenceState: dynamicAttributes.E84Sequence,
                 lReq: E84BitState[e84BitStateNum.E84_BIT_L_REQ] === 'on' ? 1 : 0,
                 uReq: E84BitState[e84BitStateNum.E84_BIT_U_REQ] === 'on' ? 1 : 0,
@@ -451,7 +470,7 @@ export class DBM {
                 trReq: E84BitState[e84BitStateNum.E84_BIT_TR_REQ] === 'on' ? 1 : 0,
                 busy: E84BitState[e84BitStateNum.E84_BIT_BUSY] === 'on' ? 1 : 0,
                 compt: E84BitState[e84BitStateNum.E84_BIT_COMPT] === 'on' ? 1 : 0,
-                timestamp: new Date(),
+                timestamp: row.Date
             }]));
         } catch (ex) {
             logger.error(ex as Error);
