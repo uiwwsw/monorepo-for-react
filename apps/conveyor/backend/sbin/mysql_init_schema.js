@@ -13,7 +13,7 @@ const path     = require('path');
 global.argv = require('optimist').argv;
 
 global.argv.nofile = false;
-global.argv.baseDir = '../src/model';
+global.argv.baseDir = '../src/models';
 global.argv.dataDir = '../src/packages/backend/types/src/data';
 
 let schemas = [];

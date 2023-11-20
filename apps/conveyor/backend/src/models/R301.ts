@@ -176,3 +176,12 @@ export interface MsgQueueRow extends RowDataPacket {
     Message : string;
     Result : string;
 }
+
+export interface ZoneStatsRow extends RowDataPacket {
+    seq_no : number;
+    date : Date;
+    zoneId : number;
+    carrierNum : number;
+    alarmNum : number;
+    warningNum : number;
+}

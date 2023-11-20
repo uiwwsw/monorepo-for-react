@@ -5,6 +5,7 @@ import prop from './cfg/prop.json';
 import { Prop } from './cfg/prop';
 import logger from './libs/logger';
 import { DBM } from './dbm/dbm';
+import { ZoneRepo } from './zone/zoneRepo';
 
 export class Service {
     private static instance: Service;
@@ -33,6 +34,9 @@ export class Service {
     private subs!: Redis;
     private dbm!: DBM;
 
+    private zoneRepo!: ZoneRepo;
+    private zone! : unknown;
+
     // 서비스 초기화 작업
     public async ready() {
         logger.info('Service ready...');
@@ -57,6 +61,10 @@ export class Service {
 
         // DBM 객체 생성
         this.dbm = new DBM(this.subs);
+
+        // ZoneRepo 객체 생성
+        this.zoneRepo = new ZoneRepo();
+        this.zone = await this.zoneRepo.getZoneRepo();
     }
 
     public get IsRun() : boolean {
@@ -77,4 +85,3 @@ export class Service {
         return this.redis;
     }
 }
-

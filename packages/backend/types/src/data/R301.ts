@@ -174,3 +174,12 @@ export interface IMsgQueueRow {
     Message? : string;
     Result? : string;
 }
+
+export interface IZoneStatsRow {
+    seq_no? : number;
+    date? : Date;
+    zoneId? : number;
+    carrierNum? : number;
+    alarmNum? : number;
+    warningNum? : number;
+}
