@@ -6,21 +6,6 @@ export interface StatsZoneData {
   warningNum: number;
 }
 
-export interface SearchArg {
-  startTime: string;
-  endTime: string;
-  character?: string;
-}
-export interface SearchZoneArg {
-  startTime: string;
-  endTime: string;
-  pageNum: number; // 전체 데이터를 count갯수만큼이 1page라고 했을때 원하는 page
-  pagePerCount: number; // 한번에 가져올 데이터 갯수
-  character?: string;
-  sortValue?: number;
-  zoneID?: number;
-}
-
 export interface GraphDataDetail {
   transfer: number;
   alarm: number;

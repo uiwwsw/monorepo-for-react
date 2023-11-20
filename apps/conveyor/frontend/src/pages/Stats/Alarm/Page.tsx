@@ -4,8 +4,7 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg } from '!/stats/domain';
-import { useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
+import { SearchArg, useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
 import Table from '@/Table';
 
 /* ======   interface   ====== */

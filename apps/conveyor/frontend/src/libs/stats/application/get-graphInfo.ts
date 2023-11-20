@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
-import { SearchZoneArg } from '../domain';
+import { SearchZoneArg } from './get-zoneInfo';
 import { StatsGraphData } from '../domain';
 const logger = createLogger('stats/useGetGraphInfo');
 async function fetcher(

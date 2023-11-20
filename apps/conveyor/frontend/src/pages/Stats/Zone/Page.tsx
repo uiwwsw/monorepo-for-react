@@ -1,46 +1,16 @@
 import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
-import { Select, Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
-import { createLogger, newDate, wait } from '@package-frontend/utils';
+import { Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
+import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchZoneArg, StatsGraphData, StatsZoneData } from '!/stats/domain';
+import { StatsGraphData, StatsZoneData } from '!/stats/domain';
+import { SearchZoneArg } from '!/stats/application/get-zoneInfo';
 import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
 import { useGetGraphInfo } from '!/stats/application/get-graphInfo';
 import { LineProps } from '@nivo/line';
 
-const zones: StatsZoneData[] = [
-  { zoneID: 10101, displayName: '10101', alarmNum: 0, carrierNum: 10, warningNum: 1 },
-  { zoneID: 10102, displayName: '10102', alarmNum: 1, carrierNum: 0, warningNum: 3 },
-  { zoneID: 10103, displayName: '10103', alarmNum: 0, carrierNum: 31, warningNum: 0 },
-  { zoneID: 10104, displayName: '10104', alarmNum: 0, carrierNum: 22, warningNum: 0 },
-  { zoneID: 10105, displayName: '10105', alarmNum: 3, carrierNum: 0, warningNum: 0 },
-  { zoneID: 10106, displayName: '10106', alarmNum: 0, carrierNum: 0, warningNum: 3 },
-  { zoneID: 10107, displayName: '10107', alarmNum: 0, carrierNum: 0, warningNum: 2 },
-  { zoneID: 10201, displayName: '10201', alarmNum: 0, carrierNum: 6, warningNum: 0 },
-  { zoneID: 10202, displayName: '10202', alarmNum: 2, carrierNum: 0, warningNum: 0 },
-  { zoneID: 101051, displayName: '101051', alarmNum: 3, carrierNum: 0, warningNum: 0 },
-  { zoneID: 101061, displayName: '101061', alarmNum: 0, carrierNum: 0, warningNum: 3 },
-  { zoneID: 101071, displayName: '101071', alarmNum: 0, carrierNum: 0, warningNum: 2 },
-  { zoneID: 102011, displayName: '102011', alarmNum: 0, carrierNum: 6, warningNum: 0 },
-  { zoneID: 102021, displayName: '102021', alarmNum: 2, carrierNum: 0, warningNum: 0 },
-  { zoneID: 101052, displayName: '101052', alarmNum: 3, carrierNum: 0, warningNum: 0 },
-  { zoneID: 101062, displayName: '101062', alarmNum: 0, carrierNum: 0, warningNum: 3 },
-  { zoneID: 101072, displayName: '101072', alarmNum: 0, carrierNum: 0, warningNum: 2 },
-  { zoneID: 102012, displayName: '102012', alarmNum: 0, carrierNum: 6, warningNum: 0 },
-  { zoneID: 102022, displayName: '102022', alarmNum: 2, carrierNum: 0, warningNum: 0 },
-];
-const options = [
-  {
-    label: 'All',
-    value: '1',
-  },
-  {
-    label: 'Input1',
-    value: '2',
-  },
-];
 /* ======   interface   ====== */
 enum TotAvr {
   CarrierTot = 0,
@@ -60,11 +30,9 @@ const StatsZone = () => {
   const { setChildren } = useHeaderContext();
   const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([...zones.slice(0, 10)]);
   const scrollDeps = useInfiniteScroll();
   const [pageNum, setPageNum] = useState<number>(0);
   const [currentFilterIndex, setCurrentFilterIndex] = useState<number>(0);
-  const [lineData, setLineData] = useState<LineProps['data']>();
   const [arg, setArg] = useState<SearchZoneArg>({
     startTime: newDate().toString(),
     endTime: newDate([1, 'day']).toString(),
@@ -82,6 +50,8 @@ const StatsZone = () => {
 
   const { error, mutate, data } = useGetZoneInfo({ arg: arg });
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
+  const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
+  const renderZone = useMemo(() => (pageNum === 0 && data ? data : data ? renderZone.concat(data) : []), [data]);
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -117,7 +87,7 @@ const StatsZone = () => {
     setArg(arg);
   };
 
-  const dataToChartData = (loadedData: StatsGraphData) => {
+  function dataToChartData(loadedData: StatsGraphData) {
     let lineData: LineProps['data'] = [
       { id: 'alarm', data: [] },
       { id: 'carrier', data: [] },
@@ -139,7 +109,7 @@ const StatsZone = () => {
     setGraphTotAvr([carrierTotal, carrierAverage, alarmTotal, alarmAverage]);
     logger(lineData);
     return lineData;
-  };
+  }
 
   const handleSearch = async (arg: SearchZoneArg) => {
     await setArg(arg);
@@ -178,11 +148,6 @@ const StatsZone = () => {
     handleChangePage();
   }, [scrollDeps]);
   useEffect(() => {
-    logger('graph changed: ', graphData);
-    const newLineData = graphData ? dataToChartData(graphData) : [];
-    setLineData(newLineData);
-  }, [graphData]);
-  useEffect(() => {
     mutate();
   }, [arg]);
   useEffect(() => {
@@ -199,10 +164,10 @@ const StatsZone = () => {
     setArg(arg);
     setGraphArg(arg);
   }, [duration]);
-  useEffect(() => {
-    if (pageNum === 0 && data) setRenderZone(data);
-    else data && setRenderZone(renderZone.concat(data));
-  }, [data]);
+  // useEffect(() => {
+  //   if (pageNum === 0 && data) setRenderZone(data);
+  //   else data && setRenderZone(renderZone.concat(data));
+  // }, [data]);
   useEffect(() => {
     handleSearch({
       startTime: newDate().toString(),
@@ -268,7 +233,7 @@ const StatsZone = () => {
           />
         </div>
       </div>
-      {renderZone.map((zone) => (
+      {renderZone.map((zone: StatsZoneData) => (
         <div
           key={zone.zoneID}
           className="grid border border-slate-300 my-5 p-3 rounded-md grid-cols-5 content-evenly text-center cursor-pointer"

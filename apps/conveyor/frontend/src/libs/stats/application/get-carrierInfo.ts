@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
-import { SearchArg } from '../domain';
+import { SearchArg } from './get-alarmInfo';
 import { StatsCarrierData } from '../domain';
 const logger = createLogger('stats/useGetCarrierInfo');
 async function fetcher(

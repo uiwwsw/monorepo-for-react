@@ -1,8 +1,14 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
-import { SearchArg } from '../domain';
 import { StatsAlarmData } from '../domain';
+
+export interface SearchArg {
+  startTime: string;
+  endTime: string;
+  character?: string;
+}
+
 const logger = createLogger('stats/useGetAlarmInfo');
 async function fetcher(
   url: string,
