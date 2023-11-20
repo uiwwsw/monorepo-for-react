@@ -6,13 +6,6 @@ export interface StatsZoneData {
   warningNum: number;
 }
 
-export interface SearchArg {
-  startTime: string;
-  endTime: string;
-  sortValue?: number;
-  character?: string;
-}
-
 export interface GraphDataDetail {
   transfer: number;
   alarm: number;
@@ -25,6 +18,7 @@ export interface StatsGraphData {
 }
 
 export interface StatsAlarmData {
+  no: number;
   carrierID: string;
   zoneID: number;
   setTime: string;
@@ -33,30 +27,10 @@ export interface StatsAlarmData {
 }
 
 export interface StatsCarrierData {
+  no: number;
   carrierID: string;
   input: string;
   installedTime: string;
   output: string;
   completeTime: string;
-}
-
-export enum SortValue {
-  zoneID = 0,
-  alarmNum,
-  carrierNum,
-}
-
-export enum KeywordFunction {
-  ZONE = 0,
-  ALARM,
-  CARRIER,
-}
-
-export interface searchWithKeywordProps {
-  keyword: string;
-  currentRenderList: [];
-  setRenderList: ([]) => void;
-  startTime: string;
-  endTime: string;
-  functionValue: KeywordFunction;
 }

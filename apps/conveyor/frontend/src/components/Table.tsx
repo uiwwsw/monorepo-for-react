@@ -13,7 +13,7 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState, Fragment } from 'react';
+import { ReactNode, useMemo, useState, Fragment, ChangeEvent, KeyboardEvent } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -26,12 +26,14 @@ export interface TableProps<T> {
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
   renderSubComponent?: ReactNode;
+  onSearch?: (keyword: string) => Promise<unknown>;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
 
 const Table = <T,>({
   thead,
+  onSearch,
   data,
   makePagination = false,
   makeColumnSelect = false,
@@ -124,7 +126,7 @@ const Table = <T,>({
       globalFilter,
     },
     onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
       const itemRank = rankItem(row.getValue(columnId), value);
       addMeta({
@@ -144,6 +146,14 @@ const Table = <T,>({
   });
 
   /* ======   function    ====== */
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    if (onSearch) onSearch(keyword);
+    else setGlobalFilter(keyword);
+  };
+  const handleSearchKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
+  };
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -173,12 +183,16 @@ const Table = <T,>({
         </div>
       )}
       <div className="flex justify-between items-center">
-        <Input
-          defaultValue={globalFilter}
-          debounceTime={300}
-          onChange={({ target }) => setGlobalFilter(target.value)}
-          placeholder="검색어를 입력하세요"
-        />
+        <div className="flex gap-2">
+          <Input
+            defaultValue={globalFilter}
+            debounceTime={300}
+            onChange={handleSearchChange}
+            onKeyUp={handleSearchKeyUp}
+            placeholder="검색어를 입력하세요"
+          />
+          {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
+        </div>
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
           <div className="flex items-center">{renderSelectComponent}</div>
         )}

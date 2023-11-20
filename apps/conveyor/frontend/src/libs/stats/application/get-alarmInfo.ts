@@ -1,9 +1,15 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import useSWR from 'swr/mutation';
-import { SearchArg } from '../domain';
+import useSWR from 'swr';
 import { StatsAlarmData } from '../domain';
-const logger = createLogger('stats/useGetGraphInfo');
+
+export interface SearchArg {
+  startTime: string;
+  endTime: string;
+  character?: string;
+}
+
+const logger = createLogger('stats/useGetAlarmInfo');
 async function fetcher(
   url: string,
   {
@@ -16,17 +22,27 @@ async function fetcher(
   //temporary
   const data: StatsAlarmData[] = [
     {
+      no: 1,
       carrierID: 'UNKNOWN_1',
       zoneID: 10101,
-      setTime: '2023-11-11 01:00:00',
-      clearTime: '2023-11-11 01:10:00',
+      setTime: '2023-11-01 01:01:01',
+      clearTime: '2023-11-01 01:13:29',
       description: 'unknown error',
     },
+    {
+      no: 2,
+      carrierID: 'UNKNOWN_1',
+      zoneID: 10102,
+      setTime: '2023-11-01 02:01:01',
+      clearTime: '2023-11-01 02:15:32',
+      description: '',
+    },
   ];
-  return fakeApi(data);
+  const res = await fakeApi(data);
+  return res;
   //   return await http({ url });
 }
 
-export function useGetAlarmInfo() {
-  return useSWR('/get-alarmInfo', fetcher);
+export function useGetAlarmInfo({ arg }: { arg: SearchArg }) {
+  return useSWR('/get-alarmInfo', (url) => fetcher(url, { arg }));
 }

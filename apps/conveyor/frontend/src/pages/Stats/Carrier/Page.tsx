@@ -4,9 +4,9 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg } from '!/stats/domain';
+import { SearchArg } from '!/stats/application/get-alarmInfo';
 import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
-import { StatsCarrierData } from '!/stats/domain';
+import Table from '@/Table';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -18,50 +18,37 @@ const StatsCarrier = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [renderCarrierList, setRenderCarrierList] = useState<StatsCarrierData[]>([]);
+  const [arg, setArg] = useState<SearchArg>({
+    startTime: newDate().toString(),
+    endTime: newDate([1, 'day']).toString(),
+  });
 
-  const { trigger, error, isMutating } = useGetCarrierInfo();
+  const { error, data, mutate } = useGetCarrierInfo({ arg: arg });
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
     duration instanceof Array && setDuration(duration);
   };
 
-  const onChangeSearchKeyword = async (character: string) => {
+  const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
-
-    const regex1 = new RegExp(character);
-    const find = [...renderCarrierList.values()].filter((carrier) => {
-      let str = JSON.stringify(carrier);
-      if (regex1.exec(str) !== null) return true;
-      else return false;
-    });
 
     const arg: SearchArg = {
       startTime: duration[0].toString(),
       endTime: duration[1].toString(),
       character: character,
     };
-
-    const searchedCarrierList = await trigger(arg);
-
-    if (searchedCarrierList && searchedCarrierList.length > 0) {
-      setRenderCarrierList(searchedCarrierList.concat(find));
-      return;
-    }
-
-    if (find.length > 0) {
-      setRenderCarrierList(find);
-    }
+    setArg(arg);
   };
 
   const handleSearch = async (arg: SearchArg) => {
-    const newRenderZone = await trigger(arg);
-    logger(newRenderZone);
-    //setRenderZone(newRenderZone)
+    setArg(arg);
   };
 
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    mutate();
+  }, [arg]);
   useEffect(() => {
     handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
     setChildren(
@@ -78,8 +65,31 @@ const StatsCarrier = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', onChangeSearchKeyword, error, isMutating);
-  return <>carrier</>;
+  logger('render', handleSearchKeyword, error, mutate);
+  return (
+    <>
+      <Table
+        thead={['no', 'carrierID', 'input', 'installedTime', 'output', 'completeTime']}
+        data={
+          data
+            ? data
+            : [
+                {
+                  no: 0,
+                  carrierID: '-',
+                  input: '-',
+                  installedTime: '-',
+                  output: '-',
+                  completeTime: '-',
+                },
+              ]
+        }
+        makePagination={true}
+        makeColumnSelect={false}
+        onSearch={handleSearchKeyword}
+      ></Table>
+    </>
+  );
 };
 
 export default StatsCarrier;
