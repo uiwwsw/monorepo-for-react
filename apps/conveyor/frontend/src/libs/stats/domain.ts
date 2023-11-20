@@ -34,3 +34,8 @@ export interface StatsCarrierData {
   output: string;
   completeTime: string;
 }
+
+export interface ZoneList {
+  zoneID: number;
+  displayName: string;
+}
