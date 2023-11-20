@@ -87,7 +87,6 @@ const StatsCarrier = () => {
         makePagination={true}
         makeColumnSelect={false}
         onSearch={handleSearchKeyword}
-        filterWithEnter={true}
       ></Table>
     </>
   );

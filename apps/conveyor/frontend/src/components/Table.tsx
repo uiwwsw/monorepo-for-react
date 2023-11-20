@@ -13,9 +13,10 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState, Fragment } from 'react';
+import { ReactNode, useMemo, useState, Fragment, ChangeEvent, KeyboardEvent } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
@@ -25,31 +26,30 @@ export interface TableProps<T> {
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
   renderSubComponent?: ReactNode;
-  onSearch?: (keyword: string) => void;
-  filterWithEnter?: boolean;
+  onSearch?: (keyword: string) => Promise<unknown>;
 }
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
-const pageSizeOptions = [
-  { value: '10', label: '10개씩 보기' },
-  { value: '20', label: '20개씩 보기' },
-  { value: '30', label: '30개씩 보기' },
-  { value: '40', label: '40개씩 보기' },
-  { value: '50', label: '50개씩 보기' },
-];
+
 const Table = <T,>({
   thead,
+  onSearch,
   data,
   makePagination = false,
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
-  onSearch,
-  filterWithEnter = false,
 }: TableProps<T>) => {
   if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
-
+  const { t } = useTranslation();
+  const pageSizeOptions = [
+    { value: '10', label: t('10개씩 보기') },
+    { value: '20', label: t('20개씩 보기') },
+    { value: '30', label: t('30개씩 보기') },
+    { value: '40', label: t('40개씩 보기') },
+    { value: '50', label: t('50개씩 보기') },
+  ];
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
@@ -57,14 +57,16 @@ const Table = <T,>({
             {
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
-                <Checkbox
-                  checked={table.getIsAllRowsSelected()}
-                  indeterminate={table.getIsSomeRowsSelected()}
-                  onChange={table.getToggleAllRowsSelectedHandler()}
-                />
+                <div className="text-left">
+                  <Checkbox
+                    checked={table.getIsAllRowsSelected()}
+                    indeterminate={table.getIsSomeRowsSelected()}
+                    onChange={table.getToggleAllRowsSelectedHandler()}
+                  />
+                </div>
               ),
               cell: ({ row }: { row: Row<T> }) => (
-                <div className="px-1">
+                <div className="text-left">
                   <Checkbox
                     checked={row.getIsSelected()}
                     disabled={!row.getCanSelect()}
@@ -124,7 +126,7 @@ const Table = <T,>({
       globalFilter,
     },
     onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
       const itemRank = rankItem(row.getValue(columnId), value);
       addMeta({
@@ -144,6 +146,14 @@ const Table = <T,>({
   });
 
   /* ======   function    ====== */
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    if (onSearch) onSearch(keyword);
+    else setGlobalFilter(keyword);
+  };
+  const handleSearchKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
+  };
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -157,7 +167,7 @@ const Table = <T,>({
                 onChange={table.getToggleAllColumnsVisibilityHandler()}
               />
 
-              <span className="text-gray-700 font-medium">전체 선택</span>
+              <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
           </div>
           <div className="px-2 py-1 flex flex-wrap">
@@ -173,22 +183,21 @@ const Table = <T,>({
         </div>
       )}
       <div className="flex justify-between items-center">
-        <Input
-          defaultValue={globalFilter}
-          debounceTime={300}
-          onChange={({ target }) => !filterWithEnter && setGlobalFilter(target.value)}
-          placeholder="검색어를 입력하세요"
-          onKeyUp={(e) => {
-            if (e.code === 'Enter') {
-              onSearch && onSearch(e.currentTarget.value);
-            }
-          }}
-        />
+        <div className="flex gap-2">
+          <Input
+            defaultValue={globalFilter}
+            debounceTime={300}
+            onChange={handleSearchChange}
+            onKeyUp={handleSearchKeyUp}
+            placeholder="검색어를 입력하세요"
+          />
+          {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
+        </div>
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
           <div className="flex items-center">{renderSelectComponent}</div>
         )}
       </div>
-      <div className="mb-4 overflow-visible max-md:!overflow-auto">
+      <div className="mb-4 overflow-auto">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -198,11 +207,11 @@ const Table = <T,>({
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {header.isPlaceholder ? null : (
                         <div
-                          className={header.column.getCanSort() ? 'flex cursor-pointer select-none gap-1' : ''}
+                          className={header.column.getCanSort() ? 'cursor-pointer select-none gap-1' : ''}
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
@@ -252,65 +261,68 @@ const Table = <T,>({
         </table>
       </div>
       {makePagination && (
-        <div className="flex items-center gap-2">
-          <Button
-            themeColor="secondary"
-            themeSize="sm"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            ❮❮
-          </Button>
-          <Button
-            themeColor="secondary"
-            themeSize="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            ❮
-          </Button>
-          <Button
-            themeColor="secondary"
-            themeSize="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            ❯
-          </Button>
-          <Button
-            themeColor="secondary"
-            themeSize="sm"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            ❯❯
-          </Button>
-          <div className="flex items-center gap-1">
-            <span>페이지</span>
-            <strong>
-              {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-            </strong>
-          </div>
-          <div className="flex items-center gap-1">
-            | 페이지 이동:
-            <Input
-              type="number"
-              defaultValue={table.getState().pagination.pageIndex + 1}
+        <div>
+          <div className="w-fit m-auto flex items-center gap-2">
+            <Button
+              themeColor="secondary"
+              themeSize="sm"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              ❮❮
+            </Button>
+            <Button
+              themeColor="secondary"
+              themeSize="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              ❮
+            </Button>
+            <Button
+              themeColor="secondary"
+              themeSize="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              ❯
+            </Button>
+            <Button
+              themeColor="secondary"
+              themeSize="sm"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              ❯❯
+            </Button>
+            <div className="flex items-center gap-1">
+              <span>{t('페이지')}</span>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              </strong>
+            </div>
+            <div className="flex items-center gap-1 max-md:!hidden">
+              | {t('페이지 이동')}:
+              <Input
+                type="number"
+                defaultValue={table.getState().pagination.pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                  table.setPageIndex(page);
+                }}
+                className="border rounded w-24"
+                placeholder="page"
+              />
+            </div>
+            <Select
+              className="max-md:!hidden"
+              defaultValue={String(table.getState().pagination.pageSize)}
               onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
+                table.setPageSize(Number(e.target.value));
               }}
-              className="border rounded w-24"
-              placeholder="page"
+              options={pageSizeOptions}
             />
           </div>
-          <Select
-            value={String(table.getState().pagination.pageSize)}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-            }}
-            options={pageSizeOptions}
-          />
         </div>
       )}
       <hr />

@@ -51,7 +51,10 @@ const StatsZone = () => {
   const { error, mutate, data } = useGetZoneInfo({ arg: arg });
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
   const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
-  const renderZone = useMemo(() => (pageNum === 0 && data ? data : data ? renderZone.concat(data) : []), [data]);
+  const renderZone: StatsZoneData[] = useMemo(
+    () => (pageNum === 0 && data ? data : data ? renderZone.concat(data) : []),
+    [data],
+  );
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -116,7 +119,7 @@ const StatsZone = () => {
     graphMutate();
   };
 
-  async function handleChangePage() {
+  const handleChangePage = () => {
     setLoading(true);
     setPageNum(pageNum + 1);
     const arg: SearchZoneArg = {
@@ -129,7 +132,7 @@ const StatsZone = () => {
     setArg(arg);
     setLoading(false);
     return renderZone;
-  }
+  };
 
   const onClickZoneCard = (zoneID: number) => {
     const arg: SearchZoneArg = {
