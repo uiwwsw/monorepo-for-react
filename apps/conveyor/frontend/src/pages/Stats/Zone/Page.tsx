@@ -28,28 +28,27 @@ const StatsZone = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { setChildren } = useHeaderContext();
-  const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const scrollDeps = useInfiniteScroll();
+  const [scrollDeps, scrollTrigger] = useInfiniteScroll();
   const [pageNum, setPageNum] = useState<number>(0);
   const [renderZone, setRenderZone] = useState<StatsZoneData[]>([]);
   const [currentFilterIndex, setCurrentFilterIndex] = useState<number>(0);
   const [arg, setArg] = useState<SearchZoneArg>({
-    startTime: newDate().toString(),
-    endTime: newDate([1, 'day']).toString(),
+    startTime: newDate().toISOString(),
+    endTime: newDate([1, 'day']).toISOString(),
     pageNum: 0,
     pagePerCount: 10,
   });
   const [graphArg, setGraphArg] = useState<SearchZoneArg>({
-    startTime: newDate().toString(),
-    endTime: newDate([1, 'day']).toString(),
+    startTime: newDate().toISOString(),
+    endTime: newDate([1, 'day']).toISOString(),
     pageNum: 0,
     pagePerCount: 10,
     zoneID: -1,
   });
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
 
-  const { error, mutate, data } = useGetZoneInfo({ arg: arg });
+  const { error, mutate, data, isValidating } = useGetZoneInfo({ arg: arg });
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
   const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
 
@@ -60,8 +59,8 @@ const StatsZone = () => {
 
   const handleChipChange = async (index: number) => {
     const arg: SearchZoneArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
+      startTime: duration[0].toISOString(),
+      endTime: duration[1].toISOString(),
       sortValue: index,
       pageNum: 0,
       pagePerCount: pagePerCount,
@@ -76,8 +75,8 @@ const StatsZone = () => {
 
     logger(character);
     const arg: SearchZoneArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
+      startTime: duration[0].toISOString(),
+      endTime: duration[1].toISOString(),
       character: character,
       pageNum: 0,
       pagePerCount: pagePerCount,
@@ -117,24 +116,22 @@ const StatsZone = () => {
   };
 
   const handleChangePage = () => {
-    setLoading(true);
     setPageNum(pageNum + 1);
     const arg: SearchZoneArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
+      startTime: duration[0].toISOString(),
+      endTime: duration[1].toISOString(),
       sortValue: currentFilterIndex,
       pageNum: pageNum + 1,
       pagePerCount: pagePerCount,
     };
     setArg(arg);
-    setLoading(false);
     return renderZone;
   };
 
   const onClickZoneCard = (zoneID: number) => {
     const arg: SearchZoneArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
+      startTime: duration[0].toISOString(),
+      endTime: duration[1].toISOString(),
       pageNum: 0,
       pagePerCount: pagePerCount,
       zoneID: zoneID,
@@ -148,15 +145,17 @@ const StatsZone = () => {
     handleChangePage();
   }, [scrollDeps]);
   useEffect(() => {
+    scrollTrigger();
     mutate();
   }, [arg]);
   useEffect(() => {
+    scrollTrigger();
     graphMutate();
   }, [graphArg]);
   useEffect(() => {
     const arg: SearchZoneArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
+      startTime: duration[0].toISOString(),
+      endTime: duration[1].toISOString(),
       pageNum: 0,
       pagePerCount: pagePerCount,
       zoneID: -1,
@@ -170,8 +169,8 @@ const StatsZone = () => {
   }, [data]);
   useEffect(() => {
     handleSearch({
-      startTime: newDate().toString(),
-      endTime: newDate([1, 'day']).toString(),
+      startTime: newDate().toISOString(),
+      endTime: newDate([1, 'day']).toISOString(),
       sortValue: currentFilterIndex,
       pageNum: 0,
       pagePerCount: pagePerCount,
@@ -193,7 +192,7 @@ const StatsZone = () => {
   logger('render', error, mutate, graphError, graphMutate, pageNum, currentFilterIndex);
   return (
     <div>
-      {loading && (
+      {isValidating && (
         <span className="fixed inset-0 z-10 flex items-center justify-center">
           <Spinner />
         </span>
