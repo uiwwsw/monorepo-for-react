@@ -3,7 +3,7 @@ import { useHeaderContext } from '@/HeaderContext';
 import { Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatsGraphData, StatsZoneData } from '!/stats/domain';
 import { SearchZoneArg } from '!/stats/application/get-zoneInfo';
@@ -49,12 +49,18 @@ const StatsZone = () => {
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
 
   const { error, mutate, data } = useGetZoneInfo({ arg: arg });
+  const renderZoneRef = useRef<StatsZoneData[]>([]);
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
   const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
-  const renderZone: StatsZoneData[] = useMemo(
-    () => (pageNum === 0 && data ? data : data ? renderZone.concat(data) : []),
-    [data],
-  );
+  const renderZone: StatsZoneData[] = useMemo(() => {
+    if (pageNum === 0 && data) {
+      renderZoneRef.current = data;
+      return renderZoneRef.current;
+    }
+
+    if (data) renderZoneRef.current.concat(data);
+    return renderZoneRef.current;
+  }, [data]);
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
