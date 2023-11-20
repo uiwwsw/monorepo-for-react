@@ -32,6 +32,7 @@ const StatsZone = () => {
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const scrollDeps = useInfiniteScroll();
   const [pageNum, setPageNum] = useState<number>(0);
+  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([]);
   const [currentFilterIndex, setCurrentFilterIndex] = useState<number>(0);
   const [arg, setArg] = useState<SearchZoneArg>({
     startTime: newDate().toString(),
@@ -49,18 +50,8 @@ const StatsZone = () => {
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
 
   const { error, mutate, data } = useGetZoneInfo({ arg: arg });
-  const renderZoneRef = useRef<StatsZoneData[]>([]);
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
   const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
-  const renderZone: StatsZoneData[] = useMemo(() => {
-    if (pageNum === 0 && data) {
-      renderZoneRef.current = data;
-      return renderZoneRef.current;
-    }
-
-    if (data) renderZoneRef.current.concat(data);
-    return renderZoneRef.current;
-  }, [data]);
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -173,10 +164,10 @@ const StatsZone = () => {
     setArg(arg);
     setGraphArg(arg);
   }, [duration]);
-  // useEffect(() => {
-  //   if (pageNum === 0 && data) setRenderZone(data);
-  //   else data && setRenderZone(renderZone.concat(data));
-  // }, [data]);
+  useEffect(() => {
+    if (pageNum === 0 && data) setRenderZone(data);
+    else data && setRenderZone(renderZone.concat(data));
+  }, [data]);
   useEffect(() => {
     handleSearch({
       startTime: newDate().toString(),
