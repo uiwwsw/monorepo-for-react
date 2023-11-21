@@ -25,7 +25,7 @@ export interface TableProps<T> {
   makePagination?: boolean;
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
-  renderSubComponent?: ReactElement<{ tid: number }>;
+  renderSubComponent?: ReactElement<{ row: Row<T> }>;
   rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
 }
 /* ======    global     ====== */
@@ -235,9 +235,7 @@ const Table = <T,>({
                   </tr>
                   {row.getIsExpanded() && renderSubComponent && (
                     <tr>
-                      <td colSpan={row.getVisibleCells().length}>
-                        {cloneElement(renderSubComponent, { tid: row.original.tid })}
-                      </td>
+                      <td colSpan={row.getVisibleCells().length}>{cloneElement(renderSubComponent, { row })}</td>
                     </tr>
                   )}
                 </Fragment>

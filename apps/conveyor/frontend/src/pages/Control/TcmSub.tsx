@@ -1,13 +1,15 @@
 import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
+import { Row } from '@tanstack/react-table';
 import { useState } from 'react';
+import { TCMInfo } from 'src/libs/control/domain';
 /* ======   interface   ====== */
 export interface TcmSubProps {
-  tid?: number;
+  row?: Row<TCMInfo>;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSub');
-const TcmSub = ({ tid }: TcmSubProps) => {
+const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
   const [selectedFile, setSelectedFile] = useState('');
   const [backupFiles, setBackupFiles] = useState<string[]>(['file1.txt', 'file2.txt', 'file3.txt']);
@@ -57,6 +59,7 @@ const TcmSub = ({ tid }: TcmSubProps) => {
           }))}
         ></Combo>
       </div>
+      <div>{row?.original.tid}</div>
       <Button>Update</Button>
       <Button>Process Kill</Button>
       <Button>Detail</Button>
