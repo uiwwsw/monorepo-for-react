@@ -227,7 +227,7 @@ const Table = <T,>({
                   <tr>
                     {row.getVisibleCells().map((cell) => {
                       return (
-                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-center align-middle">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       );
