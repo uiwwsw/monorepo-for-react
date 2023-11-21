@@ -1,41 +1,37 @@
 import { useEffect, useRef, useState } from 'react';
-import useDebounce from './useDebounce';
+import useDebouce from '#/useDebounce';
 
-const useInfiniteScroll = (): [number, () => unknown] => {
+const useInfiniteScroll = () => {
   const heightRef = useRef(0);
   const tickRef = useRef(0);
   const scrollYRef = useRef(0);
   const [scrollDeps, setScrollDeps] = useState<number>(0);
-  const reset = () => {
+  const trigger = async () => {
     heightRef.current = 0;
     tickRef.current = 0;
     scrollYRef.current = 0;
+    await setScrollDeps(0);
     window.scrollTo(0, 0);
-    setScrollDeps(0);
   };
   const isDocumentEnd = () => {
     const { scrollY, innerHeight } = window;
     const { clientHeight } = document.body;
-    const isDownWheel = scrollY > scrollYRef.current;
-    if (scrollY + innerHeight >= clientHeight - 50 && heightRef.current !== clientHeight && isDownWheel) {
-      heightRef.current = clientHeight;
-      scrollYRef.current = scrollY;
-      return true;
-    }
-    document.removeEventListener('scroll', onScroll);
+    if (scrollY + innerHeight >= clientHeight - 50) return true;
     return false;
   };
   const event = () => {
-    if (!isDocumentEnd()) return false;
-    setScrollDeps(++tickRef.current);
-    return true;
+    if (isDocumentEnd()) setScrollDeps(++tickRef.current);
   };
-  const onScroll = useDebounce(event, 500);
+  const onScroll = useDebouce(event, 500);
   useEffect(() => {
     document.addEventListener('scroll', onScroll);
+
     return () => document.removeEventListener('scroll', onScroll);
   }, []);
-  return [scrollDeps, reset];
+  return {
+    scrollDeps,
+    trigger,
+  };
 };
 
 export default useInfiniteScroll;
