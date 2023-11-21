@@ -1,18 +1,65 @@
-import { Button } from '@library-frontend/ui';
+import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
+import { useState } from 'react';
 /* ======   interface   ====== */
-export interface TcmSubProps {}
+export interface TcmSubProps {
+  tid?: number;
+}
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSub');
-const TcmSub = (_: TcmSubProps) => {
+const TcmSub = ({ tid }: TcmSubProps) => {
   /* ======   variables   ====== */
+  const [selectedFile, setSelectedFile] = useState('');
+  const [backupFiles, setBackupFiles] = useState<string[]>(['file1.txt', 'file2.txt', 'file3.txt']);
+
   /* ======   function    ====== */
-  /* ======   useEffect   ====== */
+
+  const handleFileSelect = (selectedFileName: string) => {
+    setSelectedFile(selectedFileName);
+  };
+
+  const handleFileDelete = () => {
+    setBackupFiles(backupFiles.filter((file) => file !== selectedFile));
+    setSelectedFile('');
+  };
+
   logger('render');
+  /* ======   useEffect   ====== */
   return (
     <div className="flex justify-end space-x-2">
+      <div className="flex items-center space-x-4">
+        {selectedFile && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">선택된 파일: {selectedFile}</span>
+            <ModalWithBtn
+              hasButton={['OK', 'CANCEL']}
+              button={
+                <Button themeColor="secondary" themeSize="sm">
+                  Delete
+                </Button>
+              }
+              onClose={(value) => {
+                if (value === 'OK') {
+                  handleFileDelete();
+                }
+              }}
+            >
+              파일을 삭제하시겠습니까?
+            </ModalWithBtn>
+          </div>
+        )}
+
+        <Combo
+          onChange={handleFileSelect}
+          options={backupFiles.map((file) => ({
+            value: file,
+            label: file,
+          }))}
+        ></Combo>
+      </div>
       <Button>Update</Button>
       <Button>Process Kill</Button>
+      <Button>Detail</Button>
       <Button>Logs</Button>
     </div>
   );

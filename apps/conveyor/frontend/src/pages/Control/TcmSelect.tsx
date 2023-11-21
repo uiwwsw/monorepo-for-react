@@ -3,12 +3,11 @@ import { createLogger } from '@package-frontend/utils';
 import ModalContent from './ModalContent';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
-  selectedFile?: string;
   selectedRows?: number[];
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSelect');
-const TcmSelect = ({ selectedFile, selectedRows }: TcmSelectProps) => {
+const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -19,8 +18,8 @@ const TcmSelect = ({ selectedFile, selectedRows }: TcmSelectProps) => {
       <Button>Stop</Button>
       <Button>Restart</Button>
       <Button>Reload</Button>
-      <ModalWithBtn button={<Button>Update</Button>} hasButton={['CANCEL']}>
-        <ModalContent selectedFile={selectedFile} selectedRows={selectedRows} />
+      <ModalWithBtn persist button={<Button>Update</Button>} hasButton={['CANCEL']}>
+        <ModalContent selectedRows={selectedRows} />
       </ModalWithBtn>
     </div>
   );

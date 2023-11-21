@@ -4,11 +4,12 @@ import { useUpdateFirmware } from 'src/libs/control/application/useUpdateFirmwar
 import ProgressBar from './ProgressBar';
 import { UpdateStatus } from 'src/libs/control/domain';
 import { createLogger } from '@package-frontend/utils';
+import Upload from './Upload';
+import { useUploadFirmware } from 'src/libs/control/application/useUploadFirmware';
 
 /* ======   interface   ====== */
 
 interface ModalContentProps {
-  selectedFile?: string;
   selectedRows?: number[];
 }
 
@@ -18,12 +19,13 @@ interface ProgressState {
 /* ======    global     ====== */
 const logger = createLogger('pages/ModalContent');
 
-const ModalContent = ({ selectedFile, selectedRows }: ModalContentProps) => {
+const ModalContent = ({ selectedRows }: ModalContentProps) => {
   /* ======   variables   ====== */
   const { trigger: updateTrigger } = useUpdateFirmware();
   const [progressStates, setProgressStates] = useState<ProgressState>({});
   const [updateInProgress, setUpdateInProgress] = useState(false);
   const continueUpdatingRef = useRef(true);
+  const { trigger: uploadTrigger } = useUploadFirmware();
 
   /* ======   function    ====== */
   const initializeProgressStates = () => {
@@ -34,7 +36,13 @@ const ModalContent = ({ selectedFile, selectedRows }: ModalContentProps) => {
     setProgressStates(initialStates);
   };
 
-  const handleUpdateStart = async () => {
+  const handleUpdateStop = () => {
+    continueUpdatingRef.current = false;
+  };
+
+  const onUpload = async (file: File) => {
+    await uploadTrigger({ file });
+
     if (!selectedRows || updateInProgress) return;
     setUpdateInProgress(true);
     initializeProgressStates();
@@ -64,23 +72,17 @@ const ModalContent = ({ selectedFile, selectedRows }: ModalContentProps) => {
     setUpdateInProgress(false);
   };
 
-  const handleUpdateStop = () => {
-    continueUpdatingRef.current = false;
-  };
-
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-      <div className="flex justify-between mb-4 space-x-4">
-        <Button onClick={handleUpdateStart} disabled={updateInProgress}>
-          Update Start
-        </Button>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM Update</h2> {/* 제목을 별도의 줄로 분리 */}
+      <div className="flex justify-between items-center mb-6">
+        <Upload onSubmit={onUpload} />
         <Button onClick={handleUpdateStop} disabled={!updateInProgress}>
-          Update Stop
+          Stop
         </Button>
       </div>
-      <div className="mb-6 font-bold text-lg">{selectedFile}</div>
       {selectedRows?.map((row, index) => (
         <div key={index} className="mb-4 flex items-center">
           <span className="text-sm font-medium text-gray-700 w-12">{row}:</span>

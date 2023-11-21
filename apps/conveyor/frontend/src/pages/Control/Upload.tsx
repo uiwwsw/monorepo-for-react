@@ -3,8 +3,9 @@ import { FormEventHandler, useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
-/* ======    global     ====== */
 const logger = createLogger('pages/Control/Upload');
+/* ======    global     ====== */
+
 export default function Upload({ onSubmit }: { onSubmit: (file: File) => Promise<unknown> }) {
   /* ======   variables   ====== */
   const [loading, setLoading] = useState(false);
@@ -31,10 +32,10 @@ export default function Upload({ onSubmit }: { onSubmit: (file: File) => Promise
   };
   /* ======   useEffect   ====== */
   return (
-    <form className="flex items-center space-x-3" onSubmit={adapterSubmit}>
+    <form className="flex items-center space-x-3 mr-3" onSubmit={adapterSubmit}>
       <Input ref={inputFileRef} className="form-input" type="file" />
       <Button disabled={loading} type="submit">
-        {loading ? 'Uploading...' : 'Upload'}
+        {loading ? 'Updating...' : 'Update'}
       </Button>
     </form>
   );

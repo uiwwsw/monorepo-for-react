@@ -6,10 +6,8 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import Upload from './Upload';
-import { useUploadFirmware } from '../../libs/control/application/useUploadFirmware';
 import { useCallback, useState } from 'react';
-import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
+import { Button } from '@library-frontend/ui';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -19,10 +17,7 @@ const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [selectedRowsMapping, setSelectedRowsMapping] = useState<number[]>([]);
-  const [selectedFile, setSelectedFile] = useState('');
-  const { trigger: uploadTrigger } = useUploadFirmware();
 
   /* ======   function    ====== */
 
@@ -43,23 +38,6 @@ const Control = () => {
     [tcmData],
   );
 
-  const onUpload = async (file: File) => {
-    const fileName = await uploadTrigger({ file });
-
-    if (fileName) {
-      setUploadedFiles([...uploadedFiles, fileName]);
-    }
-  };
-
-  const handleFileSelect = (selectedFileName: string) => {
-    setSelectedFile(selectedFileName);
-  };
-
-  const handleFileDelete = () => {
-    setUploadedFiles(uploadedFiles.filter((file) => file !== selectedFile));
-    setSelectedFile('');
-  };
-
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -67,50 +45,22 @@ const Control = () => {
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800">TCM Control</h2>
-          <Upload onSubmit={onUpload} />
-        </div>
-
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <div className="flex items-center">
-            <div className="flex-grow">
-              {selectedFile && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium">선택된 파일: {selectedFile}</span>
-                  <ModalWithBtn
-                    hasButton={['OK', 'CANCEL']}
-                    button={
-                      <Button themeColor="secondary" themeSize="sm">
-                        Delete
-                      </Button>
-                    }
-                    onClose={(value) => {
-                      if (value === 'OK') {
-                        handleFileDelete();
-                      }
-                    }}
-                  >
-                    파일을 삭제하시겠습니까?
-                  </ModalWithBtn>
-                </div>
-              )}
-            </div>
-
-            <Combo
-              onChange={handleFileSelect}
-              options={uploadedFiles.map((file) => ({
-                value: file,
-                label: file,
-              }))}
-            ></Combo>
+          <div className="space-x-2">
+            <Button themeSize="sm" themeColor="secondary">
+              Resume
+            </Button>
+            <Button themeSize="sm" themeColor="secondary">
+              Pause
+            </Button>
           </div>
         </div>
 
         <Table
           thead={['tid', 'status', 'version', 'AdjTCMConnection', 'Process']}
           data={tcmData}
-          makePagination={true}
+          makePagination={false}
           makeColumnSelect={false}
-          renderSelectComponent={<TcmSelect selectedFile={selectedFile} selectedRows={selectedRowsMapping} />}
+          renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
           rowSelectionChange={handleRowSelection}
           renderSubComponent={<TcmSub />}
         ></Table>
