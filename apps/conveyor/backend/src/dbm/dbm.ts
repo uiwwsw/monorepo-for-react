@@ -78,20 +78,20 @@ export class DBM {
                 if (task[0] == null) {
                     continue;
                 }
-                params.push({
+                params.push([{
                     taskID : key.substring(13),
                     zoneIDFrom : task[1],
                     carrierID : task[2],
                     commandID : task[4],
                     ZoneIDTo : task[5],
-                }, task[1], task[2], task[4], task[5]);
+                }, task[1], task[2], task[4], task[5]]);
             }
             const conn = await Service.Inst.MySQL.getConnection();
             try {
                 await conn.beginTransaction();
                 for(let i=0, iLen=params.length; i<iLen; i++) {
                     const param = params[i];
-                    await conn.query('insert into taskTransferInfo set ? ON DUPLICATE KEY UPDATE zoneIdFrom = ?, carrierId = ?, commandId = ?, zoneIdTo = ?', param);
+                    await conn.query('insert into tasktransferinfo set ? ON DUPLICATE KEY UPDATE zoneIdFrom = ?, carrierId = ?, commandId = ?, zoneIdTo = ?', param);
                 }
                 await conn.commit();
             } catch (ex) {

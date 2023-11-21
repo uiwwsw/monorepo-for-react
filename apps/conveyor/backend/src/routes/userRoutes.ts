@@ -23,6 +23,7 @@ const router: Router = Router();
  * /users/sign-in:
  *   post:
  *     summary: User sign-in
+ *     tags: [Authentication]
  *     description: Allows users to sign in to the application.
  *     requestBody:
  *       required: true
@@ -120,7 +121,7 @@ router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, 
 
 /**
  * @swagger
- * /sign-out:
+ * /users/sign-out:
  *   post:
  *     summary: 사용자 로그아웃 요청
  *     description: 사용자가 시스템에서 로그아웃합니다.
@@ -176,11 +177,11 @@ router.post('/sign-out', verifyToken, asyncWrapper<SignOutRequest, SignOutRespon
 
 /**
  * @swagger
- * /user-list:
+ * /users/user-list:
  *   get:
  *     summary: 사용자 목록 요청
  *     description: 사용자 목록을 조회합니다.
- *     tags: [Users]
+ *     tags: [Authentication]
  *     requestBody:
  *       required: true
  *       content:
@@ -246,7 +247,7 @@ router.get('/user-list', verifyToken, asyncWrapper<UserListRequest, UserListResp
 
 /**
  * @swagger
- * /sign-up:
+ * /users/sign-up:
  *   post:
  *     summary: 사용자 회원가입 요청
  *     description: 새로운 사용자를 등록합니다.
@@ -320,11 +321,11 @@ router.post('/sign-up', asyncWrapper<SignUpRequest, SignUpResponse>(async (req, 
 
 /**
  * @swagger
- * /user-edit:
+ * /users/user-edit:
  *   put:
  *     summary: 사용자 등급 수정
  *     description: 특정 사용자의 등급을 수정합니다.
- *     tags: [User Management]
+ *     tags: [Authentication]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -409,7 +410,7 @@ router.put('/user-edit', verifyToken, asyncWrapper<UserEditGradeRequest, UserEdi
 
 /**
  * @swagger
- * /user-password:
+ * /users/user-password:
  *   put:
  *     summary: 새로운 패스워드 설정 요청
  *     description: 사용자의 비밀번호를 새로 설정합니다.

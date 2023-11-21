@@ -2,9 +2,10 @@ import mysql from 'mysql2/promise';
 import { Redis } from 'ioredis';
 
 import prop from './cfg/prop.json';
-import { Prop } from './cfg/prop';
 import logger from './libs/logger';
+import { Prop } from './cfg/prop';
 import { DBM } from './dbm/dbm';
+import Zone from './packages/backend/types/src/zone/zone';
 import { ZoneRepo } from './zone/zoneRepo';
 
 export class Service {
@@ -34,8 +35,7 @@ export class Service {
     private subs!: Redis;
     private dbm!: DBM;
 
-    private zoneRepo!: ZoneRepo;
-    private zone! : unknown;
+    private zones! : Map<number, Zone>;
 
     // 서비스 초기화 작업
     public async ready() {
@@ -63,8 +63,8 @@ export class Service {
         this.dbm = new DBM(this.subs);
 
         // ZoneRepo 객체 생성
-        this.zoneRepo = new ZoneRepo();
-        this.zone = await this.zoneRepo.getZoneRepo();
+        const zoneRepo = new ZoneRepo();
+        this.zones = await zoneRepo.getZoneRepo();
     }
 
     public get IsRun() : boolean {
@@ -83,5 +83,9 @@ export class Service {
 
     public get Redis(): Redis {
         return this.redis;
+    }
+
+    public get Zones(): Map<number, Zone> {
+        return this.zones;
     }
 }

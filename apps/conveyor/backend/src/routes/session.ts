@@ -19,8 +19,8 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
         const token = req.headers['x-access-token'] as string || req.headers.authorization;
 
         if (!token) {
-            //throw new Error('NEED_AUTH_TOKEN');
-            return res.status(403).send('NEED_AUTH_TOKEN');
+            //return res.status(403).send('NEED_AUTH_TOKEN');
+            return next();
         }
     
         try {
