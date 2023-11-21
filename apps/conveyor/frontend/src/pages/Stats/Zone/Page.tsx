@@ -29,10 +29,9 @@ const StatsZone = () => {
   const { t } = useTranslation();
   const { setChildren } = useHeaderContext();
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [scrollDeps, scrollTrigger] = useInfiniteScroll();
   const [pageNum, setPageNum] = useState<number>(0);
-  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([]);
   const [currentFilterIndex, setCurrentFilterIndex] = useState<number>(0);
+  const [done, setDone] = useState(false);
   const [arg, setArg] = useState<SearchZoneArg>({
     startTime: newDate().toISOString(),
     endTime: newDate([1, 'day']).toISOString(),
@@ -48,9 +47,12 @@ const StatsZone = () => {
   });
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
 
+  const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
+
   const { error, mutate, data, isValidating } = useGetZoneInfo({ arg: arg });
   const { error: graphError, data: graphData, mutate: graphMutate } = useGetGraphInfo({ arg: graphArg });
   const lineData = useMemo(() => (graphData ? dataToChartData(graphData) : []), [graphData]);
+  const [renderZone, setRenderZone] = useState<StatsZoneData[]>([]);
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
@@ -65,12 +67,13 @@ const StatsZone = () => {
       pageNum: 0,
       pagePerCount: pagePerCount,
     };
-    setPageNum(0);
-    setCurrentFilterIndex(index);
-    setArg(arg);
+    await Promise.all([setPageNum(0), setCurrentFilterIndex(index), setArg(arg)]);
+
+    await mutate();
+    scrollTrigger();
   };
 
-  const onChangeSearchKeyword = (character: string) => {
+  const onChangeSearchKeyword = async (character: string) => {
     if (character === '') return;
 
     logger(character);
@@ -81,9 +84,8 @@ const StatsZone = () => {
       pageNum: 0,
       pagePerCount: pagePerCount,
     };
-
-    setPageNum(0);
-    setArg(arg);
+    await Promise.all([setPageNum(0), setArg(arg)]);
+    mutate();
   };
 
   function dataToChartData(loadedData: StatsGraphData) {
@@ -110,25 +112,26 @@ const StatsZone = () => {
     return lineData;
   }
 
-  const handleSearch = async (arg: SearchZoneArg) => {
-    await setArg(arg);
-    graphMutate();
-  };
+  // const handleSearch = async (arg: SearchZoneArg) => {
+  //   await setArg(arg);
+  //   graphMutate();
+  // };
 
-  const handleChangePage = () => {
-    setPageNum(pageNum + 1);
+  const handleScroll = async () => {
+    const nextPage = pageNum + 1;
+    setPageNum(nextPage);
     const arg: SearchZoneArg = {
       startTime: duration[0].toISOString(),
       endTime: duration[1].toISOString(),
       sortValue: currentFilterIndex,
-      pageNum: pageNum + 1,
+      pageNum: nextPage,
       pagePerCount: pagePerCount,
     };
-    setArg(arg);
-    return renderZone;
+    await setArg(arg);
+    return await mutate<StatsZoneData[]>();
   };
-
-  const onClickZoneCard = (zoneID: number) => {
+  // TODO 칩 클릭 중 유저가 다른 행동하면 문제 발생함
+  const onClickZoneCard = async (zoneID: number) => {
     const arg: SearchZoneArg = {
       startTime: duration[0].toISOString(),
       endTime: duration[1].toISOString(),
@@ -136,45 +139,50 @@ const StatsZone = () => {
       pagePerCount: pagePerCount,
       zoneID: zoneID,
     };
-    setGraphArg(arg);
+    await Promise.all([setArg(arg)]);
+    mutate();
   };
-
+  // TODO 최초 진입 시 화면 크기보다 적은 컨텐츠일 경우 스크롤 이벤트가 작동 안해요.
+  // 작동할 수 있도록 어떻게 할수있을까요?
+  // 반복문으로 최초에 데이터를 불러올 수 있으면 어떨까요? 아래 useEffect, scrollDeps 부분 코드 수정하면 될거같아요.
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!scrollDeps) return; // mount 시 실행여부
-    handleChangePage();
+    if (!scrollDeps) return setDone(false); // mount 시 실행여부
+    handleScroll().then((x) => {
+      if (!x?.length) setDone(true);
+    });
   }, [scrollDeps]);
-  useEffect(() => {
-    scrollTrigger();
-    mutate();
-  }, [arg]);
-  useEffect(() => {
-    scrollTrigger();
-    graphMutate();
-  }, [graphArg]);
-  useEffect(() => {
-    const arg: SearchZoneArg = {
-      startTime: duration[0].toISOString(),
-      endTime: duration[1].toISOString(),
-      pageNum: 0,
-      pagePerCount: pagePerCount,
-      zoneID: -1,
-    };
-    setArg(arg);
-    setGraphArg(arg);
-  }, [duration]);
+  // useEffect(() => {
+  //   scrollTrigger();
+  //   mutate();
+  // }, [arg]);
+  // useEffect(() => {
+  //   scrollTrigger();
+  //   graphMutate();
+  // }, [graphArg]);
+  // useEffect(() => {
+  //   const arg: SearchZoneArg = {
+  //     startTime: duration[0].toISOString(),
+  //     endTime: duration[1].toISOString(),
+  //     pageNum: 0,
+  //     pagePerCount: pagePerCount,
+  //     zoneID: -1,
+  //   };
+  //   setArg(arg);
+  //   setGraphArg(arg);
+  // }, [duration]);
   useEffect(() => {
     if (pageNum === 0 && data) setRenderZone(data);
-    else data && setRenderZone(renderZone.concat(data));
+    else if (data) setRenderZone((prev) => [...prev, ...data]);
   }, [data]);
   useEffect(() => {
-    handleSearch({
-      startTime: newDate().toISOString(),
-      endTime: newDate([1, 'day']).toISOString(),
-      sortValue: currentFilterIndex,
-      pageNum: 0,
-      pagePerCount: pagePerCount,
-    });
+    // handleSearch({
+    //   startTime: newDate().toISOString(),
+    //   endTime: newDate([1, 'day']).toISOString(),
+    //   sortValue: currentFilterIndex,
+    //   pageNum: 0,
+    //   pagePerCount: pagePerCount,
+    // });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -189,14 +197,14 @@ const StatsZone = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', error, mutate, graphError, graphMutate, pageNum, currentFilterIndex);
+  logger('render', isValidating);
   return (
     <div>
-      {isValidating && (
+      {/* {isValidating && (
         <span className="fixed inset-0 z-10 flex items-center justify-center">
           <Spinner />
         </span>
-      )}
+      )} */}
       <div className="sticky top-16 bg-white">
         <div className="h-60 flex rounded-xl border mb-3">
           <div className="h-full w-4/5">
@@ -211,7 +219,7 @@ const StatsZone = () => {
         </div>
         <div className="flex my-5 place-content-end gap-5">
           {/* <Pagination
-          onChange={handleChangePage}
+          onChange={handleScroll}
           totalPageNum={totalPageNum}
           currentPageIndex={currentPageIndex}
           hasDoubleArrow={true}
@@ -230,6 +238,9 @@ const StatsZone = () => {
               if (e.code === 'Enter') onChangeSearchKeyword(e.currentTarget.value);
             }}
           />
+          {
+            //TODO 검색 영역에 버튼이 있으면 어떨까요? 그럼 입력 후 다른 액션이 필요하다고 느낄것같아요. 엔터는 부가적인 옵션으로 보면 어떨까~
+          }
         </div>
       </div>
       {renderZone.map((zone: StatsZoneData) => (
@@ -250,6 +261,11 @@ const StatsZone = () => {
           </div>
         </div>
       ))}
+      {!done && (
+        <div className="flex items-center justify-center p-10">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 };
