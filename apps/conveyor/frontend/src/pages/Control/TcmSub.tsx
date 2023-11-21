@@ -53,6 +53,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
 
         <Combo
           onChange={handleFileSelect}
+          placeholder="Backup File"
           options={backupFiles.map((file) => ({
             value: file,
             label: file,
