@@ -14,30 +14,33 @@ async function fetcher(
 ) {
   logger(url, arg);
   //temporary
-  const data: StatsCarrierData[] = [
-    {
-      CarrierID: 'UNKNOWN_1',
-      TaskID: 0,
-      CommandID: '',
-      ZoneIDFrom: 10101,
-      ZoneIDTo: 10103,
-      ZoneIDFromName: '4AFC3301A_IN02',
-      StartTime: '2023-11-11 01:00:00',
-      ZoneIDToName: '4AFC3301A_OUT02',
-      EndTime: '2023-11-11 01:10:00',
-    },
-    {
-      CarrierID: 'UNKNOWN_2',
-      TaskID: 1,
-      CommandID: '0',
-      ZoneIDFrom: 10101,
-      ZoneIDTo: 10103,
-      ZoneIDFromName: '4AFC3301A_IN03',
-      StartTime: '2023-11-11 01:03:07',
-      ZoneIDToName: '4AFC3301A_OUT02',
-      EndTime: '2023-11-11 01:13:12',
-    },
-  ];
+  const data: StatsCarrierData = {
+    rows: [
+      {
+        CarrierID: 'UNKNOWN_1',
+        TaskID: 0,
+        CommandID: '',
+        ZoneIDFrom: 10101,
+        ZoneIDTo: 10103,
+        ZoneIDFromName: '4AFC3301A_IN02',
+        StartTime: '2023-11-11 01:00:00',
+        ZoneIDToName: '4AFC3301A_OUT02',
+        EndTime: '2023-11-11 01:10:00',
+      },
+      {
+        CarrierID: 'UNKNOWN_2',
+        TaskID: 1,
+        CommandID: '0',
+        ZoneIDFrom: 10101,
+        ZoneIDTo: 10103,
+        ZoneIDFromName: '4AFC3301A_IN03',
+        StartTime: '2023-11-11 01:03:07',
+        ZoneIDToName: '4AFC3301A_OUT02',
+        EndTime: '2023-11-11 01:13:12',
+      },
+    ],
+    total_count: 2,
+  };
   return fakeApi(data);
   //   return await http({ url });
 }

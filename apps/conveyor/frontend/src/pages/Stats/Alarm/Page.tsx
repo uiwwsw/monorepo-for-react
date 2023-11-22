@@ -18,8 +18,10 @@ const StatsAlarm = () => {
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [arg, setArg] = useState<SearchArg>({
-    startTime: newDate().toString(),
-    endTime: newDate([1, 'day']).toString(),
+    start_time: newDate().toString(),
+    end_time: newDate([1, 'day']).toString(),
+    page: 0,
+    page_size: 10000,
   });
 
   const { error, mutate, data } = useGetAlarmInfo({ arg: arg });
@@ -30,8 +32,10 @@ const StatsAlarm = () => {
       setDuration(duration);
 
       const arg: SearchArg = {
-        startTime: duration[0].toString(),
-        endTime: duration[1].toString(),
+        start_time: duration[0].toString(),
+        end_time: duration[1].toString(),
+        page: 0,
+        page_size: 10000,
       };
 
       setArg(arg);
@@ -42,9 +46,11 @@ const StatsAlarm = () => {
     if (character === '') return;
 
     const arg: SearchArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
-      character: character,
+      start_time: duration[0].toString(),
+      end_time: duration[1].toString(),
+      find_key: character,
+      page: 0,
+      page_size: 10000,
     };
 
     setArg(arg);
@@ -59,7 +65,12 @@ const StatsAlarm = () => {
     mutate();
   }, [arg]);
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
+    handleSearch({
+      start_time: newDate().toString(),
+      end_time: newDate([1, 'day']).toString(),
+      page: 0,
+      page_size: 10000,
+    });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -81,7 +92,7 @@ const StatsAlarm = () => {
         thead={['No', 'CarrierID', 'Location', 'SetTime', 'ClearTime']}
         data={
           data
-            ? data
+            ? data.rows
             : [
                 {
                   No: 1,

@@ -18,30 +18,60 @@ const StatsCarrier = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
+  const [totalPageNum, setTotalPageNum] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [arg, setArg] = useState<SearchArg>({
-    startTime: newDate().toString(),
-    endTime: newDate([1, 'day']).toString(),
+    start_time: newDate().toString(),
+    end_time: newDate([1, 'day']).toString(),
+    page: 0,
+    page_size: 10,
   });
 
   const { error, data, mutate } = useGetCarrierInfo({ arg: arg });
 
   /* ======   function    ====== */
   const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
-    duration instanceof Array && setDuration(duration);
+    if (duration instanceof Array) {
+      setDuration(duration);
+      const arg: SearchArg = {
+        start_time: duration[0].toString(),
+        end_time: duration[1].toString(),
+        page: 0,
+        page_size: 10,
+      };
+      setArg(arg);
+    }
   };
 
   const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
 
     const arg: SearchArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
-      character: character,
+      start_time: duration[0].toString(),
+      end_time: duration[1].toString(),
+      find_key: character,
+      page: 0,
+      page_size: 10,
     };
     setArg(arg);
   };
 
-  const handleSearch = async (arg: SearchArg) => {
+  const handleSearch = async () => {
+    await mutate();
+    data && setTotalPageNum(Math.floor(data.total_count) + 1);
+  };
+
+  const handleChangePage = (character?: string) => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    const arg: SearchArg = {
+      start_time: duration[0].toString(),
+      end_time: duration[1].toString(),
+      page: nextPage,
+      page_size: 10,
+    };
+    character ? (arg.find_key = character) : null;
+
     setArg(arg);
   };
 
@@ -50,7 +80,7 @@ const StatsCarrier = () => {
     mutate();
   }, [arg]);
   useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
+    setArg({ start_time: newDate().toString(), end_time: newDate([1, 'day']).toString(), page: 0, page_size: 10 });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -72,7 +102,7 @@ const StatsCarrier = () => {
         thead={['CarrierID', 'ZoneIDFrom', 'ZoneIDFromName', 'StartTime', 'ZoneIDTo', 'ZoneIDToName', 'EndTime']}
         data={
           data
-            ? data
+            ? data.rows
             : [
                 {
                   CarrierID: '-',
@@ -92,6 +122,12 @@ const StatsCarrier = () => {
         onSearch={handleSearchKeyword}
         textAlignCenter={true}
       ></Table>
+      {/* <Pagination
+        onChange={handleChangePage}
+        totalPageNum={totalPageNum}
+        currentPageIndex={currentPage}
+        hasDoubleArrow={true}
+      /> */}
     </>
   );
 };

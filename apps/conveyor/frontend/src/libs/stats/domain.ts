@@ -21,7 +21,7 @@ export interface StatsGraphData {
   data: GraphDataDetail[];
 }
 
-export interface StatsAlarmData {
+export interface StatsAlarmDataRow {
   No: number;
   SerialNo: number;
   AlarmCode: number;
@@ -35,7 +35,12 @@ export interface StatsAlarmData {
   ClearTime: string;
 }
 
-export interface StatsCarrierData {
+export interface StatsAlarmData {
+  rows: StatsAlarmDataRow[];
+  total_count: number;
+}
+
+export interface StatsCarrierDataRow {
   TaskID: number;
   CommandID: string;
   CarrierID: string;
@@ -45,6 +50,11 @@ export interface StatsCarrierData {
   EndTime: string;
   ZoneIDToName: string;
   ZoneIDFromName: string;
+}
+
+export interface StatsCarrierData {
+  rows: StatsCarrierDataRow[];
+  total_count: number;
 }
 export interface ZoneList {
   No: number;
