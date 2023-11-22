@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { Service } from '../service';
 import { verifyToken } from './session';       //verifyToken
 import { asyncWrapper } from './error';
+import { ZoneInfoRow } from '../models/R301';
 import { ZoneListRequest, ZoneListResponse } from '@package-backend/types';
 
 const router: Router = Router();
@@ -51,17 +52,12 @@ const router: Router = Router();
  *       bearerFormat: JWT
  */
 router.get('/zone-list', verifyToken, asyncWrapper<ZoneListRequest, ZoneListResponse>(async (req, res) => {
-    const keys = await Service.Inst.Zones.keys();
-
-    const zones: string[] = [];
-    for (const key of keys) {
-        zones.push(`${key}`);
-    }
+    const [rows] = await Service.Inst.MySQL.query<ZoneInfoRow[]>('SELECT * FROM zoneInfo');
 
     res.json({
         message: "OK",
         data: {
-            zones: zones
+            zones: rows
         }
     });
 }));

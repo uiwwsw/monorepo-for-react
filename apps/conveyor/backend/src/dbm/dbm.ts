@@ -84,6 +84,7 @@ export class DBM {
                     carrierID : task[2],
                     commandID : task[4],
                     ZoneIDTo : task[5],
+                    StartTime : new Date()
                 }, task[1], task[2], task[4], task[5]]);
             }
             const conn = await Service.Inst.MySQL.getConnection();
@@ -98,7 +99,7 @@ export class DBM {
                 logger.error(ex as Error);
                 await conn.rollback();
             } finally {
-                await conn.end();
+                await conn.release();
             }
         } catch (ex) {
             logger.error(ex as Error);
@@ -108,7 +109,7 @@ export class DBM {
     // 진행 중인 Task가 있으면 캐슁
     private async getTransferInfos() {
         try {
-            const [rows] = await Service.Inst.MySQL.query<TaskTransferInfoRow[]>('SELECT * FROM taskTransferInfo where EndTime is null');
+            const [rows] = await Service.Inst.MySQL.query<TaskTransferInfoRow[]>('SELECT * FROM tasktransferinfo where EndTime is null');
             for(let i=0, iLen=rows.length; i<iLen; i++) {
                 const row = rows[i];
                 this.taskTransferInfos[row.taskID] = row;
@@ -185,7 +186,7 @@ export class DBM {
                         logger.error(ex as Error);
                         await conn.rollback();
                     } finally {
-                        await conn.end();
+                        await conn.release();
                     }
                     await Service.Inst.MySQL.query('delete from MsgQueue where State = 3');
                 }
@@ -246,7 +247,7 @@ export class DBM {
                 {
                     const tcminfo: ITaskTransferInfo = msg.MessageData.Object;
                     if (tcminfo.State === 'READY') {
-                        this.transList.push(new TransItem(row.No, 'insert into taskTransferInfo set ?', [{
+                        this.transList.push(new TransItem(row.No, 'insert into tasktransferinfo set ?', [{
                             taskID : tcminfo.TaskID,
                             zoneIDFrom : tcminfo.ZoneIDFrom ? tcminfo.ZoneIDFrom : null,
                             startTime : row.Date
@@ -258,7 +259,7 @@ export class DBM {
                         };
                     } else if (tcminfo.ZoneIDTo) {
                         // DESTINATION UPDATE
-                        this.transList.push(new TransItem(row.No, 'update taskTransferInfo set zoneIDTo = ? where taskID = ?', [tcminfo.ZoneIDTo, tcminfo.TaskID]));
+                        this.transList.push(new TransItem(row.No, 'update tasktransferinfo set zoneIDTo = ? where taskID = ?', [tcminfo.ZoneIDTo, tcminfo.TaskID]));
                         this.taskTransferInfos[tcminfo.TaskID] && (this.taskTransferInfos[tcminfo.TaskID].ZoneIDTo = tcminfo.ZoneIDTo);
                     }
                     this.transList.push(new TransItem(row.No, 'insert into tasktransferinfostatus set ?', [{
@@ -273,7 +274,7 @@ export class DBM {
                 {
                     const tcmEvent: ITcsEventSet = msg.MessageData;
                     if (tcmEvent.CommandID) {
-                        this.transList.push(new TransItem(row.No, 'update taskTransferInfo set commandId = ? where taskID = ?', [tcmEvent.CommandID, tcmEvent.TaskID]));
+                        this.transList.push(new TransItem(row.No, 'update tasktransferinfo set commandId = ? where taskID = ?', [tcmEvent.CommandID, tcmEvent.TaskID]));
                         this.taskTransferInfos[tcmEvent.TaskID] && (this.taskTransferInfos[tcmEvent.TaskID].CommandID = tcmEvent.CommandID);
                     }
                     this.handleEventLogs(tcmEvent, row);

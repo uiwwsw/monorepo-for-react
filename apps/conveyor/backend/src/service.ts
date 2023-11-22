@@ -59,12 +59,35 @@ export class Service {
         this.redis = new Redis(prop.Redis.Port, prop.Redis.Host);
         this.subs = new Redis(prop.Redis.Port, prop.Redis.Host);
 
-        // DBM 객체 생성
-        this.dbm = new DBM(this.subs);
-
         // ZoneRepo 객체 생성
         const zoneRepo = new ZoneRepo();
         this.zones = await zoneRepo.getZoneRepo();
+
+        // DBM 객체 생성
+        this.dbm = new DBM(this.subs);
+
+        // Zone 데이터 저장
+        const conn = await this.MySQL.getConnection();
+        try {
+            await conn.beginTransaction();
+            for (const [key, value] of this.zones) {
+                await conn.query('insert into zoneInfo set ? on duplicate key update ?', [{
+                    ZoneID: key,
+                    DisplayName: value.DisplayName,
+                    PhysicalType : value.PhysicalType
+                },
+                {
+                    DisplayName: value.DisplayName,
+                    PhysicalType : value.PhysicalType
+                }]);
+            }
+            await conn.commit();
+        } catch (ex) {
+            logger.error(ex as Error);
+            await conn.rollback();
+        } finally {
+            await conn.release();
+        }
     }
 
     public get IsRun() : boolean {
