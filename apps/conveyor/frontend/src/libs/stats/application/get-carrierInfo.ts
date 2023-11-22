@@ -16,20 +16,26 @@ async function fetcher(
   //temporary
   const data: StatsCarrierData[] = [
     {
-      no: 1,
-      carrierID: 'UNKNOWN_1',
-      input: '4AFC3301A_IN02',
-      installedTime: '2023-11-11 01:00:00',
-      output: '4AFC3301A_OUT02',
-      completeTime: '2023-11-11 01:10:00',
+      CarrierID: 'UNKNOWN_1',
+      TaskID: 0,
+      CommandID: '',
+      ZoneIDFrom: 10101,
+      ZoneIDTo: 10103,
+      ZoneIDFromName: '4AFC3301A_IN02',
+      StartTime: '2023-11-11 01:00:00',
+      ZoneIDToName: '4AFC3301A_OUT02',
+      EndTime: '2023-11-11 01:10:00',
     },
     {
-      no: 2,
-      carrierID: 'UNKNOWN_2',
-      input: '4AFC3301A_IN03',
-      installedTime: '2023-11-11 01:03:07',
-      output: '4AFC3301A_OUT02',
-      completeTime: '2023-11-11 01:13:12',
+      CarrierID: 'UNKNOWN_2',
+      TaskID: 1,
+      CommandID: '0',
+      ZoneIDFrom: 10101,
+      ZoneIDTo: 10103,
+      ZoneIDFromName: '4AFC3301A_IN03',
+      StartTime: '2023-11-11 01:03:07',
+      ZoneIDToName: '4AFC3301A_OUT02',
+      EndTime: '2023-11-11 01:13:12',
     },
   ];
   return fakeApi(data);

@@ -69,24 +69,28 @@ const StatsCarrier = () => {
   return (
     <>
       <Table
-        thead={['no', 'carrierID', 'input', 'installedTime', 'output', 'completeTime']}
+        thead={['CarrierID', 'ZoneIDFrom', 'ZoneIDFromName', 'StartTime', 'ZoneIDTo', 'ZoneIDToName', 'EndTime']}
         data={
           data
             ? data
             : [
                 {
-                  no: 0,
-                  carrierID: '-',
-                  input: '-',
-                  installedTime: '-',
-                  output: '-',
-                  completeTime: '-',
+                  CarrierID: '-',
+                  CommandID: '-',
+                  TaskID: 0,
+                  ZoneIDFromName: '-',
+                  StartTime: '-',
+                  ZoneIDToName: '-',
+                  EndTime: '-',
+                  ZoneIDFrom: 0,
+                  ZoneIDTo: 0,
                 },
               ]
         }
         makePagination={true}
         makeColumnSelect={false}
         onSearch={handleSearchKeyword}
+        textAlignCenter={true}
       ></Table>
     </>
   );

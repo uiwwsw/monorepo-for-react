@@ -78,24 +78,30 @@ const StatsAlarm = () => {
   return (
     <>
       <Table
-        thead={['no', 'carrierID', 'zoneID', 'setTime', 'clearTime', 'description']}
+        thead={['No', 'CarrierID', 'Location', 'SetTime', 'ClearTime']}
         data={
           data
             ? data
             : [
                 {
-                  no: 0,
-                  carrierID: '-',
-                  zoneID: 0,
-                  setTime: '-',
-                  clearTime: '-',
-                  description: '-',
+                  No: 1,
+                  SerialNo: 0,
+                  AlarmCode: 0,
+                  TaskID: 0,
+                  Location: 0,
+                  Reason: 0,
+                  CommandID: '-',
+                  TCMID: 0,
+                  CarrierID: '-',
+                  SetTime: '-',
+                  ClearTime: '-',
                 },
               ]
         }
         makePagination={true}
         makeColumnSelect={false}
         onSearch={handleSearchKeyword}
+        textAlignCenter={true}
       ></Table>
     </>
   );
