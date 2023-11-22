@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
+import http from 'http';
 import cors from 'cors';
 import morgan from 'morgan';
+import WebSocket from 'ws';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './etc/swaggerOptions';
@@ -18,6 +20,7 @@ async function main() {
     const prop = Service.Inst.Prop;
 
     const app = express();
+    const server = http.createServer(app);
 
     morgan.token('message', (req: Request, res: Response) => {
         // 응답이 JSON 객체이고 username 속성을 가지고 있을 경우, 그 값을 반환합니다.
@@ -55,7 +58,21 @@ async function main() {
 
     app.use(errorHandler);
 
-    app.listen(prop.PortNum, () => {
+    // WebSocket 서버 설정
+    const wss = new WebSocket.Server({ server });
+    wss.on('connection', (ws: WebSocket) => {
+        logger.info('A new WebSocket connection has been established.');
+
+        ws.on('message', (message: string) => {
+            console.log(`recv: ${message}`);
+        });
+    
+        ws.on('close', () => {
+            logger.info('The WebSocket connection has been terminated.');
+        });
+    });
+
+    server.listen(prop.PortNum, () => {
         logger.info(`Server running on http://localhost:${prop.PortNum}`);
     });
 }

@@ -183,3 +183,12 @@ export interface IZoneStatsRow {
     alarmNum? : number;
     warningNum? : number;
 }
+
+export interface IResourcesRow {
+    seq_no? : number;
+    date? : Date;
+    did? : string;
+    cpu? : number;
+    memory? : number;
+    disk? : number;
+}

@@ -154,7 +154,13 @@ function saveDomain(schema, data, cb) {
     var schemas = [];
     let dataAry = [];
 
-    schemas.push(`import { RowDataPacket } from 'mysql2';`)
+    schemas.push(`import { RowDataPacket } from 'mysql2';`);
+    let pCount = [
+        `export interface CountRow extends RowDataPacket {`,
+        `    count : number;`,
+        `}`,
+    ]
+    schemas.push(pCount.join('\n'));
 
     __.without(iDomain, null).forEach(function(item) {
         var table = data[item.TableName];
@@ -173,6 +179,7 @@ function saveDomain(schema, data, cb) {
                     case 'smallint':
                     case 'tinyint':
                     case 'int':
+                    case 'decimal':
                         type = 'number';
                         break;
                     case 'varchar':

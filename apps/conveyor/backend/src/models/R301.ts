@@ -189,3 +189,12 @@ export interface ZoneStatsRow extends RowDataPacket {
     alarmNum : number;
     warningNum : number;
 }
+
+export interface ResourcesRow extends RowDataPacket {
+    seq_no : number;
+    date : Date;
+    did : string;
+    cpu : number;
+    memory : number;
+    disk : number;
+}

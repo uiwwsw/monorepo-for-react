@@ -188,11 +188,13 @@ export class DBM {
                     } finally {
                         await conn.release();
                     }
-                    await Service.Inst.MySQL.query('delete from MsgQueue where State = 3');
                 }
                 if (result == false) {
                      // trasaction 처리가 실패 했을 경우, 개별로 처리를 실행 함,,
                     await this.eachTransQuery();
+                } else {
+                    // 전체 처리가 성공 했을 경우, 메시지 삭제
+                    await Service.Inst.MySQL.query('delete from MsgQueue where State = 2');
                 }
 
                 // E84JobID가 있는 경우, 10분 이상 지난 경우 삭제
@@ -214,7 +216,7 @@ export class DBM {
             const trans = this.transList[i];
             try {
                 await Service.Inst.MySQL.query(trans.Query, trans.Params);
-                await Service.Inst.MySQL.query('delete from MsgQueue WHERE Id = ?', [trans.No]);
+                await Service.Inst.MySQL.query('delete from MsgQueue WHERE No = ?', [trans.No]);
             } catch (ex) {
                 const err = ex as Error;
                 await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 9, Result = ? WHERE No = ?', [err ? err.message.substring(0, 1000) : '', trans.No]);        // 최대 1000 글자만 에러 메시지 저장
@@ -245,7 +247,7 @@ export class DBM {
                 break;
             case 'tcmTransferInfo':
                 {
-                    const tcminfo: ITaskTransferInfo = msg.MessageData.Object;
+                    const tcminfo: ITaskTransferInfo = msg.Object;
                     if (tcminfo.State === 'READY') {
                         this.transList.push(new TransItem(row.No, 'insert into tasktransferinfo set ?', [{
                             taskID : tcminfo.TaskID,
@@ -272,8 +274,8 @@ export class DBM {
                 break;
             case 'tcsEventSet':
                 {
-                    const tcmEvent: ITcsEventSet = msg.MessageData;
-                    if (tcmEvent.CommandID) {
+                    const tcmEvent: ITcsEventSet = msg;
+                    if (tcmEvent.CommandID && tcmEvent.CommandID.length > 0) {
                         this.transList.push(new TransItem(row.No, 'update tasktransferinfo set commandId = ? where taskID = ?', [tcmEvent.CommandID, tcmEvent.TaskID]));
                         this.taskTransferInfos[tcmEvent.TaskID] && (this.taskTransferInfos[tcmEvent.TaskID].CommandID = tcmEvent.CommandID);
                     }
@@ -283,23 +285,23 @@ export class DBM {
             case 'tcsLogsMessage':
                 this.transList.push(new TransItem(row.No, 'insert into logs set ?', [{
                     TimeStamp: row.Date,
-                    Level: msg.MessageData.Level,
-                    TCMID: msg.MessageData.TCMID,
-                    TaskID: msg.MessageData.TaskID,
-                    ZoneID: msg.MessageData.ZoneID,
-                    Comment: msg.MessageData.Comment
+                    Level: msg.Level,
+                    TCMID: msg.TCMID,
+                    TaskID: msg.TaskID,
+                    ZoneID: msg.ZoneID,
+                    Comment: msg.Comment
                 }]));
                 break;
             case 'tcsWarningSet':
                 {
-                    const tcmWarning: IWarningInfo = msg.MessageData;
+                    const tcmWarning: IWarningInfo = msg;
                     this.transList.push(new TransItem(row.No, 'insert into warninginfo set ?', [{
                         serialNo: tcmWarning.SerialNo,
                         warningCode: tcmWarning.EventCode ? +tcmWarning.EventCode : -1,
                         taskId: +tcmWarning.TaskID,
                         location: tcmWarning.Location ? +tcmWarning.Location : -1,
                         reason: tcmWarning.Reason ? +tcmWarning.Reason : -1,
-                        commanId: tcmWarning.CommandID,
+                        commandId: tcmWarning.CommandID,
                         carrierId: tcmWarning.CarrierID,
                         setTime: row.Date
                     }]));
@@ -307,7 +309,7 @@ export class DBM {
                 break;
             case 'tcmZoneStateAttributes':
                 {
-                    const zone: IZoneDynamicattributes = msg.MessageData.Object;
+                    const zone: IZoneDynamicattributes = msg.Object;
                     this.transList.push(new TransItem(0, 'insert into zonedynamicattributes set ?', [{
                         motorState: zone.MotorState,
                         state: zone.State,
@@ -320,8 +322,8 @@ export class DBM {
                 break;
             case 'tcmZoneOccupiedAttributes':
                 {
-                    const occupiedInfo: IZoneOccupiedAttributes = msg.MessageData.Object;
-                    this.transList.push(new TransItem(0, 'insert into zoneOccupie set ?', [{
+                    const occupiedInfo: IZoneOccupiedAttributes = msg.Object;
+                    this.transList.push(new TransItem(0, 'insert into zoneoccupiedattributes set ?', [{
                         zoneId: occupiedInfo.ZoneID,
                         reservedTaskId: occupiedInfo.ReservedTaskID === -1 ? 0 : occupiedInfo.ReservedTaskID,
                         occupiedSensor1: occupiedInfo.OccupiedSensor1 ? +occupiedInfo.OccupiedSensor1 : -1,
@@ -451,24 +453,24 @@ export class DBM {
             const E84JobID = `${dynamicAttributes.E84JobID}`;
             if (!this.e84jobs[E84JobID]) {
                 this.e84jobs[E84JobID] = row.Date;
-                this.transList.push(new TransItem(row.No, 'insert into e84jobs set ? ON DUPLICATE KEY UPDATE startTime = startTime', [{
+                this.transList.push(new TransItem(row.No, 'insert into E84Jobs set ? ON DUPLICATE KEY UPDATE startTime = startTime', [{
                     e84JobId: E84JobID,
                     zoneId: dynamicAttributes.ZoneID,
                     startTime: row.Date,
                 }]));
             }
             const E84BitState = dynamicAttributes.E84BitState.split(',');
-            this.transList.push(new TransItem(row.No, 'insert into e84state set ?', [{
+            this.transList.push(new TransItem(row.No, 'insert into E84JobStates set ?', [{
                 e84JobId: E84JobID,
                 sequenceState: dynamicAttributes.E84Sequence,
-                lReq: E84BitState[e84BitStateNum.E84_BIT_L_REQ] === 'on' ? 1 : 0,
-                uReq: E84BitState[e84BitStateNum.E84_BIT_U_REQ] === 'on' ? 1 : 0,
-                ready: E84BitState[e84BitStateNum.E84_BIT_READY] === 'on' ? 1 : 0,
-                hoAvbl: E84BitState[e84BitStateNum.E84_BIT_HO_AVBL] === 'on' ? 1 : 0,
+                L_REQ: E84BitState[e84BitStateNum.E84_BIT_L_REQ] === 'on' ? 1 : 0,
+                U_REQ: E84BitState[e84BitStateNum.E84_BIT_U_REQ] === 'on' ? 1 : 0,
+                READY: E84BitState[e84BitStateNum.E84_BIT_READY] === 'on' ? 1 : 0,
+                HO_AVBL: E84BitState[e84BitStateNum.E84_BIT_HO_AVBL] === 'on' ? 1 : 0,
                 es: E84BitState[e84BitStateNum.E84_BIT_ES] === 'on' ? 1 : 0,
                 valid: E84BitState[e84BitStateNum.E84_BIT_VALID] === 'on' ? 1 : 0,
                 cs_0: E84BitState[e84BitStateNum.E84_BIT_CS_0] === 'on' ? 1 : 0,
-                trReq: E84BitState[e84BitStateNum.E84_BIT_TR_REQ] === 'on' ? 1 : 0,
+                TR_REQ: E84BitState[e84BitStateNum.E84_BIT_TR_REQ] === 'on' ? 1 : 0,
                 busy: E84BitState[e84BitStateNum.E84_BIT_BUSY] === 'on' ? 1 : 0,
                 compt: E84BitState[e84BitStateNum.E84_BIT_COMPT] === 'on' ? 1 : 0,
                 timestamp: row.Date
