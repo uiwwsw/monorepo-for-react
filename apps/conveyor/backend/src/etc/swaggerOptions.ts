@@ -12,8 +12,12 @@ const swaggerDefinition = {
   servers: [
     {
       url: `http://localhost:${Service.Inst.Prop.PortNum}`,
-      description: 'Development server',
+      description: 'local server',
     },
+    {
+      url: `http://192.168.101.14:${Service.Inst.Prop.PortNum}`,
+      description: 'Development server',
+    }
   ],
 };
 

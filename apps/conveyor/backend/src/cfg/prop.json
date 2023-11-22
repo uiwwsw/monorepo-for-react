@@ -1,7 +1,7 @@
 {
     "PortNum": 7080,
     "MySQL": {
-        "Host": "localhost",
+        "Host": "192.168.101.14",
         "Port": 3306,
         "User" : "root",
         "Password" : "paSSw0rd",
