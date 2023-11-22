@@ -104,7 +104,7 @@ export class idler extends baseObject {
 }
 
 /** zone Redis의 기본 정보를 따라 구성 된다*/
-export default class Zone extends baseObject {
+export class Zone extends baseObject {
     LogicalType?: number;
     EtherCATID: number = 0;
     EtherCATName: string = '';

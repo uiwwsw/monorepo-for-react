@@ -1,10 +1,10 @@
 import { Service } from '../service';
 import { ZoneType } from '../zone/zoneType';
-import zone, { baseObject } from '../packages/backend/types/src/zone/zone';
+import { Zone, baseObject } from '../packages/backend/types/src/zone/zone';
 import logger from '../libs/logger';
 
 export class ZoneRepo {
-    async getZoneRepo() : Promise<Map<number, zone>> {
+    async getZoneRepo() : Promise<Map<number, Zone>> {
         const zoneKeys = await this.getZoneKeys();
         const zoneRepo = this.makeMappedRepository(zoneKeys);
 
@@ -27,20 +27,20 @@ export class ZoneRepo {
         return keys;
     }
 
-    makeMappedRepository(keys:string[]) : Map<number, zone> {
+    makeMappedRepository(keys:string[]) : Map<number, Zone> {
         const repo = new Map();
         keys.forEach(key => {
             const id = key.split(':')[1];
             if (+id > 99999) {
                 repo.set(+id, new baseObject(+id));
             } else {
-                repo.set(+id, new zone(+id));
+                repo.set(+id, new Zone(+id));
             }
         });
         return repo;
     }
 
-    async setZoneRepositoryAttributes(zoneRepository: Map<number, zone>) {
+    async setZoneRepositoryAttributes(zoneRepository: Map<number, Zone>) {
         if (zoneRepository.size == 0) {
             return;
         }

@@ -5,7 +5,7 @@ import prop from './cfg/prop.json';
 import logger from './libs/logger';
 import { Prop } from './cfg/prop';
 import { DBM } from './dbm/dbm';
-import Zone from './packages/backend/types/src/zone/zone';
+import { Zone } from './packages/backend/types/src/zone/zone';
 import { ZoneRepo } from './zone/zoneRepo';
 
 export class Service {
