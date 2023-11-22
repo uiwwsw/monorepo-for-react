@@ -3,7 +3,7 @@ import { useHeaderContext } from '@/HeaderContext';
 import { Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatsGraphData, StatsZoneData } from '!/stats/domain';
 import { SearchZoneArg } from '!/stats/application/get-zoneInfo';

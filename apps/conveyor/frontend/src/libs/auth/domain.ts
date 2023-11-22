@@ -1,8 +1,7 @@
-
 export interface Auth {
-  "uid": number,
-  "username": string,
-  "grade": number,
-  "session": string,
-  "last_access": string,
-};
+  grade: string;
+  last_access: string;
+  token: string;
+  uid: number;
+  username: string;
+}

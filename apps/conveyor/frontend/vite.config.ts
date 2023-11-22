@@ -11,11 +11,11 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        src: fileURLToPath(new URL('./src', import.meta.url)),
         $: fileURLToPath(new URL('./src/assets', import.meta.url)),
         '#': fileURLToPath(new URL('./src/utils', import.meta.url)),
         '@': fileURLToPath(new URL('./src/components', import.meta.url)),
         '!': fileURLToPath(new URL('./src/libs', import.meta.url)),
+        src: fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     base: '/',

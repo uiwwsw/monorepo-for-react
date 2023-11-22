@@ -1,14 +1,12 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger, fakeApi, http } from '@package-frontend/utils';
-import { MD5 } from "crypto-js";
+import { createLogger, http } from '@package-frontend/utils';
+import { MD5 } from 'crypto-js';
 import useSWR from 'swr/mutation';
 const logger = createLogger('auth/useSignUp');
 async function fetcher(
   url: string,
   {
-    arg: {
-      id, name, pw
-    }
+    arg: { id, name, pw },
   }: {
     arg: {
       id: string;
@@ -17,15 +15,17 @@ async function fetcher(
     };
   },
 ) {
-  logger(url, {id, name, pw});
-  const res = await http<{grade: number}>({url,
-    method:'POST',
-     arg: {
-      "user_id": id,
-      "username": name,
-      "password": MD5(pw).toString()
-  }});
-  logger(res)
+  logger(url, { id, name, pw });
+  const res = await http<{ grade: number }>({
+    url,
+    method: 'POST',
+    arg: {
+      user_id: id,
+      username: name,
+      password: MD5(pw).toString(),
+    },
+  });
+  logger(res);
 
   return res;
 }
