@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 interface FormState {
   id: string;
+  name: string;
   pw: string;
   rpw: string;
 }
@@ -44,6 +45,18 @@ const SignUp = () => {
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.')}</p>
       </ModalWithPortal>
       <form className="flex flex-col gap-3">
+        <label>
+          <p className="font-medium uppercase">{t('이름')}</p>
+          <Input
+            {...register('name', {
+              required: t('이름을 입력해주세요.'),
+            })}
+            placeholder={t('이름을 입력해주세요.')}
+            error={!!errors?.name?.message}
+            className="w-full"
+          />
+          {errors?.name?.message && <p className="text-red-500">💥 {errors?.name?.message}</p>}
+        </label>
         <label>
           <p className="font-medium uppercase">{t('아이디')}</p>
           <Input

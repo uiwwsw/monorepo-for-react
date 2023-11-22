@@ -1,14 +1,18 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { mockData } from '../domain';
-import { createLogger, fakeApi } from '@package-frontend/utils';
+import { createLogger, fakeApi, http } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
+import { Auth } from '../domain';
+import { MD5 } from "crypto-js";
+
 const logger = createLogger('auth/useSignIn');
 
 async function fetcher(
   url: string,
   {
-    arg,
+    arg: {
+      id, pw
+    },
   }: {
     arg: {
       id: string;
@@ -16,16 +20,19 @@ async function fetcher(
     };
   },
 ) {
-  if (arg.id !== 'admin' || arg.pw !== 'admin') throw new Error('아이디 또는 비번이 틀렸습니다.');
-
-  const res = await fakeApi(mockData);
+  const res = await http<Auth>({url,
+    method:'POST',
+     arg: {
+    "username": id,
+    "password": MD5(pw).toString()
+  }});
+  logger(res)
   const trigger = usePostAuth();
   await trigger(res);
-  logger(url, arg, res);
 
   return res;
 }
 
 export function useSignIn() {
-  return useSWR('/sign-in', fetcher);
+  return useSWR('/api/users/sign-in', fetcher);
 }

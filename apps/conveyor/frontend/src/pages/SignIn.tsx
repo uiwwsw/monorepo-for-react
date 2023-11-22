@@ -50,7 +50,7 @@ const SignIn = () => {
       <ToastWithPortal open={true} duration={Infinity}>
         현재는 목업 로그인만 가능합니다.
         <br />
-        id: admin, pw: admin 로 로그인 후 사용해보세요.
+        id: johndoe, pw: MySecurePassword123! 로 로그인 후 사용해보세요.
       </ToastWithPortal>
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
         {t('로그아웃에 성공했습니다.')}

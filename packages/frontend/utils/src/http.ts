@@ -21,7 +21,7 @@ export const http = async <T>({
   // GET 메소드에 대한 처리
   if (method === 'GET' && body) {
     const urlObj = new URLSearchParams(arg as Record<string, string>).toString();
-    url += urlObj.toString();
+    url += '?' +  urlObj.toString();
     body = null; // GET 요청에는 보통 body가 없습니다.
   }
 
@@ -43,7 +43,7 @@ export const http = async <T>({
 
   try {
     const json = (await res.json()) as STResponse<T>;
-    if (res.ok) return json.data as STResponseSuccess<T>;
+    if (res.ok && json?.data) return json?.data as STResponseSuccess<T>;
     throw new HttpError(json.message ?? 'unknown error', res);
   } catch (e) {
     const { message } = e as Error;
