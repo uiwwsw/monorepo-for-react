@@ -12,14 +12,14 @@ const router: Router = Router();
  * @swagger
  * /zone/zone-list:
  *   get:
- *     summary: 지역 목록 요청
- *     description: 시스템에서 사용 가능한 지역 목록을 조회합니다.
+ *     summary: 지역 목록 조회
+ *     description: 사용 가능한 지역 목록과 관련 정보를 조회합니다.
  *     tags: [Zone Management]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: 지역 목록을 성공적으로 반환함.
+ *         description: 지역 목록과 세부 정보를 성공적으로 반환함.
  *         content:
  *           application/json:
  *             schema:
@@ -37,7 +37,22 @@ const router: Router = Router();
  *         zones:
  *           type: array
  *           items:
- *             type: string
+ *             $ref: '#/components/schemas/IZoneInfoRow'
+ *     IZoneInfoRow:
+ *       type: object
+ *       properties:
+ *         No:
+ *           type: number
+ *           nullable: true
+ *         ZoneID:
+ *           type: number
+ *           nullable: true
+ *         DisplayName:
+ *           type: string
+ *           nullable: true
+ *         PhysicalType:
+ *           type: number
+ *           nullable: true
  *     STResponseZoneListResponse:
  *       type: object
  *       properties:

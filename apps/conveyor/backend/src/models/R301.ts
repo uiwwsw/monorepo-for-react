@@ -1,5 +1,9 @@
 import { RowDataPacket } from 'mysql2';
 
+export interface CountRow extends RowDataPacket {
+    count : number;
+}
+
 export interface UserRow extends RowDataPacket {
     uid : number;
     user_id : string;

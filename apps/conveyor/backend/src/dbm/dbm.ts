@@ -164,11 +164,11 @@ export class DBM {
                 for(let i=0, iLen=rows.length; i<iLen; i++) {
                     const row = rows[i];
                     try {
-                        await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 2 WHERE Id = ?', [row.No]);
+                        await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 2 WHERE No = ?', [row.No]);
                         this.processMessage(row);
                     } catch (ex) {
                         const err = ex as Error;
-                        await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 9, Result = ? WHERE Id = ?', [err ? err.message.substring(0, 1000) : '', row.No]);        // 최대 1000 글자만 에러 메시지 저장
+                        await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 9, Result = ? WHERE No = ?', [err ? err.message.substring(0, 1000) : '', row.No]);        // 최대 1000 글자만 에러 메시지 저장
                     }
                 }
                 let result = false;
@@ -217,7 +217,7 @@ export class DBM {
                 await Service.Inst.MySQL.query('delete from MsgQueue WHERE Id = ?', [trans.No]);
             } catch (ex) {
                 const err = ex as Error;
-                await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 9, Result = ? WHERE Id = ?', [err ? err.message.substring(0, 1000) : '', trans.No]);        // 최대 1000 글자만 에러 메시지 저장
+                await Service.Inst.MySQL.query('UPDATE MsgQueue SET State = 9, Result = ? WHERE No = ?', [err ? err.message.substring(0, 1000) : '', trans.No]);        // 최대 1000 글자만 에러 메시지 저장
             }
         }
     }

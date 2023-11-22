@@ -9,6 +9,7 @@ import { Service } from './service';
 import logger from './libs/logger';
 import userRouter from './routes/userRoutes';
 import zoneRouter from './routes/zoneRoutes';
+import statsRouter from './routes/statsRoutes';
 import { errorHandler } from './routes/error';
 
 async function main() {
@@ -50,6 +51,7 @@ async function main() {
     // 라우터를 사용하여 '/api/users' 엔드포인트 설정
     app.use('/users', userRouter);
     app.use('/zone', zoneRouter);
+    app.use('/stats', statsRouter);
 
     app.use(errorHandler);
 
