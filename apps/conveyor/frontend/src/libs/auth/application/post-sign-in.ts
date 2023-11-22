@@ -3,16 +3,14 @@ import useSWR from 'swr/mutation';
 import { createLogger, fakeApi, http } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
-import { MD5 } from "crypto-js";
+import { MD5 } from 'crypto-js';
 
 const logger = createLogger('auth/useSignIn');
 
 async function fetcher(
   url: string,
   {
-    arg: {
-      id, pw
-    },
+    arg: { id, pw },
   }: {
     arg: {
       id: string;
@@ -20,13 +18,15 @@ async function fetcher(
     };
   },
 ) {
-  const res = await http<Auth>({url,
-    method:'POST',
-     arg: {
-    "username": id,
-    "password": MD5(pw).toString()
-  }});
-  logger(res)
+  const res = await http<Auth>({
+    url,
+    method: 'POST',
+    arg: {
+      user_id: id,
+      password: MD5(pw).toString(),
+    },
+  });
+  logger(res);
   const trigger = usePostAuth();
   await trigger(res);
 

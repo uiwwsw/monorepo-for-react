@@ -2,6 +2,7 @@ import { Accordion, Button } from '@library-frontend/ui';
 import { LocalStorage, createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';
+import { useTest } from 'src/libs/test/application/test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -9,6 +10,7 @@ const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const { data } = useTest();
   /* ======   function    ====== */
   const handleReset = () => {
     LocalStorage.clear();

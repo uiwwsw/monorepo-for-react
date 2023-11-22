@@ -6,6 +6,7 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
+import { useTest } from 'src/libs/test/application/test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -14,6 +15,7 @@ const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
+  const { data } = useTest();
   const { data: serverData } = useServerInfo();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
