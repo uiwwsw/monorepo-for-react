@@ -13,14 +13,11 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="flex justify-end space-x-2">
-      <Button>Start</Button>
-      <Button>Stop</Button>
-      <Button>Restart</Button>
-      <Button>Reload</Button>
-      <ModalWithBtn persist button={<Button>Update</Button>} hasButton={['CANCEL']}>
-        <ModalContent selectedRows={selectedRows} />
-      </ModalWithBtn>
+    <div className="flex justify-end space-x-2 items-center">
+      <Button themeSize={'sm'}>Start</Button>
+      <Button themeSize={'sm'}>Stop</Button>
+      <Button themeSize={'sm'}>Restart</Button>
+      <Button themeSize={'sm'}>Reload</Button>
     </div>
   );
 };

@@ -20,20 +20,20 @@ const getStatusColorClass = (status: UpdateStatus) => {
   return statusClasses[status] || statusClasses.default;
 };
 
-const getWidthClass = (value: number) => `w-[${value}%]`;
+const getWidth = (value: number) => `${value}%`;
 
 const logger = createLogger('pages/Control/ProgressBar');
 const ProgressBar = ({ value, status }: ProgressBarProps) => {
   /* ======   variables   ====== */
   const statusColorClass = getStatusColorClass(status);
-  const widthClass = getWidthClass(value);
+  const width = getWidth(value);
 
   /* ======   function    ====== */
   logger('render');
   /* ======   useEffect   ====== */
   return (
     <div className="w-full bg-gray-200 rounded overflow-hidden">
-      <div className={`flex items-center relative rounded h-4 ${statusColorClass} ${widthClass}`}>
+      <div className={`flex items-center relative rounded h-4 ${statusColorClass}`} style={{ width }}>
         <span className="absolute w-full justify-center flex text-white text-sm">{status}</span>
       </div>
     </div>

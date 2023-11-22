@@ -28,43 +28,51 @@ const TcmSub = ({ row }: TcmSubProps) => {
   logger('render');
   /* ======   useEffect   ====== */
   return (
-    <div className="flex justify-end space-x-2">
-      <div className="flex items-center space-x-4">
-        {selectedFile && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium">선택된 파일: {selectedFile}</span>
-            <ModalWithBtn
-              hasButton={['OK', 'CANCEL']}
-              button={
-                <Button themeColor="secondary" themeSize="sm">
-                  Delete
-                </Button>
-              }
-              onClose={(value) => {
-                if (value === 'OK') {
-                  handleFileDelete();
+    <div className="flex justify-end space-x-2 items-center p-2">
+      <ModalWithBtn
+        button={
+          <Button themeSize={'sm'} themeColor={'tertiary'}>
+            뭐시기
+          </Button>
+        }
+      >
+        <div className="flex items-center space-x-4">
+          {selectedFile && (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium">선택된 파일: {selectedFile}</span>
+              <ModalWithBtn
+                hasButton={['OK', 'CANCEL']}
+                button={
+                  <Button themeColor="secondary" themeSize="sm">
+                    Delete
+                  </Button>
                 }
-              }}
-            >
-              파일을 삭제하시겠습니까?
-            </ModalWithBtn>
-          </div>
-        )}
+                onClose={(value) => {
+                  if (value === 'OK') {
+                    handleFileDelete();
+                  }
+                }}
+              >
+                파일을 삭제하시겠습니까?
+              </ModalWithBtn>
+            </div>
+          )}
 
-        <Combo
-          onChange={handleFileSelect}
-          placeholder="Backup File"
-          options={backupFiles.map((file) => ({
-            value: file,
-            label: file,
-          }))}
-        ></Combo>
-      </div>
-      <div>{row?.original.tid}</div>
-      <Button>Update</Button>
-      <Button>Process Kill</Button>
-      <Button>Detail</Button>
-      <Button>Logs</Button>
+          <Combo
+            onChange={handleFileSelect}
+            placeholder="Backup File"
+            options={backupFiles.map((file) => ({
+              value: file,
+              label: file,
+            }))}
+          ></Combo>
+        </div>
+      </ModalWithBtn>
+      {/* <div>{row?.original.tid}</div> */}
+      <Button themeSize={'sm'}>Update</Button>
+      <Button themeSize={'sm'}>Process Kill</Button>
+      <Button themeSize={'sm'}>Detail</Button>
+      <Button themeSize={'sm'}>Logs</Button>
     </div>
   );
 };

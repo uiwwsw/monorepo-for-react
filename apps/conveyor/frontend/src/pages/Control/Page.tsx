@@ -46,12 +46,8 @@ const Control = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800">TCM Control</h2>
           <div className="space-x-2">
-            <Button themeSize="sm" themeColor="secondary">
-              Resume
-            </Button>
-            <Button themeSize="sm" themeColor="secondary">
-              Pause
-            </Button>
+            <Button themeColor="secondary">Resume</Button>
+            <Button themeColor="secondary">Pause</Button>
           </div>
         </div>
 
