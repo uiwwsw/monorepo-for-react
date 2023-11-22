@@ -12,10 +12,10 @@ export interface MenuProps {
   button?: ReactNode;
   onFinished?: (value: boolean) => unknown;
   isBodyClickClose?: boolean;
+  className?: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Menu');
-const contentClassName = `z-20 absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full`;
 const Menu = ({
   button = (
     <Button themeSize="xl" className="w-full">
@@ -25,9 +25,13 @@ const Menu = ({
   isBodyClickClose = true,
   children,
   width = '200px',
+  className,
   onFinished,
 }: MenuProps) => {
   /* ======   variables   ====== */
+  const contentClassName = `z-20 absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full${
+    className ? ` ${className}` : ''
+  }`;
   const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
