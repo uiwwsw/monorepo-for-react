@@ -1,6 +1,6 @@
 import useSWR from 'swr/mutation';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { mockDataUpdate } from '../domain';
+import { UpdateStatus, firmwareStatus } from '../domain';
 const logger = createLogger('tcm/useUpdateFirmware');
 
 async function fetcher(
@@ -13,13 +13,18 @@ async function fetcher(
     };
   },
 ) {
-  const res = await fakeApi(mockDataUpdate);
-  console.log('res', res);
-
   logger(arg, url);
+
+  //temporary
+  const mockDataUpdate: firmwareStatus = {
+    status: UpdateStatus.Completed,
+  };
+
+  const res = await fakeApi(mockDataUpdate);
+
   return res?.status;
 }
 
 export function useUpdateFirmware() {
-  return useSWR('/api/deploy/update', fetcher);
+  return useSWR('/control/tcm/update', fetcher);
 }

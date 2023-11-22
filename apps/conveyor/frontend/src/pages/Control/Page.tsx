@@ -8,6 +8,7 @@ import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
 import { useCallback, useState } from 'react';
 import { Button } from '@library-frontend/ui';
+import { ConnectionStatus, TCMInfo } from 'src/libs/control/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -38,6 +39,19 @@ const Control = () => {
     [tcmData],
   );
 
+  const convertAdjTCMConnection = (data: TCMInfo[] | undefined) => {
+    if (data === undefined) return;
+    return data.map((item) => {
+      const totalConnections = item.AdjTCMConnection.length;
+      const onConnections = item.AdjTCMConnection.filter((conn) => conn.cstatus === ConnectionStatus.ON).length;
+
+      return {
+        ...item,
+        AdjTCMConnection: `${onConnections} / ${totalConnections}`,
+      };
+    });
+  };
+
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -53,7 +67,7 @@ const Control = () => {
 
         <Table
           thead={['tid', 'status', 'version', 'AdjTCMConnection', 'Process']}
-          data={tcmData}
+          data={convertAdjTCMConnection(tcmData)}
           makePagination={false}
           makeColumnSelect={false}
           renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
@@ -64,7 +78,7 @@ const Control = () => {
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Server Control</h2>
         <Table
-          thead={['sid', 'name', 'status', 'version', 'StartedTime']}
+          thead={['sid', 'name', 'status', 'version']}
           data={serverData}
           makePagination={false}
           makeColumnSelect={false}

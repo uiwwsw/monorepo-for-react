@@ -9,7 +9,7 @@ import { useUploadFirmware } from 'src/libs/control/application/useUploadFirmwar
 
 /* ======   interface   ====== */
 
-interface ModalContentProps {
+interface ModalContentUpdateProps {
   selectedRows?: number[];
 }
 
@@ -17,9 +17,9 @@ interface ProgressState {
   [key: number]: { progress: number; status: UpdateStatus };
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContent');
+const logger = createLogger('pages/ModalContentUpdate');
 
-const ModalContent = ({ selectedRows }: ModalContentProps) => {
+const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   /* ======   variables   ====== */
   const { trigger: updateTrigger } = useUpdateFirmware();
   const [progressStates, setProgressStates] = useState<ProgressState>({});
@@ -79,7 +79,7 @@ const ModalContent = ({ selectedRows }: ModalContentProps) => {
       <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM Update</h2> {/* 제목을 별도의 줄로 분리 */}
       <div className="flex justify-between items-center mb-6">
         <Upload onSubmit={onUpload} />
-        <Button onClick={handleUpdateStop} disabled={!updateInProgress}>
+        <Button themeSize={'sm'} onClick={handleUpdateStop} disabled={!updateInProgress}>
           Stop
         </Button>
       </div>
@@ -93,4 +93,4 @@ const ModalContent = ({ selectedRows }: ModalContentProps) => {
   );
 };
 
-export default ModalContent;
+export default ModalContentUpdate;

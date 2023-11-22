@@ -34,7 +34,7 @@ export default function Upload({ onSubmit }: { onSubmit: (file: File) => Promise
   return (
     <form className="flex items-center space-x-3 mr-3" onSubmit={adapterSubmit}>
       <Input ref={inputFileRef} className="form-input" type="file" />
-      <Button disabled={loading} type="submit">
+      <Button themeSize={'sm'} disabled={loading} type="submit">
         {loading ? 'Updating...' : 'Update'}
       </Button>
     </form>
