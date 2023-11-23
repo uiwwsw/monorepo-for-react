@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_APP_TITLE: string;
-  // 다른 환경 변수들에 대한 타입 정의...
+  readonly VITE_API: string;
+  readonly VITE_SOCKET: string;
 }
 
 interface ImportMeta {
