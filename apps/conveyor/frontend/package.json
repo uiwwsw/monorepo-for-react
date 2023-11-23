@@ -29,6 +29,7 @@
     "react-hook-form": "^7.48.2",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.15.0",
+    "socket.io-client": "^4.7.2",
     "swr": "^2.2.2"
   },
   "devDependencies": {

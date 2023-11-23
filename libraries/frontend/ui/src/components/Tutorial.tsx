@@ -31,7 +31,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
   const id = useMemo(() => 'tutorial-' + JSON.stringify(guide.map((x) => x.text).join('/')), [guide]);
   const didSee = typeof LocalStorage.get(id) === 'string';
   const [finish, setFinish] = useState(false);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(didSee);
   const [step, setStep] = useState(0);
   const text = useMemo(() => guide[step]?.text ?? null, [step, guide]);
   const button = useMemo(() => guide[step]?.button ?? null, [step, guide]);
@@ -52,7 +52,10 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
   const handleClick = async () => {
     const nextStep = step + 1;
     if (nextStep < guide.length) setStep(step + 1);
-    else setDone(true);
+    else {
+      setDone(true);
+      LocalStorage.set(id, new Date().toISOString());
+    }
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
@@ -60,11 +63,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
     setStyle();
     trigger();
   }, [step]);
-  useEffect(() => {
-    if (didSee) return;
-    document.body.style.overflow = done ? '' : 'hidden';
-    if (done) LocalStorage.set(id, new Date().toISOString());
-  }, [done]);
+
   logger('render', didSee, id);
   // logger('render', step, ref, guide[step]?.ref, position);
   return !didSee ? (
