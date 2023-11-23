@@ -25,57 +25,6 @@ const Nav = (_: NavProps) => {
   logger('render');
   return (
     <>
-      <Tutorial
-        guide={[
-          {
-            text: '메인으로 이동합니다.',
-            position: {
-              top: '0',
-              left: '0',
-            },
-            size: {
-              width: '208px',
-              height: '70px',
-            },
-          },
-          {
-            text: '로그인 후 접근 가능한 영역입니다.',
-            position: {
-              top: '70px',
-              left: '0',
-            },
-            size: {
-              width: '208px',
-              height: '200px',
-            },
-          },
-          {
-            text: '로그인 필요없는 페이지입니다.',
-            position: {
-              bottom: '80px',
-              left: '0',
-            },
-            size: {
-              width: '208px',
-              height: '140px',
-            },
-          },
-          {
-            ref: langRef,
-            text: '언어 변경이 가능합니다.\n브라우저의 언어를 변경하면 좀 더 완벽한 언어 지원이 가능합니다.(캘린더 등)',
-            button: (
-              <Button
-                themeColor={'secondary'}
-                onClick={() => {
-                  window.open('https://www.google.com/search?q=How%20to%20change%20browser%20language');
-                }}
-              >
-                브라우저 언어 변경 방법
-              </Button>
-            ),
-          },
-        ]}
-      />
       <div
         className={`transition-transform md:sticky md:translate-x-0 max-md:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
           isInIframe ? ' cursor-not-allowed' : ''
@@ -108,6 +57,57 @@ const Nav = (_: NavProps) => {
 
         <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>
       </div>
+      <Tutorial
+        guide={[
+          {
+            text: '메인으로 이동합니다.',
+            position: {
+              top: '0',
+              left: '0',
+            },
+            size: {
+              width: '208px',
+              height: '70px',
+            },
+          },
+          {
+            text: '로그인 후 접근 가능한 영역입니다.',
+            position: {
+              top: '70px',
+              left: '0',
+            },
+            size: {
+              width: '208px',
+              height: '200px',
+            },
+          },
+          {
+            text: '로그인 필요없는 페이지입니다.',
+            position: {
+              bottom: '80px',
+              left: '0',
+            },
+            size: {
+              width: '208px',
+              height: '240px',
+            },
+          },
+          {
+            ref: langRef,
+            text: '언어 변경이 가능합니다.\n브라우저의 언어를 변경하면 좀 더 완벽한 언어 지원이 가능합니다.(캘린더 등)',
+            button: (
+              <Button
+                themeColor={'secondary'}
+                onClick={() => {
+                  window.open('https://www.google.com/search?q=How%20to%20change%20browser%20language');
+                }}
+              >
+                브라우저 언어 변경 방법
+              </Button>
+            ),
+          },
+        ]}
+      />
     </>
   );
 };
