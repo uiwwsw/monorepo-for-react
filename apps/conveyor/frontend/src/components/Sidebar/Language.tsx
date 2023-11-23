@@ -24,7 +24,13 @@ const Language = (_: LanguageProps) => {
   /* ======   useEffect   ====== */
   logger('render', value);
   return (
-    <Select options={options} onChange={handleChange} defaultValue={value} placeholder={t('언어를 선택해 주세요.')} />
+    <Select
+      className="w-full"
+      options={options}
+      onChange={handleChange}
+      defaultValue={value}
+      placeholder={t('언어를 선택해 주세요.')}
+    />
   );
 };
 

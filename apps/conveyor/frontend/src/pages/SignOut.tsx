@@ -1,4 +1,4 @@
-import { useSignout } from '!/auth/application/post-sign-out';
+import { useSignOut } from '!/auth/application/post-sign-out';
 import { createLogger } from '@package-frontend/utils';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ const SignOut = () => {
   /* ======   variables   ====== */
   let count = 10;
   const navigate = useNavigate();
-  const { trigger } = useSignout();
+  const { trigger } = useSignOut();
 
   /* ======   function    ====== */
   const tryUntilSuccess = async () => {

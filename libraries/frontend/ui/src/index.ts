@@ -63,11 +63,17 @@ export * from './components/Tab';
 export { default as Tooltip } from './components/Tooltip';
 export * from './components/Tooltip';
 
+export { default as ToastBase } from './components/Toast/Base';
+export * from './components/Toast/Base';
+
 export { default as ToastWithBtn } from './components/Toast/WithBtn';
 export * from './components/Toast/WithBtn';
 
 export { default as ToastWithPortal } from './components/Toast/WithPortal';
 export * from './components/Toast/WithPortal';
+
+export { default as Tutorial } from './components/Tutorial';
+export * from './components/Tutorial';
 
 export * from './components/Color';
 export * from './components/Size';

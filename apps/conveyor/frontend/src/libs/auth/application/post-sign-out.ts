@@ -2,17 +2,17 @@
 import useSWR from 'swr/mutation';
 import { createLogger, http } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
-const logger = createLogger('auth/useSignout');
+const logger = createLogger('auth/useSignOut');
 
 async function fetcher(url: string) {
   logger(url);
   const trigger = usePostAuth();
   await trigger(undefined);
-  const res = await http({ url });
+  const res = await http({ url, method: 'POST' });
   return res;
   //   return await http({ url });
 }
 
-export function useSignout() {
+export function useSignOut() {
   return useSWR('/api/users/sign-out', fetcher);
 }

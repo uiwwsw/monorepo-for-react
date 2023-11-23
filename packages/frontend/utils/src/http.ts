@@ -21,7 +21,7 @@ export const http = async <T>({
   // GET 메소드에 대한 처리
   if (method === 'GET' && body) {
     const urlObj = new URLSearchParams(arg as Record<string, string>).toString();
-    url += '?' +  urlObj.toString();
+    url += '?' + urlObj.toString();
     body = null; // GET 요청에는 보통 body가 없습니다.
   }
 
@@ -57,5 +57,6 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res.status;
     this.statusText = res.statusText;
+    if (this.status === 500) this.message = import.meta.env.VITE_API + ' 서버에 문제가 발생한 것 같아요.🤦‍♂️';
   }
 }

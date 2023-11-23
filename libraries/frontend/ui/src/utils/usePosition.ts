@@ -2,6 +2,7 @@ import { RefObject, useState } from 'react';
 /* ======   interface   ====== */
 export interface UsePositionProps {
   targetRef: RefObject<HTMLElement>;
+  withSize?: boolean;
 }
 /* ======    global     ====== */
 const getScrollbarWidth = () => {
@@ -19,16 +20,20 @@ const getScrollbarWidth = () => {
 
   return scrollbarWidth;
 };
-const usePosition = ({ targetRef }: UsePositionProps) => {
+const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
   /* ======   variables   ====== */
-  const [position, _setPosition] = useState<{
+  const [size, setSize] = useState<{
+    width?: string;
+    height?: string;
+  }>();
+  const [position, setPosition] = useState<{
     top?: string;
     left?: string;
     bottom?: string;
     right?: string;
   }>();
   /* ======   function    ====== */
-  const setPosition = () => {
+  const trigger = () => {
     const targetRefRect = targetRef.current?.getBoundingClientRect();
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
@@ -51,7 +56,12 @@ const usePosition = ({ targetRef }: UsePositionProps) => {
         bottom = windowHeight - targetRefRect.bottom - scrollY; // 툴팁을 요소의 위쪽에 위치시킴
       }
     }
-    _setPosition({
+    withSize &&
+      setSize({
+        width: targetRefRect?.width ? `${targetRefRect?.width}px` : 'initial',
+        height: targetRefRect?.height ? `${targetRefRect?.height}px` : 'initial',
+      });
+    setPosition({
       top: top !== undefined ? `${top}px` : 'initial',
       left: left !== undefined ? `${left}px` : 'initial',
       bottom: bottom !== undefined ? `${bottom}px` : 'initial',
@@ -60,7 +70,7 @@ const usePosition = ({ targetRef }: UsePositionProps) => {
   };
   /* ======   useEffect   ====== */
 
-  return { setPosition, position };
+  return { trigger, position, size };
 };
 
 export default usePosition;

@@ -21,15 +21,21 @@ const commonButtonClassName = `justify-center overflow-hidden relative transitio
 const ableButtonClassName = `
 [&[data-color="primary"]]:bg-blue-500 [&[data-color="primary"]]:hover:bg-blue-600 
 [&[data-color="secondary"]]:bg-slate-500 [&[data-color="secondary"]]:hover:bg-slate-600
-[&[data-color="tertiary"]]:border-gray-300 [&[data-color="tertiary"]]:hover:border-gray-500`;
+[&[data-color="tertiary"]]:border-gray-300 [&[data-color="tertiary"]]:hover:border-gray-500
+[&[data-color="quaternary"]]:bg-orange-500 [&[data-color="secondary"]]:hover:bg-orange-600
+`;
 const disabledButtonClassName = `
 [&[data-color="primary"]]:bg-blue-300
 [&[data-color="secondary"]]:bg-slate-300
-[&[data-color="tertiary"]]:border-gray-100`;
+[&[data-color="tertiary"]]:border-gray-100
+[&[data-color="quaternary"]]:bg-orange-300
+`;
 const styledButtonClassName = `
 [&[data-color="primary"]]:text-white
 [&[data-color="secondary"]]:text-white
-[&[data-color="tertiary"]]:text-gray-400`;
+[&[data-color="tertiary"]]:text-gray-400
+[&[data-color="quaternary"]]:text-white
+`;
 const sizeButtonClassName = `
 [&[data-size="xs"]]:py-0 [&[data-size="xs"]]:px-3 [&[data-size="xs"]]:font-medium [&[data-size="xs"]]:text-xs [&[data-size="xs"]]:rounded-xs
 [&[data-size="sm"]]:py-1 [&[data-size="sm"]]:px-4 [&[data-size="sm"]]:font-medium [&[data-size="sm"]]:text-sm [&[data-size="sm"]]:rounded-sm

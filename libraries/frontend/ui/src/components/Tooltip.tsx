@@ -29,14 +29,14 @@ const Tooltip = ({ children, themeSize = 'sm', themeColor = 'tertiary', ...props
   /* ======   variables   ====== */
   const [visible, setVisible] = useState<boolean>(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const { setPosition, position } = usePosition({ targetRef: wrapRef });
+  const { trigger, position } = usePosition({ targetRef: wrapRef });
 
   const textClassName = `z-40 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`;
   /* ======   function    ====== */
   const showTooltip = () => {
     logger('Show Tooltip');
     setVisible(true);
-    setPosition();
+    trigger();
   };
 
   const hideTooltip = () => {
