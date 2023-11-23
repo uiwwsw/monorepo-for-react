@@ -25,7 +25,7 @@ import {
   cloneElement,
 } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Select, Tooltip } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
@@ -137,6 +137,11 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
+    renderFallbackValue: (
+      <Tooltip themeSize="xs" themeColor="primary">
+        데이터에 문제가 있네요.
+      </Tooltip>
+    ),
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
@@ -249,10 +254,12 @@ const Table = <T,>({
               return (
                 <Fragment key={row.id}>
                   <tr>
-                    {row.getVisibleCells().map((cell) => {
+                    {row.getVisibleCells().map((cell, i) => {
                       return (
-                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-center align-middle">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-center text-sm align-middle">
+                          {i !== thead.length
+                            ? (cell.renderValue() as ReactNode)
+                            : flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       );
                     })}
