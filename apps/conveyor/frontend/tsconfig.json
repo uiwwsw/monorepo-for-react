@@ -21,10 +21,10 @@
     "baseUrl": ".",
     "moduleResolution": "bundler",
     "paths": {
-      "src/*": ["./src/*"],
       "!/*": ["./src/libs/*"],
       "@/*": ["./src/components/*"],
-      "#/*": ["./src/utils/*"]
+      "#/*": ["./src/utils/*"],
+      "src/*": ["./src/*"]
     }
   },
   "include": ["src", "vite.config.ts"],

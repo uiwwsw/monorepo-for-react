@@ -21,6 +21,7 @@
     "@package-frontend/utils": "workspace:^",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.10.7",
+    "crypto-js": "^4.2.0",
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",
     "react": "^18.2.0",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.2.0",
+    "@types/crypto-js": "^4.2.1",
     "@types/node": "^20.5.9",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
