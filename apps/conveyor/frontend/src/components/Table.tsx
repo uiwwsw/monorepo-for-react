@@ -13,7 +13,7 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import { ReactNode, useMemo, useState, Fragment, ChangeEvent, KeyboardEvent } from 'react';
+import { ReactNode, useMemo, useState, Fragment, useEffect, ReactElement, ChangeEvent, KeyboardEvent } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,8 @@ export interface TableProps<T> {
   makePagination?: boolean;
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
-  renderSubComponent?: ReactNode;
+  renderSubComponent?: ({ row }: { row: Row<T> }) => ReactElement<{ row: Row<T> }>;
+  rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
 /* ======    global     ====== */
@@ -39,6 +40,7 @@ const Table = <T,>({
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
+  rowSelectionChange,
 }: TableProps<T>) => {
   if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
@@ -155,6 +157,11 @@ const Table = <T,>({
     if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
   };
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    if (rowSelectionChange) {
+      rowSelectionChange(rowSelection);
+    }
+  }, [rowSelection, rowSelectionChange]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
@@ -234,15 +241,15 @@ const Table = <T,>({
                   <tr>
                     {row.getVisibleCells().map((cell) => {
                       return (
-                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-center align-middle">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       );
                     })}
                   </tr>
-                  {row.getIsExpanded() && (
+                  {row.getIsExpanded() && renderSubComponent && (
                     <tr>
-                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent}</td>
+                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent({ row })}</td>
                     </tr>
                   )}
                 </Fragment>
