@@ -1,11 +1,11 @@
 import { Button } from '@library-frontend/ui';
 import { useRef, useState } from 'react';
-import { useUpdateFirmware } from 'src/libs/control/application/useUpdateFirmware';
+import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import ProgressBar from './ProgressBar';
-import { UpdateStatus } from 'src/libs/control/domain';
+import { ReponseStatus, UploadStatus } from 'src/libs/control/domain';
 import { createLogger } from '@package-frontend/utils';
 import Upload from './Upload';
-import { useUploadFirmware } from 'src/libs/control/application/useUploadFirmware';
+import { useUploadFirmware } from '!/control/application/post-upload-firmware';
 
 /* ======   interface   ====== */
 
@@ -14,7 +14,7 @@ interface ModalContentUpdateProps {
 }
 
 interface ProgressState {
-  [key: number]: { progress: number; status: UpdateStatus };
+  [key: number]: { progress: number; status: UploadStatus };
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/ModalContentUpdate');
@@ -31,7 +31,7 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   const initializeProgressStates = () => {
     const initialStates: ProgressState = {};
     selectedRows?.forEach((row) => {
-      initialStates[row] = { progress: 0, status: UpdateStatus.Idle };
+      initialStates[row] = { progress: 0, status: UploadStatus.Idle };
     });
     setProgressStates(initialStates);
   };
@@ -41,7 +41,8 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   };
 
   const onUpload = async (file: File) => {
-    await uploadTrigger({ file });
+    const uploadFile = await uploadTrigger({ file });
+    if (uploadFile === undefined) return;
 
     if (!selectedRows || updateInProgress) return;
     setUpdateInProgress(true);
@@ -54,18 +55,18 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
       const tid = selectedRows[index];
       setProgressStates((prev) => ({
         ...prev,
-        [tid]: { progress: prev[tid].progress, status: UpdateStatus.Updating },
+        [tid]: { progress: prev[tid].progress, status: UploadStatus.Updating },
       }));
 
       try {
-        const response = await updateTrigger({ tid });
+        const status = await updateTrigger({ tid, fileName: uploadFile?.name });
 
-        if (response === UpdateStatus.Completed) {
-          setProgressStates((prev) => ({ ...prev, [tid]: { progress: 100, status: UpdateStatus.Completed } }));
+        if (status?.result === ReponseStatus.SUCCESS) {
+          setProgressStates((prev) => ({ ...prev, [tid]: { progress: 100, status: UploadStatus.Completed } }));
         }
       } catch (error) {
         console.error('Error updating row:', tid, error);
-        setProgressStates((prev) => ({ ...prev, [tid]: { progress: prev[tid].progress, status: UpdateStatus.Idle } }));
+        setProgressStates((prev) => ({ ...prev, [tid]: { progress: prev[tid].progress, status: UploadStatus.Idle } }));
       }
     }
 
@@ -76,7 +77,7 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   logger('render');
   return (
     <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM Update</h2> {/* 제목을 별도의 줄로 분리 */}
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 업데이트</h2>
       <div className="flex justify-between items-center mb-6">
         <Upload onSubmit={onUpload} />
         <Button themeSize={'sm'} onClick={handleUpdateStop} disabled={!updateInProgress}>

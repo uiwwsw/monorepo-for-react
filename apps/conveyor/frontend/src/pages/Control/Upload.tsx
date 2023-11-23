@@ -1,12 +1,16 @@
 import { Button, Input } from '@library-frontend/ui';
 import { FormEventHandler, useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
+const logger = createLogger('pages/Control/Upload');
 
 /* ======   interface   ====== */
-const logger = createLogger('pages/Control/Upload');
+interface UploadProps {
+  onSubmit: (file: File) => Promise<unknown>;
+}
+
 /* ======    global     ====== */
 
-export default function Upload({ onSubmit }: { onSubmit: (file: File) => Promise<unknown> }) {
+const Upload = ({ onSubmit }: UploadProps) => {
   /* ======   variables   ====== */
   const [loading, setLoading] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -39,4 +43,6 @@ export default function Upload({ onSubmit }: { onSubmit: (file: File) => Promise
       </Button>
     </form>
   );
-}
+};
+
+export default Upload;

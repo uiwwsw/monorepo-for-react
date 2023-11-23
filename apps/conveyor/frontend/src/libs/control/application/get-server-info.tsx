@@ -1,14 +1,14 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { ServerInfo, Status } from '../domain';
+import { serverInfo, Status } from '../domain';
 const logger = createLogger('server/useServerInfo');
 
 async function fetcher(url: string) {
   logger(url);
 
   //temporary
-  const mockDataServer: ServerInfo[] = [
+  const mockDataServer: serverInfo[] = [
     {
       sid: 1,
       name: 'dcm',
@@ -25,9 +25,8 @@ async function fetcher(url: string) {
 
   const res = await fakeApi(mockDataServer);
   return res;
-  //   return await http({ url });
 }
 
 export function useServerInfo() {
-  return useSWR('/serverInfo', fetcher);
+  return useSWR('/control/server/Info', fetcher);
 }
