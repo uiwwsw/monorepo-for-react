@@ -8,6 +8,8 @@ const StatsZone = lazy(() => import('src/pages/Stats/Zone/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
+const Users = lazy(() => import('src/pages/Users/Page'));
+const UpdateProfile = lazy(() => import('src/pages/UpdateProfile'));
 export interface Group {
   name: string;
   path: string;
@@ -56,5 +58,17 @@ export const commonRoutes: Tab[] = [
     path: '/help',
     name: '도움말',
     node: Help,
+  },
+  {
+    icon: '👥',
+    path: '/users',
+    name: '유저관리',
+    node: Users,
+  },
+  {
+    icon: '🧑‍🎓',
+    path: '/update-profile',
+    name: '유저정보변경',
+    node: UpdateProfile,
   },
 ];

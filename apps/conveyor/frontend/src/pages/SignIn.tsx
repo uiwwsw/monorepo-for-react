@@ -31,9 +31,7 @@ const SignIn = () => {
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
   const from = useMemo(() => url.get('from'), [location]);
   /* ======   function    ====== */
-  const fakeWait = () => {
-    navigate(from === '/sign-up' || !from ? '/control' : from);
-  };
+  const handleModalClose = () => navigate(from?.startsWith('/sign') || !from ? '/control' : from);
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
@@ -42,21 +40,16 @@ const SignIn = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (url.get('from') === '/sign-up') setSignupAfterToast(true);
-    if (url.get('sign-out') === 'true') setLostAuthToast(true);
+    if (url.get('update-profile') === 'true') setLostAuthToast(true);
   }, [location]);
   logger('render');
   return (
     <>
-      <ToastWithPortal open={true} duration={Infinity}>
-        현재는 목업 로그인만 가능합니다.
-        <br />
-        id: johndoe, pw: MySecurePassword123! 로 로그인 후 사용해보세요.
-      </ToastWithPortal>
       <ToastWithPortal open={lostAuthToast} duration={Infinity}>
-        {t('로그아웃에 성공했습니다.')}
+        {t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.')}
       </ToastWithPortal>
       <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
-      <ModalWithPortal onClose={fakeWait} open={success} hasButton={[t('확인')]} persist>
+      <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('확인')]} persist>
         {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">

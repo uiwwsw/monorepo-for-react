@@ -5,3 +5,11 @@ export interface Auth {
   uid: number;
   username: string;
 }
+export interface User {
+  uid: number;
+  user_id: string;
+  user_name: string;
+  grade: number;
+  created_date: string;
+  last_access: string;
+}

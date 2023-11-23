@@ -35,14 +35,14 @@ const Menu = ({
   const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const { setPosition, position } = usePosition({ targetRef: wrapRef });
+  const { trigger, position } = usePosition({ targetRef: wrapRef });
 
   /* ======   function    ====== */
   const handleOpen = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setOpen(true);
-    setPosition();
+    trigger();
   };
   const handleClose = () => {
     setOpen(false);

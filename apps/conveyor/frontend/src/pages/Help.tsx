@@ -1,5 +1,6 @@
-import { Accordion, Button } from '@library-frontend/ui';
+import { Accordion, Button, Tutorial } from '@library-frontend/ui';
 import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';
 
@@ -9,6 +10,7 @@ const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const helpRef = useRef<HTMLDivElement>(null);
   /* ======   function    ====== */
   const handleReset = () => {
     LocalStorage.clear();
@@ -20,17 +22,22 @@ const Help = () => {
   // }, []);
   logger('render');
   return (
-    <PageCenter title={t('도움말')}>
-      <Accordion title={t('리셋 / 언어 설정 테스트')}>
-        {t('초기 언어 설정을 위해서는 초기화가 필요합니다. 브라우저의 언어를 변경 후 초기화 버튼을 눌러주세요.')}
-        <br />
-        <Button onClick={handleReset}>{t('초기화')}</Button>
-      </Accordion>
-      <Accordion title="아이디가 없습니다">
-        <Button onClick={() => (location.href = '/sign-up')}>{t('/sign-up')}</Button> 페이지에 가서 회원가입을 진행해
-        주세요.
-      </Accordion>
-    </PageCenter>
+    <>
+      <Tutorial guide={[{ ref: helpRef, text: '도움말 페이지입니다. 미리 작성된 질문과 답변을 볼 수 있습니다.' }]} />
+      <PageCenter title={t('도움말')}>
+        <div ref={helpRef}>
+          <Accordion title={t('리셋 / 언어 설정 테스트')}>
+            {t('초기 언어 설정을 위해서는 초기화가 필요합니다. 브라우저의 언어를 변경 후 초기화 버튼을 눌러주세요.')}
+            <br />
+            <Button onClick={handleReset}>{t('초기화')}</Button>
+          </Accordion>
+          <Accordion title="아이디가 없습니다">
+            <Button onClick={() => (location.href = '/sign-up')}>{t('/sign-up')}</Button> 페이지에 가서 회원가입을
+            진행해 주세요.
+          </Accordion>
+        </div>
+      </PageCenter>
+    </>
   );
 };
 

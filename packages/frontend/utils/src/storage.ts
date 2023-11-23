@@ -32,6 +32,13 @@ export class Storage {
   clear() {
     this.storage?.clear();
   }
+
+  startWithClear(key: string) {
+    if (!this.storage) return [];
+    return Object.keys(this.storage)
+      .filter((x) => x.startsWith(key))
+      .map((x) => this.set(x, null));
+  }
 }
 
 export const LocalStorage = new Storage(typeof window === 'undefined' ? undefined : localStorage);

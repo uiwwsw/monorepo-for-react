@@ -39,7 +39,6 @@ async function main() {
 
     // 종속성 설치
     execSync('cd ./deploy && npm i', { stdio: 'inherit' });
-
     console.log('Deployment preparation complete.');
   } catch (error) {
     console.error('Deployment script failed:', error);
