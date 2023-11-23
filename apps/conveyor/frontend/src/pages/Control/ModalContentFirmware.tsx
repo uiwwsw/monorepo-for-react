@@ -4,14 +4,12 @@ import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useState } from 'react';
 
-interface ModalContentFirmwareProps {
-  tid?: number;
-}
+interface ModalContentFirmwareProps {}
 
 /* ======    global     ====== */
 const logger = createLogger('pages/ModalContentFirmware');
 
-const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
+const ModalContentFirmware = (_: ModalContentFirmwareProps) => {
   /* ======   variables   ====== */
   const [selectedFile, setSelectedFile] = useState('');
   const [backupFiles, setBackupFiles] = useState<string[]>(['file1.txt', 'file2.txt', 'file3.txt']);

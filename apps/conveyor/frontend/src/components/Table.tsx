@@ -13,17 +13,7 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import {
-  ReactNode,
-  useMemo,
-  useState,
-  Fragment,
-  useEffect,
-  cloneElement,
-  ReactElement,
-  ChangeEvent,
-  KeyboardEvent,
-} from 'react';
+import { ReactNode, useMemo, useState, Fragment, useEffect, ReactElement, ChangeEvent, KeyboardEvent } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +25,7 @@ export interface TableProps<T> {
   makePagination?: boolean;
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactNode;
-  renderSubComponent?: ReactElement<{ row: Row<T> }>;
+  renderSubComponent?: ({ row }: { row: Row<T> }) => ReactElement<{ row: Row<T> }>;
   rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
@@ -259,7 +249,7 @@ const Table = <T,>({
                   </tr>
                   {row.getIsExpanded() && renderSubComponent && (
                     <tr>
-                      <td colSpan={row.getVisibleCells().length}>{cloneElement(renderSubComponent, { row })}</td>
+                      <td colSpan={row.getVisibleCells().length}>{renderSubComponent({ row })}</td>
                     </tr>
                   )}
                 </Fragment>

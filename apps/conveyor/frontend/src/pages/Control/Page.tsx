@@ -39,11 +39,14 @@ const Control = () => {
     [tcmData],
   );
 
-  const convertAdjTCMConnection = (data: TCMInfo[] | undefined) => {
-    if (data === undefined) return;
+  const convertAdjTCMConnection = (data: TCMInfo[] | undefined): TCMInfo[] | undefined => {
+    if (data === undefined) return undefined;
     return data.map((item) => {
       const totalConnections = item.AdjTCMConnection.length;
-      const onConnections = item.AdjTCMConnection.filter((conn) => conn.cstatus === ConnectionStatus.ON).length;
+      const onConnections =
+        item.AdjTCMConnection instanceof Array
+          ? item.AdjTCMConnection.filter((conn) => conn.cstatus === ConnectionStatus.ON).length
+          : '';
 
       return {
         ...item,
@@ -72,7 +75,7 @@ const Control = () => {
           makeColumnSelect={false}
           renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
           rowSelectionChange={handleRowSelection}
-          renderSubComponent={<TcmSub />}
+          renderSubComponent={TcmSub}
         ></Table>
       </div>
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
@@ -83,7 +86,7 @@ const Control = () => {
           makePagination={false}
           makeColumnSelect={false}
           renderSelectComponent={<ServerSelect />}
-          renderSubComponent={<ServerSub />}
+          renderSubComponent={ServerSub}
         ></Table>
       </div>
     </>

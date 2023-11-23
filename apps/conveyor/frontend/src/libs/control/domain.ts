@@ -40,7 +40,7 @@ export interface TCMInfo {
   tid: number;
   status: Status;
   version: string;
-  AdjTCMConnection: ClientStatus[];
+  AdjTCMConnection: ClientStatus[] | string;
   Process: string[];
 }
 

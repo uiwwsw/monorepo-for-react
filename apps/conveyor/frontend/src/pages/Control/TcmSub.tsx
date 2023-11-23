@@ -1,16 +1,15 @@
-import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
+import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { useState } from 'react';
 import { TCMInfo } from 'src/libs/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 /* ======   interface   ====== */
 export interface TcmSubProps {
-  row?: Row<TCMInfo>;
+  row: Row<TCMInfo>;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSub');
-const TcmSub = ({ row }: TcmSubProps) => {
+const TcmSub = (_: TcmSubProps) => {
   /* ======   variables   ====== */
 
   /* ======   function    ====== */
@@ -27,7 +26,8 @@ const TcmSub = ({ row }: TcmSubProps) => {
         }
         hasButton={['CANCEL']}
       >
-        <ModalContentFirmware tid={row?.original.tid} />
+        {/* <ModalContentFirmware tid={row?.original.tid} /> */}
+        <ModalContentFirmware />
       </ModalWithBtn>
       {/* <div>{row?.original.tid}</div> */}
 
