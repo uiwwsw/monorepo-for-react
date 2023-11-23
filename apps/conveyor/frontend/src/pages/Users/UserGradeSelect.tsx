@@ -1,23 +1,32 @@
-import { useUserList } from '!/auth/application/get-user-list';
-import Table from '@/Table';
-import { Select } from '@library-frontend/ui';
+import { useUpdateGrade } from '!/auth/application/put-update-grade';
+import { User } from '!/auth/domain';
+import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
-import { useTranslation } from 'react-i18next';
+import { Row } from '@tanstack/react-table';
 
 /* ======   interface   ====== */
+export interface UserGradeSelectProps {
+  row?: Row<User>;
+}
 /* ======    global     ====== */
 const logger = createLogger('pages/UserGradeSelect');
-const UserGradeSelect = () => {
+const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   /* ======   variables   ====== */
+  const { trigger } = useUpdateGrade();
   /* ======   function    ====== */
+  const handleClick = () => {
+    if (!row) return;
+    trigger({ id: row.original.user_id, grade: 1 });
+  };
   /* ======   useEffect   ====== */
   // useEffect(() => {
   //   trigger();
   // }, []);
-  logger('render');
+  logger('render', row);
   return (
     <div>
-      <Select></Select>
+      <Button onClick={handleClick}>임시버튼</Button>
+      {/* <Select></Select> */}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { TCMInfo } from 'src/libs/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 /* ======   interface   ====== */
 export interface TcmSubProps {
-  row: Row<TCMInfo>;
+  row?: Row<TCMInfo>;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSub');

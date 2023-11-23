@@ -1,9 +1,9 @@
 import { useUserList } from '!/auth/application/get-user-list';
 import Table from '@/Table';
-import { Select } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';
+import UserGradeSelect from './UserGradeSelect';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -17,12 +17,12 @@ const Users = () => {
   // useEffect(() => {
   //   trigger();
   // }, []);
-  logger('render');
+  logger('render', data);
   return (
     <>
       <PageCenter title={t('유저관리')}>
         <Table
-          renderSubComponent={<Select />}
+          renderSubComponent={<UserGradeSelect />}
           thead={['uid', 'user_id', 'user_name', 'grade', 'created_date', 'last_access']}
           data={data}
         />

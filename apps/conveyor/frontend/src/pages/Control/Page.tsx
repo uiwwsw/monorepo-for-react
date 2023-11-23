@@ -75,7 +75,7 @@ const Control = () => {
           makeColumnSelect={false}
           renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
           rowSelectionChange={handleRowSelection}
-          renderSubComponent={TcmSub}
+          renderSubComponent={<TcmSub />}
         ></Table>
       </div>
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
@@ -86,7 +86,7 @@ const Control = () => {
           makePagination={false}
           makeColumnSelect={false}
           renderSelectComponent={<ServerSelect />}
-          renderSubComponent={ServerSub}
+          renderSubComponent={<ServerSub />}
         ></Table>
       </div>
     </>
