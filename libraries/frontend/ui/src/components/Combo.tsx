@@ -59,7 +59,7 @@ const Combo = ({
   return (
     <Menu
       onFinished={handleFinished}
-      className="z-50"
+      zIndex={50}
       button={
         <Input
           value={label}

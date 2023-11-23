@@ -4,7 +4,7 @@ import { createLogger } from '@package-frontend/utils';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useUpdatePassword } from '!/auth/application/put-update-passwordy';
+import { useUpdatePassword } from '!/auth/application/put-update-password';
 
 /* ======   interface   ====== */
 interface FormState {

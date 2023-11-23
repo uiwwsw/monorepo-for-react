@@ -15,6 +15,7 @@ async function fetcher(url: string) {
       created_date: newDate(x.created_date).format(FORMAT),
       last_access: newDate(x.last_access).format(FORMAT),
     };
+
     return res;
   });
 }

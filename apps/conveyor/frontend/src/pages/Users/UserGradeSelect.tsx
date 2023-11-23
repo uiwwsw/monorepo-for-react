@@ -15,9 +15,9 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   /* ======   variables   ====== */
   const { trigger } = useUpdateGrade();
   /* ======   function    ====== */
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!row) return;
-    trigger({ id: row.original.user_id, grade: 1 });
+    await trigger({ id: row.original.user_id, grade: 1 });
     mutate('/api/users/user-list');
   };
   /* ======   useEffect   ====== */

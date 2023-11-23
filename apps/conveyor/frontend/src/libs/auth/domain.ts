@@ -1,5 +1,5 @@
 export interface Auth {
-  grade: string;
+  grade: number;
   last_access: string;
   token: string;
   uid: number;
