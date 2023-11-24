@@ -93,7 +93,10 @@ const Table = <T,>({
 
       ...thead.map((key) => ({
         accessorKey: key,
-        header: key.replace(/^\w/, (c) => c.toUpperCase()),
+        header: key
+          .replace(/([A-Z])/g, ' $1')
+          .trim()
+          .toLowerCase(),
         footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent

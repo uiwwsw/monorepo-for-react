@@ -1,15 +1,10 @@
-export interface Auth {
-  grade: number;
+import { SignInResponse } from '@package-backend/types';
+
+export interface Auth extends Omit<SignInResponse, 'last_access'> {
   lastAccess: string;
-  token: string;
-  uid: number;
-  username: string;
 }
-export interface User {
-  uid: number;
+export interface User extends Omit<Auth, 'username'> {
   userId: string;
-  userName: string;
-  grade: number;
+  userName: Auth['username'];
   createdDate: string;
-  lastAccess: string;
 }

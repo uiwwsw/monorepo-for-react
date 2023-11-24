@@ -1,6 +1,6 @@
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
 import { createLogger } from './logger';
-import { convertKeysToCamelCase } from '.';
+import { toData } from '.';
 const logger = createLogger('utils/http');
 export const http = async <T>({
   url,
@@ -44,7 +44,7 @@ export const http = async <T>({
 
   try {
     const json = (await res.json()) as STResponse<T>;
-    if (res.ok && json?.data) return convertKeysToCamelCase(json.data) as STResponseSuccess<T>;
+    if (res.ok && json?.data) return toData(json.data) as STResponseSuccess<T>;
     throw new HttpError(json.message ?? 'unknown error', res);
   } catch (e) {
     const { message } = e as Error;

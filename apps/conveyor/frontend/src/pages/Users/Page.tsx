@@ -14,12 +14,12 @@ const Users = () => {
   // useEffect(() => {
   //   trigger();
   // }, []);
-  logger('render', data);
+  logger('render');
   return (
     <>
       <Table
         renderSubComponent={<UserGradeSelect />}
-        thead={['uid', 'user_id', 'user_name', 'grade', 'created_date', 'last_access']}
+        thead={['uid', 'userId', 'userName', 'grade', 'createdDate', 'lastAccess']}
         data={data}
       />
     </>

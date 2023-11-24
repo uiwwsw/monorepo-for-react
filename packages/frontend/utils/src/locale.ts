@@ -1,6 +1,4 @@
-export const getLang = () => {
-  const locale = navigator.language;
-
+export const convertLang = (locale: string) => {
   switch (locale) {
     default:
     case 'ko':
@@ -9,5 +7,9 @@ export const getLang = () => {
     case 'en':
     case 'en-US':
       return 'en';
+    case 'cn':
+    case 'zh-CN':
+      return 'cn';
   }
 };
+export const getLang = () => convertLang(navigator.language);

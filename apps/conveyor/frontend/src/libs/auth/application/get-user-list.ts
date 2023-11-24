@@ -9,15 +9,7 @@ async function fetcher(url: string) {
     url,
   });
   logger(url, res);
-  return res!.users.map((x) => {
-    const res: User = {
-      ...x,
-      createdDate: newDate(x.createdDate).format(FORMAT),
-      lastAccess: newDate(x.lastAccess).format(FORMAT),
-    };
-
-    return res;
-  });
+  return res!.users;
 }
 
 export function useUserList() {

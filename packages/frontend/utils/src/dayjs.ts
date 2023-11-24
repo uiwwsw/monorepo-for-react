@@ -11,6 +11,8 @@ export const FORMAT = (() => {
       return 'YYYY년 MM월 DD일 HH시 mm분 ss초';
     case 'en':
       return 'MMMM DD, YYYY HH:mm:ss';
+    case 'cn':
+      return 'MMMM DD, YYYY HH:mm:ss';
   }
 })();
 export const FORMAT_WITHOUT_TIME = (() => {
@@ -19,9 +21,11 @@ export const FORMAT_WITHOUT_TIME = (() => {
       return 'YYYY년 MM월 DD일';
     case 'en':
       return 'MMMM DD, YYYY';
+    case 'cn':
+      return 'MMMM DD, YYYY';
   }
 })();
-export const newDate = (str?: string | Dayjs | [value: number, unit?: dayjs.ManipulateType | undefined]) => {
+export const newDate = (str?: string | Date | Dayjs | [value: number, unit?: dayjs.ManipulateType | undefined]) => {
   if (str === undefined) return dayjs();
   if (str instanceof Array) return dayjs().add(str[0], str[1]);
   return dayjs(`${str}`);
