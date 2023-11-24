@@ -3,9 +3,7 @@ import { LocalStorage } from '@package-frontend/utils';
 const originalFetch = window.fetch;
 
 window.fetch = function (input, init) {
-  if (!init) {
-    init = {};
-  }
+  if (!init) init = {};
   if (!init.headers) init.headers = new Headers();
 
   const auth = LocalStorage.get<Auth>('/check-auth');

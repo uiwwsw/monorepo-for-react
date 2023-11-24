@@ -12,8 +12,8 @@ async function fetcher(url: string) {
   return res!.users.map((x) => {
     const res: User = {
       ...x,
-      created_date: newDate(x.created_date).format(FORMAT),
-      last_access: newDate(x.last_access).format(FORMAT),
+      createdDate: newDate(x.createdDate).format(FORMAT),
+      lastAccess: newDate(x.lastAccess).format(FORMAT),
     };
 
     return res;

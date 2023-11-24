@@ -25,7 +25,7 @@ import {
   cloneElement,
 } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select, Tooltip } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
