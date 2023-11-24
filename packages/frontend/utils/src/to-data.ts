@@ -1,7 +1,4 @@
-import { FORMAT, newDate } from '.';
-
 const isPascalOrSnakeCase = (key: string) => /^[A-Z][a-zA-Z]*$/.test(key) || /_/.test(key);
-const isDateString = (s: string) => /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(s);
 
 const toCamelCase = (key: string): string => {
   if (key.indexOf('_') > -1) {
@@ -24,6 +21,5 @@ export const toData = <T>(obj: T): T => {
       }, {} as T);
     }
   }
-  if (typeof obj === 'string' && isDateString(obj)) return newDate(obj).format(FORMAT) as T;
   return obj;
 };
