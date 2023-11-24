@@ -1,19 +1,19 @@
 import useSWR from 'swr';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { ConnectionStatus, Status, tcmInfo } from '../domain';
+import { ConnectionStatus, Status, TcmInfo } from '../domain';
 const logger = createLogger('tcm/useTcmInfo');
 
 async function fetcher(url: string) {
   logger(url);
 
   //temporary
-  const mockDataTCM: tcmInfo[] = [
+  const mockDataTCM: TcmInfo[] = [
     {
       tid: 101,
       status: Status.ONLINE,
       version: '1.2.1',
-      AdjTCMConnection: '2/2',
-      AdjTCMConnectionDetail: [
+      adjTcmConnection: '2/2',
+      adjTcmConnectionDetail: [
         { tid: 102, cstatus: ConnectionStatus.ON },
         { tid: 103, cstatus: ConnectionStatus.ON },
       ],
@@ -23,8 +23,8 @@ async function fetcher(url: string) {
       tid: 102,
       status: Status.ONLINE,
       version: '1.2.1',
-      AdjTCMConnection: '2/4',
-      AdjTCMConnectionDetail: [
+      adjTcmConnection: '2/4',
+      adjTcmConnectionDetail: [
         { tid: 101, cstatus: ConnectionStatus.ON },
         { tid: 103, cstatus: ConnectionStatus.ON },
         { tid: 104, cstatus: ConnectionStatus.OFF },
@@ -43,8 +43,8 @@ async function fetcher(url: string) {
       tid: 103,
       status: Status.ONLINE,
       version: '1.2.1',
-      AdjTCMConnection: '2/2',
-      AdjTCMConnectionDetail: [
+      adjTcmConnection: '2/2',
+      adjTcmConnectionDetail: [
         { tid: 101, cstatus: ConnectionStatus.ON },
         { tid: 102, cstatus: ConnectionStatus.ON },
       ],
@@ -54,24 +54,24 @@ async function fetcher(url: string) {
       tid: 104,
       status: Status.OFFLINE,
       version: '1.2.1',
-      AdjTCMConnection: '1/1',
-      AdjTCMConnectionDetail: [{ tid: 102, cstatus: ConnectionStatus.ON }],
+      adjTcmConnection: '1/1',
+      adjTcmConnectionDetail: [{ tid: 102, cstatus: ConnectionStatus.ON }],
       Process: ['1131', '2201'],
     },
     {
       tid: 105,
       status: Status.OFFLINE,
       version: '1.2.1',
-      AdjTCMConnection: '1/1',
-      AdjTCMConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
+      adjTcmConnection: '1/1',
+      adjTcmConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
       Process: ['1131', '2201'],
     },
     {
       tid: 106,
       status: Status.OFFLINE,
       version: '1.2.1',
-      AdjTCMConnection: '1/1',
-      AdjTCMConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
+      adjTcmConnection: '1/1',
+      adjTcmConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
       Process: ['1131', '2201'],
     },
   ];

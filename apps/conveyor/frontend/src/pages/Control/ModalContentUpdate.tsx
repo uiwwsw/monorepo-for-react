@@ -2,7 +2,7 @@ import { Button } from '@library-frontend/ui';
 import { useRef, useState } from 'react';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import ProgressBar from './ProgressBar';
-import { ReponseStatus, UploadStatus } from 'src/libs/control/domain';
+import { ReponseResult, UploadStatus } from 'src/libs/control/domain';
 import { createLogger } from '@package-frontend/utils';
 import Upload from './Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
@@ -61,7 +61,7 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
       try {
         const status = await updateTrigger({ tid, fileName: uploadFile?.name });
 
-        if (status?.result === ReponseStatus.SUCCESS) {
+        if (status?.result === ReponseResult.SUCCESS) {
           setProgressStates((prev) => ({ ...prev, [tid]: { progress: 100, status: UploadStatus.Completed } }));
         }
       } catch (error) {

@@ -1,6 +1,6 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { ReponseStatus, responseStatus } from '../domain';
+import { ReponseResult, ResponseStatus } from '../domain';
 
 const logger = createLogger('tcm/useTcmKill');
 
@@ -17,8 +17,8 @@ async function fetcher(
   logger(arg, url);
 
   //temporary
-  const mockData: responseStatus = {
-    result: ReponseStatus.SUCCESS,
+  const mockData: ResponseStatus = {
+    result: ReponseResult.SUCCESS,
     reason: 'fakeAPI',
   };
 

@@ -1,8 +1,8 @@
-import { clientStatus, ConnectionStatus } from '!/control/domain';
+import { ClientStatus, ConnectionStatus } from '!/control/domain';
 import { createLogger } from '@package-frontend/utils';
 
 interface ModalContentDetailProps {
-  clientStatus?: clientStatus[];
+  clientStatus?: ClientStatus[];
   tid?: number;
 }
 

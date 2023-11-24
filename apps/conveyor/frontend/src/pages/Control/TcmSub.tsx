@@ -1,7 +1,7 @@
 import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { ReponseStatus, tcmInfo } from 'src/libs/control/domain';
+import { ReponseResult, TcmInfo } from 'src/libs/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 import ModalContentDetail from './ModalContentDetail';
 import ModalContentLogs from './ModalContentLogs';
@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
 /* ======   interface   ====== */
 export interface TcmSubProps {
-  row?: Row<tcmInfo>;
+  row?: Row<TcmInfo>;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSub');
@@ -25,7 +25,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
     setToastMessageKill('TCM 프로세스 Kill 중입니다.');
     try {
       const status = await killTrigger({ tid: row?.original.tid });
-      if (status?.result === ReponseStatus.SUCCESS) {
+      if (status?.result === ReponseResult.SUCCESS) {
         setToastMessageKill(`TCM 프로세스 Kill 완료`);
       } else {
         setToastMessageKill(`TCM 프로세스 Kill 실패, ${status?.reason}`);
@@ -71,7 +71,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
         hasButton={['CANCEL']}
         persist
       >
-        <ModalContentDetail tid={row?.original.tid} clientStatus={row?.original.AdjTCMConnectionDetail} />
+        <ModalContentDetail tid={row?.original.tid} clientStatus={row?.original.adjTcmConnectionDetail} />
       </ModalWithBtn>
 
       <ModalWithBtn

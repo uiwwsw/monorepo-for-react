@@ -1,5 +1,5 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { fileInfo } from '../domain';
+import { FileInfo } from '../domain';
 import useSWR from 'swr';
 const logger = createLogger('tcm/logList');
 
@@ -7,7 +7,7 @@ async function fetcher(url: string, tid?: number) {
   logger(url, tid);
 
   //temporary
-  const mockDatalogs: fileInfo[] = [
+  const mockDatalogs: FileInfo[] = [
     { fileName: 'log1.txt', fileSize: 1024 },
     { fileName: 'log2.txt', fileSize: 2048 },
     { fileName: 'log3.txt', fileSize: 512 },

@@ -1,6 +1,6 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { Status, deviceStatus } from '../domain';
+import { Status, DeviceStatus } from '../domain';
 
 const logger = createLogger('tcm/useTcmStart');
 
@@ -17,7 +17,7 @@ async function fetcher(
   logger(arg, url);
 
   //temporary
-  const mockData: deviceStatus = {
+  const mockData: DeviceStatus = {
     tid: arg.tid,
     status: Status.ONLINE,
   };

@@ -8,7 +8,7 @@ import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
 import { useCallback, useState } from 'react';
 import { Button, ToastWithBtn } from '@library-frontend/ui';
-import { ReponseStatus } from 'src/libs/control/domain';
+import { ReponseResult } from 'src/libs/control/domain';
 import { useResume } from 'src/libs/control/application/post-resume';
 import { usePause } from 'src/libs/control/application/post-pause';
 
@@ -67,7 +67,7 @@ const Control = () => {
 
     try {
       const status = await resumeTrigger();
-      if (status?.result === ReponseStatus.SUCCESS) {
+      if (status?.result === ReponseResult.SUCCESS) {
         setToastMessageResume(`컨베이어 시스템 RESUME 완료`);
       } else {
         setToastMessageResume(`컨베이어 시스템 RESUME 실패, ${status?.reason}`);
@@ -82,7 +82,7 @@ const Control = () => {
 
     try {
       const status = await pauseTrigger();
-      if (status?.result === ReponseStatus.SUCCESS) {
+      if (status?.result === ReponseResult.SUCCESS) {
         setToastMessagePause(`컨베이어 시스템 PAUSE 완료`);
       } else {
         setToastMessagePause(`컨베이어 시스템 PAUSE 실패, ${status?.reason}`);
