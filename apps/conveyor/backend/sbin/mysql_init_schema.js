@@ -8,19 +8,21 @@ const xlsx      = require('xlsx');
 const async     = require('async');
 const __        = require('underscore');
 const fs        = require('fs');
+const path     = require('path');
 
 global.argv = require('optimist').argv;
 
-global.argv.nofile = true;
-global.argv.baseDir = '../src';
+global.argv.nofile = false;
+global.argv.baseDir = '../src/models';
+global.argv.dataDir = '../src/packages/backend/types/src/data';
 
 let schemas = [];
-let cfg = '../cfg/prop.json';
+let cfg = '../src/cfg/prop.json';
 const prop = require(cfg).MySQL;
 ['R301'].forEach(name => {
     schemas.push({
         Name: name,
-        DataBase: prop.DataBase,
+        DataBase: prop.Database,
         Host: prop.Host,
         Port: prop.Port,
         User:  prop.User,
@@ -144,65 +146,75 @@ function initSchema(schema, cb) {
 }
 
 function saveDomain(schema, data, cb) {
+    if (global.argv.nofile) {
+        return cb(null);
+    }
+
     var iDomain = data.Domain;
-    var domains = {};
+    var schemas = [];
+    let dataAry = [];
+
+    schemas.push(`import { RowDataPacket } from 'mysql2';`);
+    let pCount = [
+        `export interface CountRow extends RowDataPacket {`,
+        `    count : number;`,
+        `}`,
+    ]
+    schemas.push(pCount.join('\n'));
 
     __.without(iDomain, null).forEach(function(item) {
-        var domain = domains[item.Domain] || (domains[item.Domain] = []);
-        var row = {table : util.format("'%s'", item.TableName), name : util.format("'%s'", item.Name), key : "''", pk : [], cols : []};
         var table = data[item.TableName];
+        if (!table) return;
+
+        let ary = [];
+        let ary2 = [];
+        let name = item.Name[0].toUpperCase() + item.Name.substring(1);
+        ary.push(`export interface ${name}Row extends RowDataPacket {`);
+        ary2.push(`export interface I${item.Name}Row {`);
         table.forEach(function(col) {
-            var name = util.format("'%s'", col.Name);
-            if (col.Name)
-                row.cols.push(name);
-            col.IsKey || (col.IsKey = '');
-            var isKey = util.format('%s', col.IsKey);
-            if (isKey.toLowerCase() == 'true') {
-                row.key = name;
-                row.pk.push(name);
+            if (col.Name) {
+                let type = col.DataType.split('(')[0].toLowerCase();
+                switch(type) {
+                    case 'bigint':
+                    case 'smallint':
+                    case 'tinyint':
+                    case 'int':
+                    case 'decimal':
+                        type = 'number';
+                        break;
+                    case 'varchar':
+                    case 'char':
+                    case 'text':
+                    case 'longtext':
+                    case 'mediumtext':
+                        type = 'string';
+                        break;
+                    case 'datetime':
+                    case 'timestamp':
+                    case 'date':
+                        type = 'Date';
+                        break;
+                    default:
+                        throw new Error(`unknown table:${item.TableName}, col:${col.Name}, type:${type}`);
+                }
+                ary.push(util.format('    %s : %s;', col.Name, type));
+                ary2.push(util.format('    %s? : %s;', col.Name, type));
             }
         });
+        ary.push('}');
+        ary2.push('}');
 
-        row.parent = item.Hierarchy ? util.format("'%s'", item.Hierarchy) : 'null';
-        row.action = item.ActionList ?  util.format("'%s'", item.ActionList) : 'null';
-        domain.push(row);
+        schemas.push(ary.join('\n'));
+        dataAry.push(ary2.join('\n'));
     });
 
-    var baseDir = global.argv.baseDir;
-    Object.keys(domains).forEach(function(name) {
-        var iName = schema.Name.split('_');
-        var iDir = baseDir + '/' + iName[iName.length-1];
-        var iKey = util.format('__%s_%s', iName[iName.length-1], name);
-        var primaryKey = {};
+    let iFile = path.join(global.argv.baseDir, schema.Name + '.ts');
+    fs.writeFileSync(iFile, schemas.join('\n\n'), 'utf8');
+    console.log('saved %s', iFile);
 
-        var iCtx = [];
-        iCtx.push('{');
-        iCtx.push(util.format('  var %s = exports.%s = function() {', name, name));
-        iCtx.push(util.format('    this.domain = \'%s\';', name));
-        iCtx.push('    this.tables = [];');
-        var domain = domains[name];
-        domain.forEach(function(item) {
-            primaryKey[item.name] = item.pk.join(',');
-            iCtx.push(util.format('    this.tables.push({ table : %s, name : %s, key : %s, pk : [%s], parent : {name:%s, keys:[%s]}, cols : [%s], action : %s });',
-                item.table, item.name, item.key, item.pk.join(', '), item.parent, primaryKey[item.parent], item.cols.join(', '), item.action));
-        });
-        iCtx.push('  };');
-        iCtx.push('');
-        iCtx.push(util.format('  %s.prototype.get = function() { var self = this; return { domain : self.domain.toUpperCase(), tables : this.tables }; };', name));
-        iCtx.push('}');
-        iCtx.push('');
-        iCtx.push('exports.getDictionary = function () {');
-        iCtx.push('  global.__schema || (global.__schema = {});');
-        iCtx.push(util.format('  return global.__schema[\'%s\'] || (global.__schema[\'%s\'] = (new %s()).get());', iKey, iKey, name));
-        iCtx.push('};');
-        
-        if (!global.argv.nofile) {
-            var iFile = iDir + '/' + name + '.js';
-            try { fs.mkdirSync(iDir); } catch (ex) {}
-            fs.writeFileSync(iFile, iCtx.join('\n'), 'utf8');
-            console.log('saved %s', iFile);
-        }
-    });
+    let iFile2 = path.join(global.argv.dataDir, schema.Name + '.ts');
+    fs.writeFileSync(iFile2, dataAry.join('\n\n'), 'utf8');
+    console.log('saved %s', iFile2);
 
     cb(null);
 }
@@ -405,12 +417,12 @@ function getAlterQry(schema, desc, ref, obj) {
             if (iDef) {
                 if (!isEqualDataType(iDef.DataType.trim(), col.DataType.trim()) || !isEqualNull(iDef.IsNull, col.IsNull)) {
                     console.log(iDef.DataType, col.DataType, iDef.IsNull, col.IsNull);
-                    qry.push(util.format('alter table `%s`.`%s` modify column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name.trim(), col.DataType, col.IsNull?'NOT':'', col.Description));
+                    qry.push(util.format('alter table `%s`.`%s` modify column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name.trim(), col.DataType, col.IsNull?'NOT':'', col.Description || ''));
                 }
                 delete ref[col.Name];
             } else {
                 // 컬럼 추가..
-                qry.push(util.format('alter table `%s`.`%s` add column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name, col.DataType, col.IsNull?'NOT':'', col.Description));
+                qry.push(util.format('alter table `%s`.`%s` add column `%s` %s %s NULL COMMENT "%s"', schema, desc.TableName, col.Name, col.DataType, col.IsNull?'NOT':'', col.Description || ''));
             }
         }
     });
