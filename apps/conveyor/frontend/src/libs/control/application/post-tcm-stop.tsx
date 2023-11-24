@@ -1,8 +1,8 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { Status, deviceStatus } from '../domain';
+import { ResponseResult, ResponseStatus } from '../domain';
 
-const logger = createLogger('tcm/useTcmStop');
+const logger = createLogger('control/useTcmStop');
 
 async function fetcher(
   url: string,
@@ -17,14 +17,14 @@ async function fetcher(
   logger(arg, url);
 
   //temporary
-  const mockData: deviceStatus = {
-    tid: arg.tid,
-    status: Status.OFFLINE,
+  const mockData: ResponseStatus = {
+    result: ResponseResult.SUCCESS,
+    reason: 'fakeAPI',
   };
 
   const res = await fakeApi(mockData);
 
-  return res?.status;
+  return res;
 }
 
 export function useTcmStop() {

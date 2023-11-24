@@ -1,7 +1,7 @@
 import useSWR from 'swr/mutation';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { UploadFile } from '../domain';
-const logger = createLogger('tcm/useUploadFirmware');
+const logger = createLogger('control/useUploadFirmware');
 
 async function fetcher(
   url: string,
@@ -16,6 +16,7 @@ async function fetcher(
   const formData = new FormData();
   formData.append('file', arg.file);
 
+  //temporary
   const uploadFile: UploadFile = {
     name: arg.file.name,
     size: arg.file.size,
@@ -25,7 +26,7 @@ async function fetcher(
   const res = await fakeApi(uploadFile);
 
   logger(arg, url);
-  return res?.name;
+  return res;
 }
 
 export function useUploadFirmware() {

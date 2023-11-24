@@ -1,20 +1,20 @@
 import { createLogger } from '@package-frontend/utils';
-import { UpdateStatus } from 'src/libs/control/domain';
+import { UploadStatus } from 'src/libs/control/domain';
 
 /* ======   interface   ====== */
 
 export interface ProgressBarProps {
   value: number;
-  status: UpdateStatus;
+  status: UploadStatus;
 }
 
 /* ======    global     ====== */
-const getStatusColorClass = (status: UpdateStatus) => {
+const getStatusColorClass = (status: UploadStatus) => {
   const statusClasses = {
-    [UpdateStatus.Idle]: 'bg-gray-400',
-    [UpdateStatus.Updating]: 'bg-gray-500',
-    [UpdateStatus.Completed]: 'bg-green-500',
-    [UpdateStatus.Error]: 'bg-red-500',
+    [UploadStatus.Idle]: 'bg-gray-400',
+    [UploadStatus.Updating]: 'bg-gray-500',
+    [UploadStatus.Completed]: 'bg-green-500',
+    [UploadStatus.Error]: 'bg-red-500',
     default: 'bg-gray-400',
   };
   return statusClasses[status] || statusClasses.default;
@@ -32,9 +32,13 @@ const ProgressBar = ({ value, status }: ProgressBarProps) => {
   logger('render');
   /* ======   useEffect   ====== */
   return (
-    <div className="w-full bg-gray-200 rounded overflow-hidden">
-      <div className={`flex items-center relative rounded h-4 ${statusColorClass}`} style={{ width }}>
-        <span className="absolute w-full justify-center flex text-white text-sm">{status}</span>
+    <div className="w-full bg-gray-200 rounded h-6">
+      <div className={`flex items-center relative rounded h-full ${statusColorClass}`}>
+        <div className="flex w-full">
+          <span className={`text-white text-sm font-medium p-2`} style={{ width }}>
+            {status}
+          </span>
+        </div>
       </div>
     </div>
   );

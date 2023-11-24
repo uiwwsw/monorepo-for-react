@@ -1,4 +1,4 @@
-export enum UpdateStatus {
+export enum UploadStatus {
   Idle = 'idle',
   Updating = 'updating',
   Completed = 'completed',
@@ -15,13 +15,19 @@ export enum ConnectionStatus {
   OFF = 'off',
 }
 
-export interface firmwareStatus {
-  status: UpdateStatus;
+export enum ResponseResult {
+  SUCCESS = 'success',
+  FAIL = 'fail',
 }
 
-export interface deviceStatus {
-  tid: number;
-  status: Status;
+export interface FileInfo {
+  fileName: string;
+  fileSize: number; //byte
+  //add file info
+}
+
+export interface FirmwareStatus {
+  status: UploadStatus;
 }
 
 export interface ClientStatus {
@@ -29,18 +35,24 @@ export interface ClientStatus {
   cstatus: ConnectionStatus;
 }
 
+export interface ResponseStatus {
+  result: ResponseResult;
+  reason?: string;
+}
+
 export interface ServerInfo {
   sid: number;
-  name: string;
+  type: string;
   status: Status;
   version: string;
 }
 
-export interface TCMInfo {
+export interface TcmInfo {
   tid: number;
   status: Status;
   version: string;
-  AdjTCMConnection: ClientStatus[] | string;
+  adjTcmConnection: string;
+  adjTcmConnectionDetail: ClientStatus[];
   Process: string[];
 }
 
