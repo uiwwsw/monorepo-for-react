@@ -47,7 +47,7 @@ export const authRoutes: Tab[] = [
   },
   {
     icon: '🔏',
-    path: '/update-password',
+    path: '/success-update-password',
     name: '비밀번호변경',
     node: UpdatePassword,
   },

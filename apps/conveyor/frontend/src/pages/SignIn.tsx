@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { AUTH_TOAST, AUTH_TOAST_KEY } from '!/query-param/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -13,51 +14,55 @@ interface FormState {
   pw: string;
 }
 /* ======    global     ====== */
+
 const logger = createLogger('pages/SignIn');
 const SignIn = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const queryParamToastMsgs = {
+    [AUTH_TOAST['session-expired']]: t('세선만료'),
+    [AUTH_TOAST['success-update-password']]: t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.'),
+    [AUTH_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
+  };
   const {
     register,
     handleSubmit: handleAdapterSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
-  const [lostAuthToast, setLostAuthToast] = useState(false);
-  const [signUpAfterToast, setSignupAfterToast] = useState(false);
+  const [toast, setToast] = useState<string>();
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
-  const from = useMemo(() => url.get('from'), [location]);
-  const toUrl = useMemo(() => (from?.startsWith('/sign') || !from ? '/control' : from), [location]);
+  const urlFrom = useMemo(() => url.get('from'), [location]);
+  const urlToast = useMemo(() => url.get('toast'), [location]);
+  const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
   /* ======   function    ====== */
   const handleModalClose = async () => {
     await wait(500);
-    navigate(toUrl);
+    navigate(urlNextUrl);
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
   };
-  const handleGoSignup = () => navigate('/sign-up');
+  const handleGoSignUp = () => navigate('/sign-up');
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (url.get('from') === '/sign-up') setSignupAfterToast(true);
-    if (url.get('update-profile') === 'true') setLostAuthToast(true);
+    if (urlToast) setToast(queryParamToastMsgs[urlToast as AUTH_TOAST_KEY]);
+    else if (urlFrom)
+      setToast(t('로그인 정보가 없어요. 로그인 완료 후 {{urlNextUrl}} 페이지로 이동합니다.', { urlNextUrl }));
   }, [location]);
   logger('render');
   return (
     <>
-      <ToastWithPortal open={lostAuthToast}>
-        {t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.')}
-      </ToastWithPortal>
-      <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
+      <ToastWithPortal open={!!toast}>{toast}</ToastWithPortal>
       <ModalWithPortal
         onClose={handleModalClose}
         open={success}
         smoothLoading
-        hasButton={[t('{{url}} 페이지로 이동하기', { url: toUrl })]}
+        hasButton={[urlFrom ? t('페이지로 이동하기') : t('메인 페이지로 이동하기')]}
         persist
       >
         {t(`로그인이 완료됐어요.`)}
@@ -95,7 +100,7 @@ const SignIn = () => {
             {t('로그인')}
           </Button>
         </form>
-        <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
+        <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignUp}>
           {t('회원가입 하러가기')}
         </Button>
       </PageCenter>

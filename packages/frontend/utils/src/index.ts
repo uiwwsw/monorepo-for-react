@@ -1,4 +1,3 @@
-export * from './http';
 export * from './wait';
 export * from './logger';
 export * from './dayjs';
