@@ -7,7 +7,7 @@ interface ModalContentDetailProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentDetail');
+const logger = createLogger('pages/Control/ModalContentDetail');
 
 const ModalContentDetail = ({ clientStatus, tid }: ModalContentDetailProps) => {
   /* ======   variables   ====== */

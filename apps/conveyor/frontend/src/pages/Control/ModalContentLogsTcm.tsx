@@ -7,7 +7,7 @@ interface ModalContentLogsTcmProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentLogsTcm');
+const logger = createLogger('pages/Control/ModalContentLogsTcm');
 
 const ModalContentLogsTcm = ({ tid }: ModalContentLogsTcmProps) => {
   const { data: logList, error } = useTcmLogList(tid);

@@ -13,7 +13,7 @@ interface ModalContentFirmwareProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentFirmware');
+const logger = createLogger('pages/Control/ModalContentFirmware');
 
 const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
   /* ======   variables   ====== */

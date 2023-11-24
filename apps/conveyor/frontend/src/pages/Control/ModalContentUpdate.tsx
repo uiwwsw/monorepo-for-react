@@ -17,7 +17,7 @@ interface ProgressState {
   [key: number]: { progress: number; status: UploadStatus };
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentUpdate');
+const logger = createLogger('pages/Control/ModalContentUpdate');
 
 const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   /* ======   variables   ====== */

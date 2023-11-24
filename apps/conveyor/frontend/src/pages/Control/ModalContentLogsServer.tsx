@@ -7,7 +7,7 @@ interface ModalContentLogsServerProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentLogsServer');
+const logger = createLogger('pages/Control/ModalContentLogsServer');
 
 const ModalContentLogsServer = ({ sid }: ModalContentLogsServerProps) => {
   const { data: logList, error } = useServerLogList(sid);
