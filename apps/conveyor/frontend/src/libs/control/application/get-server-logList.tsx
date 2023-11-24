@@ -1,7 +1,7 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
 import useSWR from 'swr';
-const logger = createLogger('server/logList');
+const logger = createLogger('control/useServerLogList');
 
 async function fetcher(url: string, sid?: number) {
   logger(url, sid);

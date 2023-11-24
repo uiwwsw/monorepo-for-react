@@ -2,7 +2,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 import { ResponseResult, ResponseStatus } from '../domain';
 
-const logger = createLogger('server/useServerStart');
+const logger = createLogger('control/useServerStart');
 
 async function fetcher(
   url: string,

@@ -1,7 +1,7 @@
 import useSWR from 'swr/mutation';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { UploadFile } from '../domain';
-const logger = createLogger('tcm/useUploadFirmware');
+const logger = createLogger('control/useUploadFirmware');
 
 async function fetcher(
   url: string,

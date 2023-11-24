@@ -1,7 +1,7 @@
 import useSWR from 'swr/mutation';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { ResponseResult, ResponseStatus } from '../domain';
-const logger = createLogger('tcm/useUpdateFirmware');
+const logger = createLogger('control/useUpdateFirmware');
 
 async function fetcher(
   url: string,

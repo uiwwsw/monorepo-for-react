@@ -2,7 +2,7 @@
 import useSWR from 'swr';
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { ServerInfo, Status } from '../domain';
-const logger = createLogger('server/useServerInfo');
+const logger = createLogger('control/useServerInfo');
 
 async function fetcher(url: string) {
   logger(url);

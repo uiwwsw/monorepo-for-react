@@ -2,7 +2,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { FileInfo } from '../domain';
 
-const logger = createLogger('tcm/backup');
+const logger = createLogger('control/useTcmBackup');
 
 async function fetcher(url: string, tid?: number) {
   logger(url, tid);
