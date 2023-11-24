@@ -1,7 +1,8 @@
-import { FORMAT, createLogger, http, newDate } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 // import { faker } from '@faker-js/faker';
 import useSWR from 'swr';
 import { User } from '../domain';
+import { http } from '#/http';
 const logger = createLogger('auth/useUserList');
 
 async function fetcher(url: string) {
@@ -12,8 +13,6 @@ async function fetcher(url: string) {
   return res!.users.map((x) => {
     const res: User = {
       ...x,
-      created_date: newDate(x.created_date).format(FORMAT),
-      last_access: newDate(x.last_access).format(FORMAT),
     };
     return res;
   });

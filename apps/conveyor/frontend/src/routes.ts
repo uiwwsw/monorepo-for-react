@@ -9,7 +9,7 @@ const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
 const Users = lazy(() => import('src/pages/Users/Page'));
-const UpdateProfile = lazy(() => import('src/pages/UpdateProfile'));
+const UpdatePassword = lazy(() => import('src/pages/UpdatePassword'));
 export interface Group {
   name: string;
   path: string;
@@ -22,7 +22,7 @@ export interface Tab extends Group {
 
 export const authRoutes: Tab[] = [
   {
-    icon: '🖥️',
+    icon: '🔩',
     path: '/control',
     name: '조작',
     node: Control,
@@ -39,10 +39,22 @@ export const authRoutes: Tab[] = [
       { path: '/stats/carrier', name: 'CARRIER', node: StatsCarrier },
     ],
   },
+  {
+    icon: '👥',
+    path: '/users',
+    name: '유저관리',
+    node: Users,
+  },
+  {
+    icon: '🔏',
+    path: '/success-update-password',
+    name: '비밀번호변경',
+    node: UpdatePassword,
+  },
 ];
 export const commonRoutes: Tab[] = [
   {
-    icon: '🔓',
+    icon: '🔐',
     path: '/sign-up',
     name: '회원가입',
     node: SignUp,
@@ -58,17 +70,5 @@ export const commonRoutes: Tab[] = [
     path: '/help',
     name: '도움말',
     node: Help,
-  },
-  {
-    icon: '👥',
-    path: '/users',
-    name: '유저관리',
-    node: Users,
-  },
-  {
-    icon: '🧑‍🎓',
-    path: '/update-profile',
-    name: '유저정보변경',
-    node: UpdateProfile,
   },
 ];

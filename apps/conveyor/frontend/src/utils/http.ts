@@ -1,5 +1,9 @@
+import { Auth } from '!/auth/domain';
+import { AUTH_STORAGE } from '!/storage/domain';
+import { AUTH_TOAST } from '!/query-param/domain';
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
-import { createLogger } from './logger';
+import { LocalStorage, createLogger, toData } from '@package-frontend/utils';
+import i18n from 'src/i18n';
 const logger = createLogger('utils/http');
 export const http = async <T>({
   url,
@@ -12,10 +16,11 @@ export const http = async <T>({
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
 }) => {
-  let headers = {
+  const auth = LocalStorage.get<Auth>(AUTH_STORAGE['/check-auth']);
+  const headers: Record<string, string> = {
     'Content-type': 'application/json',
   };
-
+  if (auth?.token) headers['x-access-token'] = auth.token;
   let body: string | null = arg ? JSON.stringify(arg) : null;
 
   // GET 메소드에 대한 처리
@@ -43,7 +48,7 @@ export const http = async <T>({
 
   try {
     const json = (await res.json()) as STResponse<T>;
-    if (res.ok && json?.data) return json?.data as STResponseSuccess<T>;
+    if (res.ok && json?.data) return toData(json.data) as STResponseSuccess<T>;
     throw new HttpError(json.message ?? 'unknown error', res);
   } catch (e) {
     const { message } = e as Error;
@@ -57,6 +62,11 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res.status;
     this.statusText = res.statusText;
-    if (this.status === 500) this.message = import.meta.env.VITE_API + ' 서버에 문제가 발생한 것 같아요.🤦‍♂️';
+    if (this.status === 500)
+      this.message = i18n.t('{{api}} 서버에 문제가 발생한 것 같아요.🤦‍♂️', { api: import.meta.env.VITE_API });
+    if (this.status === 401) {
+      LocalStorage.set(AUTH_STORAGE['/check-auth']);
+      location.href = `/sign-in?toast=${AUTH_TOAST['session-expired']}`;
+    }
   }
 }

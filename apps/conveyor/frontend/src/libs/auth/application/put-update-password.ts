@@ -1,9 +1,10 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger, http } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
 import { MD5 } from 'crypto-js';
+import { http } from '#/http';
 
 const logger = createLogger('auth/useUpdatePassword');
 

@@ -13,6 +13,7 @@ export interface MenuProps {
   onFinished?: (value: boolean) => unknown;
   isBodyClickClose?: boolean;
   className?: string;
+  zIndex?: number;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Menu');
@@ -26,10 +27,11 @@ const Menu = ({
   children,
   width = '200px',
   className,
+  zIndex = 20,
   onFinished,
 }: MenuProps) => {
   /* ======   variables   ====== */
-  const contentClassName = `z-20 absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full${
+  const contentClassName = `absolute [&[data-position="top"]]:translate-y-14 [&[data-position="bottom"]]:-translate-y-14 [&>*]:w-full${
     className ? ` ${className}` : ''
   }`;
   const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
@@ -60,11 +62,11 @@ const Menu = ({
           onFinished={onFinished}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
-          style={{ ...position, width: widthStyle }}
+          style={{ ...position, width: widthStyle, zIndex }}
         >
           {children}
         </Smooth>
-        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" />}
+        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" style={{ zIndex }} />}
       </Portal>
     </div>
   );
