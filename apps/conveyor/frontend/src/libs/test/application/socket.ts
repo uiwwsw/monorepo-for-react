@@ -4,10 +4,11 @@ import useSWR from 'swr';
 const logger = createLogger('test/useTest');
 const socket = io(import.meta.env.VITE_SOCKET);
 async function fetcher<T>(url: string) {
-  let resolve = (_: T) => {};
-  const promise = new Promise<T>((res) => (resolve = res));
-  socket.on(url, resolve);
-  return promise;
+  let resolve: any;
+  const trigger = new Promise((res) => (resolve = res));
+  socket.on(url, trigger);
+  logger(url, data);
+  return data;
 }
 
 export function useTest() {
