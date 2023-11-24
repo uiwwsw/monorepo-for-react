@@ -2,14 +2,14 @@ import { useTcmLogList } from '!/control/application/get-tcm-logList';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
-interface ModalContentLogsProps {
+interface ModalContentLogsTcmProps {
   tid?: number;
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/ModalContentLogs');
+const logger = createLogger('pages/ModalContentLogsTcm');
 
-const ModalContentLogs = ({ tid }: ModalContentLogsProps) => {
+const ModalContentLogsTcm = ({ tid }: ModalContentLogsTcmProps) => {
   const { data: logList, error } = useTcmLogList(tid);
 
   if (error) return <div>Failed to load</div>;
@@ -29,7 +29,7 @@ const ModalContentLogs = ({ tid }: ModalContentLogsProps) => {
         {logList.map((log, index) => (
           <div
             key={index}
-            className="bg-blue-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
+            className="bg-yellow-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
           >
             <div className="truncate">
               <div className="font-medium">{log.fileName}</div>
@@ -50,4 +50,4 @@ const ModalContentLogs = ({ tid }: ModalContentLogsProps) => {
   );
 };
 
-export default ModalContentLogs;
+export default ModalContentLogsTcm;

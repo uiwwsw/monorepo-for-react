@@ -7,7 +7,7 @@ async function fetcher(url: string, tid?: number) {
   logger(url, tid);
 
   //temporary
-  const mockDatalogs: FileInfo[] = [
+  const mockDataLogs: FileInfo[] = [
     { fileName: 'log1.txt', fileSize: 1024 },
     { fileName: 'log2.txt', fileSize: 2048 },
     { fileName: 'log3.txt', fileSize: 512 },
@@ -26,7 +26,7 @@ async function fetcher(url: string, tid?: number) {
     { fileName: 'log16.txt', fileSize: 512 },
   ];
 
-  const res = await fakeApi(mockDatalogs);
+  const res = await fakeApi(mockDataLogs);
   return res;
 }
 

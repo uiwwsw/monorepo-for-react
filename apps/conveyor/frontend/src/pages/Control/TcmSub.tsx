@@ -4,9 +4,9 @@ import { Row } from '@tanstack/react-table';
 import { ResponseResult, TcmInfo } from 'src/libs/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 import ModalContentDetail from './ModalContentDetail';
-import ModalContentLogs from './ModalContentLogs';
 import { useState } from 'react';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
+import ModalContentLogsTcm from './ModalContentLogsTcm';
 /* ======   interface   ====== */
 export interface TcmSubProps {
   row?: Row<TcmInfo>;
@@ -83,7 +83,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
         hasButton={['CANCEL']}
         persist
       >
-        <ModalContentLogs tid={row?.original.tid} />
+        <ModalContentLogsTcm tid={row?.original.tid} />
       </ModalWithBtn>
     </div>
   );

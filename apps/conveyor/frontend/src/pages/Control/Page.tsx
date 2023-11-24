@@ -99,7 +99,7 @@ const Control = () => {
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Server Control</h2>
         <Table
-          thead={['sid', 'name', 'status', 'version']}
+          thead={['sid', 'type', 'status', 'version']}
           data={serverData}
           makePagination={false}
           makeColumnSelect={false}

@@ -32,9 +32,13 @@ const ProgressBar = ({ value, status }: ProgressBarProps) => {
   logger('render');
   /* ======   useEffect   ====== */
   return (
-    <div className="w-full bg-gray-200 rounded overflow-hidden">
-      <div className={`flex items-center relative rounded h-4 ${statusColorClass}`} style={{ width }}>
-        <span className="absolute w-full justify-center flex text-white text-sm">{status}</span>
+    <div className="w-full bg-gray-200 rounded h-6">
+      <div className={`flex items-center relative rounded h-full ${statusColorClass}`}>
+        <div className="flex w-full">
+          <span className={`text-white text-sm font-medium p-2`} style={{ width }}>
+            {status}
+          </span>
+        </div>
       </div>
     </div>
   );

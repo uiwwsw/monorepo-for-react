@@ -16,7 +16,7 @@ export enum ConnectionStatus {
 }
 
 export enum ResponseResult {
-  SUCCESS = 'sucess',
+  SUCCESS = 'success',
   FAIL = 'fail',
 }
 
@@ -28,11 +28,6 @@ export interface FileInfo {
 
 export interface FirmwareStatus {
   status: UploadStatus;
-}
-
-export interface DeviceStatus {
-  tid: number;
-  status: Status;
 }
 
 export interface ClientStatus {
@@ -47,7 +42,7 @@ export interface ResponseStatus {
 
 export interface ServerInfo {
   sid: number;
-  name: string;
+  type: string;
   status: Status;
   version: string;
 }

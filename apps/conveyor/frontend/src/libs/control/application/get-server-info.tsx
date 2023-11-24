@@ -11,13 +11,13 @@ async function fetcher(url: string) {
   const mockDataServer: ServerInfo[] = [
     {
       sid: 1,
-      name: 'dcm',
+      type: 'dcm',
       status: Status.OFFLINE,
       version: '1.0.1',
     },
     {
       sid: 2,
-      name: 'him',
+      type: 'him',
       status: Status.ONLINE,
       version: '2.2.1',
     },
