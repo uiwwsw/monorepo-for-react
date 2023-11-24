@@ -77,7 +77,7 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
   logger('render');
   return (
     <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 업데이트</h2>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 펌웨어 업데이트</h2>
       <div className="flex justify-between items-center mb-6">
         <Upload onSubmit={onUpload} />
         <Button themeSize={'sm'} onClick={handleUpdateStop} disabled={!updateInProgress}>
