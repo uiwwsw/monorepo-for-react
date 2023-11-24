@@ -1,3 +1,5 @@
+// import { CTRL_SOCKET_NAME } from '!/control/domain';
+// import useSocket from '#/useSocket';
 import { Accordion, Button, Tutorial } from '@library-frontend/ui';
 import { LocalStorage, createLogger } from '@package-frontend/utils';
 import { useRef } from 'react';
@@ -10,6 +12,7 @@ const logger = createLogger('pages/Help');
 const Help = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  // const { data } = useSocket<CTRL_SOCKET_NAME>('time');
   const helpRef = useRef<HTMLDivElement>(null);
   /* ======   function    ====== */
   const handleReset = () => {
@@ -17,9 +20,6 @@ const Help = () => {
     location.reload();
   };
   /* ======   useEffect   ====== */
-  // useEffect(() => {
-  //   trigger();
-  // }, []);
   logger('render');
   return (
     <>

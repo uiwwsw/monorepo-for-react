@@ -62,4 +62,4 @@ export interface UploadFile {
   type: string;
 }
 
-export type CTRL_SOCKET_NAME = 'tcmUpdate' | 'serverUpdate';
+export type CTRL_SOCKET_NAME = 'time';
