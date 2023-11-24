@@ -66,7 +66,7 @@ const Menu = ({
         >
           {children}
         </Smooth>
-        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" style={{ zIndex }} />}
+        {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" style={{ zIndex: zIndex - 1 }} />}
       </Portal>
     </div>
   );
