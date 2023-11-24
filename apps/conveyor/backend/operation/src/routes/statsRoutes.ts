@@ -118,12 +118,12 @@ const router: Router = Router();
  *       bearerFormat: JWT
  */
 router.post('/carrier-stats', verifyToken, asyncWrapper<CarrierStatsInRequest, CarrierStatsResponse>(async (req, res) => {
-    const { begin_date, end_date, page, page_size } = req.body;
+    const { start_time, end_time, page, page_size } = req.body;
     const sql = `SELECT No, TaskID, CarrierID, ZoneIDFrom, ZoneIDTo, StartTime, EndTime FROM tasktransferinfo where StartTime between ? and ? order by No desc limit ? offset ?`;
-    const [rows] = await Service.Inst.MySQL.query<TaskTransferInfoRow[]>(sql, [begin_date, end_date, page_size || 30, (page_size || 30) * (page - 1)]);
+    const [rows] = await Service.Inst.MySQL.query<TaskTransferInfoRow[]>(sql, [start_time, end_time, page_size || 30, (page_size || 30) * (page - 1)]);
 
     const sql2 = `SELECT count(1) as count FROM tasktransferinfo where StartTime between ? and ?`;
-    const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [begin_date, end_date]);
+    const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [start_time, end_time]);
     const total_count = total[0].count;
 
     const zones = Service.Inst.Zones;
@@ -266,12 +266,12 @@ router.post('/carrier-stats', verifyToken, asyncWrapper<CarrierStatsInRequest, C
  *       bearerFormat: JWT
  */
 router.post('/alarm-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, AlarmStatsResponse>(async (req, res) => {
-    const { begin_date, end_date, page, page_size } = req.body;
+    const { start_time, end_time, page, page_size } = req.body;
     const sql = `SELECT * FROM alarminfo where SetTime between ? and ? order by No desc limit ? offset ?`;
-    const [rows] = await Service.Inst.MySQL.query<AlarmCodeInfoRow[]>(sql, [begin_date, end_date, page_size || 30, (page_size || 30) * (page - 1)]);
+    const [rows] = await Service.Inst.MySQL.query<AlarmCodeInfoRow[]>(sql, [start_time, end_time, page_size || 30, (page_size || 30) * (page - 1)]);
 
     const sql2 = `SELECT count(1) as count FROM alarminfo where SetTime between ? and ?`;
-    const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [begin_date, end_date]);
+    const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [start_time, end_time]);
     const total_count = total[0].count;
 
     res.json({
@@ -363,9 +363,9 @@ router.post('/alarm-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, Alarm
  *       bearerFormat: JWT
  */
 router.post('/zone-stats', verifyToken, asyncWrapper<ZoneStatsInRequest, ZoneStatsResponse>(async (req, res) => {
-    const { begin_date, end_date } = req.body;
+    const { start_time, end_time } = req.body;
     const sql = `SELECT * FROM zoneStats where date between ? and ? order by date`;
-    const [rows] = await Service.Inst.MySQL.query<ZoneStatsRow[]>(sql, [begin_date, end_date]);
+    const [rows] = await Service.Inst.MySQL.query<ZoneStatsRow[]>(sql, [start_time, end_time]);
     const result:ZoneStatsItem[] = [];
     rows.forEach((row) => {
         result.push({

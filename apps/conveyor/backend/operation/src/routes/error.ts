@@ -3,7 +3,11 @@ import { STResponse } from '@package-backend/types';
 import logger from '../libs/logger';
 
 // 비동기 함수를 위한 타입
-type AsyncRequestHandler<TReq = unknown, TRes = unknown> = (req: Request<TReq>, res: Response<STResponse<TRes>>, next: NextFunction) => Promise<unknown>;
+type AsyncRequestHandler<TReq = unknown, TRes = unknown> = (
+    req: Request<unknown, TRes, TReq>,
+    res: Response<STResponse<TRes>>,
+    next: NextFunction,
+) => Promise<unknown>;
 
 // 비동기 래퍼 함수
 function asyncWrapper<TReq, TRes>(fn: AsyncRequestHandler<TReq, TRes>): RequestHandler {

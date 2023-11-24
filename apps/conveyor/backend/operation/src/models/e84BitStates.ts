@@ -1,0 +1,18 @@
+export enum e84BitStateNum {
+    E84_BIT_VALID = 0,
+    E84_BIT_CS_0,
+    E84_BIT_CS_1,
+    E84_BIT_NC,
+    E84_BIT_TR_REQ,
+    E84_BIT_BUSY,
+    E84_BIT_COMPT,
+    E84_BIT_CONT,
+    E84_BIT_L_REQ,
+    E84_BIT_U_REQ,
+    E84_BIT_NC1,
+    E84_BIT_READY,
+    E84_BIT_NC2,
+    E84_BIT_NC3,
+    E84_BIT_HO_AVBL,
+    E84_BIT_ES,
+}

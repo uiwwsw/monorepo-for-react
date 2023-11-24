@@ -1,0 +1,26 @@
+{
+  "name": "@app-conveyor/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build:live",
+    "build": "tsc -p .",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/app.ts"
+  },
+  "keywords": [],
+  "author": "Jimmy Kim",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "mysql2": "^3.6.3",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  }
+}
