@@ -141,7 +141,6 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
-    renderFallbackValue: 'EMPTY',
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {

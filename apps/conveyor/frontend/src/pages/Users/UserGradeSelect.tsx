@@ -1,8 +1,11 @@
 import { useUpdateGrade } from '!/auth/application/put-update-grade';
 import { User } from '!/auth/domain';
-import { Button } from '@library-frontend/ui';
+import { Select, ToastWithPortal } from '@library-frontend/ui';
+import { UserGrade } from '@package-backend/types';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
+import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
 
 /* ======   interface   ====== */
@@ -13,23 +16,45 @@ export interface UserGradeSelectProps {
 const logger = createLogger('pages/UserGradeSelect');
 const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
   const { trigger } = useUpdateGrade();
+  const [toast, setToast] = useState('');
+  const options =
+    Object.entries(UserGrade)
+      .filter(([key]) => isNaN(+key))
+      .map(([key, value]) => ({
+        value: value as string,
+        label: key,
+      })) ?? [];
+  // row?.original.grade
   /* ======   function    ====== */
-  const handleClick = async () => {
-    if (!row) return;
-    await trigger({ id: row.original.userId, grade: 1 });
+  //   await trigger({ id: row.original.userId, grade: 1 });
+  //   mutate('/api/users/user-list');
+  // };
+  const handleChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const grade = +e.target.value;
+    if (!row || isNaN(grade)) return;
+    const id = row.original.userId;
+    logger(id, grade);
+    await trigger({ id, grade });
     mutate('/api/users/user-list');
+    setToast(t('{{id}} 유저의 등급을 {{grade}} 등급으로 바꿨습니다', { id, grade: UserGrade[grade] }));
   };
+  const handleClose = () => setToast('');
   /* ======   useEffect   ====== */
   // useEffect(() => {
   //   trigger();
   // }, []);
   logger('render', row);
   return (
-    <div>
-      <Button onClick={handleClick}>임시버튼</Button>
-      {/* <Select></Select> */}
-    </div>
+    <>
+      <ToastWithPortal open={!!toast} onClose={handleClose}>
+        {toast}
+      </ToastWithPortal>
+      <div className="p-2">
+        <Select defaultValue={row?.original.grade} options={options} onChange={handleChange} />
+      </div>
+    </>
   );
 };
 

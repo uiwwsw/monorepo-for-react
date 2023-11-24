@@ -22,9 +22,9 @@ const Error = () => {
       <PageCenter icon="😧" title="오류가 발생했어요">
         <Accordion title="오류 코드 또는 오류 메세지">{decodeURI(location.hash).replace('#', '')}</Accordion>
         <div className="gap-3 flex m-auto">
-          <Button onClick={handleRefresh}>새로고침</Button>
-          <Button themeColor={'secondary'} onClick={handleGoMain}>
-            메인으로 돌아가기
+          <Button onClick={handleGoMain}>메인으로 돌아가기</Button>
+          <Button themeColor={'secondary'} onClick={handleRefresh}>
+            새로고침
           </Button>
         </div>
       </PageCenter>

@@ -1,5 +1,6 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger, http } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
+import { http } from '#/http';
 import { MD5 } from 'crypto-js';
 import useSWR from 'swr/mutation';
 const logger = createLogger('auth/useSignUp');

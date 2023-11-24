@@ -2,6 +2,7 @@
 import useSWR from 'swr';
 import { Auth } from '../domain';
 import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { AUTH_STORAGE } from '!/storage/domain';
 const logger = createLogger('auth/useGetAuth');
 
 function fetcher(url: string) {
@@ -13,5 +14,5 @@ function fetcher(url: string) {
 }
 
 export function useGetAuth() {
-  return useSWR('/check-auth', fetcher);
+  return useSWR(AUTH_STORAGE['/check-auth'], fetcher);
 }
