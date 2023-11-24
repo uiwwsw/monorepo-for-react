@@ -78,7 +78,29 @@ const Nav = (_: NavProps) => {
             },
             size: {
               width: '208px',
-              height: '200px',
+              height: '300px',
+            },
+          },
+          {
+            text: '조작페이지는 블라블라 입니다.',
+            position: {
+              top: '70px',
+              left: '0',
+            },
+            size: {
+              width: '208px',
+              height: '50px',
+            },
+          },
+          {
+            text: '통계페이지는 존, 알람, 케리어 페이지로\n 통계 데이터를 확인할 수 있습니다.',
+            position: {
+              top: '120px',
+              left: '0',
+            },
+            size: {
+              width: '208px',
+              height: '134px',
             },
           },
           {
@@ -89,7 +111,7 @@ const Nav = (_: NavProps) => {
             },
             size: {
               width: '208px',
-              height: '240px',
+              height: '140px',
             },
           },
           {
