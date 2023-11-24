@@ -1,6 +1,6 @@
 import useSWR from 'swr/mutation';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { ReponseResult, ResponseStatus } from '../domain';
+import { ResponseResult, ResponseStatus } from '../domain';
 const logger = createLogger('tcm/useUpdateFirmware');
 
 async function fetcher(
@@ -18,7 +18,7 @@ async function fetcher(
 
   //temporary
   const mockDataUpdate: ResponseStatus = {
-    result: ReponseResult.SUCCESS,
+    result: ResponseResult.SUCCESS,
     reason: 'fakeAPI',
   };
 

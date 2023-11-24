@@ -6,9 +6,9 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Button, ToastWithBtn } from '@library-frontend/ui';
-import { ReponseResult } from 'src/libs/control/domain';
+import { ResponseResult } from 'src/libs/control/domain';
 import { useResume } from 'src/libs/control/application/post-resume';
 import { usePause } from 'src/libs/control/application/post-pause';
 
@@ -20,54 +20,18 @@ const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
-  const [selectedRowsMapping, setSelectedRowsMapping] = useState<number[]>([]);
   const { trigger: resumeTrigger } = useResume();
   const { trigger: pauseTrigger } = usePause();
   const [toastMessageResume, setToastMessageResume] = useState('');
   const [toastMessagePause, setToastMessagePause] = useState('');
 
   /* ======   function    ====== */
-
-  const handleRowSelection = useCallback(
-    (selectedRows: { [key: string]: boolean }) => {
-      if (!tcmData) {
-        console.warn('tcmData is undefined');
-        return;
-      }
-
-      const selectedTids = Object.keys(selectedRows)
-        .filter((key) => selectedRows[key])
-        .map((key) => tcmData[parseInt(key)]?.tid)
-        .filter((tid) => tid !== undefined);
-
-      setSelectedRowsMapping(selectedTids);
-    },
-    [tcmData],
-  );
-
-  // api 수정예정
-  // const convertAdjTCMConnection = (data: TCMInfo[] | undefined): TCMInfo[] | undefined => {
-  //   if (data === undefined) return undefined;
-  //   return data.map((item) => {
-  //     const totalConnections = item.AdjTCMConnection.length;
-  //     const onConnections =
-  //       item.AdjTCMConnection instanceof Array
-  //         ? item.AdjTCMConnection.filter((conn) => conn.cstatus === ConnectionStatus.ON).length
-  //         : '';
-
-  //     return {
-  //       ...item,
-  //       AdjTCMConnection: `${onConnections} / ${totalConnections}`,
-  //     };
-  //   });
-  // };
-
   const handleResumeClick = async () => {
     setToastMessageResume('컨베이어 시스템 RESUME 중입니다.');
 
     try {
       const status = await resumeTrigger();
-      if (status?.result === ReponseResult.SUCCESS) {
+      if (status?.result === ResponseResult.SUCCESS) {
         setToastMessageResume(`컨베이어 시스템 RESUME 완료`);
       } else {
         setToastMessageResume(`컨베이어 시스템 RESUME 실패, ${status?.reason}`);
@@ -82,7 +46,7 @@ const Control = () => {
 
     try {
       const status = await pauseTrigger();
-      if (status?.result === ReponseResult.SUCCESS) {
+      if (status?.result === ResponseResult.SUCCESS) {
         setToastMessagePause(`컨베이어 시스템 PAUSE 완료`);
       } else {
         setToastMessagePause(`컨베이어 시스템 PAUSE 실패, ${status?.reason}`);
@@ -124,12 +88,11 @@ const Control = () => {
         </div>
 
         <Table
-          thead={['tid', 'status', 'version', 'AdjTCMConnection', 'Process']}
+          thead={['tid', 'status', 'version', 'adjTcmConnection', 'Process']}
           data={tcmData}
           makePagination={false}
           makeColumnSelect={false}
-          renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
-          rowSelectionChange={handleRowSelection}
+          renderSelectComponent={<TcmSelect />}
           renderSubComponent={<TcmSub />}
         ></Table>
       </div>

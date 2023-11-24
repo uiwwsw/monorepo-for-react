@@ -15,7 +15,7 @@ export enum ConnectionStatus {
   OFF = 'off',
 }
 
-export enum ReponseResult {
+export enum ResponseResult {
   SUCCESS = 'sucess',
   FAIL = 'fail',
 }
@@ -41,7 +41,7 @@ export interface ClientStatus {
 }
 
 export interface ResponseStatus {
-  result: ReponseResult;
+  result: ResponseResult;
   reason?: string;
 }
 

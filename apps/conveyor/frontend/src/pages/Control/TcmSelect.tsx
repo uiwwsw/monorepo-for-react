@@ -2,18 +2,20 @@ import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import ModalContentUpdate from './ModalContentUpdate';
 import { useTcmStart } from 'src/libs/control/application/post-tcm-start';
-import { Status } from 'src/libs/control/domain';
+import { Status, TcmInfo } from 'src/libs/control/domain';
 import { useTcmStop } from 'src/libs/control/application/post-tcm-stop';
 import { useTcmRestart } from 'src/libs/control/application/post-tcm-restart';
 import { useTcmReload } from 'src/libs/control/application/post-tcm-reload';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Row } from '@tanstack/react-table';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
-  selectedRows?: number[];
+  selectedRows?: Row<TcmInfo>[];
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/TcmSelect');
 const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
+  /* ======   variables   ====== */
   const { trigger: startTrigger } = useTcmStart();
   const { trigger: stopTrigger } = useTcmStop();
   const { trigger: restartTrigger } = useTcmRestart();
@@ -22,10 +24,13 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   const [toastMessageStop, setToastMessageStop] = useState('');
   const [toastMessageRestart, setToastMessageRestart] = useState('');
   const [toastMessageReload, setToastMessageReload] = useState('');
-  /* ======   variables   ====== */
+
+  const selectedTids = useMemo(() => {
+    return selectedRows?.map((row) => row.original.tid) || [];
+  }, [selectedRows]);
   /* ======   function    ====== */
   const handleStartClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
+    if (!selectedTids || selectedTids.length === 0) {
       logger('No rows selected');
       return;
     }
@@ -33,7 +38,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
 
     const offlineTids = [];
 
-    for (const tid of selectedRows) {
+    for (const tid of selectedTids) {
       try {
         const status = await startTrigger({ tid });
         if (status !== Status.ONLINE) {
@@ -54,7 +59,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   };
 
   const handleStopClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
+    if (!selectedTids || selectedTids.length === 0) {
       logger('No rows selected');
       return;
     }
@@ -62,7 +67,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
 
     const onlineTids = [];
 
-    for (const tid of selectedRows) {
+    for (const tid of selectedTids) {
       try {
         const status = await stopTrigger({ tid });
         if (status !== Status.OFFLINE) {
@@ -83,7 +88,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   };
 
   const handleRestartClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
+    if (!selectedTids || selectedTids.length === 0) {
       logger('No rows selected');
       return;
     }
@@ -91,7 +96,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
 
     const offlineTids = [];
 
-    for (const tid of selectedRows) {
+    for (const tid of selectedTids) {
       try {
         const status = await restartTrigger({ tid });
         if (status !== Status.ONLINE) {
@@ -112,7 +117,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   };
 
   const handleReloadClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
+    if (!selectedTids || selectedTids.length === 0) {
       logger('No rows selected');
       return;
     }
@@ -120,7 +125,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
 
     const offlineTids = [];
 
-    for (const tid of selectedRows) {
+    for (const tid of selectedTids) {
       try {
         const status = await reloadTrigger({ tid });
         if (status !== Status.ONLINE) {
@@ -193,7 +198,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
         }
         hasButton={['CANCEL']}
       >
-        <ModalContentUpdate selectedRows={selectedRows} />
+        <ModalContentUpdate selectedRows={selectedTids} />
       </ModalWithBtn>
     </div>
   );

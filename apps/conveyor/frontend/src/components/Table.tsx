@@ -13,17 +13,7 @@ import {
   Row,
   Column,
 } from '@tanstack/react-table';
-import {
-  ReactNode,
-  useMemo,
-  useState,
-  Fragment,
-  useEffect,
-  ReactElement,
-  ChangeEvent,
-  KeyboardEvent,
-  cloneElement,
-} from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, KeyboardEvent, cloneElement } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -34,11 +24,11 @@ export interface TableProps<T> {
   data?: T[];
   makePagination?: boolean;
   makeColumnSelect?: boolean;
-  renderSelectComponent?: ReactNode;
+  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
-  rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
+
 /* ======    global     ====== */
 const logger = createLogger('Component/Table');
 
@@ -50,7 +40,6 @@ const Table = <T,>({
   makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
-  rowSelectionChange,
 }: TableProps<T>) => {
   if (!data) return <>data가 없습니다.</>;
   /* ======   variables   ====== */
@@ -124,7 +113,7 @@ const Table = <T,>({
 
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<{ [key: string]: boolean }>({});
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnVisibility, setColumnVisibility] = useState({});
 
@@ -157,6 +146,9 @@ const Table = <T,>({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const selectedRows = useMemo(() => {
+    return table.getRowModel().rows.filter((row) => rowSelection[row.id]);
+  }, [table, rowSelection]);
   /* ======   function    ====== */
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
@@ -167,11 +159,6 @@ const Table = <T,>({
     if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
   };
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    if (rowSelectionChange) {
-      rowSelectionChange(rowSelection);
-    }
-  }, [rowSelection, rowSelectionChange]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
@@ -211,7 +198,7 @@ const Table = <T,>({
           {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
         </div>
         {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
-          <div className="flex items-center">{renderSelectComponent}</div>
+          <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
         )}
       </div>
       <div className="mb-4 overflow-visible max-md:overflow-y-hidden">

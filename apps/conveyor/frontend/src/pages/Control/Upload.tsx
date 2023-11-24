@@ -25,7 +25,7 @@ const Upload = ({ onSubmit }: UploadProps) => {
       setLoading(true);
       try {
         await onSubmit(file);
-        logger('upload file sucess');
+        logger('upload file success');
       } catch (e) {
         logger('failed to upload file');
       }
