@@ -1,7 +1,7 @@
 import { useSignIn } from '!/auth/application/post-sign-in';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, wait } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -30,8 +30,12 @@ const SignIn = () => {
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
   const from = useMemo(() => url.get('from'), [location]);
+  const toUrl = useMemo(() => (from?.startsWith('/sign') || !from ? '/control' : from), [location]);
   /* ======   function    ====== */
-  const handleModalClose = () => navigate(from?.startsWith('/sign') || !from ? '/control' : from);
+  const handleModalClose = async () => {
+    await wait(500);
+    navigate(toUrl);
+  };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
@@ -45,12 +49,18 @@ const SignIn = () => {
   logger('render');
   return (
     <>
-      <ToastWithPortal open={lostAuthToast} duration={Infinity}>
+      <ToastWithPortal open={lostAuthToast}>
         {t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.')}
       </ToastWithPortal>
       <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
-      <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('확인')]} persist>
-        {t(`로그인이 완료됐어요.\n확인을 누르면 메인 혹은 이전에 접근한 페이지로 이동합니다.`)}
+      <ModalWithPortal
+        onClose={handleModalClose}
+        open={success}
+        smoothLoading
+        hasButton={[t('{{url}} 페이지로 이동하기', { url: toUrl })]}
+        persist
+      >
+        {t(`로그인이 완료됐어요.`)}
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
         {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}

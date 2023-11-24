@@ -25,8 +25,9 @@ import {
   cloneElement,
 } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select, Tooltip } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
+import Td from './Td';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
@@ -93,7 +94,10 @@ const Table = <T,>({
 
       ...thead.map((key) => ({
         accessorKey: key,
-        header: key.replace(/^\w/, (c) => c.toUpperCase()),
+        header: key
+          .replace(/([A-Z])/g, ' $1')
+          .trim()
+          .toLowerCase(),
         footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent
@@ -250,13 +254,9 @@ const Table = <T,>({
               return (
                 <Fragment key={row.id}>
                   <tr>
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-center text-sm align-middle">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell) => (
+                      <Td key={cell.id} cell={cell} />
+                    ))}
                   </tr>
                   {row.getIsExpanded() && renderSubComponent && (
                     <tr>

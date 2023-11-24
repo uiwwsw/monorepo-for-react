@@ -1,7 +1,7 @@
 import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { TCMInfo } from 'src/libs/control/domain';
+import { TCMInfo } from '!/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 /* ======   interface   ====== */
 export interface TcmSubProps {

@@ -17,7 +17,7 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   /* ======   function    ====== */
   const handleClick = async () => {
     if (!row) return;
-    await trigger({ id: row.original.user_id, grade: 1 });
+    await trigger({ id: row.original.userId, grade: 1 });
     mutate('/api/users/user-list');
   };
   /* ======   useEffect   ====== */

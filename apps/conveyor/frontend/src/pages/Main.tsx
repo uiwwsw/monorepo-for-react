@@ -46,7 +46,7 @@ const Main = () => {
           },
         ]}
       />
-      <PageCenter icon="🧑🏻‍💻" title={t('컨베이어 for YMTC')}>
+      <PageCenter icon="🖥️" title={t('컨베이어 for YMTC')}>
         {t('컨베이어 웹 서비스에 오신걸 환영합니다.')}
       </PageCenter>
     </>
