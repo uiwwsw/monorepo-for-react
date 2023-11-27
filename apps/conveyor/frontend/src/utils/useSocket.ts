@@ -17,6 +17,9 @@ const useSocket = <K, T = unknown>(name: useSocketProps<K>) => {
   useEffect(() => {
     logger('useEffect', socket, name);
     socket.on(`${name}`, setData);
+    return () => {
+      socket.off(`${name}`, setData);
+    };
   }, [socket, reset]);
   return {
     data,
