@@ -3,6 +3,8 @@ words:
   - tids
   # tanstack plugin 개발자
   - tanstack
+  # nivo 그래프
+  - nivo
 ignoreWords:
   - noopener
 ignorePaths:
