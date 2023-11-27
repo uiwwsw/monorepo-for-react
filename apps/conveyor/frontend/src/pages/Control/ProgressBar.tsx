@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import { UploadStatus } from 'src/libs/control/domain';
+import { UploadStatus } from '!/control/domain';
 
 /* ======   interface   ====== */
 

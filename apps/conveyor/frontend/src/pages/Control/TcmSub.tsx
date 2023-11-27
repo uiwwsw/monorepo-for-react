@@ -1,7 +1,7 @@
 import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { ResponseResult, TcmInfo } from 'src/libs/control/domain';
+import { ResponseResult, TcmInfo } from '!/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 import ModalContentDetail from './ModalContentDetail';
 import { useState } from 'react';

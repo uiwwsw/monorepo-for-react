@@ -1,0 +1,9 @@
+words:
+  # 테이블 id의 복수형
+  - tids
+  # tanstack plugin 개발자
+  - tanstack
+ignoreWords:
+  - noopener
+ignorePaths:
+  - '**/node_modules/**'

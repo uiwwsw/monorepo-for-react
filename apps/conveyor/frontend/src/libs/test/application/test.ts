@@ -1,9 +1,7 @@
-import { http } from '#/http';
 import { createLogger } from '@package-frontend/utils';
-// import { faker } from '@faker-js/faker';
 import useSWR from 'swr';
+import { http } from '#/http';
 const logger = createLogger('test/useTest');
-
 async function fetcher(url: string) {
   const res = await http({
     url,
@@ -11,7 +9,6 @@ async function fetcher(url: string) {
   logger(url, res);
   return res;
 }
-
 export function useTest() {
   return useSWR('/api/users/user-list', fetcher);
 }

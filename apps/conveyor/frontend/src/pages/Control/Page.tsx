@@ -1,16 +1,16 @@
-import { useTcmInfo } from 'src/libs/control/application/get-tcm-info';
+import { useTcmInfo } from '!/control/application/get-tcm-info';
 import { createLogger } from '@package-frontend/utils';
 import Table from '@/Table';
-import { useServerInfo } from 'src/libs/control/application/get-server-info';
+import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
 import { useState } from 'react';
 import { Button, ToastWithBtn } from '@library-frontend/ui';
-import { ResponseResult } from 'src/libs/control/domain';
-import { useResume } from 'src/libs/control/application/post-resume';
-import { usePause } from 'src/libs/control/application/post-pause';
+import { ResponseResult } from '!/control/domain';
+import { useResume } from '!/control/application/post-resume';
+import { usePause } from '!/control/application/post-pause';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */

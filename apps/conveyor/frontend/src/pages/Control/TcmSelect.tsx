@@ -1,11 +1,11 @@
 import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import ModalContentUpdate from './ModalContentUpdate';
-import { useTcmStart } from 'src/libs/control/application/post-tcm-start';
-import { ResponseResult, TcmInfo } from 'src/libs/control/domain';
-import { useTcmStop } from 'src/libs/control/application/post-tcm-stop';
-import { useTcmRestart } from 'src/libs/control/application/post-tcm-restart';
-import { useTcmReload } from 'src/libs/control/application/post-tcm-reload';
+import { useTcmStart } from '!/control/application/post-tcm-start';
+import { ResponseResult, TcmInfo } from '!/control/domain';
+import { useTcmStop } from '!/control/application/post-tcm-stop';
+import { useTcmRestart } from '!/control/application/post-tcm-restart';
+import { useTcmReload } from '!/control/application/post-tcm-reload';
 import { useMemo, useState } from 'react';
 import { Row } from '@tanstack/react-table';
 /* ======   interface   ====== */
