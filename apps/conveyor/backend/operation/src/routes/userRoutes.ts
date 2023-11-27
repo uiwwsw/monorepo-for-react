@@ -9,11 +9,11 @@ import {
     UserEditGradeRequest, UserEditGradeResponse,
     UserPasswordRequest, UserPasswordResponse,
     UserSession } from '@package-backend/types';
-import { UserGrade } from './grade';
+import { UserGrade, ClientType } from './user_enum';
 import { UserRow } from '../models/R301';
 
 import { Service } from '../service';
-import { getToken, verifyToken, getClientSessionName } from './session';       //verifyToken
+import { getToken, verifyToken, getSessionColumn } from './session';       //verifyToken
 import { asyncWrapper } from './error';
 
 const router: Router = Router();
@@ -101,11 +101,11 @@ router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, 
         uid: row.uid,
         user_id: user_id,
         grade: row.grade,
-        client_type: client_type || 1,
+        client_type: client_type || ClientType.WEB,
         key: md5(`${user_id}${row.password}${row.last_access}`)
     } as UserSession;
 
-    const column = getClientSessionName(session.client_type);
+    const column = getSessionColumn(session.client_type);
     await Service.Inst.MySQL.query(`UPDATE users SET ${column} = ?, last_access = now() WHERE uid = ?`, [session.key, row.uid]);
 
     res.json({

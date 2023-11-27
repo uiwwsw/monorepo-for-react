@@ -5,3 +5,9 @@ export enum UserGrade {
     PENDING = 8,
     REJECTED = 9,
 }
+
+export enum ClientType {
+    WEB = 1,
+    DASHBOARD = 2,
+    TABLET = 3,
+}

@@ -5,6 +5,7 @@ import { UserSession } from '@package-backend/types';
 
 import { Service } from '../service';
 import { UserRow } from '../models/R301';
+import { ClientType } from './user_enum';
 
 // 인증 토큰 생성,,
 export const getToken = (session : UserSession ) => {
@@ -13,10 +14,10 @@ export const getToken = (session : UserSession ) => {
     });
 }
 
-export const getClientSessionName = (client_type : number) => {
+export const getSessionColumn = (client_type : ClientType) => {
     switch (client_type) {
-        case 2: return 'dashboard_session';
-        case 3: return 'tablet_session';
+        case ClientType.DASHBOARD: return 'dashboard_session';
+        case ClientType.TABLET: return 'tablet_session';
         default: return 'web_session';
     }
 }
@@ -37,7 +38,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
             const session = decoded as UserSession;
     
             // 세션 유효성 검사(중복 로그인 방지)
-            const column = getClientSessionName(session.client_type);
+            const column = getSessionColumn(session.client_type);
             const [rows] = await Service.Inst.MySQL.query<UserRow[]>(`select grade from users where user_id = ? and ${column} = ?`, [session.user_id, session.key]);
             if (rows.length < 1) {
                 return res.status(401).send('EXPIRED_SESSION');
