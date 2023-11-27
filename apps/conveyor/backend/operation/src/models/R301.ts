@@ -12,7 +12,9 @@ export interface UserRow extends RowDataPacket {
     grade : number;
     created_date : Date;
     last_access : Date;
-    session : string;
+    web_session : string;
+    dashboard_session : string;
+    tablet_session : string;
 }
 
 export interface AlarmCodeInfoRow extends RowDataPacket {
