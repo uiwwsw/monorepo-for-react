@@ -1,36 +1,49 @@
-export interface StatsZoneData {
-  displayName: string;
-  zoneID: number;
+export interface StatsSummaryData {
+  date: string;
+  zoneId: number;
   alarmNum: number;
   carrierNum: number;
   warningNum: number;
 }
 
-export interface GraphDataDetail {
-  transfer: number;
-  alarm: number;
-  date: string;
-}
-
-export interface StatsGraphData {
-  port: string;
-  data: GraphDataDetail[];
+export interface StatsAlarmDataRow {
+  No: number;
+  SerialNo: number;
+  AlarmCode: number;
+  TaskID: number;
+  Location: number;
+  Reason: number;
+  TCMID: number;
+  CommandID: string;
+  CarrierID: string;
+  SetTime: string;
+  ClearTime: string;
 }
 
 export interface StatsAlarmData {
-  no: number;
-  carrierID: string;
-  zoneID: number;
-  setTime: string;
-  clearTime: string;
-  description: string;
+  rows: StatsAlarmDataRow[];
+  total_count: number;
+}
+
+export interface StatsCarrierDataRow {
+  TaskID: number;
+  CommandID: string;
+  CarrierID: string;
+  ZoneIDFrom: number;
+  StartTime: string;
+  ZoneIDTo: number;
+  EndTime: string;
+  ZoneIDToName: string;
+  ZoneIDFromName: string;
 }
 
 export interface StatsCarrierData {
-  no: number;
-  carrierID: string;
-  input: string;
-  installedTime: string;
-  output: string;
-  completeTime: string;
+  rows: StatsCarrierDataRow[];
+  total_count: number;
+}
+export interface ZoneList {
+  No: number;
+  ZoneID: number;
+  DisplayName: string;
+  PhysicalType: number;
 }

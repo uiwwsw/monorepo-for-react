@@ -23,6 +23,7 @@ import Td from './Td';
 export interface TableProps<T> {
   thead: string[];
   data?: T[];
+  textAlignCenter?: boolean;
   makePagination?: boolean;
   makeColumnSelect?: boolean;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[] }>;
@@ -37,6 +38,7 @@ const Table = <T,>({
   thead,
   onSearch,
   data,
+  textAlignCenter,
   makePagination = false,
   makeColumnSelect = false,
   renderSubComponent,
@@ -241,7 +243,7 @@ const Table = <T,>({
                 <Fragment key={row.id}>
                   <tr>
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} cell={cell} />
+                      <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
                     ))}
                   </tr>
                   {row.getIsExpanded() && renderSubComponent && (
