@@ -1,23 +1,15 @@
-export enum UploadStatus {
-  Idle = 'idle',
-  Updating = 'updating',
-  Completed = 'completed',
-  Error = 'error',
-}
+export type UPLOAD_STATUS = 'IDLE' | 'UPDATING' | 'COMPLETE' | 'ERROR';
 
-export enum Status {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE',
-}
+export type STATUS = 'ONLINE' | 'OFFLINE';
 
-export enum ConnectionStatus {
-  ON = 'on',
-  OFF = 'off',
-}
+export type CONNECTION_STATUS = 'ON' | 'OFF';
 
-export enum ResponseResult {
-  SUCCESS = 'success',
-  FAIL = 'fail',
+export type SERVER_TYPE = 'HIM' | 'DCM' | 'HIM';
+
+export const enum RESPONSE_RESULT {
+  SUCCESS = 'SUCCESS',
+  FAIL = 'FAIL',
+  //add more status..
 }
 
 export interface FileInfo {
@@ -27,29 +19,29 @@ export interface FileInfo {
 }
 
 export interface FirmwareStatus {
-  status: UploadStatus;
+  status: UPLOAD_STATUS;
 }
 
 export interface ClientStatus {
   tid: number;
-  cstatus: ConnectionStatus;
+  connectionStatus: CONNECTION_STATUS;
 }
 
 export interface ResponseStatus {
-  result: ResponseResult;
+  result: RESPONSE_RESULT;
   reason?: string;
 }
 
 export interface ServerInfo {
   sid: number;
-  type: string;
-  status: Status;
+  type: SERVER_TYPE;
+  status: STATUS;
   version: string;
 }
 
 export interface TcmInfo {
   tid: number;
-  status: Status;
+  status: STATUS;
   version: string;
   adjTcmConnection: string;
   adjTcmConnectionDetail: ClientStatus[];

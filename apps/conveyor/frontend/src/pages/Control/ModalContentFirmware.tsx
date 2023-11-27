@@ -3,7 +3,7 @@
 import { useTcmBackupDelete } from '!/control/application/delete-tcm-backup';
 import { useTcmBackup } from '!/control/application/get-tcm-backup';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
-import { ResponseResult } from '!/control/domain';
+import { RESPONSE_RESULT } from '!/control/domain';
 import { Button, Combo, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useEffect, useState } from 'react';
@@ -49,7 +49,7 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
         tid,
         fileName: selectedFile,
       });
-      if (status?.result === ResponseResult.SUCCESS) {
+      if (status?.result === RESPONSE_RESULT.SUCCESS) {
         setToastMessageUpdate(`펌웨어 업데이트 완료`);
       } else {
         setToastMessageUpdate(`펌웨어 업데이트 실패, ${status?.reason}`);

@@ -1,20 +1,20 @@
 import { createLogger } from '@package-frontend/utils';
-import { UploadStatus } from 'src/libs/control/domain';
+import { UPLOAD_STATUS } from 'src/libs/control/domain';
 
 /* ======   interface   ====== */
 
 export interface ProgressBarProps {
   value: number;
-  status: UploadStatus;
+  status: UPLOAD_STATUS;
 }
 
 /* ======    global     ====== */
-const getStatusColorClass = (status: UploadStatus) => {
+const getStatusColorClass = (status: UPLOAD_STATUS) => {
   const statusClasses = {
-    [UploadStatus.Idle]: 'bg-gray-400',
-    [UploadStatus.Updating]: 'bg-gray-500',
-    [UploadStatus.Completed]: 'bg-green-500',
-    [UploadStatus.Error]: 'bg-red-500',
+    IDLE: 'bg-gray-400',
+    UPDATING: 'bg-gray-500',
+    COMPLETE: 'bg-green-500',
+    ERROR: 'bg-red-500',
     default: 'bg-gray-400',
   };
   return statusClasses[status] || statusClasses.default;

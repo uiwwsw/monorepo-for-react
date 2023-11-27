@@ -1,4 +1,4 @@
-import { ClientStatus, ConnectionStatus } from '!/control/domain';
+import { ClientStatus } from '!/control/domain';
 import { createLogger } from '@package-frontend/utils';
 
 interface ModalContentDetailProps {
@@ -25,10 +25,10 @@ const ModalContentDetail = ({ clientStatus, tid }: ModalContentDetailProps) => {
             <span className="text-md font-medium">TCM {status.tid} :</span>
             <span
               className={`font-semibold text-md ml-4 ${
-                status.cstatus === ConnectionStatus.ON ? 'text-green-500' : 'text-red-500'
+                status.connectionStatus === 'ON' ? 'text-green-500' : 'text-red-500'
               }`}
             >
-              {status.cstatus}
+              {status.connectionStatus}
             </span>
           </div>
         ))}

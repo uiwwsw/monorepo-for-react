@@ -2,7 +2,7 @@ import { useServerReload } from '!/control/application/post-server-reload';
 import { useServerRestart } from '!/control/application/post-server-restart';
 import { useServerStart } from '!/control/application/post-server-start';
 import { useServerStop } from '!/control/application/post-server-stop';
-import { ResponseResult, ServerInfo } from '!/control/domain';
+import { RESPONSE_RESULT, ServerInfo } from '!/control/domain';
 import { Button, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
@@ -39,7 +39,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     for (const sid of selectedSids) {
       try {
         const status = await startTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineSids.push(sid);
         }
       } catch (error) {
@@ -68,7 +68,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     for (const sid of selectedSids) {
       try {
         const status = await stopTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           onlineSids.push(sid);
         }
       } catch (error) {
@@ -97,7 +97,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     for (const sid of selectedSids) {
       try {
         const status = await restartTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineSids.push(sid);
         }
       } catch (error) {
@@ -126,7 +126,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     for (const sid of selectedSids) {
       try {
         const status = await reloadTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineSids.push(sid);
         }
       } catch (error) {

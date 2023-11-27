@@ -2,7 +2,7 @@ import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import ModalContentUpdate from './ModalContentUpdate';
 import { useTcmStart } from 'src/libs/control/application/post-tcm-start';
-import { ResponseResult, TcmInfo } from 'src/libs/control/domain';
+import { RESPONSE_RESULT, TcmInfo } from 'src/libs/control/domain';
 import { useTcmStop } from 'src/libs/control/application/post-tcm-stop';
 import { useTcmRestart } from 'src/libs/control/application/post-tcm-restart';
 import { useTcmReload } from 'src/libs/control/application/post-tcm-reload';
@@ -41,7 +41,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     for (const tid of selectedTids) {
       try {
         const status = await startTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineTids.push(tid);
         }
       } catch (error) {
@@ -70,7 +70,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     for (const tid of selectedTids) {
       try {
         const status = await stopTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           onlineTids.push(tid);
         }
       } catch (error) {
@@ -99,7 +99,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     for (const tid of selectedTids) {
       try {
         const status = await restartTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineTids.push(tid);
         }
       } catch (error) {
@@ -128,7 +128,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     for (const tid of selectedTids) {
       try {
         const status = await reloadTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
+        if (status?.result !== RESPONSE_RESULT.SUCCESS) {
           offlineTids.push(tid);
         }
       } catch (error) {

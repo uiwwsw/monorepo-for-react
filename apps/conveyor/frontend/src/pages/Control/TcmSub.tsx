@@ -1,7 +1,7 @@
 import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { ResponseResult, TcmInfo } from 'src/libs/control/domain';
+import { RESPONSE_RESULT, TcmInfo } from 'src/libs/control/domain';
 import ModalContentFirmware from './ModalContentFirmware';
 import ModalContentDetail from './ModalContentDetail';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
     setToastMessageKill('TCM 프로세스 Kill 중입니다.');
     try {
       const status = await killTrigger({ tid: row?.original.tid });
-      if (status?.result === ResponseResult.SUCCESS) {
+      if (status?.result === RESPONSE_RESULT.SUCCESS) {
         setToastMessageKill(`TCM 프로세스 Kill 완료`);
       } else {
         setToastMessageKill(`TCM 프로세스 Kill 실패, ${status?.reason}`);
