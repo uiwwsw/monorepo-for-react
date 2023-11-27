@@ -19,11 +19,7 @@ const Td = <T,>({ cell, textAlignCenter }: TdProps<T>) => {
   /* ======   useEffect   ====== */
   logger('render', strRender, render);
   return (
-    <td
-      className={`px-6 py-4 whitespace-nowrap text-sm align-middle${
-        textAlignCenter ? ` text-center` : ''
-      } ${emptyClassName}`}
-    >
+    <td className={`px-6 py-4 text-sm align-middle${textAlignCenter ? ` text-center` : ''} ${emptyClassName}`}>
       {isDateString(`${strRender}`) ? newDate(`${strRender}`).format(FORMAT) : render}
     </td>
   );

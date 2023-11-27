@@ -3,7 +3,7 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { ZoneList } from '../domain';
 
-const logger = createLogger('stats/useGetZoneList');
+const logger = createLogger('stats/useZoneList');
 async function fetcher(url: string) {
   logger(url);
   const zones: ZoneList[] = [
@@ -28,6 +28,6 @@ async function fetcher(url: string) {
   //   return await http({ url });
 }
 
-export function useGetZoneList() {
-  return useSWR('/get-zoneList', (url) => fetcher(url));
+export function useZoneList() {
+  return useSWR('/api/zone-list', (url) => fetcher(url));
 }

@@ -7,17 +7,17 @@ export interface StatsSummaryData {
 }
 
 export interface StatsAlarmDataRow {
-  No: number;
-  SerialNo: number;
-  AlarmCode: number;
-  TaskID: number;
-  Location: number;
-  Reason: number;
-  TCMID: number;
-  CommandID: string;
-  CarrierID: string;
-  SetTime: string;
-  ClearTime: string;
+  no: number;
+  serialNo: number;
+  alarmCode: number;
+  taskId: number;
+  location: number;
+  reason: number;
+  tcmId: number;
+  commandId: string;
+  carrierId: string;
+  setTime: string;
+  clearTime: string;
 }
 
 export interface StatsAlarmData {
@@ -26,15 +26,14 @@ export interface StatsAlarmData {
 }
 
 export interface StatsCarrierDataRow {
-  TaskID: number;
-  CommandID: string;
-  CarrierID: string;
-  ZoneIDFrom: number;
-  StartTime: string;
-  ZoneIDTo: number;
-  EndTime: string;
-  ZoneIDToName: string;
-  ZoneIDFromName: string;
+  carrierID: string;
+  endTime?: string;
+  startTime: string;
+  taskID: number;
+  zoneIDFrom: number;
+  zoneIDFromName: string;
+  zoneIDTo: number;
+  zoneIDToName: string;
 }
 
 export interface StatsCarrierData {

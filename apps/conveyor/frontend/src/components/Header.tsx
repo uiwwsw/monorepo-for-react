@@ -26,7 +26,7 @@ const Header = (_: HeaderProps) => {
   return (
     <header className="sticky flex items-center top-0 z-10 p-3 bg-slate-300 gap-2">
       <div className="flex-auto">{children}</div>
-      <div className="flex gap-2 items-center max-md:flex-col">
+      <div className="flex gap-2 items-center max-lg:flex-col">
         <div>{data?.username}</div>
         <Button smoothLoading themeColor={'secondary'} onClick={handleLogout} disabled={isInIframe}>
           {t('로그아웃')}

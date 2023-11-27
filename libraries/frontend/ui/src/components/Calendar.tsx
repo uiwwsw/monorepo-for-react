@@ -6,19 +6,20 @@ import 'react-calendar/dist/Calendar.css';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
 import Button from './Button';
+import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
   selectRangeHolder?: string;
   tooltipMsg?: string;
   selectRange?: boolean;
-  defaultValue?: string;
+  defaultValue?: LooseValue;
   onChange?: (value: Dayjs | Dayjs[]) => void;
   button?: ReactElement;
 }
 /* ======    global     ====== */
-const convertFromValueToDate = (value: string | string[]) =>
-  value instanceof Array ? value.map((x) => newDate(x)) : newDate(value);
+const convertFromValueToDate = (value: LooseValue) =>
+  value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
 const logger = createLogger('components/Calendar');
 const Calendar = ({
   button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
@@ -49,7 +50,7 @@ const Calendar = ({
     e.stopPropagation();
   };
   const handleChange = (e: unknown) => {
-    const value = convertFromValueToDate(e as string | string[]);
+    const value = convertFromValueToDate(e as LooseValue);
     setValue(value);
     fakeRef.current?.click();
     onChange && onChange(value);

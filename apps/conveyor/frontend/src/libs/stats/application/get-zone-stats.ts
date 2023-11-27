@@ -7,7 +7,7 @@ export interface SearchZoneArg {
   begin_date: string;
   end_date: string;
 }
-const logger = createLogger('stats/useGetZoneInfo');
+const logger = createLogger('stats/useZoneStats');
 async function fetcher(
   url: string,
   {
@@ -49,6 +49,6 @@ async function fetcher(
   //   return await http({ url });
 }
 
-export function useGetZoneInfo({ arg }: { arg: SearchZoneArg }) {
-  return useSWR('/get-zoneInfo', (url) => fetcher(url, { arg }));
+export function useZoneStats({ arg }: { arg: SearchZoneArg }) {
+  return useSWR('/api/stats/zone-stats', (url) => fetcher(url, { arg }));
 }

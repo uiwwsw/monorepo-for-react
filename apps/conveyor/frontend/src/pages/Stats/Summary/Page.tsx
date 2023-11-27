@@ -6,9 +6,9 @@ import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatsSummaryData, ZoneList } from '!/stats/domain';
-import { SearchZoneArg } from '!/stats/application/get-zoneInfo';
-import { useGetZoneInfo } from '!/stats/application/get-zoneInfo';
-import { useGetZoneList } from '!/stats/application/get-zoneList';
+import { SearchZoneArg } from '!/stats/application/get-zone-stats';
+import { useZoneStats } from '!/stats/application/get-zone-stats';
+import { useZoneList } from '!/stats/application/get-zone-list';
 import { LineProps } from '@nivo/line';
 
 /* ======   interface   ====== */
@@ -45,8 +45,8 @@ const StatsSummary = () => {
   const [selectedZoneID, setSelectedZoneID] = useState<string>('ALL');
   const [done, setDone] = useState(false);
   const [arg, setArg] = useState<SearchZoneArg>({
-    begin_date: newDate().toISOString(),
-    end_date: newDate([1, 'day']).toISOString(),
+    start_time: newDate([-7, 'day']).toISOString(),
+    end_time: newDate().toISOString(),
   });
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
   const [graphData, setGraphData] = useState<LineProps['data']>([]);
@@ -54,20 +54,19 @@ const StatsSummary = () => {
   const [zoneData, setZoneData] = useState<ZoneData[]>([]);
 
   const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data, isValidating } = useGetZoneInfo({ arg: arg });
-  const { data: zoneList, mutate: zoneListMutate } = useGetZoneList();
+  const { mutate, data, isValidating } = useZoneStats({ arg: arg });
+  const { data: zoneList, mutate: zoneListMutate } = useZoneList();
 
   /* ======   function    ====== */
   const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
-    if (duration instanceof Array) {
-      const arg: SearchZoneArg = {
-        begin_date: duration[0].toISOString(),
-        end_date: duration[1].toISOString(),
-      };
+    if (!(duration instanceof Array)) return;
+    const arg: SearchZoneArg = {
+      start_time: duration[0].toISOString(),
+      end_time: duration[1].toISOString(),
+    };
 
-      await Promise.all([setArg(arg)]);
-      mutate();
-    }
+    await Promise.all([setArg(arg)]);
+    mutate();
   };
 
   const handleChipChange = async (index: number) => {
