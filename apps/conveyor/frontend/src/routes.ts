@@ -4,7 +4,7 @@ const Control = lazy(() => import('src/pages/Control/Page'));
 const SignUp = lazy(() => import('src/pages/SignUp'));
 const SignIn = lazy(() => import('src/pages/SignIn'));
 const Stats = lazy(() => import('src/pages/Stats/Page'));
-const StatsZone = lazy(() => import('src/pages/Stats/Zone/Page'));
+const StatsSummary = lazy(() => import('src/pages/Stats/Summary/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
@@ -34,7 +34,7 @@ export const authRoutes: Tab[] = [
     path: '/stats',
     node: Stats,
     group: [
-      { path: '/stats/zone', name: 'ZONE', node: StatsZone },
+      { path: '/stats/summary', name: 'SUMMARY', node: StatsSummary },
       { path: '/stats/alarm', name: 'ALARM', node: StatsAlarm },
       { path: '/stats/carrier', name: 'CARRIER', node: StatsCarrier },
     ],

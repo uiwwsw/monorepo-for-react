@@ -4,8 +4,8 @@ import useSWR from 'swr';
 import { StatsAlarmData } from '../domain';
 
 export interface SearchArg {
-  start_time: string;
-  end_time: string;
+  begin_date: string;
+  end_date: string;
   page: number;
   page_size: number;
   find_key?: string;

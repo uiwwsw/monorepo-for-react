@@ -1,24 +1,9 @@
-export interface StatsZoneDataRow {
+export interface StatsSummaryData {
+  date: string;
   zoneId: number;
   alarmNum: number;
   carrierNum: number;
   warningNum: number;
-}
-
-export interface StatsZoneData {
-  rows: StatsZoneDataRow[];
-  total_count: number;
-}
-
-export interface GraphDataDetail {
-  transfer: number;
-  alarm: number;
-  date: string;
-}
-
-export interface StatsGraphData {
-  port: string;
-  data: GraphDataDetail[];
 }
 
 export interface StatsAlarmDataRow {

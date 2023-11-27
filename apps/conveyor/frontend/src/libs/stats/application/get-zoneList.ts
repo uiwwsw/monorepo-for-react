@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import useSWR from 'swr/mutation';
+import useSWR from 'swr';
 import { ZoneList } from '../domain';
 
 const logger = createLogger('stats/useGetZoneList');
@@ -16,6 +16,12 @@ async function fetcher(url: string) {
     { No: 6, ZoneID: 10107, DisplayName: '10107', PhysicalType: 1 },
     { No: 7, ZoneID: 10201, DisplayName: '10201', PhysicalType: 1 },
     { No: 8, ZoneID: 10202, DisplayName: '10202', PhysicalType: 1 },
+    { No: 9, ZoneID: 10203, DisplayName: '10203', PhysicalType: 1 },
+    { No: 10, ZoneID: 10204, DisplayName: '10204', PhysicalType: 1 },
+    { No: 11, ZoneID: 10205, DisplayName: '10205', PhysicalType: 1 },
+    { No: 12, ZoneID: 10206, DisplayName: '10206', PhysicalType: 1 },
+    { No: 13, ZoneID: 10207, DisplayName: '10207', PhysicalType: 1 },
+    { No: 14, ZoneID: 10208, DisplayName: '10208', PhysicalType: 1 },
   ];
 
   return fakeApi(zones);
@@ -23,5 +29,5 @@ async function fetcher(url: string) {
 }
 
 export function useGetZoneList() {
-  return useSWR('/get-zoneList', fetcher);
+  return useSWR('/get-zoneList', (url) => fetcher(url));
 }

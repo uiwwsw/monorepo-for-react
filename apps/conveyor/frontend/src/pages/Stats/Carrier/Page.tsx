@@ -1,5 +1,5 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar } from '@library-frontend/ui';
+import { Button, Calendar, Pagination } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import Table from '@/Table';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Carrier');
+const pageSize = 10;
 const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
@@ -18,69 +19,70 @@ const StatsCarrier = () => {
   const { setChildren } = useHeaderContext();
 
   const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [totalPageNum, setTotalPageNum] = useState(0);
+  const [totalPageNum, setTotalPageNum] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
+  const [findKey, setFindKey] = useState('');
   const [arg, setArg] = useState<SearchArg>({
-    start_time: newDate().toString(),
-    end_time: newDate([1, 'day']).toString(),
+    begin_date: newDate().toISOString(),
+    end_date: newDate([1, 'day']).toISOString(),
     page: 0,
-    page_size: 10,
+    page_size: pageSize,
   });
 
   const { error, data, mutate } = useGetCarrierInfo({ arg: arg });
 
   /* ======   function    ====== */
-  const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
+  const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
     if (duration instanceof Array) {
       setDuration(duration);
       const arg: SearchArg = {
-        start_time: duration[0].toString(),
-        end_time: duration[1].toString(),
+        begin_date: duration[0].toISOString(),
+        end_date: duration[1].toISOString(),
         page: 0,
-        page_size: 10,
+        page_size: pageSize,
       };
-      setArg(arg);
+      await Promise.all([setArg(arg)]);
+      mutate();
     }
+    setCurrentPage(0);
   };
 
   const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
 
-    const arg: SearchArg = {
-      start_time: duration[0].toString(),
-      end_time: duration[1].toString(),
-      find_key: character,
-      page: 0,
-      page_size: 10,
-    };
-    setArg(arg);
+    await Promise.all([setFindKey(character)]);
+    handleSearch(0);
+    setCurrentPage(0);
   };
 
-  const handleSearch = async () => {
-    await mutate();
-    data && setTotalPageNum(Math.floor(data.total_count) + 1);
+  const handleSearch = async (page: number) => {
+    let arg: SearchArg = {
+      begin_date: duration[0].toISOString(),
+      end_date: duration[1].toISOString(),
+      page: page,
+      page_size: pageSize,
+    };
+    if (findKey.length > 0) arg.find_key = findKey;
+    await Promise.all([setArg(arg)]);
+    mutate();
   };
 
-  const handleChangePage = (character?: string) => {
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    const arg: SearchArg = {
-      start_time: duration[0].toString(),
-      end_time: duration[1].toString(),
-      page: nextPage,
-      page_size: 10,
-    };
-    character ? (arg.find_key = character) : null;
-
-    setArg(arg);
+  const handleChangePage = (page: number) => {
+    handleSearch(page);
+    setCurrentPage(page);
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    mutate();
-  }, [arg]);
+    if (data?.total_count) setTotalPageNum(Math.ceil(data.total_count / pageSize));
+  }, [data]);
   useEffect(() => {
-    setArg({ start_time: newDate().toString(), end_time: newDate([1, 'day']).toString(), page: 0, page_size: 10 });
+    setArg({
+      begin_date: newDate().toISOString(),
+      end_date: newDate([1, 'day']).toISOString(),
+      page: 0,
+      page_size: 10,
+    });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
@@ -117,17 +119,17 @@ const StatsCarrier = () => {
                 },
               ]
         }
-        makePagination={true}
+        makePagination={false}
         makeColumnSelect={false}
         onSearch={handleSearchKeyword}
         textAlignCenter={true}
       ></Table>
-      {/* <Pagination
+      <Pagination
         onChange={handleChangePage}
         totalPageNum={totalPageNum}
         currentPageIndex={currentPage}
         hasDoubleArrow={true}
-      /> */}
+      />
     </>
   );
 };
