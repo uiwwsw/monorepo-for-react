@@ -13,7 +13,7 @@ import { UserGrade } from './grade';
 import { UserRow } from '../models/R301';
 
 import { Service } from '../service';
-import { getToken, verifyToken } from './session';       //verifyToken
+import { getToken, verifyToken, getClientSessionName } from './session';       //verifyToken
 import { asyncWrapper } from './error';
 
 const router: Router = Router();
@@ -84,7 +84,7 @@ const router: Router = Router();
  *           $ref: '#/components/schemas/SignInResponse'
  */
 router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, res) => {
-    const { user_id, password } = req.body;
+    const { user_id, password, client_type } = req.body;
     const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid, password, user_name, grade, last_access FROM users WHERE user_id = ?', [user_id]);
     if (rows.length < 1) {
         throw new Error('USER_NOT_FOUND');
@@ -101,10 +101,12 @@ router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, 
         uid: row.uid,
         user_id: user_id,
         grade: row.grade,
+        client_type: client_type || 1,
         key: md5(`${user_id}${row.password}${row.last_access}`)
     } as UserSession;
 
-    await Service.Inst.MySQL.query('UPDATE users SET session = ?, last_access = now() WHERE uid = ?', [session.key, row.uid]);
+    const column = getClientSessionName(session.client_type);
+    await Service.Inst.MySQL.query(`UPDATE users SET ${column} = ?, last_access = now() WHERE uid = ?`, [session.key, row.uid]);
 
     res.json({
         message: "OK",
@@ -394,7 +396,8 @@ router.put('/user-edit', verifyToken, asyncWrapper<UserEditGradeRequest, UserEdi
     if (user.uid == session.uid) {
         throw new Error('NO_PERMISSION');
     }
-    if (parseInt(grade) < 1 || parseInt(grade) < parseInt(session.grade)) {
+    const target = grade as number;
+    if (target < 1 || target < session.grade) {
         throw new Error('NO_PERMISSION');
     }
 

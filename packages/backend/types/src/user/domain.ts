@@ -6,6 +6,7 @@ import { IUserRow } from '../data';
 export interface SignInRequest {
   user_id: string;
   password: string;
+  client_type?: number;
 }
 // 사용자 로그인 응답
 export interface SignInResponse {
