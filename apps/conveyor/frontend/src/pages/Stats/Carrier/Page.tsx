@@ -60,12 +60,13 @@ const StatsCarrier = () => {
   };
 
   const handleChangePage = async (page: number) => {
-    if (page === currentPage) return;
+    const nextPage = page + 1;
+    if (nextPage === currentPage) return;
 
     await Promise.all([
       setArg((prev) => ({
         ...prev,
-        page,
+        page: nextPage,
       })),
     ]);
     mutate();
@@ -73,7 +74,7 @@ const StatsCarrier = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (data?.total_count) setTotalPageNum(Math.ceil(data.total_count / pageSize));
+    if (data?.totalCount) setTotalPageNum(Math.ceil(data.totalCount / pageSize));
   }, [data]);
   useEffect(() => {
     setChildren(

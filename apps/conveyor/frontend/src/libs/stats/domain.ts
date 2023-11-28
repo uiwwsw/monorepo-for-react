@@ -1,4 +1,7 @@
 export interface StatsSummaryData {
+  rows: StatsSummaryDataRow[];
+}
+export interface StatsSummaryDataRow {
   date: string;
   zoneId: number;
   alarmNum: number;
@@ -22,7 +25,7 @@ export interface StatsAlarmDataRow {
 
 export interface StatsAlarmData {
   rows: StatsAlarmDataRow[];
-  total_count: number;
+  totalCount: number;
 }
 
 export interface StatsCarrierDataRow {
@@ -38,7 +41,7 @@ export interface StatsCarrierDataRow {
 
 export interface StatsCarrierData {
   rows: StatsCarrierDataRow[];
-  total_count: number;
+  totalCount: number;
 }
 export interface ZoneList {
   No: number;

@@ -60,12 +60,13 @@ const StatsAlarm = () => {
   };
 
   const handleChangePage = async (page: number) => {
-    if (page === currentPage) return;
+    const nextPage = page + 1;
+    if (nextPage === currentPage) return;
 
     await Promise.all([
       setArg((prev) => ({
         ...prev,
-        page,
+        page: nextPage,
       })),
     ]);
     mutate();
@@ -73,7 +74,7 @@ const StatsAlarm = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (data?.total_count) setTotalPageNum(Math.ceil(data.total_count / pageSize));
+    if (data?.totalCount) setTotalPageNum(Math.ceil(data.totalCount / pageSize));
   }, [data]);
   useEffect(() => {
     setChildren(
@@ -95,7 +96,19 @@ const StatsAlarm = () => {
   return (
     <>
       <Table
-        thead={['no', 'serialNo', 'alarmCode', 'taskId', 'setTime', 'reason', 'tcmId']}
+        thead={[
+          'no',
+          'serialNo',
+          'alarmCode',
+          'taskId',
+          'location',
+          'reason',
+          'tcmId',
+          'commandId',
+          'carrierId',
+          'setTime',
+          'clearTime',
+        ]}
         data={data?.rows}
         makePagination={false}
         cacheColumnVisibility={columnVisibility}

@@ -5,7 +5,7 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatsSummaryData, ZoneList } from '!/stats/domain';
+import { StatsSummaryData, StatsSummaryDataRow, ZoneList } from '!/stats/domain';
 import { SearchZoneArg } from '!/stats/application/get-zone-stats';
 import { useZoneStats } from '!/stats/application/get-zone-stats';
 import { useZoneList } from '!/stats/application/get-zone-list';
@@ -45,8 +45,8 @@ const StatsSummary = () => {
   const [selectedZoneID, setSelectedZoneID] = useState<string>('ALL');
   const [done, setDone] = useState(false);
   const [arg, setArg] = useState<SearchZoneArg>({
-    start_time: newDate([-7, 'day']).toISOString(),
-    end_time: newDate().toISOString(),
+    begin_date: newDate([-7, 'day']).toISOString(),
+    end_date: newDate().toISOString(),
   });
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
   const [graphData, setGraphData] = useState<LineProps['data']>([]);
@@ -54,15 +54,15 @@ const StatsSummary = () => {
   const [zoneData, setZoneData] = useState<ZoneData[]>([]);
 
   const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data, isValidating } = useZoneStats({ arg: arg });
+  const { mutate, data, isValidating } = useZoneStats({ arg });
   const { data: zoneList, mutate: zoneListMutate } = useZoneList();
 
   /* ======   function    ====== */
   const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
     if (!(duration instanceof Array)) return;
     const arg: SearchZoneArg = {
-      start_time: duration[0].toISOString(),
-      end_time: duration[1].toISOString(),
+      begin_date: duration[0].toISOString(),
+      end_date: duration[1].toISOString(),
     };
 
     await Promise.all([setArg(arg)]);
@@ -105,7 +105,7 @@ const StatsSummary = () => {
   };
 
   const onClickZoneCard = async (zoneID: number) => {
-    let zoneArr = data?.filter((x) => x.zoneId === zoneID);
+    let zoneArr = data?.rows.filter((x) => x.zoneId === zoneID);
     let graphData: LineProps['data'] = [
       { id: 'alarm', data: [] },
       { id: 'carrier', data: [] },
@@ -126,7 +126,7 @@ const StatsSummary = () => {
     setSelectedZoneID(zoneID.toString());
   };
 
-  const rearrangeData = (data: StatsSummaryData[]) => {
+  const rearrangeData = (data: StatsSummaryDataRow[]) => {
     let newRenderZoneList: ZoneData[] = [];
     let dateIndex = 0;
     let alarm = 0;
@@ -199,10 +199,9 @@ const StatsSummary = () => {
   }, [scrollDeps]);
 
   useEffect(() => {
-    data && rearrangeData(data);
+    data?.rows && rearrangeData(data.rows);
   }, [data]);
   useEffect(() => {
-    zoneListMutate();
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
