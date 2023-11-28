@@ -1,91 +1,86 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar, Pagination } from '@library-frontend/ui';
-import { createLogger, newDate } from '@package-frontend/utils';
+import { Button, Calendar, Pagination, ToastWithPortal } from '@library-frontend/ui';
+import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg } from '!/stats/application/get-alarmInfo';
-import { useGetCarrierInfo } from '!/stats/application/get-carrierInfo';
+import { useCarrierStats, SearchArg } from '!/stats/application/get-carrier-stats';
 import Table from '@/Table';
+import { VisibilityColumn, VisibilityState } from '@tanstack/react-table';
+import { TABLE_COLUMN_VISIBILITY } from '!/storage/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Carrier');
 const pageSize = 10;
+
 const StatsCarrier = () => {
   /* ======   variables   ====== */
+  const columnVisibility = LocalStorage.get<VisibilityColumn>(TABLE_COLUMN_VISIBILITY['carrier/table']) ?? {};
   const { t } = useTranslation();
 
   const { setChildren } = useHeaderContext();
-
-  const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
   const [totalPageNum, setTotalPageNum] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [findKey, setFindKey] = useState('');
   const [arg, setArg] = useState<SearchArg>({
-    begin_date: newDate().toISOString(),
-    end_date: newDate([1, 'day']).toISOString(),
-    page: 0,
+    begin_date: newDate([-7, 'day']).toISOString(),
+    end_date: newDate().toISOString(),
+    page: 1,
     page_size: pageSize,
+    find_key: '',
   });
+  const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
+  const currentPage = useMemo(() => arg.page - 1, [arg]);
 
-  const { error, data, mutate } = useGetCarrierInfo({ arg: arg });
+  const { error, data, mutate } = useCarrierStats({ arg });
 
   /* ======   function    ====== */
+  const handleVisibility = async (value: VisibilityState) => {
+    LocalStorage.set(TABLE_COLUMN_VISIBILITY['carrier/table'], value);
+    logger(value);
+  };
   const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
-    if (duration instanceof Array) {
-      setDuration(duration);
-      const arg: SearchArg = {
-        begin_date: duration[0].toISOString(),
-        end_date: duration[1].toISOString(),
-        page: 0,
-        page_size: pageSize,
-      };
-      await Promise.all([setArg(arg)]);
-      mutate();
-    }
-    setCurrentPage(0);
+    if (!(duration instanceof Array)) return;
+
+    await Promise.all([
+      setArg((prev) => ({ ...prev, begin_date: duration[0].toISOString(), end_date: duration[1].toISOString() })),
+    ]);
+    mutate();
   };
 
   const handleSearchKeyword = async (character: string) => {
     if (character === '') return;
 
-    await Promise.all([setFindKey(character)]);
-    handleSearch(0);
-    setCurrentPage(0);
-  };
-
-  const handleSearch = async (page: number) => {
-    let arg: SearchArg = {
-      begin_date: duration[0].toISOString(),
-      end_date: duration[1].toISOString(),
-      page: page,
-      page_size: pageSize,
-    };
-    if (findKey.length > 0) arg.find_key = findKey;
-    await Promise.all([setArg(arg)]);
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        find_key: character,
+      })),
+    ]);
     mutate();
   };
 
-  const handleChangePage = (page: number) => {
-    handleSearch(page);
-    setCurrentPage(page);
+  const handleChangePage = async (page: number) => {
+    const nextPage = page + 1;
+    if (nextPage === currentPage) return;
+
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        page: nextPage,
+      })),
+    ]);
+    mutate();
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (data?.total_count) setTotalPageNum(Math.ceil(data.total_count / pageSize));
+    if (data?.totalCount) setTotalPageNum(Math.ceil(data.totalCount / pageSize));
   }, [data]);
   useEffect(() => {
-    setArg({
-      begin_date: newDate().toISOString(),
-      end_date: newDate([1, 'day']).toISOString(),
-      page: 0,
-      page_size: 10,
-    });
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
+          defaultValue={currentDuration}
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
@@ -97,39 +92,36 @@ const StatsCarrier = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', handleSearchKeyword, error, mutate);
+  logger('render', LocalStorage.get<VisibilityState>('carrier/table'));
   return (
     <>
+      <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <Table
-        thead={['CarrierID', 'ZoneIDFrom', 'ZoneIDFromName', 'StartTime', 'ZoneIDTo', 'ZoneIDToName', 'EndTime']}
-        data={
-          data
-            ? data.rows
-            : [
-                {
-                  CarrierID: '-',
-                  CommandID: '-',
-                  TaskID: 0,
-                  ZoneIDFromName: '-',
-                  StartTime: '-',
-                  ZoneIDToName: '-',
-                  EndTime: '-',
-                  ZoneIDFrom: 0,
-                  ZoneIDTo: 0,
-                },
-              ]
-        }
+        thead={[
+          'carrierId',
+          'endTime',
+          'startTime',
+          'taskId',
+          'zoneIdFrom',
+          'zoneIdFromName',
+          'zoneIdTo',
+          'zoneIdToName',
+        ]}
+        cacheColumnVisibility={columnVisibility}
+        setCacheColumnVisibility={handleVisibility}
+        data={data?.rows}
         makePagination={false}
-        makeColumnSelect={false}
         onSearch={handleSearchKeyword}
         textAlignCenter={true}
-      ></Table>
-      <Pagination
-        onChange={handleChangePage}
-        totalPageNum={totalPageNum}
-        currentPageIndex={currentPage}
-        hasDoubleArrow={true}
       />
+      <div className="text-center mt-3">
+        <Pagination
+          onChange={handleChangePage}
+          totalPageNum={totalPageNum}
+          currentPageIndex={currentPage}
+          hasDoubleArrow={true}
+        />
+      </div>
     </>
   );
 };

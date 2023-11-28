@@ -1,89 +1,62 @@
-import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar, ToastWithPortal } from '@library-frontend/ui';
+import ChartLine from '@/Chart/Line';
 import { createLogger, newDate } from '@package-frontend/utils';
-import { Dayjs } from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchZoneArg } from '!/stats/application/get-zone-stats';
-import { useZoneStats } from '!/stats/application/get-zone-stats';
-import { useZoneList } from '!/stats/application/get-zone-list';
-import Table from '@/Table';
-import StatsSummaryGraphic, { StatsSummaryGraphicProps } from './Graphic';
+import { LineProps } from '@nivo/line';
+import { Row } from '@tanstack/react-table';
+import { StatsSummaryDataRow } from '!/stats/domain';
+import { useMemo } from 'react';
 
 /* ======   interface   ====== */
-// enum TOT_AVR {
-//   carrierTot = 0,
-//   carrierAvr,
-//   alarmTot,
-//   alarmAvr,
-// }
 
-// enum SORT_VALUE {
-//   zoneID = 0,
-//   alarm,
-//   carrier,
-// }
-
-// interface ZoneData {
-//   zoneId: number;
-//   displayName: string;
-//   alarmNum: number;
-//   carrierNum: number;
-//   warningNum: number;
-// }
+export interface StatsSummaryGraphicProps<T> {
+  statsData?: StatsSummaryDataRow[];
+  selectedRows?: Row<T>[];
+}
 /* ======    global     ====== */
-const logger = createLogger('pages/Stats/Zone');
-// const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-md';
-// const colClassName = 'flex-auto justify-center';
-// const pagePerCount = 30;
+const logger = createLogger('pages/Stats/Summary/Graphic');
 
-const StatsSummary = () => {
+const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphicProps<T>) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { setChildren } = useHeaderContext();
-  const [arg, setArg] = useState<SearchZoneArg>({
-    begin_date: newDate([-30, 'day']).toISOString(),
-    end_date: newDate().toISOString(),
-  });
-  const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
-  // const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
-  // const [graphData, setGraphData] = useState<LineProps['data']>([]);
-  // const [renderZone, setRenderZone] = useState<ZoneData[]>([]);
-  // const [zoneData, setZoneData] = useState<ZoneData[]>([]);
+  const length = selectedRows?.length;
+  const currentZones = selectedRows?.map((r) => statsData?.[+r.id]);
+  const zoneId = currentZones?.map((x) => x?.zoneId).join(',') || t('빈값');
+  const carrierTotal = currentZones?.reduce((a, v) => a + (v?.carrierNum ?? 0), 0);
+  const carrierAverage = Math.floor(!carrierTotal || !length ? 0 : carrierTotal / length);
+  const alarmTotal = currentZones?.reduce((a, v) => a + (v?.alarmNum ?? 0), 0);
+  const alarmAverage = Math.floor(!alarmTotal || !length ? 0 : alarmTotal / length);
+  const graphData: LineProps['data'] = useMemo(() => {
+    if (!currentZones) return [];
+    const alarmData: Record<string, number> = {};
+    const carrierData: Record<string, number> = {};
 
-  // const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data: statsData, error: statsError } = useZoneStats({ arg });
-  const { data: zoneData, error: zoneError } = useZoneList();
-  const renderZone = useMemo(
-    () =>
-      statsData?.rows.map((x) => {
-        const currentZoneList = zoneData?.zones.find((z) => z.zoneId === x.zoneId);
-        return {
-          ...x,
-          ...currentZoneList,
-        };
-      }),
-    [statsData, zoneData],
-  );
-  const statsSummaryGraphicProps: StatsSummaryGraphicProps<typeof renderZone> = useMemo(
-    () => ({
-      statsData: statsData?.rows,
-      zoneData: zoneData?.zones,
-    }),
-    [statsData, zoneData],
-  );
+    currentZones
+      .filter((zone) => zone?.date)
+      .sort((a, b) => newDate(a!.date).diff(b!.date))
+      .forEach((zone) => {
+        if (!zone) return;
+        const { date, alarmNum, carrierNum } = zone;
+        alarmData[date] = (alarmData[date] ?? 0) + (alarmNum ?? 0);
+        carrierData[date] = (carrierData[date] ?? 0) + (carrierNum ?? 0);
+      });
+    logger(alarmData, carrierData);
+    return [
+      { id: 'alarm', data: Object.entries(alarmData).map(([key, value]) => ({ x: key, y: value })) },
+      { id: 'carrier', data: Object.entries(carrierData).map(([key, value]) => ({ x: key, y: value })) },
+    ];
+  }, [statsData, selectedRows]);
 
   /* ======   function    ====== */
-  const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
-    if (!(duration instanceof Array)) return;
-    const arg: SearchZoneArg = {
-      begin_date: duration[0].toISOString(),
-      end_date: duration[1].toISOString(),
-    };
+  // const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
+  //   if (!(duration instanceof Array)) return;
+  //   const arg: SearchZoneArg = {
+  //     begin_date: duration[0].toISOString(),
+  //     end_date: duration[1].toISOString(),
+  //   };
 
-    await Promise.all([setArg(arg)]);
-    mutate();
-  };
+  //   await Promise.all([setArg(arg)]);
+  //   mutate();
+  // };
 
   // const handleChipChange = async (index: number) => {
   //   let newZoneData = zoneData;
@@ -142,7 +115,7 @@ const StatsSummary = () => {
   //   setSelectedZoneId(zoneID.toString());
   // };
 
-  // const rearrangeData = (data: StatsSummaryDataRow[]) => {
+  // const rearrangeData = (data: StatsSummaryGraphicDataRow[]) => {
   //   const newRenderZoneList: ZoneData[] = [];
   //   let dateIndex = 0;
   //   let alarm = 0;
@@ -211,45 +184,33 @@ const StatsSummary = () => {
   //   // if (renderZone.length + pagePerCount >= zoneData.length) setDone(true);
   // }, [scrollDeps]);
 
-  useEffect(() => {
-    setChildren(
-      <div className="flex items-center gap-2">
-        <Calendar
-          defaultValue={currentDuration}
-          placeholder={t('날짜를 선택해 주세요.')}
-          selectRangeHolder={t('기간을 선택해 주세요.')}
-          tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
-          selectRange
-          onChange={handleCalenderChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
-        />
-      </div>,
-    );
-    return () => setChildren(undefined);
-  }, []);
-  logger('render');
+  logger('render', selectedRows);
   return (
-    <>
-      <ToastWithPortal open={statsError?.message}>{statsError?.message}</ToastWithPortal>
-      <ToastWithPortal open={zoneError?.message}>{zoneError?.message}</ToastWithPortal>
-
-      <div className="relative pt-80">
-        {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
-        <Table
-          allRowSelection={true}
-          // initialRowSelection={}
-          thead={['no', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
-          // cacheColumnVisibility={columnVisibility}
-          // setCacheColumnVisibility={handleVisibility}
-          data={renderZone}
-          makePagination={true}
-          renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
-          // onSearch={handleSearchKeyword}
-          textAlignCenter={true}
-        />
+    <div className="absolute top-4 left-0 w-full bg-white">
+      <div className="h-60 flex rounded-xl border mb-3">
+        <div className="h-full w-1/5 p-1 border-r-2 pt-4 flex flex-col gap-1">
+          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md truncate">
+            {t('Zone ID')} :{zoneId}
+          </div>
+          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
+            {t('Carrier Total')} :{carrierTotal}
+          </div>
+          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
+            {t('Carrier Average')} :{carrierAverage}
+          </div>
+          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
+            {t('Alarm Total')} :{alarmTotal}
+          </div>
+          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
+            {t('Alarm Average')} :{alarmAverage}
+          </div>
+        </div>
+        <div className="h-full w-4/5">
+          <ChartLine data={graphData} />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default StatsSummary;
+export default StatsSummaryGraphic;

@@ -1,8 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import '@package-frontend/pretendard';
 import '@package-frontend/noto-emoji';
-import ModalWithBtn from '@/Modal/WithBtn';
-import Combo from '@/Combo';
+import Calendar from '@/Calendar';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
@@ -12,10 +11,7 @@ const App = () => {
   logger('test');
   return (
     <>
-      <ModalWithBtn>
-        <Combo options={[{ value: '1', label: 'dddd' }]} />
-        dawdawdawdawdawd
-      </ModalWithBtn>
+      <Calendar defaultValue={'2017-01-01'}></Calendar>
     </>
   );
 };

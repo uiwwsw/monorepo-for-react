@@ -34,7 +34,7 @@ const PrivateLayout = () => {
           }}
         >
           <Header />
-          <main className="flex-auto flex flex-col p-3 max-w-5xl m-auto w-full">
+          <main className="flex-auto flex flex-col p-3 xl:max-w-7xl lg:max-w-3xl m-auto w-full">
             <Outlet />
           </main>
         </HeaderContext.Provider>

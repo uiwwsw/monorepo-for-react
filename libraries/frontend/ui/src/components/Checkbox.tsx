@@ -1,10 +1,10 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {
-  children?: string;
+  children?: ReactNode;
   indeterminate?: boolean;
 }
 /* ======    global     ====== */
