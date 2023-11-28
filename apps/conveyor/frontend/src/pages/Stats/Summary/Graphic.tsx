@@ -3,7 +3,7 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import { LineProps } from '@nivo/line';
 import { Row } from '@tanstack/react-table';
-import { StatsSummaryDataRow, ZoneListZone } from '!/stats/domain';
+import { StatsSummaryDataRow } from '!/stats/domain';
 import { useMemo } from 'react';
 
 /* ======   interface   ====== */

@@ -1,5 +1,5 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar, Pagination } from '@library-frontend/ui';
+import { Button, Calendar, Pagination, ToastWithPortal } from '@library-frontend/ui';
 import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
@@ -95,6 +95,7 @@ const StatsCarrier = () => {
   logger('render', LocalStorage.get<VisibilityState>('carrier/table'));
   return (
     <>
+      <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <Table
         thead={[
           'carrierId',

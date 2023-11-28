@@ -1,15 +1,12 @@
-import ChartLine from '@/Chart/Line';
 import { useHeaderContext } from '@/HeaderContext';
-import { Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
+import { Button, Calendar, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatsSummaryData, StatsSummaryDataRow, ZoneList } from '!/stats/domain';
 import { SearchZoneArg } from '!/stats/application/get-zone-stats';
 import { useZoneStats } from '!/stats/application/get-zone-stats';
 import { useZoneList } from '!/stats/application/get-zone-list';
-import { LineProps } from '@nivo/line';
 import Table from '@/Table';
 import StatsSummaryGraphic, { StatsSummaryGraphicProps } from './Graphic';
 
@@ -55,8 +52,8 @@ const StatsSummary = () => {
   // const [zoneData, setZoneData] = useState<ZoneData[]>([]);
 
   // const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data: statsData, isValidating } = useZoneStats({ arg });
-  const { data: zoneData } = useZoneList();
+  const { mutate, data: statsData, error: statsError } = useZoneStats({ arg });
+  const { data: zoneData, error: zoneError } = useZoneList();
   const renderZone = useMemo(
     () =>
       statsData?.rows.map((x) => {
@@ -230,23 +227,28 @@ const StatsSummary = () => {
     );
     return () => setChildren(undefined);
   }, []);
-  logger('render', isValidating);
+  logger('render');
   return (
-    <div className="relative pt-80">
-      {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
-      <Table
-        allRowSelection={true}
-        // initialRowSelection={}
-        thead={['no', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
-        // cacheColumnVisibility={columnVisibility}
-        // setCacheColumnVisibility={handleVisibility}
-        data={renderZone}
-        makePagination={true}
-        renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
-        // onSearch={handleSearchKeyword}
-        textAlignCenter={true}
-      />
-    </div>
+    <>
+      <ToastWithPortal open={statsError?.message}>{statsError?.message}</ToastWithPortal>
+      <ToastWithPortal open={zoneError?.message}>{zoneError?.message}</ToastWithPortal>
+
+      <div className="relative pt-80">
+        {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
+        <Table
+          allRowSelection={true}
+          // initialRowSelection={}
+          thead={['no', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
+          // cacheColumnVisibility={columnVisibility}
+          // setCacheColumnVisibility={handleVisibility}
+          data={renderZone}
+          makePagination={true}
+          renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
+          // onSearch={handleSearchKeyword}
+          textAlignCenter={true}
+        />
+      </div>
+    </>
   );
 };
 
