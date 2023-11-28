@@ -1,14 +1,13 @@
-/* ======   interface   ====== */
-
 import { useTcmBackupDelete } from '!/control/application/delete-tcm-backup';
 import { useTcmBackup } from '!/control/application/get-tcm-backup';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import { ResponseResult } from '!/control/domain';
-import { Button, Combo, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
+import { Button, Combo, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useEffect, useState } from 'react';
 
-interface ModalContentFirmwareProps {
+/* ======   interface   ====== */
+export interface ModalContentFirmwareProps {
   tid?: number;
 }
 
@@ -22,9 +21,10 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
   const { data: backupList, error } = useTcmBackup(tid);
   const { trigger: deleteTrigger } = useTcmBackupDelete();
   const { trigger: updateTrigger } = useUpdateFirmware();
-  const [toastMessageUpdate, setToastMessageUpdate] = useState('');
+  const [toastMessages, setToastMessages] = useState<string[]>([]);
 
   /* ======   function    ====== */
+  const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
   const handleFileSelect = (selectedFileName: string) => {
     setSelectedFile(selectedFileName);
   };
@@ -42,7 +42,7 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
 
   const handleFileUpdate = async () => {
     if (tid === undefined) return;
-    setToastMessageUpdate('선택한 펌웨어 업데이트 중입니다.');
+    showToast('선택한 펌웨어 업데이트 중입니다.');
 
     try {
       const status = await updateTrigger({
@@ -50,12 +50,12 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
         fileName: selectedFile,
       });
       if (status?.result === ResponseResult.SUCCESS) {
-        setToastMessageUpdate(`펌웨어 업데이트 완료`);
+        showToast(`펌웨어 업데이트 완료`);
       } else {
-        setToastMessageUpdate(`펌웨어 업데이트 실패, ${status?.reason}`);
+        showToast(`펌웨어 업데이트 실패, ${status?.reason}`);
       }
     } catch (error) {
-      setToastMessageUpdate(`${error}`);
+      showToast(`${error}`);
     }
   };
 
@@ -68,6 +68,9 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
   logger(error);
   return (
     <>
+      {toastMessages.map((x) => (
+        <ToastWithPortal open>{x}</ToastWithPortal>
+      ))}
       <h2 className="text-lg font-semibold">TCM {tid} 펌웨어 업데이트</h2>
       <div className="flex flex-col space-y-4 mt-4">
         <div>
@@ -99,16 +102,9 @@ const ModalContentFirmware = ({ tid }: ModalContentFirmwareProps) => {
             >
               파일을 삭제하시겠습니까?
             </ModalWithBtn>
-            <ToastWithBtn
-              button={
-                <Button themeSize={'sm'} onClick={handleFileUpdate}>
-                  업데이트
-                </Button>
-              }
-              duration={Infinity}
-            >
-              {toastMessageUpdate}
-            </ToastWithBtn>
+            <Button themeSize={'sm'} onClick={handleFileUpdate}>
+              업데이트
+            </Button>
           </div>
         )}
       </div>

@@ -11,7 +11,7 @@ const Stats = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
-  useEffect(() => navigate('/stats/zone', { replace: true }));
+  useEffect(() => navigate('/stats/summary', { replace: true }));
   return <></>;
 };
 

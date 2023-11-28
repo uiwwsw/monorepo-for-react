@@ -245,7 +245,6 @@ const StatsSummary = () => {
           makePagination={true}
           renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
           // onSearch={handleSearchKeyword}
-          textAlignCenter={true}
         />
       </div>
     </>

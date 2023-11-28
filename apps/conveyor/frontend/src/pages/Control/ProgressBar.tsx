@@ -2,7 +2,6 @@ import { createLogger } from '@package-frontend/utils';
 import { UploadStatus } from '!/control/domain';
 
 /* ======   interface   ====== */
-
 export interface ProgressBarProps {
   value: number;
   status: UploadStatus;

@@ -1,3 +1,4 @@
+import { ROUTES_PATH } from '!/routes/domain';
 import { LazyExoticComponent, lazy } from 'react';
 
 const Control = lazy(() => import('src/pages/Control/Page'));
@@ -12,7 +13,7 @@ const Users = lazy(() => import('src/pages/Users/Page'));
 const UpdatePassword = lazy(() => import('src/pages/UpdatePassword'));
 export interface Group {
   name: string;
-  path: string;
+  path: ROUTES_PATH;
   node: LazyExoticComponent<() => JSX.Element>;
 }
 export interface Tab extends Group {
@@ -23,7 +24,7 @@ export interface Tab extends Group {
 export const authRoutes: Tab[] = [
   {
     icon: '🔩',
-    path: '/control',
+    path: ROUTES_PATH['/control'],
     name: '조작',
     node: Control,
     // group: [{ path: '/control/control', name: '조작', node: Control }],
@@ -31,23 +32,23 @@ export const authRoutes: Tab[] = [
   {
     icon: '🧮',
     name: '통계',
-    path: '/stats',
+    path: ROUTES_PATH['/stats'],
     node: Stats,
     group: [
-      { path: '/stats/summary', name: 'SUMMARY', node: StatsSummary },
-      { path: '/stats/alarm', name: 'ALARM', node: StatsAlarm },
-      { path: '/stats/carrier', name: 'CARRIER', node: StatsCarrier },
+      { path: ROUTES_PATH['/stats/summary'], name: 'SUMMARY', node: StatsSummary },
+      { path: ROUTES_PATH['/stats/alarm'], name: 'ALARM', node: StatsAlarm },
+      { path: ROUTES_PATH['/stats/carrier'], name: 'CARRIER', node: StatsCarrier },
     ],
   },
   {
     icon: '👥',
-    path: '/users',
+    path: ROUTES_PATH['/users'],
     name: '유저관리',
     node: Users,
   },
   {
     icon: '🔏',
-    path: '/success-update-password',
+    path: ROUTES_PATH['/update-password'],
     name: '비밀번호변경',
     node: UpdatePassword,
   },
@@ -55,19 +56,19 @@ export const authRoutes: Tab[] = [
 export const commonRoutes: Tab[] = [
   {
     icon: '🔐',
-    path: '/sign-up',
+    path: ROUTES_PATH['/sign-up'],
     name: '회원가입',
     node: SignUp,
   },
   {
     icon: '🗝️',
-    path: '/sign-in',
+    path: ROUTES_PATH['/sign-in'],
     name: '로그인',
     node: SignIn,
   },
   {
     icon: '💊',
-    path: '/help',
+    path: ROUTES_PATH['/help'],
     name: '도움말',
     node: Help,
   },

@@ -1,4 +1,4 @@
-import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
+import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
 import { ResponseResult, TcmInfo } from '!/control/domain';
@@ -15,77 +15,77 @@ export interface TcmSubProps {
 const logger = createLogger('pages/Control/TcmSub');
 const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
-  const [toastMessageKill, setToastMessageKill] = useState('');
+  const [toastMessages, setToastMessages] = useState<string[]>([]);
+
   const { trigger: killTrigger } = useTcmKill();
 
   /* ======   function    ====== */
+  const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
   const handleKillClick = async () => {
     if (!row || (row.original && typeof row.original.tid !== 'number')) return;
 
-    setToastMessageKill('TCM 프로세스 Kill 중입니다.');
+    showToast('TCM 프로세스 Kill 중입니다.');
     try {
       const status = await killTrigger({ tid: row?.original.tid });
       if (status?.result === ResponseResult.SUCCESS) {
-        setToastMessageKill(`TCM 프로세스 Kill 완료`);
+        showToast(`TCM 프로세스 Kill 완료`);
       } else {
-        setToastMessageKill(`TCM 프로세스 Kill 실패, ${status?.reason}`);
+        showToast(`TCM 프로세스 Kill 실패, ${status?.reason}`);
       }
     } catch (error) {
-      setToastMessageKill(`${error}`);
+      showToast(`${error}`);
     }
   };
 
   logger('render');
   /* ======   useEffect   ====== */
   return (
-    <div className="flex justify-end space-x-2 items-center p-2">
-      <ToastWithBtn
-        button={
-          <Button themeSize="sm" onClick={handleKillClick}>
-            Process Kill
-          </Button>
-        }
-        duration={Infinity}
-      >
-        {toastMessageKill}
-      </ToastWithBtn>
+    <>
+      {toastMessages.map((x) => (
+        <ToastWithPortal open>{x}</ToastWithPortal>
+      ))}
+      <div className="flex justify-end space-x-2 items-center p-2">
+        <Button themeSize="sm" onClick={handleKillClick}>
+          Process Kill
+        </Button>
 
-      <ModalWithBtn
-        button={
-          <Button themeSize={'sm'} themeColor={'tertiary'}>
-            Firmware
-          </Button>
-        }
-        hasButton={['CANCEL']}
-        persist
-      >
-        <ModalContentFirmware tid={row?.original.tid} />
-      </ModalWithBtn>
+        <ModalWithBtn
+          button={
+            <Button themeSize={'sm'} themeColor={'tertiary'}>
+              Firmware
+            </Button>
+          }
+          hasButton={['CANCEL']}
+          persist
+        >
+          <ModalContentFirmware tid={row?.original.tid} />
+        </ModalWithBtn>
 
-      <ModalWithBtn
-        button={
-          <Button themeSize={'sm'} themeColor={'tertiary'}>
-            Alive
-          </Button>
-        }
-        hasButton={['CANCEL']}
-        persist
-      >
-        <ModalContentDetail tid={row?.original.tid} clientStatus={row?.original.adjTcmConnectionDetail} />
-      </ModalWithBtn>
+        <ModalWithBtn
+          button={
+            <Button themeSize={'sm'} themeColor={'tertiary'}>
+              Alive
+            </Button>
+          }
+          hasButton={['CANCEL']}
+          persist
+        >
+          <ModalContentDetail tid={row?.original.tid} clientStatus={row?.original.adjTcmConnectionDetail} />
+        </ModalWithBtn>
 
-      <ModalWithBtn
-        button={
-          <Button themeSize={'sm'} themeColor={'tertiary'}>
-            Logs
-          </Button>
-        }
-        hasButton={['CANCEL']}
-        persist
-      >
-        <ModalContentLogsTcm tid={row?.original.tid} />
-      </ModalWithBtn>
-    </div>
+        <ModalWithBtn
+          button={
+            <Button themeSize={'sm'} themeColor={'tertiary'}>
+              Logs
+            </Button>
+          }
+          hasButton={['CANCEL']}
+          persist
+        >
+          <ModalContentLogsTcm tid={row?.original.tid} />
+        </ModalWithBtn>
+      </div>
+    </>
   );
 };
 

@@ -2,7 +2,8 @@ import { useTcmLogList } from '!/control/application/get-tcm-logList';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
-interface ModalContentLogsTcmProps {
+/* ======   interface   ====== */
+export interface ModalContentLogsTcmProps {
   tid?: number;
 }
 

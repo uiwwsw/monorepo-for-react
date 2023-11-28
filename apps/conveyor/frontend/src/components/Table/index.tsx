@@ -43,7 +43,7 @@ const Table = <T,>({
   onSearch,
   data,
   allRowSelection,
-  textAlignCenter,
+  textAlignCenter = true,
   cacheColumnVisibility,
   setCacheColumnVisibility,
   makePagination = false,
@@ -182,7 +182,7 @@ const Table = <T,>({
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
+    if (allRowSelection) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
   }, [allRowSelection]);
   logger('render');
   return (

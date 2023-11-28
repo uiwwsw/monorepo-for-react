@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { AUTH_TOAST } from '!/query-param/domain';
+import { QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -34,7 +34,7 @@ const SignUp = () => {
     await trigger(arg);
     setSuccess(true);
   };
-  const handleModalClose = () => navigate(`/sign-in?toast=${AUTH_TOAST['success-sign-up']}`);
+  const handleModalClose = () => navigate(`/sign-in?toast=${QUERY_PARAM_TOAST['success-sign-up']}`);
   /* ======   useEffect   ====== */
 
   logger('render');

@@ -112,7 +112,6 @@ const StatsCarrier = () => {
         data={data?.rows}
         makePagination={false}
         onSearch={handleSearchKeyword}
-        textAlignCenter={true}
       />
       <div className="text-center mt-3">
         <Pagination
