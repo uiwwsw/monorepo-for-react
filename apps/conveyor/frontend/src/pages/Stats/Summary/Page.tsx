@@ -3,7 +3,7 @@ import { useHeaderContext } from '@/HeaderContext';
 import { Input, Chip, Button, useInfiniteScroll, Calendar, Spinner } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatsSummaryData, StatsSummaryDataRow, ZoneList } from '!/stats/domain';
 import { SearchZoneArg } from '!/stats/application/get-zone-stats';
@@ -48,6 +48,7 @@ const StatsSummary = () => {
     begin_date: newDate([-7, 'day']).toISOString(),
     end_date: newDate().toISOString(),
   });
+  const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
   const [graphTotAvr, setGraphTotAvr] = useState<number[]>([0, 0, 0, 0]);
   const [graphData, setGraphData] = useState<LineProps['data']>([]);
   const [renderZone, setRenderZone] = useState<ZoneData[]>([]);
@@ -105,50 +106,51 @@ const StatsSummary = () => {
   };
 
   const onClickZoneCard = async (zoneID: number) => {
-    let zoneArr = data?.rows.filter((x) => x.zoneId === zoneID);
-    let graphData: LineProps['data'] = [
+    const zoneArr = data?.rows.filter((x) => x.zoneId === zoneID);
+    const graphData: LineProps['data'] = [
       { id: 'alarm', data: [] },
       { id: 'carrier', data: [] },
     ];
-    let dateLength = zoneArr?.length ? zoneArr.length : 1;
+    const dateLength = zoneArr?.length ? zoneArr.length : 1;
     let alarmTotal = 0;
     let carrierTotal = 0;
-    zoneArr?.map((z) => {
+    zoneArr?.forEach((z) => {
       alarmTotal += z.alarmNum;
       carrierTotal += z.carrierNum;
       graphData[0].data.push({ x: z.date, y: z.alarmNum });
       graphData[1].data.push({ x: z.date, y: z.carrierNum });
     });
-    let carrierAverage = Math.floor(carrierTotal / dateLength);
-    let alarmAverage = Math.floor(alarmTotal / dateLength);
+    const carrierAverage = Math.floor(carrierTotal / dateLength);
+    const alarmAverage = Math.floor(alarmTotal / dateLength);
     setGraphTotAvr([carrierTotal, carrierAverage, alarmTotal, alarmAverage]);
     setGraphData(graphData);
     setSelectedZoneID(zoneID.toString());
   };
 
   const rearrangeData = (data: StatsSummaryDataRow[]) => {
-    let newRenderZoneList: ZoneData[] = [];
+    const newRenderZoneList: ZoneData[] = [];
     let dateIndex = 0;
     let alarm = 0;
     let carrier = 0;
-    let date = [data[0].date];
-    let graphData: LineProps['data'] = [
+    const date = [data[0].date];
+    const graphData: LineProps['data'] = [
       { id: 'alarm', data: [] },
       { id: 'carrier', data: [] },
     ];
     let carrierTotal = 0;
     let alarmTotal = 0;
 
-    zoneList?.map((zone: ZoneList) => {
+    zoneList?.forEach((zone: ZoneList) => {
       let alarmNum = 0,
         carrierNum = 0,
         warningNum = 0;
-      let filteredArr = data?.filter((x) => x.zoneId === zone.ZoneID);
-      filteredArr?.map((zone) => {
-        alarmNum += zone.alarmNum;
-        carrierNum += zone.carrierNum;
-        warningNum += zone.warningNum;
-      });
+      data
+        .filter((x) => x.zoneId === zone.ZoneID)
+        .forEach((zone) => {
+          alarmNum += zone.alarmNum;
+          carrierNum += zone.carrierNum;
+          warningNum += zone.warningNum;
+        });
       newRenderZoneList.push({
         zoneId: zone.ZoneID,
         displayName: zone.DisplayName,
@@ -158,7 +160,7 @@ const StatsSummary = () => {
       });
     });
 
-    data.map((d) => {
+    data.forEach((d) => {
       if (d.date === date[dateIndex]) {
         alarm += d.alarmNum;
         carrier += d.carrierNum;
@@ -205,6 +207,7 @@ const StatsSummary = () => {
     setChildren(
       <div className="flex items-center gap-2">
         <Calendar
+          defaultValue={currentDuration}
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
