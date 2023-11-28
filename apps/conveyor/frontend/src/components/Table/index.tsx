@@ -25,6 +25,7 @@ import Empty from '@/Empty';
 export interface TableProps<T> {
   thead: string[];
   data?: T[];
+  allRowSelection?: boolean;
   cacheColumnVisibility?: VisibilityState;
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
@@ -35,12 +36,13 @@ export interface TableProps<T> {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('Component/Table');
+const logger = createLogger('components/Table');
 
 const Table = <T,>({
   thead,
   onSearch,
   data,
+  allRowSelection,
   textAlignCenter,
   cacheColumnVisibility,
   setCacheColumnVisibility,
@@ -179,6 +181,9 @@ const Table = <T,>({
   useEffect(() => {
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
+  useEffect(() => {
+    setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
+  }, [allRowSelection]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
@@ -222,7 +227,7 @@ const Table = <T,>({
           />
           {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
         </div>
-        {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
+        {renderSelectComponent && (
           <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
         )}
       </div>

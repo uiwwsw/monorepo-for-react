@@ -44,8 +44,11 @@ export interface StatsCarrierData {
   totalCount: number;
 }
 export interface ZoneList {
-  No: number;
-  ZoneID: number;
-  DisplayName: string;
-  PhysicalType: number;
+  zones: ZoneListZone[];
+}
+export interface ZoneListZone {
+  no: number;
+  zoneId: number;
+  displayName: string;
+  physicalType: number;
 }
