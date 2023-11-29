@@ -11,7 +11,7 @@ export interface ModalContentLogsTcmProps {
 const logger = createLogger('pages/Control/ModalContentLogsTcm');
 
 const ModalContentLogsTcm = ({ tid }: ModalContentLogsTcmProps) => {
-  const { data: logList, error } = useTcmLogList(tid);
+  const { data: logList, error } = useTcmLogList({ tid });
 
   if (error) return <div>Failed to load</div>;
   if (!logList) return <div>Loading...</div>;

@@ -31,7 +31,7 @@ const StatsCarrier = () => {
   const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
   const currentPage = useMemo(() => arg.page - 1, [arg]);
 
-  const { error, data, mutate } = useCarrierStats({ arg });
+  const { error, data, mutate } = useCarrierStats(arg);
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {

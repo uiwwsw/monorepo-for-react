@@ -31,7 +31,7 @@ const StatsAlarm = () => {
   const currentPage = useMemo(() => arg.page - 1, [arg]);
   const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
 
-  const { error, data, mutate } = useAlarmStats({ arg });
+  const { error, data, mutate } = useAlarmStats(arg);
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {

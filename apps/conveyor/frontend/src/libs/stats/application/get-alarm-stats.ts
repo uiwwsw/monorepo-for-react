@@ -60,6 +60,6 @@ async function fetcher(
   return res;
 }
 
-export function useAlarmStats({ arg }: { arg: SearchArg }) {
+export function useAlarmStats(arg: SearchArg) {
   return useSWR('/api/stats/alarm-stats', (url) => fetcher(url, { arg }));
 }

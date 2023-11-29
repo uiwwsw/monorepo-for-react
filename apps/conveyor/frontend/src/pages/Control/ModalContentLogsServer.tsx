@@ -11,7 +11,7 @@ export interface ModalContentLogsServerProps {
 const logger = createLogger('pages/Control/ModalContentLogsServer');
 
 const ModalContentLogsServer = ({ sid }: ModalContentLogsServerProps) => {
-  const { data: logList, error } = useServerLogList(sid);
+  const { data: logList, error } = useServerLogList({ sid });
 
   if (error) return <div>Failed to load</div>;
   if (!logList) return <div>Loading...</div>;

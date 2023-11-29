@@ -35,9 +35,9 @@ export const authRoutes: Tab[] = [
     path: ROUTES_PATH['/stats'],
     node: Stats,
     group: [
-      { path: ROUTES_PATH['/stats/summary'], name: 'SUMMARY', node: StatsSummary },
-      { path: ROUTES_PATH['/stats/alarm'], name: 'ALARM', node: StatsAlarm },
-      { path: ROUTES_PATH['/stats/carrier'], name: 'CARRIER', node: StatsCarrier },
+      { path: ROUTES_PATH['/stats/summary'], name: '요약', node: StatsSummary },
+      { path: ROUTES_PATH['/stats/alarm'], name: '알람', node: StatsAlarm },
+      { path: ROUTES_PATH['/stats/carrier'], name: '케리어', node: StatsCarrier },
     ],
   },
   {

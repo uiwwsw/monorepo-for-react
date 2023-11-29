@@ -52,7 +52,7 @@ const StatsSummary = () => {
   // const [zoneData, setZoneData] = useState<ZoneData[]>([]);
 
   // const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data: statsData, error: statsError } = useZoneStats({ arg });
+  const { mutate, data: statsData, error: statsError } = useZoneStats(arg);
   const { data: zoneData, error: zoneError } = useZoneList();
   const renderZone = useMemo(
     () =>

@@ -56,6 +56,6 @@ async function fetcher(
   return res;
 }
 
-export function useZoneStats({ arg }: { arg: SearchZoneArg }) {
+export function useZoneStats(arg: SearchZoneArg) {
   return useSWR('/api/stats/zone-stats', (url) => fetcher(url, { arg }));
 }

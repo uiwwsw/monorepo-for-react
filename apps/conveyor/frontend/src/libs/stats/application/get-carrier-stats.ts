@@ -147,6 +147,6 @@ async function fetcher(
   return res;
 }
 
-export function useCarrierStats({ arg }: { arg: SearchArg }) {
+export function useCarrierStats(arg: SearchArg) {
   return useSWR('/api/stats/carrier-stats', (url) => fetcher(url, { arg }));
 }

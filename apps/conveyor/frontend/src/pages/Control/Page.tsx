@@ -6,12 +6,12 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useState } from 'react';
-import { Button, ToastWithPortal } from '@library-frontend/ui';
-import { ResponseResult } from '!/control/domain';
+import { useMemo } from 'react';
+import { Button } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
+import useToasts from '#/useToasts';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -21,55 +21,46 @@ const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
-  const { trigger: resumeTrigger } = useResume();
-  const { trigger: pauseTrigger } = usePause();
-  const [toastMessages, setToastMessages] = useState<string[]>([]);
+  const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
+  const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
+  const { Toasts, adapterEvent } = useToasts({ selectedRows: [0] });
+  const disabled = useMemo(() => resumeIsMutating || pauseIsMutating, [resumeIsMutating, pauseIsMutating]);
 
   /* ======   function    ====== */
-  const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
-  const handleResumeClick = async () => {
-    showToast('컨베이어 시스템 RESUME 중입니다.');
-
-    try {
-      const status = await resumeTrigger();
-      if (status?.result === ResponseResult.SUCCESS) {
-        showToast(`컨베이어 시스템 RESUME 완료`);
-      } else {
-        showToast(`컨베이어 시스템 RESUME 실패, ${status?.reason}`);
-      }
-    } catch (error) {
-      showToast(`${error}`);
-    }
-  };
-
-  const handlePauseClick = async () => {
-    showToast('컨베이어 시스템 PAUSE 중입니다.');
-
-    try {
-      const status = await pauseTrigger();
-      if (status?.result === ResponseResult.SUCCESS) {
-        showToast(`컨베이어 시스템 PAUSE 완료`);
-      } else {
-        showToast(`컨베이어 시스템 PAUSE 실패, ${status?.reason}`);
-      }
-    } catch (error) {
-      showToast(`${error}`);
-    }
-  };
+  const handleResumeClick = () =>
+    adapterEvent({
+      startMsg: '컨베이어 시스템 RESUME 중입니다.',
+      successMsg: '컨베이어 시스템 RESUME 완료',
+      failMsg(fails) {
+        return '컨베이어 시스템 RESUME 실패:' + fails[0].message;
+      },
+      event() {
+        return resumeTrigger();
+      },
+    });
+  const handlePauseClick = () =>
+    adapterEvent({
+      startMsg: '컨베이어 시스템 PAUSE 중입니다.',
+      successMsg: '컨베이어 시스템 PAUSE 완료',
+      failMsg(fails) {
+        return '컨베이어 시스템 PAUSE 실패:' + fails[0].message;
+      },
+      event() {
+        return pauseTrigger();
+      },
+    });
 
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <>
-      {toastMessages.map((x) => (
-        <ToastWithPortal open>{x}</ToastWithPortal>
-      ))}
+      {Toasts}
       <div className="flex gap-5 flex-col">
         <div className="flex ml-auto gap-2">
-          <Button themeSize="sm" themeColor="secondary" onClick={handleResumeClick}>
+          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handleResumeClick}>
             Resume
           </Button>
-          <Button themeSize="sm" themeColor="secondary" onClick={handlePauseClick}>
+          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handlePauseClick}>
             Pause
           </Button>
         </div>

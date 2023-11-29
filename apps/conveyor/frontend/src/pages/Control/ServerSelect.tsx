@@ -2,11 +2,12 @@ import { useServerReload } from '!/control/application/post-server-reload';
 import { useServerRestart } from '!/control/application/post-server-restart';
 import { useServerStart } from '!/control/application/post-server-start';
 import { useServerStop } from '!/control/application/post-server-stop';
-import { ResponseResult, ServerInfo } from '!/control/domain';
-import { Button, ToastWithPortal } from '@library-frontend/ui';
+import { ServerInfo } from '!/control/domain';
+import useToasts from '#/useToasts';
+import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 /* ======   interface   ====== */
 export interface ServerSelectProps {
   selectedRows?: Row<ServerInfo>[];
@@ -15,152 +16,86 @@ export interface ServerSelectProps {
 const logger = createLogger('pages/Control/ServerSelect');
 const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   /* ======   variables   ====== */
-  const { trigger: startTrigger } = useServerStart();
-  const { trigger: stopTrigger } = useServerStop();
-  const { trigger: restartTrigger } = useServerRestart();
-  const { trigger: reloadTrigger } = useServerReload();
-  const [toastMessages, setToastMessages] = useState<string[]>([]);
+  const { trigger: startTrigger, isMutating: startIsMutating } = useServerStart();
+  const { trigger: stopTrigger, isMutating: stopIsMutating } = useServerStop();
+  const { trigger: restartTrigger, isMutating: restartIsMutating } = useServerRestart();
+  const { trigger: reloadTrigger, isMutating: reloadIsMutating } = useServerReload();
 
   const selectedSids = useMemo(() => selectedRows?.map((row) => row.original.sid) || [], [selectedRows]);
-  const disabled = useMemo(() => !selectedRows?.length, [selectedRows]);
+  const { Toasts, adapterEvent } = useToasts({ selectedRows: selectedSids });
+  const disabled = useMemo(
+    () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating || reloadIsMutating,
+
+    [selectedRows, startIsMutating, stopIsMutating, restartIsMutating, reloadIsMutating],
+  );
   /* ======   function    ====== */
-  const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
 
-  const handleStartClick = async () => {
-    if (!selectedSids || selectedSids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    showToast('선택한 서버 START 중입니다.');
+  const handleStartClick = () =>
+    adapterEvent({
+      startMsg: '선택한 서버 START 중입니다.',
+      successMsg: '선택한 서버 모두 START 성공 하였습니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedSids.length) return '선택한 서버 모두 START 실패 하였습니다.';
+        return '몇몇 서버 START 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      event(sid) {
+        return startTrigger({ sid });
+      },
+    });
+  const handleStopClick = () =>
+    adapterEvent({
+      startMsg: '선택한 서버 STOP 중입니다.',
+      successMsg: '선택한 서버 모두 STOP 성공 하였습니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedSids.length) return '선택한 서버 모두 STOP 실패 하였습니다.';
+        return '몇몇 서버 STOP 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      event(sid) {
+        return stopTrigger({ sid });
+      },
+    });
 
-    const offlineSids = [];
+  const handleRestartClick = () =>
+    adapterEvent({
+      startMsg: '선택한 서버 RESTART 중입니다.',
+      successMsg: '선택한 서버 모두 RESTART 성공 하였습니다.',
+      failMsg(failSids) {
+        return `서버 ${failSids} RESTART 실패 하였습니다.`;
+      },
+      event(sid) {
+        return restartTrigger({ sid });
+      },
+    });
 
-    for (const sid of selectedSids) {
-      try {
-        const status = await startTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineSids.push(sid);
-        }
-      } catch (error) {
-        logger(`Error starting 서버 with sid ${sid}:`, error);
-        offlineSids.push(sid);
-      }
-    }
-
-    if (offlineSids.length > 0) {
-      logger(`서버 [${offlineSids.join(', ')}] START 실패 하였습니다.`);
-      showToast(`서버 [${offlineSids.join(', ')}] START 실패 하였습니다.`);
-    } else {
-      showToast(`선택한 서버 모두 START 성공 하였습니다.`);
-    }
-  };
-
-  const handleStopClick = async () => {
-    if (!selectedSids || selectedSids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    showToast('선택한 서버 STOP 중입니다.');
-
-    const onlineSids = [];
-
-    for (const sid of selectedSids) {
-      try {
-        const status = await stopTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          onlineSids.push(sid);
-        }
-      } catch (error) {
-        logger(`Error starting 서버 with sid ${sid}:`, error);
-        onlineSids.push(sid);
-      }
-    }
-
-    if (onlineSids.length > 0) {
-      logger(`서버 [${onlineSids.join(', ')}] STOP 실패 하였습니다.`);
-      showToast(`서버 [${onlineSids.join(', ')}] STOP 실패 하였습니다.`);
-    } else {
-      showToast(`선택한 서버 모두 STOP 성공 하였습니다.`);
-    }
-  };
-
-  const handleRestartClick = async () => {
-    if (!selectedSids || selectedSids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    showToast('선택한 서버 RESTART 중입니다.');
-
-    const offlineSids = [];
-
-    for (const sid of selectedSids) {
-      try {
-        const status = await restartTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineSids.push(sid);
-        }
-      } catch (error) {
-        logger(`Error starting 서버 with sid ${sid}:`, error);
-        offlineSids.push(sid);
-      }
-    }
-
-    if (offlineSids.length > 0) {
-      logger(`서버 [${offlineSids.join(', ')}] RESTART 실패 하였습니다.`);
-      showToast(`서버 [${offlineSids.join(', ')}] RESTART 실패 하였습니다.`);
-    } else {
-      showToast(`선택한 서버 모두 RESTART 성공 하였습니다.`);
-    }
-  };
-
-  const handleReloadClick = async () => {
-    if (!selectedSids || selectedSids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    showToast('선택한 서버 RELOAD 중입니다.');
-
-    const offlineSids = [];
-
-    for (const sid of selectedSids) {
-      try {
-        const status = await reloadTrigger({ sid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineSids.push(sid);
-        }
-      } catch (error) {
-        logger(`Error starting 서버 with sid ${sid}:`, error);
-        offlineSids.push(sid);
-      }
-    }
-
-    if (offlineSids.length > 0) {
-      logger(`서버 [${offlineSids.join(', ')}] RELOAD 실패 하였습니다.`);
-      showToast(`서버 [${offlineSids.join(', ')}] RELOAD 실패 하였습니다.`);
-    } else {
-      showToast(`선택한 서버 모두 RELOAD 성공 하였습니다.`);
-    }
-  };
+  const handleReloadClick = () =>
+    adapterEvent({
+      startMsg: '선택한 서버 RELOAD 중입니다.',
+      successMsg: '선택한 서버 모두 RELOAD 성공 하였습니다.',
+      failMsg(failSids) {
+        return `서버 ${failSids} RELOAD 실패 하였습니다.`;
+      },
+      event(sid) {
+        return reloadTrigger({ sid });
+      },
+    });
 
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <>
-      {toastMessages.map((x) => (
-        <ToastWithPortal open>{x}</ToastWithPortal>
-      ))}
+      {Toasts}
       <div className="flex justify-end space-x-2 items-center">
-        <Button disabled={disabled} themeSize={'sm'} onClick={handleStartClick}>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStartClick}>
           Start
         </Button>
-        <Button disabled={disabled} themeSize={'sm'} onClick={handleStopClick}>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStopClick}>
           Stop
         </Button>
-        <Button disabled={disabled} themeSize={'sm'} onClick={handleRestartClick}>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleRestartClick}>
           Restart
         </Button>
 
-        <Button disabled={disabled} themeSize={'sm'} onClick={handleReloadClick}>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleReloadClick}>
           Reload
         </Button>
       </div>

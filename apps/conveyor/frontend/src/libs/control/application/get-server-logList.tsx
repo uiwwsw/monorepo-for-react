@@ -2,9 +2,18 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
 import useSWR from 'swr';
 const logger = createLogger('control/useServerLogList');
-
-async function fetcher(url: string, sid?: number) {
-  logger(url, sid);
+export interface Args {
+  sid?: number;
+}
+async function fetcher(
+  url: string,
+  {
+    arg,
+  }: {
+    arg: Args;
+  },
+) {
+  logger(url, arg);
 
   //temporary
   const mockDataLogs: FileInfo[] = [
@@ -21,6 +30,6 @@ async function fetcher(url: string, sid?: number) {
   return res;
 }
 
-export function useServerLogList(tid?: number) {
-  return useSWR(['/control/server/loglist', tid], fetcher);
+export function useServerLogList(arg: Args) {
+  return useSWR('/control/server/log-list', (url) => fetcher(url, { arg }));
 }

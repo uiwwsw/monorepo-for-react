@@ -2,9 +2,18 @@ import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
 import useSWR from 'swr';
 const logger = createLogger('control/useTcmLogList');
-
-async function fetcher(url: string, tid?: number) {
-  logger(url, tid);
+export interface Args {
+  tid?: number;
+}
+async function fetcher(
+  url: string,
+  {
+    arg,
+  }: {
+    arg: Args;
+  },
+) {
+  logger(url, arg);
 
   //temporary
   const mockDataLogs: FileInfo[] = [
@@ -30,6 +39,6 @@ async function fetcher(url: string, tid?: number) {
   return res;
 }
 
-export function useTcmLogList(tid?: number) {
-  return useSWR(['/control/tcm/loglist', tid], fetcher);
+export function useTcmLogList(arg: Args) {
+  return useSWR('/control/tcm/log-list', (url) => fetcher(url, { arg }));
 }

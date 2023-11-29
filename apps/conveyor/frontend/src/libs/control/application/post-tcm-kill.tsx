@@ -10,7 +10,7 @@ async function fetcher(
     arg,
   }: {
     arg: {
-      tid: number;
+      tid?: number;
     };
   },
 ) {
