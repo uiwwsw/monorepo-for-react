@@ -25,7 +25,11 @@ const Link = ({ commonClassName, ...props }: LinkProps) => {
   /* ======   useEffect   ====== */
   logger('render', isActive);
   return (
-    <span className={`relative${commonClassName ? ` ${commonClassName}` : ''}${isActive ? ` animate-pulse` : ''}`}>
+    <span
+      className={`relative [&>*]:block${commonClassName ? ` ${commonClassName}` : ''}${
+        isActive ? ` animate-pulse` : ''
+      }`}
+    >
       {isInIframe && <i className="absolute inset-0 cursor-pointer" onClick={handleHref} />}
       <RouterLink {...props} />
     </span>

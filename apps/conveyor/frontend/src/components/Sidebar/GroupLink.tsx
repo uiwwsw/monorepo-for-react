@@ -36,7 +36,7 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
               {tab.group.map((x) => (
                 <Link
                   key={x.path}
-                  commonClassName="block text-gray-400 hover:text-gray-300 pl-7 text-base"
+                  commonClassName="text-gray-400 hover:text-gray-300 ml-7 text-base"
                   className={({ isActive }) => `${isActive ? '!text-white' : ''}`}
                   to={x.path}
                 >
