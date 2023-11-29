@@ -5,8 +5,8 @@ import { StatsSummaryData } from '../domain';
 import { http } from '#/http';
 
 export interface Arg {
-  begin_date: string;
-  end_date: string;
+  start_time: string;
+  end_time: string;
 }
 const logger = createLogger('stats/useZoneStats');
 async function fetcher(

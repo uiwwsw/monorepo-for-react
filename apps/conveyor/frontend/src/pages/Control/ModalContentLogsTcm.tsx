@@ -1,4 +1,4 @@
-import { useTcmLogList } from '!/control/application/get-tcm-logList';
+import { useTcmLogList } from '!/control/application/get-tcm-log-list';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 

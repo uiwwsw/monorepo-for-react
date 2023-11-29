@@ -1,6 +1,5 @@
+import { useToasts } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
-import { useState } from 'react';
-import { ToastWithPortal } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
   selectedRows: T[];
@@ -14,22 +13,11 @@ export interface UseToastError<T> {
   message?: string;
 }
 /* ======    global     ====== */
-const logger = createLogger('utils/useToasts');
-const useToasts = <T,>(props?: UseToastProps<T>) => {
+const logger = createLogger('utils/useToastsForControl');
+const useToastsForControl = <T,>(props?: UseToastProps<T>) => {
   /* ======   variables   ====== */
-  const [toastMessages, setToastMessages] = useState<(ToastProps & { id: string })[]>([]);
-
+  const { showToast, Toasts } = useToasts();
   /* ======   function    ====== */
-  const showToast = (toast: ToastProps) =>
-    setToastMessages((prev) => [
-      ...prev,
-      {
-        ...toast,
-        id: new Date().valueOf().toString(),
-      },
-    ]);
-
-  const deleteToast = (id: string) => setToastMessages((prev) => prev.filter((x) => x.id !== id));
   const adapterEvent = async ({
     startMsg,
     failMsg,
@@ -76,12 +64,8 @@ const useToasts = <T,>(props?: UseToastProps<T>) => {
   return {
     showToast,
     adapterEvent,
-    Toasts: toastMessages.map((x) => (
-      <ToastWithPortal open key={x.id} duration={x.duration} onClosed={() => deleteToast(x.id)}>
-        {x.message}
-      </ToastWithPortal>
-    )),
+    Toasts,
   };
 };
 
-export default useToasts;
+export default useToastsForControl;

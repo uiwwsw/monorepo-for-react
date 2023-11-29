@@ -21,6 +21,9 @@ export * from './components/Combo';
 export { default as Input } from './components/Input';
 export * from './components/Input';
 
+export { default as Numeric } from './components/Input/Numeric';
+export * from './components/Input/Numeric';
+
 export { default as Image } from './components/Image';
 export * from './components/Image';
 
@@ -84,4 +87,5 @@ export { default as useCounter } from './utils/useCounter';
 export { default as usePosition } from './utils/usePosition';
 export { default as useSmooth } from './utils/useSmooth';
 export { default as useThrottle } from './utils/useThrottle';
+export { default as useToasts } from './utils/useToasts';
 export { default as useInfiniteScroll } from './utils/useInfiniteScroll';

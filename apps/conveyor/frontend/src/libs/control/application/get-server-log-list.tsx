@@ -1,6 +1,6 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
-import useSWR from 'swr';
+import useSWR from 'swr'; // TODO mutation 으로 변경, 화면 전체 로딩이 발생함.
 const logger = createLogger('control/useServerLogList');
 export interface Args {
   sid?: number;

@@ -15,7 +15,7 @@ const ServerSub = ({ row }: ServerSubProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="flex justify-end space-x-2">
+    <div className="flex justify-end gap-2 p-2">
       <ModalWithBtn
         button={
           <Button themeSize={'sm'} themeColor={'tertiary'}>

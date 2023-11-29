@@ -1,4 +1,4 @@
-import { useServerLogList } from '!/control/application/get-server-logList';
+import { useServerLogList } from '!/control/application/get-server-log-list';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 

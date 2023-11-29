@@ -5,8 +5,8 @@ import { StatsCarrierData } from '../domain';
 import { http } from '#/http';
 const logger = createLogger('stats/useCarrierStats');
 export interface Arg {
-  begin_date: string;
-  end_date: string;
+  start_time: string;
+  end_time: string;
   page: number;
   page_size: number;
   find_key?: string;

@@ -1,13 +1,13 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar, Pagination, ToastWithPortal } from '@library-frontend/ui';
+import { Pagination, ToastWithPortal } from '@library-frontend/ui';
 import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Arg, useAlarmStats } from '!/stats/application/get-alarm-stats';
 import Table from '@/Table';
-import { TABLE_COLUMN_VISIBILITY } from '!/storage/domain';
+import { STORAGE } from '!/storage/domain';
 import { VisibilityState } from '@tanstack/react-table';
+import StatsCalendar from '../Calendar';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -15,34 +15,32 @@ const logger = createLogger('pages/Stats/Alarm');
 const pageSize = 10;
 const StatsAlarm = () => {
   /* ======   variables   ====== */
-  const columnVisibility = LocalStorage.get<VisibilityState>(TABLE_COLUMN_VISIBILITY['alarm/table']) ?? {};
-  const { t } = useTranslation();
+  const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
+  const columnVisibility = LocalStorage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
 
   const [totalPageNum, setTotalPageNum] = useState(1);
   const [arg, setArg] = useState<Arg>({
-    begin_date: newDate([-7, 'day']).toISOString(),
-    end_date: newDate().toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).toISOString(),
+    end_time: fixedCalendar?.[1] ?? newDate().toISOString(),
     page: 1,
     page_size: pageSize,
     find_key: '',
   });
   const currentPage = useMemo(() => arg.page - 1, [arg]);
-  const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
+  const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
 
   const { error, data, mutate } = useAlarmStats(arg);
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
-    LocalStorage.set(TABLE_COLUMN_VISIBILITY['alarm/table'], value);
+    LocalStorage.set(STORAGE['alarm/table'], value);
     logger(value);
   };
-  const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
-    if (!(duration instanceof Array)) return;
-
+  const handleCalenderChange = async (duration: Dayjs[]) => {
     await Promise.all([
-      setArg((prev) => ({ ...prev, begin_date: duration[0].toISOString(), end_date: duration[1].toISOString() })),
+      setArg((prev) => ({ ...prev, start_time: duration[0].toISOString(), end_time: duration[1].toISOString() })),
     ]);
     mutate();
   };
@@ -77,19 +75,8 @@ const StatsAlarm = () => {
     if (data?.totalCount) setTotalPageNum(Math.ceil(data.totalCount / pageSize));
   }, [data]);
   useEffect(() => {
-    setChildren(
-      <div className="flex items-center gap-2">
-        <Calendar
-          placeholder={t('날짜를 선택해 주세요.')}
-          selectRangeHolder={t('기간을 선택해 주세요.')}
-          tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
-          selectRange
-          defaultValue={currentDuration}
-          onChange={handleCalenderChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
-        />
-      </div>,
-    );
+    setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
+
     return () => setChildren(undefined);
   }, []);
   logger('render', data);

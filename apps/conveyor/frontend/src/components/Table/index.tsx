@@ -16,7 +16,7 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState, Fragment, ReactElement, ChangeEvent, KeyboardEvent, cloneElement, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select, Skeleton } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Numeric, Select, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
@@ -25,7 +25,7 @@ import Empty from '@/Empty';
 export interface TableProps<T> {
   thead: string[];
   data?: T[];
-  allRowSelection?: boolean;
+  allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
@@ -42,7 +42,7 @@ const Table = <T,>({
   thead,
   onSearch,
   data,
-  allRowSelection,
+  allRowSelectTick,
   textAlignCenter = true,
   cacheColumnVisibility,
   setCacheColumnVisibility,
@@ -182,8 +182,9 @@ const Table = <T,>({
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    if (allRowSelection) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
-  }, [allRowSelection]);
+    logger(allRowSelectTick);
+    if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
+  }, [allRowSelectTick]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
@@ -341,13 +342,14 @@ const Table = <T,>({
             </div>
             <div className="flex items-center gap-1 max-lg:!hidden">
               | {t('페이지 이동')}:
-              <Input
-                type="number"
+              <Numeric
                 defaultValue={table.getState().pagination.pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   table.setPageIndex(page);
                 }}
+                min={1}
+                max={table.getPageCount()}
                 className="border rounded w-24"
                 placeholder="page"
               />
