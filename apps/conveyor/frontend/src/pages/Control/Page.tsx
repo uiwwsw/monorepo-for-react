@@ -6,11 +6,12 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useState } from 'react';
-import { Button, ToastWithBtn } from '@library-frontend/ui';
-import { ResponseResult } from '!/control/domain';
+import { useMemo } from 'react';
+import { Button } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
+import H2 from '@/Typography/H2';
+import useToasts from '#/useToasts';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -20,90 +21,69 @@ const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
-  const { trigger: resumeTrigger } = useResume();
-  const { trigger: pauseTrigger } = usePause();
-  const [toastMessageResume, setToastMessageResume] = useState('');
-  const [toastMessagePause, setToastMessagePause] = useState('');
+  const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
+  const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
+  const { Toasts, adapterEvent } = useToasts({ selectedRows: [0] });
+  const disabled = useMemo(() => resumeIsMutating || pauseIsMutating, [resumeIsMutating, pauseIsMutating]);
 
   /* ======   function    ====== */
-  const handleResumeClick = async () => {
-    setToastMessageResume('컨베이어 시스템 RESUME 중입니다.');
-
-    try {
-      const status = await resumeTrigger();
-      if (status?.result === ResponseResult.SUCCESS) {
-        setToastMessageResume(`컨베이어 시스템 RESUME 완료`);
-      } else {
-        setToastMessageResume(`컨베이어 시스템 RESUME 실패, ${status?.reason}`);
-      }
-    } catch (error) {
-      setToastMessageResume(`${error}`);
-    }
-  };
-
-  const handlePauseClick = async () => {
-    setToastMessagePause('컨베이어 시스템 PAUSE 중입니다.');
-
-    try {
-      const status = await pauseTrigger();
-      if (status?.result === ResponseResult.SUCCESS) {
-        setToastMessagePause(`컨베이어 시스템 PAUSE 완료`);
-      } else {
-        setToastMessagePause(`컨베이어 시스템 PAUSE 실패, ${status?.reason}`);
-      }
-    } catch (error) {
-      setToastMessagePause(`${error}`);
-    }
-  };
+  const handleResumeClick = () =>
+    adapterEvent({
+      startMsg: '컨베이어 시스템 RESUME 중입니다.',
+      successMsg: '컨베이어 시스템 RESUME 완료',
+      failMsg(fails) {
+        return '컨베이어 시스템 RESUME 실패:' + fails[0].message;
+      },
+      event() {
+        return resumeTrigger();
+      },
+    });
+  const handlePauseClick = () =>
+    adapterEvent({
+      startMsg: '컨베이어 시스템 PAUSE 중입니다.',
+      successMsg: '컨베이어 시스템 PAUSE 완료',
+      failMsg(fails) {
+        return '컨베이어 시스템 PAUSE 실패:' + fails[0].message;
+      },
+      event() {
+        return pauseTrigger();
+      },
+    });
 
   /* ======   useEffect   ====== */
   logger('render');
   return (
     <>
-      <div className="bg-white p-4 rounded-lg border border-gray-200">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">TCM Control</h2>
-          <div className="flex space-x-2">
-            <ToastWithBtn
-              button={
-                <Button themeSize="sm" themeColor="secondary" onClick={handleResumeClick}>
-                  Resume
-                </Button>
-              }
-              duration={Infinity}
-            >
-              {toastMessageResume}
-            </ToastWithBtn>
-            <ToastWithBtn
-              button={
-                <Button themeSize="sm" themeColor="secondary" onClick={handlePauseClick}>
-                  Pause
-                </Button>
-              }
-              duration={Infinity}
-            >
-              {toastMessagePause}
-            </ToastWithBtn>
-          </div>
+      {Toasts}
+      <div className="flex gap-5 flex-col">
+        <div className="flex ml-auto gap-2">
+          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handleResumeClick}>
+            Resume
+          </Button>
+          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handlePauseClick}>
+            Pause
+          </Button>
         </div>
-
-        <Table
-          thead={['tid', 'status', 'version', 'adjTcmConnection', 'Process']}
-          data={tcmData}
-          makePagination={false}
-          renderSelectComponent={<TcmSelect />}
-          renderSubComponent={<TcmSub />}
-        ></Table>
-      </div>
-      <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Server Control</h2>
-        <Table
-          thead={['sid', 'type', 'status', 'version']}
-          data={serverData}
-          makePagination={false}
-          renderSelectComponent={<ServerSelect />}
-          renderSubComponent={<ServerSub />}
-        ></Table>
+        <div>
+          <H2>TCM Control</H2>
+          <Table
+            thead={['tid', 'status', 'version', 'adjTcmConnection', 'Process']}
+            data={tcmData}
+            makePagination={false}
+            renderSelectComponent={<TcmSelect />}
+            renderSubComponent={<TcmSub />}
+          ></Table>
+        </div>
+        <div>
+          <H2>Server Control</H2>
+          <Table
+            thead={['sid', 'type', 'status', 'version']}
+            data={serverData}
+            makePagination={false}
+            renderSelectComponent={<ServerSelect />}
+            renderSubComponent={<ServerSub />}
+          ></Table>
+        </div>
       </div>
     </>
   );

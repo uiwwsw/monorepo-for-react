@@ -1,6 +1,6 @@
 import { Auth } from '!/auth/domain';
 import { AUTH_STORAGE } from '!/storage/domain';
-import { AUTH_TOAST } from '!/query-param/domain';
+import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
 import { LocalStorage, createLogger, toData } from '@package-frontend/utils';
 import i18n from 'src/i18n';
@@ -66,7 +66,7 @@ export class HttpError extends Error implements STResponseFailed {
       this.message = i18n.t('{{api}} 서버에 문제가 발생한 것 같아요.🤦‍♂️', { api: import.meta.env.VITE_API });
     if (this.status === 401) {
       LocalStorage.set(AUTH_STORAGE['/check-auth']);
-      location.href = `/sign-in?toast=${AUTH_TOAST['session-expired']}`;
+      location.href = `/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['session-expired']}`;
     }
   }
 }

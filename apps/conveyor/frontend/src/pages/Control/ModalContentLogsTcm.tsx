@@ -2,7 +2,8 @@ import { useTcmLogList } from '!/control/application/get-tcm-logList';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
-interface ModalContentLogsTcmProps {
+/* ======   interface   ====== */
+export interface ModalContentLogsTcmProps {
   tid?: number;
 }
 
@@ -10,7 +11,7 @@ interface ModalContentLogsTcmProps {
 const logger = createLogger('pages/Control/ModalContentLogsTcm');
 
 const ModalContentLogsTcm = ({ tid }: ModalContentLogsTcmProps) => {
-  const { data: logList, error } = useTcmLogList(tid);
+  const { data: logList, error } = useTcmLogList({ tid });
 
   if (error) return <div>Failed to load</div>;
   if (!logList) return <div>Loading...</div>;

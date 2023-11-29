@@ -4,8 +4,7 @@ import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchZoneArg } from '!/stats/application/get-zone-stats';
-import { useZoneStats } from '!/stats/application/get-zone-stats';
+import { useZoneStats, Arg } from '!/stats/application/get-zone-stats';
 import { useZoneList } from '!/stats/application/get-zone-list';
 import Table from '@/Table';
 import StatsSummaryGraphic, { StatsSummaryGraphicProps } from './Graphic';
@@ -41,7 +40,7 @@ const StatsSummary = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { setChildren } = useHeaderContext();
-  const [arg, setArg] = useState<SearchZoneArg>({
+  const [arg, setArg] = useState<Arg>({
     begin_date: newDate([-30, 'day']).toISOString(),
     end_date: newDate().toISOString(),
   });
@@ -52,7 +51,7 @@ const StatsSummary = () => {
   // const [zoneData, setZoneData] = useState<ZoneData[]>([]);
 
   // const { scrollDeps, trigger: scrollTrigger } = useInfiniteScroll();
-  const { mutate, data: statsData, error: statsError } = useZoneStats({ arg });
+  const { mutate, data: statsData, error: statsError } = useZoneStats(arg);
   const { data: zoneData, error: zoneError } = useZoneList();
   const renderZone = useMemo(
     () =>
@@ -76,7 +75,7 @@ const StatsSummary = () => {
   /* ======   function    ====== */
   const handleCalenderChange = async (duration: Dayjs | Dayjs[]) => {
     if (!(duration instanceof Array)) return;
-    const arg: SearchZoneArg = {
+    const arg: Arg = {
       begin_date: duration[0].toISOString(),
       end_date: duration[1].toISOString(),
     };
@@ -245,7 +244,6 @@ const StatsSummary = () => {
           makePagination={true}
           renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
           // onSearch={handleSearchKeyword}
-          textAlignCenter={true}
         />
       </div>
     </>

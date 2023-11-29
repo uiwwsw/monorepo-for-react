@@ -4,7 +4,7 @@ import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCarrierStats, SearchArg } from '!/stats/application/get-carrier-stats';
+import { useCarrierStats, Arg } from '!/stats/application/get-carrier-stats';
 import Table from '@/Table';
 import { VisibilityColumn, VisibilityState } from '@tanstack/react-table';
 import { TABLE_COLUMN_VISIBILITY } from '!/storage/domain';
@@ -21,7 +21,7 @@ const StatsCarrier = () => {
 
   const { setChildren } = useHeaderContext();
   const [totalPageNum, setTotalPageNum] = useState(1);
-  const [arg, setArg] = useState<SearchArg>({
+  const [arg, setArg] = useState<Arg>({
     begin_date: newDate([-7, 'day']).toISOString(),
     end_date: newDate().toISOString(),
     page: 1,
@@ -31,7 +31,7 @@ const StatsCarrier = () => {
   const currentDuration = useMemo(() => [arg.begin_date, arg.end_date], [arg]);
   const currentPage = useMemo(() => arg.page - 1, [arg]);
 
-  const { error, data, mutate } = useCarrierStats({ arg });
+  const { error, data, mutate } = useCarrierStats(arg);
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
@@ -112,7 +112,6 @@ const StatsCarrier = () => {
         data={data?.rows}
         makePagination={false}
         onSearch={handleSearchKeyword}
-        textAlignCenter={true}
       />
       <div className="text-center mt-3">
         <Pagination

@@ -1,13 +1,14 @@
-import { Button, ModalWithBtn, ToastWithBtn } from '@library-frontend/ui';
+import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import ModalContentUpdate from './ModalContentUpdate';
 import { useTcmStart } from '!/control/application/post-tcm-start';
-import { ResponseResult, TcmInfo } from '!/control/domain';
+import { TcmInfo } from '!/control/domain';
 import { useTcmStop } from '!/control/application/post-tcm-stop';
 import { useTcmRestart } from '!/control/application/post-tcm-restart';
 import { useTcmReload } from '!/control/application/post-tcm-reload';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Row } from '@tanstack/react-table';
+import useToasts from '#/useToasts';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
   selectedRows?: Row<TcmInfo>[];
@@ -16,191 +17,100 @@ export interface TcmSelectProps {
 const logger = createLogger('pages/Control/TcmSelect');
 const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   /* ======   variables   ====== */
-  const { trigger: startTrigger } = useTcmStart();
-  const { trigger: stopTrigger } = useTcmStop();
-  const { trigger: restartTrigger } = useTcmRestart();
-  const { trigger: reloadTrigger } = useTcmReload();
-  const [toastMessageStart, setToastMessageStart] = useState('');
-  const [toastMessageStop, setToastMessageStop] = useState('');
-  const [toastMessageRestart, setToastMessageRestart] = useState('');
-  const [toastMessageReload, setToastMessageReload] = useState('');
+  const { trigger: startTrigger, isMutating: startIsMutating } = useTcmStart();
+  const { trigger: stopTrigger, isMutating: stopIsMutating } = useTcmStop();
+  const { trigger: restartTrigger, isMutating: restartIsMutating } = useTcmRestart();
+  const { trigger: reloadTrigger, isMutating: reloadIsMutating } = useTcmReload();
 
-  const selectedTids = useMemo(() => {
-    return selectedRows?.map((row) => row.original.tid) || [];
-  }, [selectedRows]);
+  const selectedTids = useMemo(() => selectedRows?.map((row) => row.original.tid) || [], [selectedRows]);
+  const { Toasts, adapterEvent } = useToasts({ selectedRows: selectedTids });
+
+  const disabled = useMemo(
+    () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating || reloadIsMutating,
+    [selectedRows, startIsMutating, stopIsMutating, restartIsMutating, reloadIsMutating],
+  );
+
   /* ======   function    ====== */
-  const handleStartClick = async () => {
-    if (!selectedTids || selectedTids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    setToastMessageStart('선택한 TCM START 중입니다.');
-
-    const offlineTids = [];
-
-    for (const tid of selectedTids) {
-      try {
-        const status = await startTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCM [${offlineTids.join(', ')}] START 실패 하였습니다.`);
-      setToastMessageStart(`TCM [${offlineTids.join(', ')}] START 실패 하였습니다.`);
-    } else {
-      setToastMessageStart(`선택한 TCM 모두 START 성공 하였습니다.`);
-    }
-  };
-
-  const handleStopClick = async () => {
-    if (!selectedTids || selectedTids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    setToastMessageStop('선택한 TCM STOP 중입니다.');
-
-    const onlineTids = [];
-
-    for (const tid of selectedTids) {
-      try {
-        const status = await stopTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          onlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        onlineTids.push(tid);
-      }
-    }
-
-    if (onlineTids.length > 0) {
-      logger(`TCM [${onlineTids.join(', ')}] STOP 실패 하였습니다.`);
-      setToastMessageStop(`TCM [${onlineTids.join(', ')}] STOP 실패 하였습니다.`);
-    } else {
-      setToastMessageStop(`선택한 TCM 모두 STOP 성공 하였습니다.`);
-    }
-  };
-
-  const handleRestartClick = async () => {
-    if (!selectedTids || selectedTids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    setToastMessageRestart('선택한 TCM RESTART 중입니다.');
-
-    const offlineTids = [];
-
-    for (const tid of selectedTids) {
-      try {
-        const status = await restartTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCM [${offlineTids.join(', ')}] RESTART 실패 하였습니다.`);
-      setToastMessageRestart(`TCM [${offlineTids.join(', ')}] RESTART 실패 하였습니다.`);
-    } else {
-      setToastMessageRestart(`선택한 TCM 모두 RESTART 성공 하였습니다.`);
-    }
-  };
-
-  const handleReloadClick = async () => {
-    if (!selectedTids || selectedTids.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-    setToastMessageReload('선택한 TCM RELOAD 중입니다.');
-
-    const offlineTids = [];
-
-    for (const tid of selectedTids) {
-      try {
-        const status = await reloadTrigger({ tid });
-        if (status?.result !== ResponseResult.SUCCESS) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCM [${offlineTids.join(', ')}] RELOAD 실패 하였습니다.`);
-      setToastMessageReload(`TCM [${offlineTids.join(', ')}] RELOAD 실패 하였습니다.`);
-    } else {
-      setToastMessageReload(`선택한 TCM 모두 RELOAD 성공 하였습니다.`);
-    }
-  };
+  const handleStartClick = () =>
+    adapterEvent({
+      startMsg: '선택한 TCM START 중입니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedTids.length) return '선택한 TCM 모두 START 실패 하였습니다.';
+        return '몇몇 TCM START 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      successMsg: '선택한 TCM 모두 START 성공 하였습니다.',
+      event(tid) {
+        return startTrigger({ tid });
+      },
+    });
+  const handleStopClick = () =>
+    adapterEvent({
+      startMsg: '선택한 TCM STOP 중입니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedTids.length) return '선택한 TCM 모두 STOP 실패 하였습니다.';
+        return '몇몇 TCM STOP 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      successMsg: '선택한 TCM 모두 STOP 성공 하였습니다.',
+      event(tid) {
+        return stopTrigger({ tid });
+      },
+    });
+  const handleRestartClick = () =>
+    adapterEvent({
+      startMsg: '선택한 TCM RESTART 중입니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedTids.length) return '선택한 TCM 모두 RESTART 실패 하였습니다.';
+        return '몇몇 TCM RESTART 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      successMsg: '선택한 TCM 모두 RESTART 성공 하였습니다.',
+      event(tid) {
+        return restartTrigger({ tid });
+      },
+    });
+  const handleReloadClick = () =>
+    adapterEvent({
+      startMsg: '선택한 TCM RELOAD 중입니다.',
+      failMsg(failTids) {
+        if (failTids.length === selectedTids.length) return '선택한 TCM 모두 RELOAD 실패 하였습니다.';
+        return '몇몇 TCM RELOAD 실패 = ' + failTids.map((x) => `${x.id}: ${x.message}`).join();
+      },
+      successMsg: '선택한 TCM 모두 RELOAD 성공 하였습니다.',
+      event(tid) {
+        return reloadTrigger({ tid });
+      },
+    });
 
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="flex justify-end space-x-2 items-center">
-      <ToastWithBtn
-        button={
-          <Button themeSize={'sm'} onClick={handleStartClick}>
-            Start
-          </Button>
-        }
-        duration={Infinity}
-      >
-        {toastMessageStart}
-      </ToastWithBtn>
-      <ToastWithBtn
-        button={
-          <Button themeSize={'sm'} onClick={handleStopClick}>
-            Stop
-          </Button>
-        }
-        duration={Infinity}
-      >
-        {toastMessageStop}
-      </ToastWithBtn>
-      <ToastWithBtn
-        button={
-          <Button themeSize={'sm'} onClick={handleRestartClick}>
-            Restart
-          </Button>
-        }
-        duration={Infinity}
-      >
-        {toastMessageRestart}
-      </ToastWithBtn>
-      <ToastWithBtn
-        button={
-          <Button themeSize={'sm'} onClick={handleReloadClick}>
-            Reload
-          </Button>
-        }
-        duration={Infinity}
-      >
-        {toastMessageReload}
-      </ToastWithBtn>
-      <ModalWithBtn
-        persist
-        button={
-          <Button themeSize={'sm'} themeColor="tertiary">
-            Update
-          </Button>
-        }
-        hasButton={['CANCEL']}
-      >
-        <ModalContentUpdate selectedRows={selectedTids} />
-      </ModalWithBtn>
-    </div>
+    <>
+      {Toasts}
+      <div className="flex justify-end space-x-2 items-center">
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStartClick}>
+          Start
+        </Button>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStopClick}>
+          Stop
+        </Button>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleRestartClick}>
+          Restart
+        </Button>
+        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleReloadClick}>
+          Reload
+        </Button>
+        <ModalWithBtn
+          persist
+          button={
+            <Button disabled={disabled} smoothLoading themeSize={'sm'} themeColor="tertiary">
+              Update
+            </Button>
+          }
+          hasButton={['CANCEL']}
+        >
+          <ModalContentUpdate selectedRows={selectedTids} />
+        </ModalWithBtn>
+      </div>
+    </>
   );
 };
 

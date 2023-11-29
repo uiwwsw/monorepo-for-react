@@ -1,7 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from './HeaderContext';
 import { Button } from '@library-frontend/ui';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGetAuth } from '!/auth/application/get-auth';
 /* ======   interface   ====== */
@@ -13,11 +13,8 @@ const Header = (_: HeaderProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const { data } = useGetAuth();
   const { children } = useHeaderContext();
-  const url = new URLSearchParams(location.search);
-  const isInIframe = url.get('side-nav') === 'disabled';
 
   /* ======   function    ====== */
   const handleLogout = () => navigate('/sign-out');
@@ -28,7 +25,7 @@ const Header = (_: HeaderProps) => {
       <div className="flex-auto">{children}</div>
       <div className="flex gap-2 items-center max-lg:flex-col">
         <div>{data?.username}</div>
-        <Button smoothLoading themeColor={'secondary'} onClick={handleLogout} disabled={isInIframe}>
+        <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
           {t('로그아웃')}
         </Button>
       </div>

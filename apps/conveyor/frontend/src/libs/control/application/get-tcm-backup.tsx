@@ -3,9 +3,18 @@ import useSWR from 'swr';
 import { FileInfo } from '../domain';
 
 const logger = createLogger('control/useTcmBackup');
-
-async function fetcher(url: string, tid?: number) {
-  logger(url, tid);
+export interface Args {
+  tid?: number;
+}
+async function fetcher(
+  url: string,
+  {
+    arg,
+  }: {
+    arg: Args;
+  },
+) {
+  logger(url, arg);
 
   //temporary
   const mockDataBackup: FileInfo[] = [
@@ -23,6 +32,6 @@ async function fetcher(url: string, tid?: number) {
   return res;
 }
 
-export function useTcmBackup(tid?: number) {
-  return useSWR(['/control/tcm/backup', tid], fetcher);
+export function useTcmBackup(arg: Args) {
+  return useSWR('/control/tcm/backup', (url) => fetcher(url, { arg }));
 }

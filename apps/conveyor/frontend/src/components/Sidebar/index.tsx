@@ -1,7 +1,7 @@
 import { LocalStorage, createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
-import { Link, useLocation } from 'react-router-dom';
 import GroupLink from './GroupLink';
+import Link from './Link';
 import { Button, Image, Tutorial } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
@@ -17,9 +17,6 @@ const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
   const langRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
-  const location = useLocation();
-  const url = new URLSearchParams(location.search);
-  const isInIframe = url.get('side-nav') === 'disabled';
   const guide = [
     // {
     //   text: '메인으로 이동합니다.',
@@ -62,7 +59,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '134px',
+        height: '110px',
       },
     },
     // {
@@ -98,7 +95,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '144px',
+        height: '130px',
       },
     },
   ];
@@ -113,8 +110,8 @@ const Nav = (_: NavProps) => {
     <>
       <div
         className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
-          isInIframe ? ' cursor-not-allowed' : ''
-        }${open ? ' !translate-x-0' : ''}`}
+          open ? ' !translate-x-0' : ''
+        }`}
         onClick={() => open && setOpen(false)}
       >
         <Button
@@ -125,9 +122,9 @@ const Nav = (_: NavProps) => {
         >
           {open ? '🗞️' : '📰'}
         </Button>
-        <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
-          <div className="flex-auto">
-            <Link to="/" className="block p-4">
+        <nav className="flex flex-col flex-auto">
+          <div className="flex-auto" onClick={() => logger('1')}>
+            <Link to="/" className="block p-4" onClick={() => logger('2')}>
               <Image block src={logo} alt="logo" height={37} />
             </Link>
             <hr />

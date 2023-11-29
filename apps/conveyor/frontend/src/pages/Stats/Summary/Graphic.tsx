@@ -20,7 +20,7 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
   const { t } = useTranslation();
   const length = selectedRows?.length;
   const currentZones = selectedRows?.map((r) => statsData?.[+r.id]);
-  const zoneId = currentZones?.map((x) => x?.zoneId).join(',') || t('빈값');
+  const zoneId = currentZones?.map((x) => x?.zoneId).join(',') || t('선택된 행이 없습니다.');
   const carrierTotal = currentZones?.reduce((a, v) => a + (v?.carrierNum ?? 0), 0);
   const carrierAverage = Math.floor(!carrierTotal || !length ? 0 : carrierTotal / length);
   const alarmTotal = currentZones?.reduce((a, v) => a + (v?.alarmNum ?? 0), 0);
@@ -189,21 +189,28 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
     <div className="absolute top-4 left-0 w-full bg-white">
       <div className="h-60 flex rounded-xl border mb-3">
         <div className="h-full w-1/5 p-1 border-r-2 pt-4 flex flex-col gap-1">
-          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md truncate">
-            {t('Zone ID')} :{zoneId}
-          </div>
-          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
-            {t('Carrier Total')} :{carrierTotal}
-          </div>
-          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
-            {t('Carrier Average')} :{carrierAverage}
-          </div>
-          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
-            {t('Alarm Total')} :{alarmTotal}
-          </div>
-          <div className="flex-1 items-center flex w-full bg-slate-300 rounded-md p-1 text-md">
-            {t('Alarm Average')} :{alarmAverage}
-          </div>
+          <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
+            <dt className="whitespace-nowrap text-sm">{t('Zone ID')}:</dt>
+            <dd title={zoneId} className="truncate font-semibold">
+              {zoneId}
+            </dd>
+          </dl>
+          <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
+            <dt className="whitespace-nowrap text-sm">{t('Carrier Total')}:</dt>
+            <dd className="truncate font-semibold">{carrierTotal}</dd>
+          </dl>
+          <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
+            <dt className="whitespace-nowrap text-sm">{t('Carrier Average')}:</dt>
+            <dd className="truncate font-semibold">{carrierAverage}</dd>
+          </dl>
+          <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
+            <dt className="whitespace-nowrap text-sm">{t('Alarm Total')}:</dt>
+            <dd className="truncate font-semibold">{alarmTotal}</dd>
+          </dl>
+          <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
+            <dt className="whitespace-nowrap text-sm">{t('Alarm Average')}:</dt>
+            <dd className="truncate font-semibold">{alarmAverage}</dd>
+          </dl>
         </div>
         <div className="h-full w-4/5">
           <ChartLine data={graphData} />

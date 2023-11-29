@@ -2,7 +2,8 @@ import { useServerLogList } from '!/control/application/get-server-logList';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 
-interface ModalContentLogsServerProps {
+/* ======   interface   ====== */
+export interface ModalContentLogsServerProps {
   sid?: number;
 }
 
@@ -10,7 +11,7 @@ interface ModalContentLogsServerProps {
 const logger = createLogger('pages/Control/ModalContentLogsServer');
 
 const ModalContentLogsServer = ({ sid }: ModalContentLogsServerProps) => {
-  const { data: logList, error } = useServerLogList(sid);
+  const { data: logList, error } = useServerLogList({ sid });
 
   if (error) return <div>Failed to load</div>;
   if (!logList) return <div>Loading...</div>;

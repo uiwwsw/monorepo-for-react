@@ -8,8 +8,7 @@ import Upload from './Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
 
 /* ======   interface   ====== */
-
-interface ModalContentUpdateProps {
+export interface ModalContentUpdateProps {
   selectedRows?: number[];
 }
 
