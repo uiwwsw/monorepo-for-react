@@ -4,13 +4,18 @@ import { Zone, baseObject } from '../packages/backend/types/src/zone/zone';
 import logger from '../libs/logger';
 
 export class ZoneRepo {
+    public useRealPostion: boolean = false;
+
     async getZoneRepo() : Promise<Map<number, Zone>> {
         const zoneKeys = await this.getZoneKeys();
-        const zoneRepo = this.makeMappedRepository(zoneKeys);
+        const zones = this.makeMappedRepository(zoneKeys);
 
-        await this.setZoneRepositoryAttributes(zoneRepo);
+        const useRealPostion = await Service.Inst.Redis.hget('System:Configuration:GUI', 'UseRealPostion');
+        this.useRealPostion = useRealPostion === '1';
 
-        return zoneRepo;
+        await this.setZoneRepositoryAttributes(zones);
+
+        return zones;
     }
 
     async getZoneKeys() : Promise<string[]> {

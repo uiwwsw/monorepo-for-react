@@ -9,3 +9,8 @@ export interface ITaskTransferInfo {
     ZoneIDJunctions?: unknown;
     UseZoneIDJunctions?: unknown;
 }
+
+export interface ITaskTransferInfoMessage {
+    BaseTime?: string;
+    Object: ITaskTransferInfo;
+}

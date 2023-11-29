@@ -7,6 +7,7 @@ import { Prop } from './cfg/prop';
 import { DBM } from './dbm/dbm';
 import { Zone } from './packages/backend/types/src/zone/zone';
 import { ZoneRepo } from './zone/zoneRepo';
+import { Clients } from './websocket/clients'
 
 export class Service {
     private static instance: Service;
@@ -34,7 +35,9 @@ export class Service {
     private redis!: Redis;
     private subs!: Redis;
     private dbm!: DBM;
+    private clients! : Clients;
 
+    private zoneRepo!: ZoneRepo;
     private zones! : Map<number, Zone>;
 
     // 서비스 초기화 작업
@@ -60,8 +63,8 @@ export class Service {
         this.subs = new Redis(prop.Redis.Port, prop.Redis.Host);
 
         // ZoneRepo 객체 생성
-        const zoneRepo = new ZoneRepo();
-        this.zones = await zoneRepo.getZoneRepo();
+        this.zoneRepo = new ZoneRepo();
+        this.zones = await this.zoneRepo.getZoneRepo();
 
         // DBM 객체 생성
         //this.dbm = new DBM(this.subs);
@@ -81,6 +84,8 @@ export class Service {
             jobs.push(job);
         }
         await Promise.all(jobs);
+
+        this.clients = new Clients(this.subs);
     }
 
     public get IsRun() : boolean {
@@ -103,5 +108,13 @@ export class Service {
 
     public get Zones(): Map<number, Zone> {
         return this.zones;
+    }
+
+    public get ZoneRepo(): ZoneRepo {
+        return this.zoneRepo;
+    }
+
+    public get Clients(): Clients {
+        return this.clients;
     }
 }
