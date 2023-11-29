@@ -1,10 +1,9 @@
 import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from './HeaderContext';
 import { Button } from '@library-frontend/ui';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGetAuth } from '!/auth/application/get-auth';
-import { GLOBAL_QUERY_PARAM } from '!/routes/domain';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 

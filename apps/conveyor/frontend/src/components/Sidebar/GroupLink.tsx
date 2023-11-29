@@ -23,7 +23,8 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
         <Fragment key={tab.path}>
           <Link
             to={tab.path}
-            className={({ isActive }) => 'text-gray-400 hover:text-gray-300 text-xl' + (isActive ? ' !text-white' : '')}
+            commonClassName="text-gray-400 hover:text-gray-300 text-xl"
+            className={({ isActive }) => (isActive ? ' !text-white' : '')}
           >
             <div className="text-xl">
               <span className="mr-2 text-lg">{tab.icon}</span>
@@ -35,9 +36,8 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
               {tab.group.map((x) => (
                 <Link
                   key={x.path}
-                  className={({ isActive }) =>
-                    `text-gray-400 hover:text-gray-300 ml-7 text-base -my-2${isActive ? ' !text-white' : ''}`
-                  }
+                  commonClassName="block text-gray-400 hover:text-gray-300 pl-7 text-base"
+                  className={({ isActive }) => `${isActive ? '!text-white' : ''}`}
                   to={x.path}
                 >
                   {t(x.name)}

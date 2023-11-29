@@ -1,13 +1,11 @@
 import { LocalStorage, createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
-import { useLocation } from 'react-router-dom';
 import GroupLink from './GroupLink';
 import Link from './Link';
 import { Button, Image, Tutorial } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
-import { GLOBAL_QUERY_PARAM } from '!/routes/domain';
 /* ======   interface   ====== */
 export interface NavProps {}
 
@@ -19,9 +17,6 @@ const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
   const langRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
-  const location = useLocation();
-  const url = new URLSearchParams(location.search);
-  const isInIframe = url.has(GLOBAL_QUERY_PARAM['is-iframe']);
   const guide = [
     // {
     //   text: '메인으로 이동합니다.',
@@ -64,7 +59,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '134px',
+        height: '110px',
       },
     },
     // {
@@ -100,7 +95,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '144px',
+        height: '130px',
       },
     },
   ];

@@ -5,14 +5,17 @@ import { MouseEvent } from 'react';
 /* ======   interface   ====== */
 
 /* ======    global     ====== */
-
+export type LinkProps = NavLinkProps & {
+  commonClassName?: string;
+};
 const logger = createLogger('components/Sidebar/Link');
 
-const Link = (props: NavLinkProps) => {
+const Link = ({ commonClassName, ...props }: LinkProps) => {
   /* ======   variables   ====== */
   const location = useLocation();
   const url = new URLSearchParams(location.search);
   const isInIframe = url.has(GLOBAL_QUERY_PARAM['is-iframe']);
+  const isActive = parent.document.location.pathname === props.to;
   /* ======   function    ====== */
   const handleHref = (e: MouseEvent) => {
     e.preventDefault();
@@ -20,9 +23,9 @@ const Link = (props: NavLinkProps) => {
     parent.document.location.href = `${props.to}`;
   };
   /* ======   useEffect   ====== */
-  logger('render');
+  logger('render', isActive);
   return (
-    <span className="relative">
+    <span className={`relative${commonClassName ? ` ${commonClassName}` : ''}${isActive ? ` animate-pulse` : ''}`}>
       {isInIframe && <i className="absolute inset-0 cursor-pointer" onClick={handleHref} />}
       <RouterLink {...props} />
     </span>
