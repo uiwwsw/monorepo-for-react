@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
 import { http } from '#/http';
 const logger = createLogger('stats/useCarrierStats');
-export interface SearchArg {
+export interface Arg {
   begin_date: string;
   end_date: string;
   page: number;
@@ -16,7 +16,7 @@ async function fetcher(
   {
     arg,
   }: {
-    arg: SearchArg;
+    arg: Arg;
   },
 ) {
   logger(url, arg);
@@ -147,6 +147,6 @@ async function fetcher(
   return res;
 }
 
-export function useCarrierStats(arg: SearchArg) {
+export function useCarrierStats(arg: Arg) {
   return useSWR('/api/stats/carrier-stats', (url) => fetcher(url, { arg }));
 }

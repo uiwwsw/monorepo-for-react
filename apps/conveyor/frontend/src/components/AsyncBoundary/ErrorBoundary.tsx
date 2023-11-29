@@ -1,3 +1,4 @@
+import { GLOBAL_QUERY_PARAM } from '!/routes/domain';
 import { Component, ReactNode } from 'react';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -26,7 +27,9 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
   public render() {
     if (this.state.message)
-      return <iframe className="w-screen h-screen" src={`/error?side-nav=disabled#${this.state.message}`} />;
+      return (
+        <iframe className="w-screen h-screen" src={`/error?${GLOBAL_QUERY_PARAM['is-iframe']}#${this.state.message}`} />
+      );
 
     return this.props.children;
   }

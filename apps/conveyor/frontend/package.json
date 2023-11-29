@@ -16,8 +16,6 @@
     "@nivo/core": "^0.83.0",
     "@nivo/line": "^0.83.0",
     "@package-backend/types": "workspace:^",
-    "@package-frontend/noto-emoji": "workspace:^",
-    "@package-frontend/pretendard": "workspace:^",
     "@package-frontend/utils": "workspace:^",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.10.7",

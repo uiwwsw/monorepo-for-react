@@ -5,6 +5,10 @@ words:
   - tanstack
   # nivo 그래프
   - nivo
+  # pretendard 폰트
+  - pretendard
+  # noto 폰트
+  - noto
 ignoreWords:
   - noopener
 ignorePaths:

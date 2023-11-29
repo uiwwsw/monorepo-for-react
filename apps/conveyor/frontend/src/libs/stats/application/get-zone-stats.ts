@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { StatsSummaryData } from '../domain';
 import { http } from '#/http';
 
-export interface SearchZoneArg {
+export interface Arg {
   begin_date: string;
   end_date: string;
 }
@@ -14,7 +14,7 @@ async function fetcher(
   {
     arg,
   }: {
-    arg: SearchZoneArg;
+    arg: Arg;
   },
 ) {
   logger(url, arg);
@@ -56,6 +56,6 @@ async function fetcher(
   return res;
 }
 
-export function useZoneStats(arg: SearchZoneArg) {
+export function useZoneStats(arg: Arg) {
   return useSWR('/api/stats/zone-stats', (url) => fetcher(url, { arg }));
 }

@@ -99,7 +99,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   font-family: noto-emoji;
   font-weight: 45 920;
   font-style: normal;
-  /* font-display: swap; */
-  font-display: block;
+  font-display: swap;
   src: url('./ttf/NotoEmoji-VariableFont_wght.ttf') format('truetype');
 }

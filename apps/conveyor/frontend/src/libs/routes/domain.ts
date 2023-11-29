@@ -1,9 +1,12 @@
-export const enum QUERY_PARAM_TOAST {
+export const enum GLOBAL_QUERY_PARAM {
+  'is-iframe' = 'is-iframe',
+}
+export const enum SIGN_IN_QUERY_PARAM_TOAST {
   'session-expired' = 'session-expired',
   'success-sign-up' = 'success-sign-up',
   'success-update-password' = 'success-update-password',
 }
-export type QUERY_PARAM_TOAST_KEY = keyof typeof QUERY_PARAM_TOAST;
+export type SIGN_IN_QUERY_PARAM_TOAST_KEY = keyof typeof SIGN_IN_QUERY_PARAM_TOAST;
 
 export const enum ROUTES_PATH {
   '/control' = '/control',

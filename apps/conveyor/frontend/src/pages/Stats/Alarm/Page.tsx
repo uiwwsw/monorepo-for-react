@@ -4,7 +4,7 @@ import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SearchArg, useAlarmStats } from '!/stats/application/get-alarm-stats';
+import { Arg, useAlarmStats } from '!/stats/application/get-alarm-stats';
 import Table from '@/Table';
 import { TABLE_COLUMN_VISIBILITY } from '!/storage/domain';
 import { VisibilityState } from '@tanstack/react-table';
@@ -21,7 +21,7 @@ const StatsAlarm = () => {
   const { setChildren } = useHeaderContext();
 
   const [totalPageNum, setTotalPageNum] = useState(1);
-  const [arg, setArg] = useState<SearchArg>({
+  const [arg, setArg] = useState<Arg>({
     begin_date: newDate([-7, 'day']).toISOString(),
     end_date: newDate().toISOString(),
     page: 1,

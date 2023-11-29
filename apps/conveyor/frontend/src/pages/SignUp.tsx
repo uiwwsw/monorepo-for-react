@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { QUERY_PARAM_TOAST } from '!/routes/domain';
+import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -34,7 +34,7 @@ const SignUp = () => {
     await trigger(arg);
     setSuccess(true);
   };
-  const handleModalClose = () => navigate(`/sign-in?toast=${QUERY_PARAM_TOAST['success-sign-up']}`);
+  const handleModalClose = () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
   /* ======   useEffect   ====== */
 
   logger('render');
@@ -53,6 +53,7 @@ const SignUp = () => {
               {...register('name', {
                 required: t('이름을 입력해주세요.'),
               })}
+              autoComplete="name"
               placeholder={t('이름을 입력해주세요.')}
               error={!!errors?.name?.message}
               className="w-full"
@@ -65,6 +66,7 @@ const SignUp = () => {
               {...register('id', {
                 required: t('아이디를 입력해주세요.'),
               })}
+              autoComplete="id"
               placeholder={t('아이디를 입력해주세요.')}
               error={!!errors?.id?.message}
               className="w-full"
@@ -77,6 +79,7 @@ const SignUp = () => {
               {...register('pw', {
                 required: t('비밀번호를 입력해주세요.'),
               })}
+              autoComplete="pw"
               placeholder={t('비밀번호를 입력해주세요.')}
               error={!!errors?.pw?.message}
               type="password"
@@ -95,6 +98,7 @@ const SignUp = () => {
                   }
                 },
               })}
+              autoComplete="rpw"
               placeholder={t('동일한 비밀번호를 한번 더 입력해주세요.')}
               error={!!errors?.rpw?.message}
               type="password"

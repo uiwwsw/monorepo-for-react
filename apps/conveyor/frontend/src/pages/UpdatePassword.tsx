@@ -49,6 +49,7 @@ const UpdatePassword = () => {
               {...register('pw', {
                 required: t('비밀번호를 입력해주세요.'),
               })}
+              autoComplete="new-password"
               placeholder={t('비밀번호를 입력해주세요.')}
               error={!!errors?.pw?.message}
               type="password"

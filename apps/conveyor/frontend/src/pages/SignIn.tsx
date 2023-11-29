@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { QUERY_PARAM_TOAST, QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
+import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -20,9 +20,11 @@ const SignIn = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const queryParamToastMsgs = {
-    [QUERY_PARAM_TOAST['session-expired']]: t('세선만료'),
-    [QUERY_PARAM_TOAST['success-update-password']]: t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.'),
-    [QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
+    [SIGN_IN_QUERY_PARAM_TOAST['session-expired']]: t('세선만료'),
+    [SIGN_IN_QUERY_PARAM_TOAST['success-update-password']]: t(
+      '비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.',
+    ),
+    [SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
   };
   const {
     register,
@@ -36,7 +38,7 @@ const SignIn = () => {
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
   const urlFrom = useMemo(() => url.get('from'), [location]);
-  const urlToast = useMemo(() => url.get('toast') as QUERY_PARAM_TOAST_KEY, [location]);
+  const urlToast = useMemo(() => url.get('toast') as SIGN_IN_QUERY_PARAM_TOAST_KEY, [location]);
   const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
   /* ======   function    ====== */
   const handleModalClose = async () => {
@@ -77,6 +79,7 @@ const SignIn = () => {
               {...register('id', {
                 required: t('아이디를 입력해주세요.'),
               })}
+              autoComplete="id"
               placeholder={t('아이디를 입력해주세요.')}
               error={!!errors?.id?.message}
               className="w-full"
@@ -89,6 +92,7 @@ const SignIn = () => {
               {...register('pw', {
                 required: t('비밀번호를 입력해주세요.'),
               })}
+              autoComplete="pw"
               placeholder={t('비밀번호를 입력해주세요.')}
               error={!!errors?.pw?.message}
               type="password"
