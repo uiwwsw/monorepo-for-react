@@ -64,30 +64,23 @@ export class Service {
         this.zones = await zoneRepo.getZoneRepo();
 
         // DBM 객체 생성
-        this.dbm = new DBM(this.subs);
+        //this.dbm = new DBM(this.subs);
 
         // Zone 데이터 저장
-        const conn = await this.MySQL.getConnection();
-        try {
-            await conn.beginTransaction();
-            for (const [key, value] of this.zones) {
-                await conn.query('insert into zoneInfo set ? on duplicate key update ?', [{
-                    ZoneID: key,
-                    DisplayName: value.DisplayName,
-                    PhysicalType : value.PhysicalType
-                },
-                {
-                    DisplayName: value.DisplayName,
-                    PhysicalType : value.PhysicalType
-                }]);
-            }
-            await conn.commit();
-        } catch (ex) {
-            logger.error(ex as Error);
-            await conn.rollback();
-        } finally {
-            await conn.release();
+        const jobs = [];
+        for (const [key, value] of this.zones) {
+            const job = this.MySQL.query('insert into zoneInfo set ? on duplicate key update ?', [{
+                ZoneID: key,
+                DisplayName: value.DisplayName,
+                PhysicalType : value.PhysicalType
+            },
+            {
+                DisplayName: value.DisplayName,
+                PhysicalType : value.PhysicalType
+            }]);
+            jobs.push(job);
         }
+        await Promise.all(jobs);
     }
 
     public get IsRun() : boolean {
