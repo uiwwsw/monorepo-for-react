@@ -21,7 +21,7 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
   const guides = [
     {
       ref: checkboxRef,
-      text: '달력을 고정하면 통계 요약, 알람, 케리어의 달력이 동기화 됩니다.',
+      text: '달력을 고정하면 통계 요약, 알람, 케리어의 달력이 동기화 됩니다.\n동기화 하지 않으면 각각 오늘부터 1주일전까지의 데이터를 보여줍니다.',
     },
   ];
 
@@ -45,7 +45,7 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
       <div className="flex items-center gap-2">
         <span ref={checkboxRef}>
           <Checkbox defaultChecked={!!fixedCalendar?.length} onChange={handleFixedCalendar}>
-            {t('달력 고정')}
+            {t('달력 동기화')}
           </Checkbox>
         </span>
         <Calendar
