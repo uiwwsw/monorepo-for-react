@@ -1,6 +1,6 @@
 import { isDateString } from '#/renderObject';
 import { emptyClassName } from '@/Empty';
-import { FORMAT, createLogger, newDate } from '@package-frontend/utils';
+import { FORMAT, newDate } from '@package-frontend/utils';
 import { Cell, flexRender } from '@tanstack/react-table';
 import { TableProps } from '.';
 /* ======   interface   ====== */
