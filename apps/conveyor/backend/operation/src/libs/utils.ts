@@ -28,3 +28,9 @@ export async function decodeBase64AndDecompress(encodedString: string): Promise<
     const decompressedBuffer = await gunzipAsync(buffer);
     return JSON.parse(decompressedBuffer.toString());
 }
+
+export async function uncompressBase64ToJson(encodedString: string): Promise<string> {
+    const buffer = Buffer.from(encodedString, 'base64');
+    const decompressedBuffer = await gunzipAsync(buffer);
+    return decompressedBuffer.toString();
+}

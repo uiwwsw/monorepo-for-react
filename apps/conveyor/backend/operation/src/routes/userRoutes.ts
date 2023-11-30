@@ -8,6 +8,7 @@ import {
     UserListRequest, UserListResponse, 
     UserEditGradeRequest, UserEditGradeResponse,
     UserPasswordRequest, UserPasswordResponse,
+    HeartBeatRequest, HeartBeatResponse,
     UserSession } from '@package-backend/types';
 import { UserGrade, ClientType } from './user_enum';
 import { UserRow } from '../models/R301';
@@ -473,6 +474,47 @@ router.put('/user-password', verifyToken, asyncWrapper<UserPasswordRequest, User
     });
 }));
 
+
+/**
+ * @swagger
+ * /users/heartbeat:
+ *   get:
+ *     summary: Heartbeat
+ *     description: Heartbeat
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Heartbeat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HeartBeatResponse'
+ *       500:
+ *         description: 서버 오류.
+ * 
+ * components:
+ *   schemas:
+ *     HeartBeatRequest:
+ *       type: object
+ *     HeartBeatResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         data:
+ *           type: object
+ *           properties:
+ *             server_time:
+ *               type: Date
+ */
+router.get('/heartbeat', asyncWrapper<HeartBeatRequest, HeartBeatResponse>(async (req, res) => {
+    res.json({
+        message: "OK",
+        data: {
+            server_time: new Date()
+        }
+    });
+}));
 
 
 export default router;

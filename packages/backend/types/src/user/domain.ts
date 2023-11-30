@@ -64,3 +64,12 @@ export interface UserPasswordRequest {
 // 새로운 패스워드 설정 응답
 export interface UserPasswordResponse {
 }
+
+
+// Heartbeat 요청
+export interface HeartBeatRequest {
+}
+// Heartbeat 응답
+export interface HeartBeatResponse {
+  server_time: Date;
+}

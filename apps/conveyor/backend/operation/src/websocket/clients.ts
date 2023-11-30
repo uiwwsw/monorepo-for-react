@@ -4,7 +4,6 @@ import { Redis } from 'ioredis';
 import { getSessionFromToken } from '../routes/session';
 import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
-import { initailizeRedisInfo } from './redis_utils';
 import { Client } from './client';
 import logger from '../libs/logger';
 
@@ -104,9 +103,6 @@ export class Clients {
         }
 
         const client = new Client(ws, session);
-
-        await initailizeRedisInfo(client);
-
         this.clients.set(session.uid, client);
         logger.info(`addClient. A new WebSocket connection has been established. uid: ${session.uid}`);
 
@@ -117,7 +113,11 @@ export class Clients {
     }
 
     public async broadcast(type: string, data: object) {
-        this.clients.forEach((c) => c.send(type, data) );
+        this.clients.forEach((client) => {
+            if (client.IsReady) {
+                client.send(type, data);
+            }
+        });
     }
 
     private sendRunner = () => {
