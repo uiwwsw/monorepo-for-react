@@ -5,8 +5,11 @@ import logger from '../libs/logger';
 
 export class ZoneRepo {
     public useRealPostion: boolean = false;
+    public Data: Map<number, Zone> = new Map<number, Zone>();
 
     async getZoneRepo() : Promise<Map<number, Zone>> {
+        this.Data.clear();
+
         const zoneKeys = await this.getZoneKeys();
         const zones = this.makeMappedRepository(zoneKeys);
 
@@ -16,6 +19,12 @@ export class ZoneRepo {
         await this.setZoneRepositoryAttributes(zones);
 
         return zones;
+    }
+
+    async setData(value: Map<number, Zone>) {
+        value.forEach((value: Zone) => {
+            this.Data.set(value.ZoneID, value);
+        });
     }
 
     async getZoneKeys() : Promise<string[]> {

@@ -49,7 +49,7 @@ export class Clients {
                     this.tcmZoneOccupiedAttributes.push(msg.MessageData);
                     break;
                 case 'tcmAlarmSet':
-                    this.broadcast('tcmAlarmSet', msg.MessageData);
+                    this.broadcast('tcmAlarmSet', [msg.MessageData]);
                     break;
                 case 'tcmZoneStateChangeCompleted':
                     {
@@ -103,7 +103,7 @@ export class Clients {
             return;
         }
 
-        await initailizeRedisInfo(ws);
+        await initailizeRedisInfo(ws, session);
 
         this.clients.set(session.uid, ws);
         logger.info(`addClient. A new WebSocket connection has been established. uid: ${session.uid}`);
