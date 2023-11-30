@@ -1,18 +1,15 @@
-import WebSocket from 'ws';
-
 import { Service } from '../service';
-import * as utils from '../libs/utils';
-import logger from '../libs/logger';
-import { UserSession } from '@package-backend/types';
+import { Client } from './client';
 import { ZoneRepo } from '../zone/zoneRepo';
+import logger from '../libs/logger';
 
-export async function initailizeRedisInfo(client:WebSocket, session: UserSession) {
+export async function initailizeRedisInfo(client:Client) {
     const zoneRepo = Service.Inst.ZoneRepo;
 
-    client.send(JSON.stringify({ type: 'guiRenderInfo', data: JSON.stringify({ useRealPostion: zoneRepo.useRealPostion }) }));
+    client.send('guiRenderInfo', { useRealPostion: zoneRepo.useRealPostion });
 
     const jobs = [];
-    if (session.client_type === 2) {
+    if (client.ClientType === 2) {
         jobs.push(initializeTaskInfos(client));
         jobs.push(initializeZoneDynamicAttributes(client));
         jobs.push(initializeZoneOccupiedAttributes(client, zoneRepo));
@@ -24,7 +21,7 @@ export async function initailizeRedisInfo(client:WebSocket, session: UserSession
 
     await Promise.all(jobs);
 
-    client.send(JSON.stringify({ type: 'initializedataSend', data: JSON.stringify({}) }));
+    client.send('initializedataSend', {});
 }
 
 const findKeys = async (pattern:string) : Promise<string[]> => {
@@ -40,7 +37,7 @@ const findKeys = async (pattern:string) : Promise<string[]> => {
     return keys;
 }
 
-const initializeTaskInfos = async (client:WebSocket) => {
+const initializeTaskInfos = async (client:Client) => {
     const tranferInfos:unknown[] = [];
 
     const keys: string[] = await findKeys('TransferInfo:*[0-9]');
@@ -74,12 +71,11 @@ const initializeTaskInfos = async (client:WebSocket) => {
         }),
     );
 
-    const data = await utils.compressAndEncodeBase64(tranferInfos);
-    client.send(JSON.stringify({ type: 'tcmTransferInfo', data: data, compress: 1 }));
+    client.send('tcmTransferInfo', tranferInfos);
 }
 
 
-const initializeAlarms = async (client:WebSocket) => {
+const initializeAlarms = async (client:Client) => {
     const alarms:unknown[] = [];
 
     const redis = Service.Inst.Redis;
@@ -110,12 +106,11 @@ const initializeAlarms = async (client:WebSocket) => {
         }),
     );
 
-    const data = await utils.compressAndEncodeBase64(alarms);
-    client.send(JSON.stringify({ type: 'tcmAlarmSet', data: data, compress: 1 }));
+    client.send('tcmAlarmSet', alarms);
 };
 
 
-const initializeZoneDynamicAttributes = async (client:WebSocket) => {
+const initializeZoneDynamicAttributes = async (client:Client) => {
     const zoneDynamicattr:unknown[] = [];
 
     const redis = Service.Inst.Redis;
@@ -148,12 +143,11 @@ const initializeZoneDynamicAttributes = async (client:WebSocket) => {
         }),
     );
 
-    const data = await utils.compressAndEncodeBase64(zoneDynamicattr);
-    client.send(JSON.stringify({ type: 'UpdateZoneState', data: data, compress : 1 }));
+    client.send('UpdateZoneState', zoneDynamicattr);
 };
 
 
-const initializeZoneOccupiedAttributes = async (client:WebSocket, zoneRepo:ZoneRepo) => {
+const initializeZoneOccupiedAttributes = async (client:Client, zoneRepo:ZoneRepo) => {
     const zoneOccupiedattr:unknown[] = [];
 
     const redis = Service.Inst.Redis;
@@ -197,11 +191,10 @@ const initializeZoneOccupiedAttributes = async (client:WebSocket, zoneRepo:ZoneR
         }),
     );
 
-    const data = await utils.compressAndEncodeBase64(zoneOccupiedattr);
-    client.send(JSON.stringify({ type: 'UpdateZoneOccupiedState', data: data, compress : 1 }));
+    client.send('UpdateZoneOccupiedState', zoneOccupiedattr);
 };
 
-async function initializeModuleState(client:WebSocket) {
+async function initializeModuleState(client:Client) {
     const redis = Service.Inst.Redis;
     {
         const Alive = await redis.hmget(`HIMInfo:Alive`, 'Alive');
@@ -209,7 +202,7 @@ async function initializeModuleState(client:WebSocket) {
             StateType: 'HIM',
             Alive: Alive[0] !== null ? Alive[0] : '0',
         }
-        client.send(JSON.stringify({ type: 'initialmodulestate', data: JSON.stringify(data) }));
+        client.send('initialmodulestate', data);
     }
 
     {
@@ -218,7 +211,7 @@ async function initializeModuleState(client:WebSocket) {
             StateType: 'DCM',
             Alive: Alive[0] !== null ? Alive[0] : '0',
         }
-        client.send(JSON.stringify({ type: 'initialmodulestate', data: JSON.stringify(data) }));
+        client.send('initialmodulestate', data);
     }
 
     {
@@ -238,13 +231,13 @@ async function initializeModuleState(client:WebSocket) {
                     ID: TCMID - 1,
                     Alive: Alive[0] !== null ? Alive[0] : '0',
                 }
-                client.send(JSON.stringify({ type: 'initialmodulestate', data: JSON.stringify(data) }));
+                client.send('initialmodulestate', data);
             }),
         );
     }
 }
 
-const initializeEquipmentState = async (client : WebSocket) => {
+const initializeEquipmentState = async (client : Client) => {
     const redis = Service.Inst.Redis;
     const equmentInfo = await redis.hgetall('System:EquipmentState');
 
@@ -261,12 +254,12 @@ const initializeEquipmentState = async (client : WebSocket) => {
                 ProcessingState: equmentInfo.ProcessingState2,
             }
         };
-        client.send(JSON.stringify({ type: 'himEquipmentStateInfo', data: JSON.stringify(data) }));
+        client.send('himEquipmentStateInfo', data);
     }
 };
 
 
-async function initailizeTCMInfo(client:WebSocket) {
+async function initailizeTCMInfo(client:Client) {
     const redis = Service.Inst.Redis;
     try {
         const keys = await findKeys('TCMInfo:*[0-9]');
@@ -280,7 +273,7 @@ async function initailizeTCMInfo(client:WebSocket) {
                     BuildNum: Version[0],
                     BuildDate: Version[1],
                 }
-                client.send(JSON.stringify({ type: 'TCMInfo', data: JSON.stringify(data) }));
+                client.send('TCMInfo', data);
             }),
         );
     } catch (ex) {

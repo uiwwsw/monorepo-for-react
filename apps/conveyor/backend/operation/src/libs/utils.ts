@@ -17,6 +17,11 @@ export async function compressAndEncodeBase64(jsonData: object): Promise<string>
     return buffer.toString('base64');
 }
 
+export async function jsonToZipAndEncodeBase64(jsonString: string): Promise<string> {
+    const buffer = await gzipAsync(jsonString);
+    return buffer.toString('base64');
+}
+
 // Base64 인코딩된 문자열을 디코딩하고 JSON 데이터로 압축 해제하는 함수
 export async function decodeBase64AndDecompress(encodedString: string): Promise<object> {
     const buffer = Buffer.from(encodedString, 'base64');

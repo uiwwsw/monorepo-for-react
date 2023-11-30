@@ -5,11 +5,11 @@ import { getSessionFromToken } from '../routes/session';
 import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
 import { initailizeRedisInfo } from './redis_utils';
+import { Client } from './client';
 import logger from '../libs/logger';
-import * as utils from '../libs/utils';
 
 export class Clients {
-    private clients: Map<number, WebSocket> = new Map<number, WebSocket>();
+    private clients: Map<number, Client> = new Map<number, Client>();
 
     private subs!: Redis;
     private tcsEventSet:ITcsEventSet[] = [];
@@ -70,7 +70,7 @@ export class Clients {
                         if (newState < 0) {
                             return;
                         }
-                        this.broadcast('UpdateZoneState', [{ zoneID: msg.MessageData.ZoneID, newState }], true);
+                        this.broadcast('UpdateZoneState', [{ zoneID: msg.MessageData.ZoneID, newState }]);
                     }
                     break;
                 case 'tcsEventSet':
@@ -103,9 +103,11 @@ export class Clients {
             return;
         }
 
-        await initailizeRedisInfo(ws, session);
+        const client = new Client(ws, session);
 
-        this.clients.set(session.uid, ws);
+        await initailizeRedisInfo(client);
+
+        this.clients.set(session.uid, client);
         logger.info(`addClient. A new WebSocket connection has been established. uid: ${session.uid}`);
 
         ws.on('close', () => {
@@ -114,37 +116,27 @@ export class Clients {
         });
     }
 
-    public send(ws:WebSocket, type: string, data: string, compress: number) {
-        const msg = {
-            type: type,
-            data: data,
-            compress: compress
-        };
-        ws.send(JSON.stringify(msg));
-    }
-
-    public async broadcast(type: string, data: object, compress: boolean = false) {
-        const message = compress ? await utils.compressAndEncodeBase64(data) : JSON.stringify(data)
-        this.clients.forEach((c) => this.send(c, type, message, compress ? 1 : 0) );
+    public async broadcast(type: string, data: object) {
+        this.clients.forEach((c) => c.send(type, data) );
     }
 
     private sendRunner = () => {
         try {
             if (this.tcmTransferInfo.length > 0) {
                 const transferinfo = this.tcmTransferInfo.splice(0, this.tcmTransferInfo.length);
-                this.broadcast('tcmTransferInfo', transferinfo, true);
+                this.broadcast('tcmTransferInfo', transferinfo);
             }
             if (this.tcmZoneOccupiedAttributes.length > 0) {
                 const tcmZoneOccupied = this.tcmZoneOccupiedAttributes.splice(0, this.tcmZoneOccupiedAttributes.length);
-                this.broadcast('UpdateZoneOccupiedState', tcmZoneOccupied, true);
+                this.broadcast('UpdateZoneOccupiedState', tcmZoneOccupied);
             }
             if (this.tcmZoneStateAttributes.length > 0) {
                 const tcmZoneOccupied = this.tcmZoneStateAttributes.splice(0, this.tcmZoneStateAttributes.length);
-                this.broadcast('UpdateZoneState', tcmZoneOccupied, true);
+                this.broadcast('UpdateZoneState', tcmZoneOccupied);
             }
             if(this.tcsEventSet.length > 0){
                 const eventSet = this.tcsEventSet.splice(0, this.tcsEventSet.length);
-                this.broadcast('tcsEventSet', eventSet, true);
+                this.broadcast('tcsEventSet', eventSet);
             }
         } catch (ex) {
             logger.error(`sendRunner: ${ex}`);
