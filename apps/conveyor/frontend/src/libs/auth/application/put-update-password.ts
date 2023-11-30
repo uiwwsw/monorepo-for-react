@@ -5,6 +5,7 @@ import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
 import { MD5 } from 'crypto-js';
 import { http } from '#/http';
+import { UserPasswordRequest } from '@package-backend/types';
 
 const logger = createLogger('auth/useUpdatePassword');
 
@@ -18,7 +19,7 @@ async function fetcher(
     };
   },
 ) {
-  const res = await http<Auth>({
+  const res = await http<Auth, UserPasswordRequest>({
     url,
     method: 'PUT',
     arg: {

@@ -9,14 +9,14 @@ export const enum HttpErrorType {
   AUTH = 4,
   SERVER,
 }
-export const http = async <T>({
+export const http = async <T, J = unknown>({
   url,
   arg,
   method = 'GET',
   file,
 }: {
   url: string;
-  arg?: unknown;
+  arg?: J;
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
 }) => {

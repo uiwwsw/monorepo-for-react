@@ -2,6 +2,7 @@
 import useSWR from 'swr/mutation';
 import { createLogger } from '@package-frontend/utils';
 import { http } from '#/http';
+import { UserEditGradeRequest } from '@package-backend/types';
 
 const logger = createLogger('auth/useUpdateGrade');
 
@@ -16,7 +17,7 @@ async function fetcher(
     };
   },
 ) {
-  const res = await http({
+  const res = await http<unknown, UserEditGradeRequest>({
     url,
     method: 'PUT',
     arg: {
