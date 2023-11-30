@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { ServerInfo, Status } from '../domain';
+import { ServerInfo, CONTROL_STATUS } from '../domain';
 const logger = createLogger('control/useServerInfo');
 
 async function fetcher(url: string) {
@@ -12,13 +12,13 @@ async function fetcher(url: string) {
     {
       sid: 1,
       type: 'dcm',
-      status: Status.OFFLINE,
+      status: CONTROL_STATUS.OFFLINE,
       version: '1.0.1',
     },
     {
       sid: 2,
       type: 'him',
-      status: Status.ONLINE,
+      status: CONTROL_STATUS.ONLINE,
       version: '2.2.1',
     },
   ];
