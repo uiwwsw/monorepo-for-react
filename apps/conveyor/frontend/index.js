@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use(
   '/api',
   createProxyMiddleware({
-    target: process.env.VITE_API, // 프록시할 서버 주소
+    target: process.env.API, // 프록시할 서버 주소
     changeOrigin: true,
     pathRewrite: {
       '^/api': '', // URL 재작성

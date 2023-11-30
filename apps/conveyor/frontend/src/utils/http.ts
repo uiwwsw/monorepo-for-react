@@ -85,8 +85,7 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res?.status ?? 0;
     this.statusText = res.statusText ?? 'unknown error';
-    if (HttpErrorType.SERVER === this.type)
-      this.message = i18n.t('{{api}} 서버에 문제가 발생한 것 같아요.🤦‍♂️', { api: import.meta.env.VITE_API });
+    if (HttpErrorType.SERVER === this.type) this.message = i18n.t('api 서버에 문제가 발생한 것 같아요.🤦‍♂️');
 
     if (HttpErrorType.AUTH === this.type) {
       LocalStorage.set(STORAGE['/check-auth']);
