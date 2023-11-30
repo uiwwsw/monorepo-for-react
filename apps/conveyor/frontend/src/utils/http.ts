@@ -20,7 +20,7 @@ export const http = async <T>({
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
 }) => {
-  const auth = LocalStorage.get<Auth>(STORAGE['/check-auth']);
+  const auth = LocalStorage.get<Auth>(STORAGE['auth']);
   const headers: Record<string, string> = {
     'Content-type': 'application/json',
   };
@@ -88,7 +88,7 @@ export class HttpError extends Error implements STResponseFailed {
     if (HttpErrorType.SERVER === this.type) this.message = i18n.t('api 서버에 문제가 발생한 것 같아요.🤦‍♂️');
 
     if (HttpErrorType.AUTH === this.type) {
-      LocalStorage.set(STORAGE['/check-auth']);
+      LocalStorage.set(STORAGE['auth']);
       location.replace(`/sign-in${this.query}`);
     }
   }

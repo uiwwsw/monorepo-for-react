@@ -5,8 +5,8 @@ import { mutate } from 'swr';
 const logger = createLogger('auth/usePostAuth');
 
 async function fetcher(arg: Auth | undefined) {
-  await mutate(STORAGE['/check-auth'], arg);
-  LocalStorage.set(STORAGE['/check-auth'], arg);
+  await mutate(STORAGE['auth'], arg);
+  LocalStorage.set(STORAGE['auth'], arg);
   logger(arg);
 }
 
