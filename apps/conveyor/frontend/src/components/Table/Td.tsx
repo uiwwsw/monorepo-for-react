@@ -9,7 +9,7 @@ export interface TdProps<T> {
   cell: Cell<T, unknown>;
 }
 /* ======    global     ====== */
-const logger = createLogger('components/Table/Td');
+// const logger = createLogger('components/Table/Td');
 const Td = <T,>({ cell, textAlignCenter }: TdProps<T>) => {
   /* ======   variables   ====== */
   const context = cell.getContext();
@@ -17,7 +17,7 @@ const Td = <T,>({ cell, textAlignCenter }: TdProps<T>) => {
   const render = flexRender(cell.column.columnDef.cell, context);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render', strRender, render);
+  // logger('render');
   return (
     <td className={`px-6 py-4 text-sm align-middle${textAlignCenter ? ` text-center` : ''} ${emptyClassName}`}>
       {isDateString(`${strRender}`) ? newDate(`${strRender}`).format(FORMAT) : render}
