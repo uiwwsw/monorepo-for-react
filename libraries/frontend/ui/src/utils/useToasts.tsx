@@ -1,6 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import { useState } from 'react';
 import ToastWithPortal from '@/Toast/WithPortal';
+import useThrottle from './useThrottle';
 /* ======   interface   ====== */
 
 export interface ToastProps {
@@ -28,7 +29,7 @@ const useToasts = () => {
   /* ======   useEffect   ====== */
   logger('render');
   return {
-    showToast,
+    showToast: useThrottle(showToast, 300),
     Toasts: toastMessages.map((x) => (
       <ToastWithPortal open key={x.id} duration={x.duration} onClosed={() => deleteToast(x.id)}>
         {x.message}

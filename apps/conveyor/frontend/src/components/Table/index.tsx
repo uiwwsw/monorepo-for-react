@@ -348,6 +348,8 @@ const Table = <T,>({
                 }}
                 min={1}
                 max={table.getPageCount()}
+                maxMessage={() => t('페이지를 벗어나는 수는 입력할 수 없습니다.')}
+                minMessage={() => t('페이지를 벗어나는 수는 입력할 수 없습니다.')}
                 className="border rounded w-24"
                 placeholder="page"
               />
