@@ -1,5 +1,5 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import useSWR from 'swr';
+import useSWR from 'swr/mutation';
 import { FileInfo } from '../domain';
 
 const logger = createLogger('control/useTcmBackup');
@@ -32,6 +32,6 @@ async function fetcher(
   return res;
 }
 
-export function useTcmBackup(arg: Args) {
-  return useSWR('/control/tcm/backup', (url) => fetcher(url, { arg }));
+export function useTcmBackup() {
+  return useSWR('/control/tcm/backup', fetcher);
 }

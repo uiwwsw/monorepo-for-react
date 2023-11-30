@@ -1,8 +1,7 @@
 import { ServerInfo } from '!/control/domain';
-import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import ModalContentLogsServer from './ModalContentLogsServer';
+import ModalLogsServer from './Modals/LogsServer';
 /* ======   interface   ====== */
 export interface ServerSubProps {
   row?: Row<ServerInfo>;
@@ -11,22 +10,13 @@ export interface ServerSubProps {
 const logger = createLogger('pages/Control/ServerSub');
 const ServerSub = ({ row }: ServerSubProps) => {
   /* ======   variables   ====== */
+  const sid = row?.original.sid;
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="flex justify-end space-x-2">
-      <ModalWithBtn
-        button={
-          <Button themeSize={'sm'} themeColor={'tertiary'}>
-            Logs
-          </Button>
-        }
-        hasButton={['CANCEL']}
-        persist
-      >
-        <ModalContentLogsServer sid={row?.original.sid} />
-      </ModalWithBtn>
+    <div className="flex justify-end gap-2 p-2">
+      <ModalLogsServer sid={sid} />
     </div>
   );
 };

@@ -15,7 +15,8 @@ const Link = ({ commonClassName, ...props }: LinkProps) => {
   const location = useLocation();
   const url = new URLSearchParams(location.search);
   const isInIframe = url.has(GLOBAL_QUERY_PARAM['is-iframe']);
-  const isActive = parent.document.location.pathname === props.to;
+  const isActive = isInIframe && parent.document.location.pathname === props.to;
+  const hasError = isInIframe && parent.document.location.pathname === props.to;
   /* ======   function    ====== */
   const handleHref = (e: MouseEvent) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ const Link = ({ commonClassName, ...props }: LinkProps) => {
     <span
       className={`relative [&>*]:block${commonClassName ? ` ${commonClassName}` : ''}${
         isActive ? ` animate-pulse` : ''
-      }`}
+      }${hasError ? ' text-red-400' : ''}`}
     >
       {isInIframe && <i className="absolute inset-0 cursor-pointer" onClick={handleHref} />}
       <RouterLink {...props} />

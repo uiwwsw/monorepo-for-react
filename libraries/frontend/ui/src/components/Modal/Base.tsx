@@ -6,6 +6,7 @@ import ModalClose from './Close';
 import ModalFooter from './Footer';
 import { createLogger } from '@package-frontend/utils';
 import { ButtonProps } from '@/Button';
+import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';
 
 /* ======   interface   ====== */
@@ -21,6 +22,7 @@ export interface ModalBaseProps {
   className?: string;
   persist?: boolean;
   hasCloseBtn?: boolean;
+  defaultLoading?: boolean;
   open?: boolean;
   errorToastMsg?: (value: ModalResult) => string;
   hasButton?: ModalResult[];
@@ -38,8 +40,10 @@ const ModalBase = ({
   children,
   className,
   hasToast = true,
+  defaultLoading = false,
   onClosed,
-  hasButton = ['OK', 'CANCEL', 'NONE'],
+  hasCloseBtn,
+  hasButton = ['OK', 'CANCEL'],
   smoothLoading = true,
 }: ModalBaseProps) => {
   /* ======   variables   ====== */
@@ -47,9 +51,7 @@ const ModalBase = ({
   const [errors, setErrors] = useState<ModalErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const { animate, setAnimate } = useAnimate();
-  const hasClose = useMemo(() => hasButton.includes('NONE'), [hasButton]);
-  const hasFooterButton = useMemo(() => hasButton.filter((x) => x !== 'NONE'), [hasButton]);
-  const hasFooter = useMemo(() => hasFooterButton.length > 0, [hasButton]);
+  const hasFooter = useMemo(() => hasButton.length > 0, [hasButton]);
   const memoErrors: [string, ModalError][] = useMemo(() => {
     const arr = Object.entries(errors);
     if (open) return arr;
@@ -87,12 +89,13 @@ const ModalBase = ({
       <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0} autoFocus>
         <ModalOverlay onClose={adapterClose} />
         <div className={modalContentClassName}>
-          {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
+          <Loading show={defaultLoading} className="absolute" />
+          {hasCloseBtn && <ModalClose onClose={adapterClose} disabled={loading} />}
           <div>{children}</div>
           {hasFooter && (
             <ModalFooter
               errorToastMsg={errorToastMsg}
-              hasButton={hasFooterButton}
+              hasButton={hasButton}
               hasToast={hasToast}
               smoothLoading={smoothLoading}
               disabled={loading || !open}

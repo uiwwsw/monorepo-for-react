@@ -1,6 +1,6 @@
-import { Button, ModalWithBtn } from '@library-frontend/ui';
+import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
-import ModalContentUpdate from './ModalContentUpdate';
+import ModalUpdate from './Modals/Update';
 import { useTcmStart } from '!/control/application/post-tcm-start';
 import { TcmInfo } from '!/control/domain';
 import { useTcmStop } from '!/control/application/post-tcm-stop';
@@ -86,29 +86,20 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     <>
       {Toasts}
       <div className="flex justify-end space-x-2 items-center">
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStartClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
           Start
         </Button>
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStopClick}>
+        <Button disabled={disabled} themeColor="quaternary" smoothLoading onClick={handleStopClick}>
           Stop
         </Button>
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleRestartClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
           Restart
         </Button>
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleReloadClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleReloadClick}>
           Reload
         </Button>
-        <ModalWithBtn
-          persist
-          button={
-            <Button disabled={disabled} smoothLoading themeSize={'sm'} themeColor="tertiary">
-              Update
-            </Button>
-          }
-          hasButton={['CANCEL']}
-        >
-          <ModalContentUpdate selectedRows={selectedTids} />
-        </ModalWithBtn>
+
+        <ModalUpdate disabled={disabled} selectedRows={selectedTids} />
       </div>
     </>
   );

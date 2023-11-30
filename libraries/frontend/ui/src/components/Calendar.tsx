@@ -1,4 +1,4 @@
-import { MouseEvent, ReactElement, cloneElement, useMemo, useRef, useState } from 'react';
+import { MouseEvent, ReactElement, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import { Dayjs } from 'dayjs';
 import { FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
@@ -6,19 +6,18 @@ import 'react-calendar/dist/Calendar.css';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
 import Button from './Button';
-import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
   selectRangeHolder?: string;
   tooltipMsg?: string;
   selectRange?: boolean;
-  defaultValue?: LooseValue;
+  defaultValue?: string | string[];
   onChange?: (value: Dayjs | Dayjs[]) => void;
   button?: ReactElement;
 }
 /* ======    global     ====== */
-const convertFromValueToDate = (value: LooseValue) =>
+const convertFromValueToDate = (value: CalendarProps['defaultValue']) =>
   value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
 const logger = createLogger('components/Calendar');
 const Calendar = ({
@@ -50,7 +49,7 @@ const Calendar = ({
     e.stopPropagation();
   };
   const handleChange = (e: unknown) => {
-    const value = convertFromValueToDate(e as LooseValue);
+    const value = convertFromValueToDate(e as CalendarProps['defaultValue']);
     setValue(value);
     fakeRef.current?.click();
     onChange && onChange(value);
@@ -60,6 +59,9 @@ const Calendar = ({
     e.stopPropagation();
   };
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    setValue(defaultValue ? convertFromValueToDate(defaultValue) : undefined);
+  }, [defaultValue]);
   logger('render');
   return (
     <Menu
@@ -67,7 +69,7 @@ const Calendar = ({
       button={cloneElement(button, {
         children: (
           <span className="flex w-fit m-auto items-center">
-            <span>{memoValueForDisplay}</span>
+            <span className="whitespace-nowrap">{memoValueForDisplay}</span>
             {selectRange && (
               <span className="ml-2">
                 <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
@@ -79,7 +81,12 @@ const Calendar = ({
     >
       <i ref={fakeRef} />
       <div onClick={handleClick} aria-label="react-calendar">
-        <ReactCalendar defaultValue={defaultValue} selectRange={selectRange} onChange={handleChange} />
+        <ReactCalendar
+          value={value as any}
+          defaultValue={defaultValue as any}
+          selectRange={selectRange}
+          onChange={handleChange}
+        />
       </div>
     </Menu>
   );

@@ -1,8 +1,0 @@
-{
-  "name": "@package-frontend/pretendard",
-  "version": "0.0.1",
-  "main": "pretendard-variable.css",
-  "dependencies": {
-    "@package-backend/types": "workspace:^"
-  }
-}

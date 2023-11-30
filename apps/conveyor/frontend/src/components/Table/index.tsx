@@ -14,9 +14,9 @@ import {
   Column,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useMemo, useState, Fragment, ReactElement, ChangeEvent, KeyboardEvent, cloneElement, useEffect } from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select, Skeleton } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Numeric, Select, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
@@ -25,7 +25,7 @@ import Empty from '@/Empty';
 export interface TableProps<T> {
   thead: string[];
   data?: T[];
-  allRowSelection?: boolean;
+  allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
@@ -42,7 +42,7 @@ const Table = <T,>({
   thead,
   onSearch,
   data,
-  allRowSelection,
+  allRowSelectTick,
   textAlignCenter = true,
   cacheColumnVisibility,
   setCacheColumnVisibility,
@@ -174,16 +174,14 @@ const Table = <T,>({
     if (onSearch) onSearch(keyword);
     else setGlobalFilter(keyword);
   };
-  const handleSearchKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
-  };
   /* ======   useEffect   ====== */
   useEffect(() => {
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    if (allRowSelection) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
-  }, [allRowSelection]);
+    logger(allRowSelectTick);
+    if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
+  }, [allRowSelectTick]);
   logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
@@ -219,13 +217,14 @@ const Table = <T,>({
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Input
+            type="text"
+            autoComplete="table-search"
             defaultValue={globalFilter}
             debounceTime={300}
+            // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            onKeyUp={handleSearchKeyUp}
             placeholder="검색어를 입력하세요"
           />
-          {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
         </div>
         {renderSelectComponent && (
           <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
@@ -341,13 +340,14 @@ const Table = <T,>({
             </div>
             <div className="flex items-center gap-1 max-lg:!hidden">
               | {t('페이지 이동')}:
-              <Input
-                type="number"
+              <Numeric
                 defaultValue={table.getState().pagination.pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   table.setPageIndex(page);
                 }}
+                min={1}
+                max={table.getPageCount()}
                 className="border rounded w-24"
                 placeholder="page"
               />

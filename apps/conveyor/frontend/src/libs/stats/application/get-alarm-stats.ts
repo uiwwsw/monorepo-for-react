@@ -5,8 +5,8 @@ import { StatsAlarmData } from '../domain';
 import { http } from '#/http';
 
 export interface Arg {
-  begin_date: string;
-  end_date: string;
+  start_time: string;
+  end_time: string;
   page: number;
   page_size: number;
   find_key?: string;
@@ -61,5 +61,5 @@ async function fetcher(
 }
 
 export function useAlarmStats(arg: Arg) {
-  return useSWR('/api/stats/alarm-stats', (url) => fetcher(url, { arg }));
+  return useSWR(['/api/stats/alarm-stats', arg], ([url, arg]) => fetcher(url, { arg }));
 }

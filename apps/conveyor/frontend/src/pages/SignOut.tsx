@@ -1,5 +1,5 @@
 import { useSignOut } from '!/auth/application/post-sign-out';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, wait } from '@package-frontend/utils';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,9 +17,9 @@ const SignOut = () => {
     logger('사인아웃 호출');
     try {
       await trigger();
-    } catch {
-      logger('사인아웃 오류', count);
-      if (count-- > 0) await tryUntilSuccess();
+    } catch (e) {
+      logger('사인아웃 오류', e, count);
+      if (--count) await Promise.all([tryUntilSuccess(), wait(100)]);
     }
   };
   /* ======   useEffect   ====== */

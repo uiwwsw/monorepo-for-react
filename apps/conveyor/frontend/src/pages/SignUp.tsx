@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
+import WarningMessage from '@/Typography/WarningMessage';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -58,7 +59,7 @@ const SignUp = () => {
               error={!!errors?.name?.message}
               className="w-full"
             />
-            {errors?.name?.message && <p className="text-red-500">💥 {errors?.name?.message}</p>}
+            <WarningMessage>{errors?.name?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium uppercase">{t('아이디')}</p>
@@ -71,7 +72,7 @@ const SignUp = () => {
               error={!!errors?.id?.message}
               className="w-full"
             />
-            {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
+            <WarningMessage>{errors?.id?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium uppercase">{t('비밀번호')}</p>
@@ -85,7 +86,7 @@ const SignUp = () => {
               type="password"
               className="w-full"
             />
-            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+            <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium uppercase">{t('비밀번호 확인')}</p>
@@ -104,7 +105,7 @@ const SignUp = () => {
               type="password"
               className="w-full"
             />
-            {errors?.rpw?.message && <p className="text-red-500">💥 {errors?.rpw?.message}</p>}
+            <WarningMessage>{errors?.rpw?.message}</WarningMessage>
           </label>
           <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
             {t('회원가입')}

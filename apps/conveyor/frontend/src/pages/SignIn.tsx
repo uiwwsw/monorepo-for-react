@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
+import WarningMessage from '@/Typography/WarningMessage';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -20,6 +21,7 @@ const SignIn = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const queryParamToastMsgs = {
+    [SIGN_IN_QUERY_PARAM_TOAST['invalid-session']]: t('로그인 정보가 없어요. 로그인 완료 후 이전 페이지로 이동합니다.'),
     [SIGN_IN_QUERY_PARAM_TOAST['session-expired']]: t('세선만료'),
     [SIGN_IN_QUERY_PARAM_TOAST['success-update-password']]: t(
       '비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.',
@@ -53,8 +55,6 @@ const SignIn = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (urlToast) setToast(queryParamToastMsgs[urlToast]);
-    else if (urlFrom)
-      setToast(t('로그인 정보가 없어요. 로그인 완료 후 {{urlNextUrl}} 페이지로 이동합니다.', { urlNextUrl }));
   }, [location]);
   logger('render');
   return (
@@ -64,7 +64,7 @@ const SignIn = () => {
         onClose={handleModalClose}
         open={success}
         smoothLoading
-        hasButton={[urlFrom ? t('페이지로 이동하기') : t('메인 페이지로 이동하기')]}
+        hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기')]}
         persist
       >
         {t(`로그인이 완료됐어요.`)}
@@ -84,7 +84,7 @@ const SignIn = () => {
               error={!!errors?.id?.message}
               className="w-full"
             />
-            {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
+            <WarningMessage>{errors?.id?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium">{t('비밀번호')}</p>
@@ -98,7 +98,7 @@ const SignIn = () => {
               type="password"
               className="w-full"
             />
-            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+            <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
           <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
             {t('로그인')}

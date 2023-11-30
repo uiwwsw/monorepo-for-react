@@ -1,6 +1,6 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
-import useSWR from 'swr';
+import useSWR from 'swr/mutation'; // TODO mutation 으로 변경, 화면 전체 로딩이 발생함.
 const logger = createLogger('control/useServerLogList');
 export interface Args {
   sid?: number;
@@ -30,6 +30,6 @@ async function fetcher(
   return res;
 }
 
-export function useServerLogList(arg: Args) {
-  return useSWR('/control/server/log-list', (url) => fetcher(url, { arg }));
+export function useServerLogList() {
+  return useSWR('/control/server/log-list', fetcher);
 }

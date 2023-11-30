@@ -1,11 +1,11 @@
-import { Button, ModalWithBtn } from '@library-frontend/ui';
+import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
 import { TcmInfo } from '!/control/domain';
-import ModalContentFirmware from './ModalContentFirmware';
-import ModalContentDetail from './ModalContentDetail';
+import ModalFirmware from './Modals/Firmware';
+import ModalDetail from './Modals/Detail';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
-import ModalContentLogsTcm from './ModalContentLogsTcm';
+import ModalLogsTcm from './Modals/LogsTcm';
 import useToasts from '#/useToasts';
 /* ======   interface   ====== */
 export interface TcmSubProps {
@@ -45,41 +45,11 @@ const TcmSub = ({ row }: TcmSubProps) => {
           Process Kill
         </Button>
 
-        <ModalWithBtn
-          button={
-            <Button themeSize={'sm'} themeColor={'tertiary'}>
-              Firmware
-            </Button>
-          }
-          hasButton={['CANCEL']}
-          persist
-        >
-          <ModalContentFirmware tid={row?.original.tid} />
-        </ModalWithBtn>
+        <ModalFirmware tid={row?.original.tid} />
 
-        <ModalWithBtn
-          button={
-            <Button themeSize={'sm'} themeColor={'tertiary'}>
-              Alive
-            </Button>
-          }
-          hasButton={['CANCEL']}
-          persist
-        >
-          <ModalContentDetail tid={row?.original.tid} clientStatus={row?.original.adjTcmConnectionDetail} />
-        </ModalWithBtn>
+        <ModalDetail tid={row?.original.tid} clientStatus={row?.original.adjTcmConnectionDetail} />
 
-        <ModalWithBtn
-          button={
-            <Button themeSize={'sm'} themeColor={'tertiary'}>
-              Logs
-            </Button>
-          }
-          hasButton={['CANCEL']}
-          persist
-        >
-          <ModalContentLogsTcm tid={row?.original.tid} />
-        </ModalWithBtn>
+        <ModalLogsTcm tid={row?.original.tid} />
       </div>
     </>
   );
