@@ -20,11 +20,11 @@ const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 50
   const isInfinity = notClosed ?? duration === Infinity;
   const elRef = useRef<HTMLDivElement>(null);
 
-  const toastClassName = `relative flex border border-gray-400 px-5 py-2 rounded-sm bg-white [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toastOpen [&[data-smooth="HIDING"]]:animate-toastClose${
+  const toastClassName = `relative flex border border-gray-400 px-5 py-2 rounded-sm bg-white [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${
     className ? ` ${className}` : ''
   }`;
   const toastLayerClassName = `absolute left-0 bottom-0 h-1 bg-black origin-left${
-    open && !isInfinity ? ' w-full animate-countDown' : ''
+    open && !isInfinity ? ' w-full animate-count-down' : ''
   }${isInfinity ? ' w-full' : ''}`;
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {

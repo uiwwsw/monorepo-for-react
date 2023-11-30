@@ -3,13 +3,11 @@ import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
 import { http } from '#/http';
+import { CarrierStatsInRequest } from '@package-backend/types';
 const logger = createLogger('stats/useCarrierStats');
-export interface Arg {
+export interface Arg extends Omit<CarrierStatsInRequest, 'start_time' | 'end_time'> {
   start_time: string;
   end_time: string;
-  page: number;
-  page_size: number;
-  find_key?: string;
 }
 async function fetcher(
   url: string,
@@ -137,7 +135,7 @@ async function fetcher(
   //   total_count: 20,
   // };
   // return fakeApi(data);
-  const res = await http<StatsCarrierData>({
+  const res = await http<StatsCarrierData, Arg>({
     url,
     method: 'POST',
     arg,

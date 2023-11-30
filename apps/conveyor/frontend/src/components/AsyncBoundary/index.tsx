@@ -8,6 +8,7 @@ export interface AsyncBoundaryProps extends ErrorBoundaryProps {
   loading?: ReactNode;
   error?: string;
 }
+
 /* ======    global     ====== */
 const logger = createLogger('components/AsyncBoundary');
 const AsyncBoundary = ({

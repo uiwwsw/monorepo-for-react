@@ -15,7 +15,7 @@ function fetcher(url: string) {
 }
 
 export function useGetAuth() {
-  return useSWR(STORAGE['/check-auth'], fetcher, {
+  return useSWR(STORAGE['auth'], fetcher, {
     revalidateOnFocus: true,
     revalidateOnMount: true,
     revalidateIfStale: true,

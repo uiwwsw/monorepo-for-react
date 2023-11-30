@@ -46,7 +46,7 @@ async function fetcher(
   //   { date: '2023-11-23', zoneId: 10207, alarmNum: 0, carrierNum: 9, warningNum: 0 },
   //   { date: '2023-11-23', zoneId: 10208, alarmNum: 0, carrierNum: 3, warningNum: 0 },
   // ];
-  const res = await http<StatsSummaryData>({
+  const res = await http<StatsSummaryData, Arg>({
     url,
     method: 'POST',
     arg,

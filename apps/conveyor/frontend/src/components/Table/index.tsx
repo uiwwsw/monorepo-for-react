@@ -169,6 +169,8 @@ const Table = <T,>({
     return table.getRowModel().rows.filter((row) => rowSelection[row.id]);
   }, [table, rowSelection]);
   /* ======   function    ====== */
+  const getNumericMsg = (newValue: number, limit: number) =>
+    t('페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.', { newValue, limit });
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     if (onSearch) onSearch(keyword);
@@ -348,6 +350,8 @@ const Table = <T,>({
                 }}
                 min={1}
                 max={table.getPageCount()}
+                maxMessage={getNumericMsg}
+                minMessage={getNumericMsg}
                 className="border rounded w-24"
                 placeholder="page"
               />

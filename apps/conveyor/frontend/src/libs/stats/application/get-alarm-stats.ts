@@ -3,13 +3,11 @@ import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsAlarmData } from '../domain';
 import { http } from '#/http';
+import { AlarmStatsInRequest } from '@package-backend/types';
 
-export interface Arg {
+export interface Arg extends Omit<AlarmStatsInRequest, 'start_time' | 'end_time'> {
   start_time: string;
   end_time: string;
-  page: number;
-  page_size: number;
-  find_key?: string;
 }
 
 const logger = createLogger('stats/useAlarmStats');
@@ -54,7 +52,7 @@ async function fetcher(
   //   ],
   //   total_count: 2,
   // };
-  const res = await http<StatsAlarmData>({ url, arg, method: 'POST' });
+  const res = await http<StatsAlarmData, Arg>({ url, arg, method: 'POST' });
   logger(res);
 
   return res;

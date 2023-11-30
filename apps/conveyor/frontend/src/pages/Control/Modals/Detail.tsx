@@ -1,4 +1,4 @@
-import { ClientStatus, ConnectionStatus } from '!/control/domain';
+import { ClientStatus, TCM_CONNECTION_STATUS } from '!/control/domain';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
@@ -36,10 +36,10 @@ const ModalDetail = ({ clientStatus, tid }: ModalDetailProps) => {
               <span className="text-md font-medium">TCM {status.tid} :</span>
               <span
                 className={`font-semibold text-md ml-4 ${
-                  status.cstatus === ConnectionStatus.ON ? 'text-green-500' : 'text-red-500'
+                  status.cStatus === TCM_CONNECTION_STATUS.ON ? 'text-green-500' : 'text-red-500'
                 }`}
               >
-                {status.cstatus}
+                {status.cStatus}
               </span>
             </div>
           ))}

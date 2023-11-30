@@ -2,7 +2,7 @@ import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { useRef, useState } from 'react';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import ProgressBar from '../ProgressBar';
-import { ResponseResult, UploadStatus } from '!/control/domain';
+import { UPLOAD_STATUS } from '!/control/domain';
 import { createLogger } from '@package-frontend/utils';
 import Upload from '../Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
@@ -14,7 +14,7 @@ export interface ModalUpdateProps {
 }
 
 interface ProgressState {
-  [key: number]: { progress: number; status: UploadStatus };
+  [key: number]: { progress: number; status: UPLOAD_STATUS };
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Update');
@@ -30,7 +30,7 @@ const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
   const initializeProgressStates = () => {
     const initialStates: ProgressState = {};
     selectedRows?.forEach((row) => {
-      initialStates[row] = { progress: 0, status: UploadStatus.Idle };
+      initialStates[row] = { progress: 0, status: UPLOAD_STATUS.IDLE };
     });
     setProgressStates(initialStates);
   };
@@ -46,24 +46,23 @@ const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
     initializeProgressStates();
 
     for (let index = 0; index < selectedRows.length; index++) {
-      console.log(index, 'dawjdklawjdawd');
       if (!continueUpdatingRef.current) throw new Error('강제 종료');
 
       const tid = selectedRows[index];
       setProgressStates((prev) => ({
         ...prev,
-        [tid]: { progress: prev[tid].progress, status: UploadStatus.Updating },
+        [tid]: { progress: prev[tid].progress, status: UPLOAD_STATUS.UPDATING },
       }));
 
       try {
         const status = await updateTrigger({ tid, fileName: uploadFile?.name });
 
-        if (status?.result === ResponseResult.SUCCESS) {
-          setProgressStates((prev) => ({ ...prev, [tid]: { progress: 100, status: UploadStatus.Completed } }));
+        if (status?.result === 'SUCCESS') {
+          setProgressStates((prev) => ({ ...prev, [tid]: { progress: 100, status: UPLOAD_STATUS.COMPLETED } }));
         }
       } catch (error) {
-        console.error('Error updating row:', tid, error);
-        setProgressStates((prev) => ({ ...prev, [tid]: { progress: prev[tid].progress, status: UploadStatus.Idle } }));
+        console.error('ERROR updating row:', tid, error);
+        setProgressStates((prev) => ({ ...prev, [tid]: { progress: prev[tid].progress, status: UPLOAD_STATUS.IDLE } }));
       }
     }
   };

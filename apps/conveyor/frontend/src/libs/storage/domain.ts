@@ -1,5 +1,5 @@
 export const enum STORAGE {
-  '/check-auth' = '/check-auth',
+  'auth' = 'auth',
   'carrier/table' = 'carrier/table',
   'alarm/table' = 'alarm/table',
   'stats/calendar' = 'stats/calendar',

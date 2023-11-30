@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { createLogger, fakeApi } from '@package-frontend/utils';
-import { ConnectionStatus, Status, TcmInfo } from '../domain';
+import { CONTROL_STATUS, TCM_CONNECTION_STATUS, TcmInfo } from '../domain';
 const logger = createLogger('control/useTcmInfo');
 
 async function fetcher(url: string) {
@@ -10,68 +10,68 @@ async function fetcher(url: string) {
   const mockDataTCM: TcmInfo[] = [
     {
       tid: 101,
-      status: Status.ONLINE,
+      status: CONTROL_STATUS.ONLINE,
       version: '1.2.1',
       adjTcmConnection: '2/2',
       adjTcmConnectionDetail: [
-        { tid: 102, cstatus: ConnectionStatus.ON },
-        { tid: 103, cstatus: ConnectionStatus.ON },
+        { tid: 102, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 103, cStatus: TCM_CONNECTION_STATUS.ON },
       ],
       Process: ['1131', '1181'],
     },
     {
       tid: 102,
-      status: Status.ONLINE,
+      status: CONTROL_STATUS.ONLINE,
       version: '1.2.1',
       adjTcmConnection: '2/4',
       adjTcmConnectionDetail: [
-        { tid: 101, cstatus: ConnectionStatus.ON },
-        { tid: 103, cstatus: ConnectionStatus.ON },
-        { tid: 104, cstatus: ConnectionStatus.OFF },
-        { tid: 105, cstatus: ConnectionStatus.OFF },
-        { tid: 106, cstatus: ConnectionStatus.OFF },
-        { tid: 101, cstatus: ConnectionStatus.ON },
-        { tid: 103, cstatus: ConnectionStatus.ON },
-        { tid: 104, cstatus: ConnectionStatus.OFF },
-        { tid: 105, cstatus: ConnectionStatus.OFF },
-        { tid: 106, cstatus: ConnectionStatus.OFF },
-        { tid: 101, cstatus: ConnectionStatus.ON },
+        { tid: 101, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 103, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 104, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 105, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 106, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 101, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 103, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 104, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 105, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 106, cStatus: TCM_CONNECTION_STATUS.OFF },
+        { tid: 101, cStatus: TCM_CONNECTION_STATUS.ON },
       ],
       Process: ['1131', '1181'],
     },
     {
       tid: 103,
-      status: Status.ONLINE,
+      status: CONTROL_STATUS.ONLINE,
       version: '1.2.1',
       adjTcmConnection: '2/2',
       adjTcmConnectionDetail: [
-        { tid: 101, cstatus: ConnectionStatus.ON },
-        { tid: 102, cstatus: ConnectionStatus.ON },
+        { tid: 101, cStatus: TCM_CONNECTION_STATUS.ON },
+        { tid: 102, cStatus: TCM_CONNECTION_STATUS.ON },
       ],
       Process: ['1121', '1181'],
     },
     {
       tid: 104,
-      status: Status.OFFLINE,
+      status: CONTROL_STATUS.OFFLINE,
       version: '1.2.1',
       adjTcmConnection: '1/1',
-      adjTcmConnectionDetail: [{ tid: 102, cstatus: ConnectionStatus.ON }],
+      adjTcmConnectionDetail: [{ tid: 102, cStatus: TCM_CONNECTION_STATUS.ON }],
       Process: ['1131', '2201'],
     },
     {
       tid: 105,
-      status: Status.OFFLINE,
+      status: CONTROL_STATUS.OFFLINE,
       version: '1.2.1',
       adjTcmConnection: '1/1',
-      adjTcmConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
+      adjTcmConnectionDetail: [{ tid: 104, cStatus: TCM_CONNECTION_STATUS.ON }],
       Process: ['1131', '2201'],
     },
     {
       tid: 106,
-      status: Status.OFFLINE,
+      status: CONTROL_STATUS.OFFLINE,
       version: '1.2.1',
       adjTcmConnection: '1/1',
-      adjTcmConnectionDetail: [{ tid: 104, cstatus: ConnectionStatus.ON }],
+      adjTcmConnectionDetail: [{ tid: 104, cStatus: TCM_CONNECTION_STATUS.ON }],
       Process: ['1131', '2201'],
     },
   ];

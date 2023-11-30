@@ -42,7 +42,7 @@ const StatsSummary = () => {
   const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-30, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
   });
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);

@@ -4,26 +4,21 @@ export const formatFileSize = (size: number) => {
   return (size / (1024 * 1024)).toFixed(2) + ' MB';
 };
 
-export enum UploadStatus {
-  Idle = 'idle',
-  Updating = 'updating',
-  Completed = 'completed',
-  Error = 'error',
+export enum UPLOAD_STATUS {
+  IDLE,
+  UPDATING,
+  COMPLETED,
+  ERROR,
 }
 
-export enum Status {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE',
+export const enum CONTROL_STATUS {
+  ONLINE,
+  OFFLINE,
 }
 
-export enum ConnectionStatus {
-  ON = 'on',
-  OFF = 'off',
-}
-
-export enum ResponseResult {
-  SUCCESS = 'success',
-  FAIL = 'fail',
+export const enum TCM_CONNECTION_STATUS {
+  ON,
+  OFF,
 }
 
 export interface FileInfo {
@@ -33,29 +28,24 @@ export interface FileInfo {
 }
 
 export interface FirmwareStatus {
-  status: UploadStatus;
+  status: UPLOAD_STATUS;
 }
 
 export interface ClientStatus {
   tid: number;
-  cstatus: ConnectionStatus;
-}
-
-export interface ResponseStatus {
-  result: ResponseResult;
-  reason?: string;
+  cStatus: TCM_CONNECTION_STATUS;
 }
 
 export interface ServerInfo {
   sid: number;
   type: string;
-  status: Status;
+  status: CONTROL_STATUS;
   version: string;
 }
 
 export interface TcmInfo {
   tid: number;
-  status: Status;
+  status: CONTROL_STATUS;
   version: string;
   adjTcmConnection: string;
   adjTcmConnectionDetail: ClientStatus[];

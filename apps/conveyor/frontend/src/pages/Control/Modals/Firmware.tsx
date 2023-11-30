@@ -99,11 +99,7 @@ const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
                     삭제
                   </Button>
                 }
-                onClose={(value) => {
-                  if (value === 'OK') {
-                    handleFileDelete();
-                  }
-                }}
+                onClose={(value) => value === 'OK' && handleFileDelete()}
               >
                 파일을 삭제하시겠습니까?
               </ModalWithBtn>

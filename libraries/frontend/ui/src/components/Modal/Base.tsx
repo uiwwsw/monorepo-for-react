@@ -60,7 +60,7 @@ const ModalBase = ({
   const modalClassName = `relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
     className ? ` ${className}` : ''
   }`;
-  const modalContentClassName = `flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modalOpen [[data-smooth="HIDING"]>&]:animate-modalClose${
+  const modalContentClassName = `flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
     animate ? ' animate-shake' : ''
   }`;
   /* ======   function    ====== */

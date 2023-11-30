@@ -46,7 +46,7 @@ const InputNumeric = ({
   return (
     <>
       {Toasts}
-      <Input {...props} ref={ref} type="number" onChange={handleChange} />
+      <Input {...props} defaultValue={defaultValue} ref={ref} type="number" onChange={handleChange} />
     </>
   );
 };

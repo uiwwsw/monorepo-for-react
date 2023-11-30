@@ -3,6 +3,7 @@ import { createLogger } from '@package-frontend/utils';
 import { http } from '#/http';
 import { MD5 } from 'crypto-js';
 import useSWR from 'swr/mutation';
+import { SignUpRequest } from '@package-backend/types';
 const logger = createLogger('auth/useSignUp');
 async function fetcher(
   url: string,
@@ -17,7 +18,7 @@ async function fetcher(
   },
 ) {
   logger(url, { id, name, pw });
-  const res = await http<{ grade: number }>({
+  const res = await http<{ grade: number }, SignUpRequest>({
     url,
     method: 'POST',
     arg: {
