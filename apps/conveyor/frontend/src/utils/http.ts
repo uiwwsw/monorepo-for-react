@@ -5,6 +5,10 @@ import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backen
 import { LocalStorage, createLogger, toData } from '@package-frontend/utils';
 import i18n from 'src/i18n';
 const logger = createLogger('utils/http');
+export const enum HttpErrorType {
+  AUTH = 4,
+  SERVER,
+}
 export const http = async <T>({
   url,
   arg,
@@ -47,26 +51,46 @@ export const http = async <T>({
   });
 
   try {
-    const json = (await res.json()) as STResponse<T>;
-    if (res.ok && json?.data) return toData(json.data) as STResponseSuccess<T>;
-    throw new HttpError(json.message ?? 'unknown error', res);
+    if (res.ok) {
+      const json = (await res.json()) as STResponse<T>;
+      if (json?.data) return toData(json.data) as STResponseSuccess<T>;
+      throw new HttpError(json.message ?? 'unknown error', res);
+    } else {
+      const text = await res.text();
+      const error = new HttpError(text, res);
+      if (error.type === HttpErrorType.SERVER) throw error;
+    }
   } catch (e) {
     const { message } = e as Error;
-    throw new HttpError(message ?? 'unknown error', res);
+    throw new HttpError(message, res);
   }
 };
 export class HttpError extends Error implements STResponseFailed {
   status: number;
   statusText: string;
-  constructor(msg: string, res: Response) {
+  get type() {
+    return Math.floor(this.status / 100);
+  }
+  get query() {
+    const url = new URLSearchParams();
+    url.append('from', location.pathname);
+    if (this.status === 401) url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['session-expired']);
+    if (this.status === 403) url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['invalid-session']);
+
+    if (url.size === 0) return '';
+
+    return `?${url.toString()}`;
+  }
+  constructor(msg: string, res: Partial<Response>) {
     super(msg);
-    this.status = res.status;
-    this.statusText = res.statusText;
-    if (this.status === 500)
+    this.status = res?.status ?? 0;
+    this.statusText = res.statusText ?? 'unknown error';
+    if (HttpErrorType.SERVER === this.type)
       this.message = i18n.t('{{api}} 서버에 문제가 발생한 것 같아요.🤦‍♂️', { api: import.meta.env.VITE_API });
-    if (this.status === 401) {
+
+    if (HttpErrorType.AUTH === this.type) {
       LocalStorage.set(STORAGE['/check-auth']);
-      location.href = `/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['session-expired']}`;
+      location.replace(`/sign-in${this.query}`);
     }
   }
 }

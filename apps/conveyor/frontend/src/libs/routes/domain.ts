@@ -2,6 +2,7 @@ export const enum GLOBAL_QUERY_PARAM {
   'is-iframe' = 'is-iframe',
 }
 export const enum SIGN_IN_QUERY_PARAM_TOAST {
+  'invalid-session' = 'invalid-session',
   'session-expired' = 'session-expired',
   'success-sign-up' = 'success-sign-up',
   'success-update-password' = 'success-update-password',

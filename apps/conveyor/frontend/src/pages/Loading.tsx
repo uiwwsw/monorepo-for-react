@@ -11,7 +11,7 @@ const Loading = () => {
   logger('render');
   return (
     <div className="z-50 absolute top-0 left-0 w-full h-full flex items-center bg-white !bg-opacity-30">
-      <span className="m-auto scale-[4]">
+      <span className="m-auto">
         <Spinner />
       </span>
     </div>
