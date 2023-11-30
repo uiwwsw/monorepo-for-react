@@ -1,8 +1,8 @@
 import Header from '@/Header';
 import HeaderContext from '@/HeaderContext';
 import Sidebar from '@/Sidebar/index';
-import { ReactNode, useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { ReactNode, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';

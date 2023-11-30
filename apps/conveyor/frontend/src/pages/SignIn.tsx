@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
+import WarningMessage from '@/Typography/WarningMessage';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -83,7 +84,7 @@ const SignIn = () => {
               error={!!errors?.id?.message}
               className="w-full"
             />
-            {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
+            <WarningMessage>{errors?.id?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium">{t('비밀번호')}</p>
@@ -97,7 +98,7 @@ const SignIn = () => {
               type="password"
               className="w-full"
             />
-            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+            <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
           <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
             {t('로그인')}

@@ -57,10 +57,10 @@ const Control = () => {
       {Toasts}
       <div className="flex gap-5 flex-col">
         <div className="flex ml-auto gap-2">
-          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handleResumeClick}>
+          <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
             Resume
           </Button>
-          <Button disabled={disabled} smoothLoading themeSize="sm" themeColor="secondary" onClick={handlePauseClick}>
+          <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="quaternary" onClick={handlePauseClick}>
             Pause
           </Button>
         </div>

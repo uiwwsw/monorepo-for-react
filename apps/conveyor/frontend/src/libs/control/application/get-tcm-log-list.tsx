@@ -1,6 +1,6 @@
 import { createLogger, fakeApi } from '@package-frontend/utils';
 import { FileInfo } from '../domain';
-import useSWR from 'swr';
+import useSWR from 'swr/mutation';
 const logger = createLogger('control/useTcmLogList');
 export interface Args {
   tid?: number;
@@ -39,6 +39,6 @@ async function fetcher(
   return res;
 }
 
-export function useTcmLogList(arg: Args) {
-  return useSWR('/control/tcm/log-list', (url) => fetcher(url, { arg }));
+export function useTcmLogList() {
+  return useSWR('/control/tcm/log-list', fetcher);
 }

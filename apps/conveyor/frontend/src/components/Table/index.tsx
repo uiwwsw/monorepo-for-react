@@ -14,7 +14,7 @@ import {
   Column,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useMemo, useState, Fragment, ReactElement, ChangeEvent, KeyboardEvent, cloneElement, useEffect } from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
 import { Button, Checkbox, Input, Numeric, Select, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
@@ -174,9 +174,6 @@ const Table = <T,>({
     if (onSearch) onSearch(keyword);
     else setGlobalFilter(keyword);
   };
-  const handleSearchKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
-  };
   /* ======   useEffect   ====== */
   useEffect(() => {
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
@@ -220,13 +217,14 @@ const Table = <T,>({
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Input
+            type="text"
+            autoComplete="table-search"
             defaultValue={globalFilter}
             debounceTime={300}
+            // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            onKeyUp={handleSearchKeyUp}
             placeholder="검색어를 입력하세요"
           />
-          {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
         </div>
         {renderSelectComponent && (
           <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>

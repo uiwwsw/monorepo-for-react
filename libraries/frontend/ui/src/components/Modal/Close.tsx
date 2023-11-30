@@ -19,6 +19,7 @@ const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
       onClick={() => onClose && onClose()}
       disabled={disabled}
       className={`!absolute right-0 top-0 !-m-3 w-auto !p-0`}
+      style={{ zIndex: 51 }}
     >
       <Close />
     </Button>

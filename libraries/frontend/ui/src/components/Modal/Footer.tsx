@@ -12,7 +12,7 @@ export interface ModalFooterProps {
   disabled: boolean;
   onClose: ModalBaseProps['onClose'];
   smoothLoading: ButtonProps['smoothLoading'];
-  hasButton: Exclude<ModalBaseProps['hasButton'], 'NONE'>;
+  hasButton: ModalBaseProps['hasButton'];
 }
 /* ======    global     ====== */
 const logger = createLogger('component/ModalFooter');

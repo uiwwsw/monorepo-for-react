@@ -1,28 +1,28 @@
-import { Button } from '@library-frontend/ui';
+import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { useRef, useState } from 'react';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
-import ProgressBar from './ProgressBar';
+import ProgressBar from '../ProgressBar';
 import { ResponseResult, UploadStatus } from '!/control/domain';
 import { createLogger } from '@package-frontend/utils';
-import Upload from './Upload';
+import Upload from '../Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
 
 /* ======   interface   ====== */
-export interface ModalContentUpdateProps {
+export interface ModalUpdateProps {
   selectedRows?: number[];
+  disabled?: boolean;
 }
 
 interface ProgressState {
   [key: number]: { progress: number; status: UploadStatus };
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/ModalContentUpdate');
+const logger = createLogger('pages/Control/Modals/Update');
 
-const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
+const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
   /* ======   variables   ====== */
   const { trigger: updateTrigger } = useUpdateFirmware();
   const [progressStates, setProgressStates] = useState<ProgressState>({});
-  const [updateInProgress, setUpdateInProgress] = useState(false);
   const continueUpdatingRef = useRef(true);
   const { trigger: uploadTrigger } = useUploadFirmware();
 
@@ -35,21 +35,19 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
     setProgressStates(initialStates);
   };
 
-  const handleUpdateStop = () => {
-    continueUpdatingRef.current = false;
-  };
+  const handleUpdateStop = () => (continueUpdatingRef.current = false);
 
-  const onUpload = async (file: File) => {
+  const handleUpload = async (file: File) => {
+    continueUpdatingRef.current = true;
     const uploadFile = await uploadTrigger({ file });
     if (uploadFile === undefined) return;
 
-    if (!selectedRows || updateInProgress) return;
-    setUpdateInProgress(true);
+    if (!selectedRows) return;
     initializeProgressStates();
-    continueUpdatingRef.current = true;
 
     for (let index = 0; index < selectedRows.length; index++) {
-      if (!continueUpdatingRef.current) break;
+      console.log(index, 'dawjdklawjdawd');
+      if (!continueUpdatingRef.current) throw new Error('강제 종료');
 
       const tid = selectedRows[index];
       setProgressStates((prev) => ({
@@ -68,29 +66,36 @@ const ModalContentUpdate = ({ selectedRows }: ModalContentUpdateProps) => {
         setProgressStates((prev) => ({ ...prev, [tid]: { progress: prev[tid].progress, status: UploadStatus.Idle } }));
       }
     }
-
-    setUpdateInProgress(false);
   };
 
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 펌웨어 업데이트</h2>
-      <div className="flex justify-between items-center mb-6">
-        <Upload onSubmit={onUpload} />
-        <Button themeSize={'sm'} onClick={handleUpdateStop} disabled={!updateInProgress}>
-          Stop
-        </Button>
-      </div>
-      {selectedRows?.map((row, index) => (
-        <div key={index} className="mb-4 flex items-center">
-          <span className="text-sm font-medium text-gray-700 w-12">{row}:</span>
-          <ProgressBar value={progressStates[row]?.progress} status={progressStates[row]?.status} />
+    <>
+      <ModalWithBtn
+        hasCloseBtn
+        button={
+          <Button disabled={disabled} themeColor="tertiary">
+            Update
+          </Button>
+        }
+        hasButton={['CANCEL']}
+      >
+        <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 펌웨어 업데이트</h2>
+          <div className="flex justify-between items-center gap-2 mb-6">
+            <Upload onSubmit={handleUpload} onCancel={handleUpdateStop} />
+          </div>
+          {selectedRows?.map((row, index) => (
+            <div key={index} className="mb-4 flex items-center">
+              <span className="text-sm font-medium text-gray-700 w-12">{row}:</span>
+              <ProgressBar value={progressStates[row]?.progress} status={progressStates[row]?.status} />
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </ModalWithBtn>
+    </>
   );
 };
 
-export default ModalContentUpdate;
+export default ModalUpdate;

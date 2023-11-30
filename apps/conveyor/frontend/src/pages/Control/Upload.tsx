@@ -1,47 +1,68 @@
 import { Button, Input } from '@library-frontend/ui';
-import { FormEventHandler, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import WarningMessage from '@/Typography/WarningMessage';
 const logger = createLogger('pages/Control/Upload');
 
 /* ======   interface   ====== */
 interface UploadProps {
   onSubmit: (file: File) => Promise<unknown>;
+  onCancel?: () => unknown;
 }
-
+interface FormState {
+  fileList: FileList;
+}
 /* ======    global     ====== */
 
-const Upload = ({ onSubmit }: UploadProps) => {
+const Upload = ({ onSubmit, onCancel }: UploadProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormState>();
   const [loading, setLoading] = useState(false);
-  const inputFileRef = useRef<HTMLInputElement>(null);
 
   /* ======   function    ====== */
-  const adapterSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-
-    const inputElement = inputFileRef.current;
-    if (inputElement && inputElement.files && inputElement.files.length > 0) {
-      const file = inputElement.files[0];
+  const adapterSubmit = async ({ fileList }: FormState) => {
+    const file = fileList[0];
+    if (file) {
       setLoading(true);
       try {
         await onSubmit(file);
         logger('upload file success');
+        reset();
       } catch (e) {
         logger('failed to upload file');
       }
       setLoading(false);
-
-      inputElement.value = '';
     }
   };
   /* ======   useEffect   ====== */
   return (
-    <form className="flex items-center space-x-3 mr-3" onSubmit={adapterSubmit}>
-      <Input ref={inputFileRef} className="form-input" type="file" />
-      <Button themeSize={'sm'} disabled={loading} type="submit">
-        {loading ? 'Updating...' : 'Update'}
-      </Button>
-    </form>
+    <div>
+      <div className="flex items-center gap-2">
+        <form className="flex items-center gap-2">
+          <Input
+            {...register('fileList', {
+              required: t('파일이 없어요'),
+            })}
+            type="file"
+          />
+          <Button themeSize={'sm'} disabled={loading} onClick={handleSubmit(adapterSubmit)}>
+            {loading ? 'Updating...' : 'Update'}
+          </Button>
+        </form>
+        <Button themeSize={'sm'} onClick={onCancel} disabled={!loading}>
+          Stop
+        </Button>
+      </div>
+      <WarningMessage>{errors?.fileList?.message}</WarningMessage>
+    </div>
   );
 };
 

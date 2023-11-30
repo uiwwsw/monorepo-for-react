@@ -61,5 +61,5 @@ async function fetcher(
 }
 
 export function useAlarmStats(arg: Arg) {
-  return useSWR('/api/stats/alarm-stats', (url) => fetcher(url, { arg }));
+  return useSWR(['/api/stats/alarm-stats', arg], ([url, arg]) => fetcher(url, { arg }));
 }

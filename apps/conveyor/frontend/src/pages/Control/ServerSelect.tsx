@@ -85,17 +85,17 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     <>
       {Toasts}
       <div className="flex justify-end space-x-2 items-center">
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStartClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
           Start
         </Button>
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleStopClick}>
+        <Button disabled={disabled} themeColor="quaternary" smoothLoading onClick={handleStopClick}>
           Stop
         </Button>
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleRestartClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
           Restart
         </Button>
 
-        <Button disabled={disabled} smoothLoading themeSize={'sm'} onClick={handleReloadClick}>
+        <Button disabled={disabled} smoothLoading onClick={handleReloadClick}>
           Reload
         </Button>
       </div>

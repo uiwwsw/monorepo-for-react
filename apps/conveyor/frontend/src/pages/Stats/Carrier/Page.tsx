@@ -22,8 +22,8 @@ const StatsCarrier = () => {
   const { setChildren } = useHeaderContext();
   const [totalPageNum, setTotalPageNum] = useState(1);
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).toISOString(),
-    end_time: fixedCalendar?.[1] ?? newDate().toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).second(0).millisecond(0).toISOString(),
+    end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
     page_size: pageSize,
     find_key: '',
@@ -48,15 +48,15 @@ const StatsCarrier = () => {
   };
 
   const handleSearchKeyword = async (character: string) => {
-    if (character === '') return;
-
+    if (character === arg.find_key && arg.page === 1) return;
     await Promise.all([
       setArg((prev) => ({
         ...prev,
+        page: 1,
         find_key: character,
       })),
     ]);
-    mutate();
+    // mutate();
   };
 
   const handleChangePage = async (page: number) => {
