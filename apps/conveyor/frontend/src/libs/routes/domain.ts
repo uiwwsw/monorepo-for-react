@@ -1,6 +1,9 @@
 export const enum GLOBAL_QUERY_PARAM {
   'is-iframe' = 'is-iframe',
 }
+export const enum MAIN_QUERY_PARAM_TOAST {
+  'success-sign-out' = 'success-sign-out',
+}
 export const enum SIGN_IN_QUERY_PARAM_TOAST {
   'invalid-session' = 'invalid-session',
   'session-expired' = 'session-expired',
