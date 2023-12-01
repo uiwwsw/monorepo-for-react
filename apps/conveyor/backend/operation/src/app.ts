@@ -60,16 +60,9 @@ async function main() {
 
     // WebSocket 서버 설정
     const wss = new WebSocket.Server({ server });
-    wss.on('connection', (ws: WebSocket) => {
-        logger.info('A new WebSocket connection has been established.');
-
-        ws.on('message', (message: string) => {
-            console.log(`recv: ${message}`);
-        });
-    
-        ws.on('close', () => {
-            logger.info('The WebSocket connection has been terminated.');
-        });
+    wss.on('connection', (ws: WebSocket, request:Request) => {
+        const auth_token: string | undefined = request.headers['authorization'];
+        Service.Inst.Clients.addClient(ws, auth_token as string);
     });
 
     server.listen(prop.PortNum, () => {

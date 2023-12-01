@@ -1,4 +1,4 @@
-import { UserGrade } from './grade';
+import { UserGrade, ClientType } from './user_enum';
 import { IUserRow } from '../data';
 
 
@@ -6,6 +6,7 @@ import { IUserRow } from '../data';
 export interface SignInRequest {
   user_id: string;
   password: string;
+  client_type?: ClientType;
 }
 // 사용자 로그인 응답
 export interface SignInResponse {
@@ -62,4 +63,13 @@ export interface UserPasswordRequest {
 }
 // 새로운 패스워드 설정 응답
 export interface UserPasswordResponse {
+}
+
+
+// Heartbeat 요청
+export interface HeartBeatRequest {
+}
+// Heartbeat 응답
+export interface HeartBeatResponse {
+  server_time: Date;
 }

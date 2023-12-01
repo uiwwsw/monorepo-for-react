@@ -15,7 +15,7 @@ const logger = winston.createLogger({
   level: 'debug', // 최소 로그 레벨
   format: winston.format.combine(
     winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss.zzz'
+      format: 'YYYY-MM-DD HH:mm:ss.SSS'
     }),
     winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
   ),
@@ -32,6 +32,6 @@ if (process.env.NODE_ENV !== 'production') {
         winston.format.simple()
       )
     }));
-  }
+}
 
 export default logger;

@@ -1,26 +1,20 @@
 import { Router } from 'express';
 import md5 from 'md5';
 
-import {
-  SignInRequest,
-  SignInResponse,
-  SignOutRequest,
-  SignOutResponse,
-  SignUpRequest,
-  SignUpResponse,
-  UserListRequest,
-  UserListResponse,
-  UserEditGradeRequest,
-  UserEditGradeResponse,
-  UserPasswordRequest,
-  UserPasswordResponse,
-  UserSession,
-  UserGrade,
-} from '@package-backend/types';
+import { 
+    SignInRequest, SignInResponse, 
+    SignOutRequest, SignOutResponse,
+    SignUpRequest, SignUpResponse,
+    UserListRequest, UserListResponse, 
+    UserEditGradeRequest, UserEditGradeResponse,
+    UserPasswordRequest, UserPasswordResponse,
+    HeartBeatRequest, HeartBeatResponse,
+    UserSession } from '@package-backend/types';
+import { UserGrade, ClientType } from './user_enum';
 import { UserRow } from '../models/R301';
 
 import { Service } from '../service';
-import { getToken, verifyToken } from './session'; //verifyToken
+import { getToken, verifyToken, getSessionColumn } from './session';       //verifyToken
 import { asyncWrapper } from './error';
 
 const router: Router = Router();
@@ -90,49 +84,43 @@ const router: Router = Router();
  *         data:
  *           $ref: '#/components/schemas/SignInResponse'
  */
-router.post(
-  '/sign-in',
-  asyncWrapper<SignInRequest, SignInResponse>(async (req, res) => {
-    const { user_id, password } = req.body;
-    const [rows] = await Service.Inst.MySQL.query<UserRow[]>(
-      'SELECT uid, password, user_name, grade, last_access FROM users WHERE user_id = ?',
-      [user_id],
-    );
+router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, res) => {
+    const { user_id, password, client_type } = req.body;
+    const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid, password, user_name, grade, last_access FROM users WHERE user_id = ?', [user_id]);
     if (rows.length < 1) {
-      throw new Error('USER_NOT_FOUND');
+        throw new Error('USER_NOT_FOUND');
     }
     const row = rows[0];
     if (row.password !== password) {
-      throw new Error('PASSOWRD_NOT_MATCH');
+        throw new Error('PASSOWRD_NOT_MATCH');
     }
     if (row.grade >= UserGrade.PENDING) {
-      throw new Error('USER_NOT_AUTHORIZED');
+        throw new Error('USER_NOT_AUTHORIZED');
     }
 
     const session = {
-      uid: row.uid,
-      user_id: user_id,
-      grade: row.grade,
-      key: md5(`${user_id}${row.password}${row.last_access}`),
+        uid: row.uid,
+        user_id: user_id,
+        grade: row.grade,
+        client_type: client_type || ClientType.WEB,
+        key: md5(`${user_id}${row.password}${row.last_access}`)
     } as UserSession;
 
-    await Service.Inst.MySQL.query('UPDATE users SET session = ?, last_access = now() WHERE uid = ?', [
-      session.key,
-      row.uid,
-    ]);
+    const column = getSessionColumn(session.client_type);
+    await Service.Inst.MySQL.query(`UPDATE users SET ${column} = ?, last_access = now() WHERE uid = ?`, [session.key, row.uid]);
 
     res.json({
-      message: 'OK',
-      data: {
-        uid: row.uid,
-        username: row.user_name,
-        grade: row.grade as UserGrade,
-        token: getToken(session),
-        last_access: row.last_access,
-      },
+        message: "OK",
+        data: {
+            uid : row.uid,
+            username: row.user_name,
+            grade: row.grade as UserGrade,
+            token: getToken(session),
+            last_access : row.last_access
+        }
     });
-  }),
-);
+}));
+
 
 /**
  * @swagger
@@ -160,7 +148,7 @@ router.post(
  *         description: 인증 실패.
  *       500:
  *         description: 서버 오류.
- *
+ * 
  * components:
  *   schemas:
  *     SignOutRequest:
@@ -180,18 +168,15 @@ router.post(
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-router.post(
-  '/sign-out',
-  verifyToken,
-  asyncWrapper<SignOutRequest, SignOutResponse>(async (req, res) => {
+router.post('/sign-out', verifyToken, asyncWrapper<SignOutRequest, SignOutResponse>(async (req, res) => {
     const session = res.locals.session;
     await Service.Inst.MySQL.query('UPDATE users SET session = null WHERE uid = ?', [session.uid]);
     res.json({
-      message: 'OK',
-      data: {},
+        message: "OK",
+        data: {}
     });
-  }),
-);
+}));
+
 
 /**
  * @swagger
@@ -217,7 +202,7 @@ router.post(
  *         description: 잘못된 요청.
  *       500:
  *         description: 서버 오류.
- *
+ * 
  * components:
  *   schemas:
  *     UserListRequest:
@@ -246,27 +231,22 @@ router.post(
  *         user_name:
  *           type: string
  *         grade:
- *           type: UserGrade
+ *           type: UserGrade 
  *         created_date:
- *           type: Date
+ *           type: Date 
  *         last_access:
- *           type: Date
+ *           type: Date  
  */
-router.get(
-  '/user-list',
-  verifyToken,
-  asyncWrapper<UserListRequest, UserListResponse>(async (req, res) => {
-    const [rows] = await Service.Inst.MySQL.query<UserRow[]>(
-      'SELECT uid, user_id, user_name, grade, created_date, last_access FROM users',
-    );
+router.get('/user-list', verifyToken, asyncWrapper<UserListRequest, UserListResponse>(async (req, res) => {
+    const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid, user_id, user_name, grade, created_date, last_access FROM users');
     res.json({
-      message: 'OK',
-      data: {
-        users: rows,
-      },
+        message: "OK",
+        data: {
+            users: rows
+        }
     });
-  }),
-);
+}));
+
 
 /**
  * @swagger
@@ -292,7 +272,7 @@ router.get(
  *         description: 잘못된 요청 데이터.
  *       500:
  *         description: 서버 오류.
- *
+ * 
  * components:
  *   schemas:
  *     SignUpRequest:
@@ -324,28 +304,23 @@ router.get(
  *       type: string
  *       enum: [8]
  */
-router.post(
-  '/sign-up',
-  asyncWrapper<SignUpRequest, SignUpResponse>(async (req, res) => {
+router.post('/sign-up', asyncWrapper<SignUpRequest, SignUpResponse>(async (req, res) => {
     const { user_id, username, password } = req.body;
     const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid FROM users WHERE user_id = ?', [user_id]);
     const grade = UserGrade.PENDING;
     if (rows.length > 0) {
-      throw new Error('ALREADY_EXISTED_USER_ID');
+        throw new Error('ALREADY_EXISTED_USER_ID');
     }
 
-    await Service.Inst.MySQL.query(
-      'INSERT INTO users (user_id, user_name, password, grade, created_date, last_access) VALUES (?, ?, ?, ?, now(), now())',
-      [user_id, username, password, grade],
-    );
+    await Service.Inst.MySQL.query('INSERT INTO users (user_id, user_name, password, grade, created_date, last_access) VALUES (?, ?, ?, ?, now(), now())', [user_id, username, password, grade]);
     res.json({
-      message: 'OK',
-      data: {
-        grade: grade,
-      },
+        message: "OK",
+        data: {
+            grade: grade
+        }
     });
-  }),
-);
+}));
+
 
 /**
  * @swagger
@@ -373,7 +348,7 @@ router.post(
  *         description: 인증되지 않은 사용자.
  *       500:
  *         description: 서버 오류.
- *
+ * 
  * components:
  *   schemas:
  *     UserEditGradeRequest:
@@ -408,38 +383,34 @@ router.post(
  *       type: string
  *       enum: [ADMIN, OPERATOR, USER, PENDING, GUEST]
  */
-router.put(
-  '/user-edit',
-  verifyToken,
-  asyncWrapper<UserEditGradeRequest, UserEditGradeResponse>(async (req, res) => {
+router.put('/user-edit', verifyToken, asyncWrapper<UserEditGradeRequest, UserEditGradeResponse>(async (req, res) => {
     const session = res.locals.session;
     if (session.grade !== 1) {
-      throw new Error('NO_PERMISSION');
+        throw new Error('NO_PERMISSION')
     }
     const { user_id, grade } = req.body;
-    const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid, grade FROM users WHERE user_id = ?', [
-      user_id,
-    ]);
+    const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid, grade FROM users WHERE user_id = ?', [user_id]);
     if (rows.length < 1) {
-      throw new Error('USER_NOT_EXISTED');
+        throw new Error('USER_NOT_EXISTED');
     }
     const user = rows[0];
     if (user.uid == session.uid) {
-      throw new Error('NO_PERMISSION');
+        throw new Error('NO_PERMISSION');
     }
-    if (parseInt(grade) < 1 || parseInt(grade) < parseInt(session.grade)) {
-      throw new Error('NO_PERMISSION');
+    const target = grade as number;
+    if (target < 1 || target < session.grade) {
+        throw new Error('NO_PERMISSION');
     }
 
     await Service.Inst.MySQL.query('update users set grade = ? where user_id = ?', [grade, user_id]);
     res.json({
-      message: 'OK',
-      data: {
-        next: grade,
-      },
+        message: "OK",
+        data: {
+            next: grade
+        }
     });
-  }),
-);
+}));
+
 
 /**
  * @swagger
@@ -467,7 +438,7 @@ router.put(
  *         description: 인증되지 않은 사용자.
  *       500:
  *         description: 서버 오류.
- *
+ * 
  * components:
  *   schemas:
  *     UserPasswordRequest:
@@ -493,18 +464,57 @@ router.put(
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-router.put(
-  '/user-password',
-  verifyToken,
-  asyncWrapper<UserPasswordRequest, UserPasswordResponse>(async (req, res) => {
+router.put('/user-password', verifyToken, asyncWrapper<UserPasswordRequest, UserPasswordResponse>(async (req, res) => {
     const session = res.locals.session;
     const { password } = req.body;
     await Service.Inst.MySQL.query('update users set password = ? where uid = ?', [password, session.uid]);
     res.json({
-      message: 'OK',
-      data: {},
+        message: "OK",
+        data: {}
     });
-  }),
-);
+}));
+
+
+/**
+ * @swagger
+ * /users/heartbeat:
+ *   get:
+ *     summary: Heartbeat
+ *     description: Heartbeat
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Heartbeat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HeartBeatResponse'
+ *       500:
+ *         description: 서버 오류.
+ * 
+ * components:
+ *   schemas:
+ *     HeartBeatRequest:
+ *       type: object
+ *     HeartBeatResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         data:
+ *           type: object
+ *           properties:
+ *             server_time:
+ *               type: Date
+ */
+router.get('/heartbeat', asyncWrapper<HeartBeatRequest, HeartBeatResponse>(async (req, res) => {
+    res.json({
+        message: "OK",
+        data: {
+            server_time: new Date()
+        }
+    });
+}));
+
 
 export default router;
