@@ -21,7 +21,7 @@ const Header = (_: HeaderProps) => {
   /* ======   useEffect   ====== */
   logger('render');
   return (
-    <header className="sticky flex items-center top-0 z-10 p-3 bg-slate-300 gap-2">
+    <header className="sticky flex items-center h-20 top-0 z-10 p-3 bg-slate-300 gap-2">
       <div className="flex-auto">{children}</div>
       <div className="flex gap-2 items-center max-lg:flex-col">
         <div>{data?.username}</div>
