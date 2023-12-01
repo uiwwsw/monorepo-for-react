@@ -37,6 +37,7 @@ export default function Pagination({
 }: PaginationProps) {
   /* ======   variables   ====== */
   const [currentPage, setCurrentPage] = useState(index + 1);
+  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? undefined : currentPage), [currentPage]);
   const disabledRightArrow = useMemo(() => currentPage >= max, [currentPage, max]);
   const disabledLeftArrow = useMemo(() => currentPage <= 1, [currentPage]);
   /* ======   function    ====== */
@@ -78,7 +79,7 @@ export default function Pagination({
       <div className="flex items-center gap-2">
         <span className="w-20 [&>*]:w-full">
           <Numeric
-            value={currentPage}
+            value={inputPage}
             onChange={handleChange}
             max={max}
             min={1}
