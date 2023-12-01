@@ -43,7 +43,7 @@ const Nav = (_: NavProps) => {
     {
       text: '조작페이지는 TCM장비를 조작하는 페이지입니다.',
       position: {
-        top: '70px',
+        top: '82px',
         left: '0',
       },
       size: {
@@ -54,7 +54,7 @@ const Nav = (_: NavProps) => {
     {
       text: '통계페이지는 존, 알람, 케리어 페이지로\n 통계 데이터를 확인할 수 있습니다.',
       position: {
-        top: '120px',
+        top: '130px',
         left: '0',
       },
       size: {
@@ -95,7 +95,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '130px',
+        height: '126px',
       },
     },
   ];
@@ -124,7 +124,7 @@ const Nav = (_: NavProps) => {
         </Button>
         <nav className="flex flex-col flex-auto">
           <div className="flex-auto" onClick={() => logger('1')}>
-            <Link to="/" className="block p-4" onClick={() => logger('2')}>
+            <Link to="/" className="flex p-4 h-20 justify-center" onClick={() => logger('2')}>
               <Image block src={logo} alt="logo" height={37} />
             </Link>
             <hr />
