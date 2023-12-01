@@ -15,8 +15,8 @@ export interface StatsCalendarProps {
 const logger = createLogger('pages/Stats/Calendar');
 const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
   /* ======   variables   ====== */
-  const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
   const { t } = useTranslation();
+  const fixedCalendar = useRef(LocalStorage.get<string[]>(STORAGE['stats/calendar']));
   const checkboxRef = useRef<HTMLInputElement>(null);
   const guides = [
     {
@@ -27,24 +27,30 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
 
   /* ======   function    ====== */
   const handleFixedCalendar = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) LocalStorage.set(STORAGE['stats/calendar'], currentDuration);
-    else LocalStorage.set(STORAGE['stats/calendar']);
+    let value: string[] = [];
+    if (e.target.checked) {
+      value = currentDuration;
+    }
+    LocalStorage.set(STORAGE['stats/calendar'], value);
+    logger(value);
+    fixedCalendar.current = value;
   };
   const handleChange = (duration: Dayjs | Dayjs[]) => {
     if (!(duration instanceof Array)) return;
     const arg = [duration[0].toISOString(), duration[1].toISOString()];
-    fixedCalendar?.length && LocalStorage.set(STORAGE['stats/calendar'], arg);
+    logger(fixedCalendar.current, arg);
+    fixedCalendar.current?.length && LocalStorage.set(STORAGE['stats/calendar'], arg);
     onChange && onChange(duration);
   };
 
   /* ======   useEffect   ====== */
-  logger('render');
+  logger('render', currentDuration);
   return (
     <>
       <Tutorial guide={guides} />
       <div className="flex items-center gap-2">
         <span ref={checkboxRef}>
-          <Checkbox defaultChecked={!!fixedCalendar?.length} onChange={handleFixedCalendar}>
+          <Checkbox defaultChecked={!!fixedCalendar.current?.length} onChange={handleFixedCalendar}>
             {t('달력 동기화')}
           </Checkbox>
         </span>

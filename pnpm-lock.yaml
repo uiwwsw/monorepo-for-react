@@ -458,6 +458,9 @@ importers:
 
   libraries/frontend/ui:
     dependencies:
+      '@package-frontend/noto-emoji':
+        specifier: workspace:^
+        version: link:../../../packages/frontend/noto-emoji
       '@package-frontend/pretendard':
         specifier: workspace:^
         version: link:../../../packages/frontend/pretendard

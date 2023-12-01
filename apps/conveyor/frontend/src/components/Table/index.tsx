@@ -16,7 +16,7 @@ import {
 } from '@tanstack/react-table';
 import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Numeric, Select, Skeleton } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
@@ -61,6 +61,7 @@ const Table = <T,>({
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const pageSizeOptions = [
+    { value: '5', label: t('5개씩 보기') },
     { value: '10', label: t('10개씩 보기') },
     { value: '20', label: t('20개씩 보기') },
     { value: '30', label: t('30개씩 보기') },
@@ -300,72 +301,17 @@ const Table = <T,>({
         </table>
       </div>
       {makePagination && (
-        <div>
-          <div className="w-fit m-auto flex items-center gap-2">
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              ❮❮
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              ❮
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              ❯
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              ❯❯
-            </Button>
-            <div className="flex items-center gap-1">
-              <span>{t('페이지')}</span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-              </strong>
-            </div>
-            <div className="flex items-center gap-1 max-lg:!hidden">
-              | {t('페이지 이동')}:
-              <Numeric
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                min={1}
-                max={table.getPageCount()}
-                maxMessage={getNumericMsg}
-                minMessage={getNumericMsg}
-                className="border rounded w-24"
-                placeholder="page"
-              />
-            </div>
-            <Select
-              className="max-lg:!hidden"
-              defaultValue={String(table.getState().pagination.pageSize)}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              options={pageSizeOptions}
-            />
-          </div>
-        </div>
+        <>
+          <Pagination
+            index={table.getState().pagination.pageIndex}
+            onChange={(index) => table.setPageIndex(index)}
+            onChangePer={(index) => table.setPageSize(index)}
+            max={table.getPageCount()}
+            sizeOptions={pageSizeOptions}
+            maxMessage={getNumericMsg}
+            minMessage={getNumericMsg}
+          />
+        </>
       )}
       <hr />
     </div>

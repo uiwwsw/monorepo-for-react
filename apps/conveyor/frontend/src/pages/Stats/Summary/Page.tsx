@@ -87,8 +87,8 @@ const StatsSummary = () => {
   useEffect(() => {
     setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
     return () => setChildren(undefined);
-  }, []);
-  logger('render', statsData?.rows);
+  }, [currentDuration]);
+  logger('render');
   return (
     <>
       <ToastWithPortal open={statsError?.message}>{statsError?.message}</ToastWithPortal>

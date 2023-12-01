@@ -8,19 +8,27 @@ import Table from '@/Table';
 import { VisibilityColumn, VisibilityState } from '@tanstack/react-table';
 import { STORAGE } from '!/storage/domain';
 import StatsCalendar from '../Calendar';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Carrier');
 const pageSize = 10;
-
 const StatsCarrier = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+  const pageSizeOptions = [
+    { value: '5', label: t('5개씩 보기') },
+    { value: '10', label: t('10개씩 보기') },
+    { value: '20', label: t('20개씩 보기') },
+    { value: '30', label: t('30개씩 보기') },
+    { value: '40', label: t('40개씩 보기') },
+    { value: '50', label: t('50개씩 보기') },
+  ];
   const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = LocalStorage.get<VisibilityColumn>(STORAGE['carrier/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
-  const [totalPageNum, setTotalPageNum] = useState(1);
   const [arg, setArg] = useState<Arg>({
     start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
@@ -28,12 +36,12 @@ const StatsCarrier = () => {
     page_size: pageSize,
     find_key: '',
   });
-  logger(arg, fixedCalendar);
+  const currentPer = useMemo(() => arg.page_size ?? pageSize, [arg]);
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
-
   const currentPage = useMemo(() => arg.page - 1, [arg]);
 
   const { error, data, mutate } = useCarrierStats(arg);
+  const currentTotalPage = useMemo(() => (data ? Math.ceil(data.totalCount / currentPer) : 0), [data]);
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
@@ -56,12 +64,22 @@ const StatsCarrier = () => {
         find_key: character,
       })),
     ]);
-    // mutate();
+    mutate();
+  };
+  const handleChangePer = async (value: number) => {
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        page: 1,
+        page_size: value,
+      })),
+    ]);
+    mutate();
   };
 
   const handleChangePage = async (page: number) => {
+    if (page === currentPage) return;
     const nextPage = page + 1;
-    if (nextPage === currentPage) return;
 
     await Promise.all([
       setArg((prev) => ({
@@ -73,14 +91,12 @@ const StatsCarrier = () => {
   };
 
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    if (data?.totalCount) setTotalPageNum(Math.ceil(data.totalCount / pageSize));
-  }, [data]);
+
   useEffect(() => {
     setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
 
     return () => setChildren(undefined);
-  }, []);
+  }, [currentDuration]);
   logger('render', LocalStorage.get<VisibilityState>('carrier/table'));
   return (
     <>
@@ -104,10 +120,12 @@ const StatsCarrier = () => {
       />
       <div className="text-center mt-3">
         <Pagination
+          per={currentPer}
+          sizeOptions={pageSizeOptions}
+          onChangePer={handleChangePer}
           onChange={handleChangePage}
-          totalPageNum={totalPageNum}
-          currentPageIndex={currentPage}
-          hasDoubleArrow={true}
+          max={currentTotalPage}
+          index={currentPage}
         />
       </div>
     </>
