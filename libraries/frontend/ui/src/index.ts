@@ -42,9 +42,6 @@ export * from './components/Modal/WithPortal';
 export { default as Pagination } from './components/Pagination';
 export * from './components/Pagination';
 
-export { default as PaginationWithSearch } from './components/Pagination/WithSearch';
-export * from './components/Pagination/WithSearch';
-
 export { default as RadioGroup } from './components/Radio/Group';
 export * from './components/Radio/Group';
 

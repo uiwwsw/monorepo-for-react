@@ -21,6 +21,7 @@ const Users = () => {
         renderSubComponent={<UserGradeSelect />}
         thead={['uid', 'userId', 'userName', 'grade', 'createdDate', 'lastAccess']}
         data={data}
+        makePagination
       />
     </>
   );
