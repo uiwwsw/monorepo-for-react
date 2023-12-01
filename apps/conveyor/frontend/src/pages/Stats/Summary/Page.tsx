@@ -1,6 +1,6 @@
 import { useHeaderContext } from '@/HeaderContext';
 import { ToastWithPortal } from '@library-frontend/ui';
-import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
+import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useZoneStats, Arg } from '!/stats/application/get-zone-stats';
@@ -9,6 +9,7 @@ import Table from '@/Table';
 import StatsSummaryGraphic, { StatsSummaryGraphicProps } from './Graphic';
 import StatsCalendar from '../Calendar';
 import { STORAGE } from '!/storage/domain';
+import { storage } from '#/storage';
 
 /* ======   interface   ====== */
 // enum TOT_AVR {
@@ -39,10 +40,11 @@ const logger = createLogger('pages/Stats/Summary');
 
 const StatsSummary = () => {
   /* ======   variables   ====== */
-  const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
+  const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
+  const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
   });
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);

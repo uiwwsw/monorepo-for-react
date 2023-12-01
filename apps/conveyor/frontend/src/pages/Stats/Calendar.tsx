@@ -1,6 +1,7 @@
 import { STORAGE } from '!/storage/domain';
+import { storage } from '#/storage';
 import { Button, Calendar, Checkbox, Tutorial } from '@library-frontend/ui';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,7 @@ const logger = createLogger('pages/Stats/Calendar');
 const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const fixedCalendar = useRef(LocalStorage.get<string[]>(STORAGE['stats/calendar']));
+  const fixedCalendar = useRef(storage.get<string[]>(STORAGE['stats/calendar']));
   const checkboxRef = useRef<HTMLInputElement>(null);
   const guides = [
     {
@@ -31,7 +32,7 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
     if (e.target.checked) {
       value = currentDuration;
     }
-    LocalStorage.set(STORAGE['stats/calendar'], value);
+    storage.set(STORAGE['stats/calendar'], value);
     logger(value);
     fixedCalendar.current = value;
   };
@@ -39,7 +40,7 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
     if (!(duration instanceof Array)) return;
     const arg = [duration[0].toISOString(), duration[1].toISOString()];
     logger(fixedCalendar.current, arg);
-    fixedCalendar.current?.length && LocalStorage.set(STORAGE['stats/calendar'], arg);
+    fixedCalendar.current?.length && storage.set(STORAGE['stats/calendar'], arg);
     onChange && onChange(duration);
   };
 

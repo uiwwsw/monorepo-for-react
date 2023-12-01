@@ -9,6 +9,14 @@ words:
   - pretendard
   # noto 폰트
   - noto
+  # ViteFaviconsPlugin 플러그인명
+  - ViteFaviconsPlugin
+  # ymtc 회사명
+  - ymtc
+  # i18next-browser-languagedetector 플러그인명
+  - i18next-browser-languagedetector
+  # tailwindcss 플러그인명
+  - tailwindcss
 ignoreWords:
   - noopener
 ignorePaths:

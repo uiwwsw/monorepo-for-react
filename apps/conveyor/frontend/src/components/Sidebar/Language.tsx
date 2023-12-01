@@ -1,5 +1,7 @@
+import { STORAGE } from '!/storage/domain';
+import { storage } from '#/storage';
 import { Select } from '@library-frontend/ui';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
@@ -15,9 +17,9 @@ const Language = (_: LanguageProps) => {
     { value: 'en-US', label: t('영어') },
     { value: 'zh-CN', label: t('중국어') },
   ];
-  const value = LocalStorage.get<string>('i18nextLng');
+  const value = storage.get<string>(STORAGE.i18nextLng);
   const handleChange = ({ target }: ChangeEvent<HTMLSelectElement>) => {
-    LocalStorage.set('i18nextLng', target.value);
+    storage.set(STORAGE.i18nextLng, target.value);
     location.reload();
   };
   /* ======   function    ====== */

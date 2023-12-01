@@ -8,7 +8,7 @@ import { useTcmRestart } from '!/control/application/post-tcm-restart';
 import { useTcmReload } from '!/control/application/post-tcm-reload';
 import { useMemo } from 'react';
 import { Row } from '@tanstack/react-table';
-import useToasts from '#/useToasts';
+import useToastsForControl from '#/useToastsForControl';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
   selectedRows?: Row<TcmInfo>[];
@@ -23,7 +23,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   const { trigger: reloadTrigger, isMutating: reloadIsMutating } = useTcmReload();
 
   const selectedTids = useMemo(() => selectedRows?.map((row) => row.original.tid) || [], [selectedRows]);
-  const { Toasts, adapterEvent } = useToasts({ selectedRows: selectedTids });
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: selectedTids });
 
   const disabled = useMemo(
     () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating || reloadIsMutating,

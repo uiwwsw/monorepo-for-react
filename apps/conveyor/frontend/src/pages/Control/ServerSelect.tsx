@@ -3,7 +3,7 @@ import { useServerRestart } from '!/control/application/post-server-restart';
 import { useServerStart } from '!/control/application/post-server-start';
 import { useServerStop } from '!/control/application/post-server-stop';
 import { ServerInfo } from '!/control/domain';
-import useToasts from '#/useToasts';
+import useToastsForControl from '#/useToastsForControl';
 import { Button } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
@@ -22,7 +22,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   const { trigger: reloadTrigger, isMutating: reloadIsMutating } = useServerReload();
 
   const selectedSids = useMemo(() => selectedRows?.map((row) => row.original.sid) || [], [selectedRows]);
-  const { Toasts, adapterEvent } = useToasts({ selectedRows: selectedSids });
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: selectedSids });
   const disabled = useMemo(
     () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating || reloadIsMutating,
 

@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import Pagination from '@/Pagination';
+import RadioGroup from '@/Radio/Group';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
@@ -10,7 +10,7 @@ const App = () => {
 
   return (
     <>
-      <Pagination max={10} onChange={(e) => logger(e)} />
+      <RadioGroup labels={['1', '2', '3']} defaultValue="1" />
     </>
   );
 };

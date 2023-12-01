@@ -6,7 +6,7 @@ import ModalFirmware from './Modals/Firmware';
 import ModalDetail from './Modals/Detail';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
 import ModalLogsTcm from './Modals/LogsTcm';
-import useToasts from '#/useToasts';
+import useToastsForControl from '#/useToastsForControl';
 /* ======   interface   ====== */
 export interface TcmSubProps {
   row?: Row<TcmInfo>;
@@ -18,7 +18,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
 
   const { trigger: killTrigger } = useTcmKill();
-  const { Toasts, adapterEvent } = useToasts({ selectedRows: [row?.original.tid] });
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [row?.original.tid] });
 
   /* ======   function    ====== */
 
@@ -41,7 +41,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
     <>
       {Toasts}
       <div className="flex justify-end space-x-2 items-center p-2">
-        <Button themeSize="sm" onClick={handleKillClick}>
+        <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
           Process Kill
         </Button>
 

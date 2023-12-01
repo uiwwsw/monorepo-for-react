@@ -1,7 +1,7 @@
 import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
-import { ToastWithPortal, Tutorial } from '@library-frontend/ui';
+import { createLogger } from '@package-frontend/utils';
+import { ToastWithPortal, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MAIN_QUERY_PARAM_TOAST } from '!/routes/domain';
@@ -24,7 +24,7 @@ const Main = () => {
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
   const urlToast = useMemo(() => url.get('toast') as MAIN_QUERY_PARAM_TOAST, [location]);
 
-  const toastTutorial = LocalStorage.get(`tutorial-"${tutorialToastMsg.replace(/\n/g, '\\n')}"`);
+  const toastTutorial = tutorialStorage.get(`tutorial-"${tutorialToastMsg.replace(/\n/g, '\\n')}"`);
   // useSocket<CTRL_SOCKET_NAME>(
   //   new SocketSubscript('tcmUpdate', (d) => {
   //     return d;

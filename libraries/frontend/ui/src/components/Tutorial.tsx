@@ -1,4 +1,4 @@
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { Storage, createLogger } from '@package-frontend/utils';
 import { ReactNode, RefObject, createRef, useEffect, useMemo, useState } from 'react';
 import Portal from './Portal';
 import usePosition from '#/usePosition';
@@ -25,11 +25,12 @@ export interface TutorialProps {
   }[];
 }
 /* ======    global     ====== */
+export const tutorialStorage = new Storage<string>(localStorage);
 const logger = createLogger('components/Tutorial');
 const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
   /* ======   variables   ====== */
   const id = useMemo(() => 'tutorial-' + JSON.stringify(guide.map((x) => x.text).join('/')), [guide]);
-  const didSee = typeof LocalStorage.get(id) === 'string';
+  const didSee = typeof tutorialStorage.get(id) === 'string';
   const [finish, setFinish] = useState(false);
   const [done, setDone] = useState(didSee);
   const [step, setStep] = useState(0);
@@ -54,7 +55,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
     if (nextStep < guide.length) setStep(step + 1);
     else {
       setDone(true);
-      LocalStorage.set(id, new Date().toISOString());
+      tutorialStorage.set(id, new Date().toISOString());
     }
   };
   /* ======   useEffect   ====== */
