@@ -19,7 +19,7 @@ const Users = () => {
     <>
       <Table
         renderSubComponent={<UserGradeSelect />}
-        thead={['uid', 'userId', 'userName', 'grade', 'createdDate', 'lastAccess']}
+        thead={['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess']}
         data={data}
         makePagination
       />
