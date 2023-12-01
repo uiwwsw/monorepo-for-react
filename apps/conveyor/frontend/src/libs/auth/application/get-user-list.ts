@@ -3,6 +3,7 @@ import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { User } from '../domain';
 import { http } from '#/http';
+import { UserGrade } from '@package-backend/types';
 const logger = createLogger('auth/useUserList');
 
 async function fetcher(url: string) {
@@ -11,8 +12,9 @@ async function fetcher(url: string) {
   });
   logger(url, res);
   return res!.users.map((x) => {
-    const res: User = {
+    const res = {
       ...x,
+      gradeName: UserGrade[x.grade],
     };
     return res;
   });
