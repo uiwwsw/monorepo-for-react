@@ -30,7 +30,9 @@ const meta = {
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-
+const toast = document.createElement('div');
+toast.id = 'toast';
+document.body.appendChild(toast);
 export const normal = (props: PaginationProps) => {
   return <Pagination {...props} />;
 };
