@@ -50,6 +50,10 @@ export class Clients {
                 case 'tcmAlarmSet':
                     this.broadcast('tcmAlarmSet', [msg.MessageData]);
                     break;
+                case 'tcsAlarmClear':
+                case 'tcmAlarmCleared':
+                    this.broadcast('tcsAlarmClear', msg.MessageData);
+                    break;
                 case 'tcmZoneStateChangeCompleted':
                     {
                         let newState = -1;
@@ -75,10 +79,6 @@ export class Clients {
                 case 'tcsEventSet':
                     this.tcsEventSet.push(msg.MessageData as ITcsEventSet);
                     break;
-                case 'tcsAlarmClear':
-                case 'tcmAlarmCleared':
-                    this.broadcast('tcsAlarmClear', msg.MessageData);
-                    break;
                 case 'tcsWarningSet':
                     this.broadcast('tcsWarningSet', msg.MessageData);
                     break;
@@ -87,6 +87,9 @@ export class Clients {
                     break;
                 case 'himEquipmentStateInfo':
                     this.broadcast('himEquipmentStateInfo', msg.MessageData.Object);
+                    break;
+                case 'tcmTransferComplete':
+                    logger.info('tcmTransferComplete');
                     break;
             }
         } catch (ex) {

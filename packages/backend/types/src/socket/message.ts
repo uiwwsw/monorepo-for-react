@@ -2,7 +2,7 @@ export interface WebSocketMessage {
     type : string;
     data : string;
     compress : number;      // 1: JSON -> GZIP -> BASE64
-    tid? : number;          // Transaction ID
+    tid? : number;          // Transaction ID(Ack가 필요한 경우 사용)
 }
 
 export interface MessageResult {
