@@ -13,6 +13,10 @@ const ToastWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
+  const handleOpen = () => {
+    setOpen(true);
+    setVisible(true);
+  };
   const handleClose = () => {
     setOpen(false);
     onClose && onClose();
@@ -23,10 +27,9 @@ const ToastWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!defaultOpen) return;
+    if (!defaultOpen) return handleClose();
 
-    setOpen(true);
-    setVisible(true);
+    handleOpen();
   }, [defaultOpen]);
 
   logger('render');

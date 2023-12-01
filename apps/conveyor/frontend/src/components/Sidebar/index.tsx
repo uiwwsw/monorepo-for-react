@@ -1,8 +1,8 @@
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';
-import { Button, Image, Tutorial } from '@library-frontend/ui';
+import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
@@ -95,14 +95,14 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '126px',
+        height: '170px',
       },
     },
   ];
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
-    const id = LocalStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
+    const id = tutorialStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
     setOpen(!id);
   }, []);
   logger('render');

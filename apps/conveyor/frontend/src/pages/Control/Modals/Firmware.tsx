@@ -1,7 +1,7 @@
 import { useTcmBackupDelete } from '!/control/application/delete-tcm-backup';
 import { useTcmBackup } from '!/control/application/get-tcm-backup';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
-import useToasts from '#/useToasts';
+import useToastsForControl from '#/useToastsForControl';
 import H2 from '@/Typography/H2';
 import { Button, Combo, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
@@ -22,7 +22,7 @@ const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
   const { data, error, trigger, isMutating } = useTcmBackup();
   const { trigger: deleteTrigger } = useTcmBackupDelete();
   const { trigger: updateTrigger } = useUpdateFirmware();
-  const { Toasts, adapterEvent } = useToasts({ selectedRows: [selectedFile] });
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [selectedFile] });
 
   /* ======   function    ====== */
   const handleClick = () => trigger({ tid });

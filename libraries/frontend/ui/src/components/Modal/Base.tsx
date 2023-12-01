@@ -76,6 +76,9 @@ const ModalBase = ({
   useEffect(() => {
     open && setTimeout(() => elRef.current?.focus(), 0);
     document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
   useSmooth({
     value: open,

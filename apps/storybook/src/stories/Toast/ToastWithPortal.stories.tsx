@@ -33,7 +33,7 @@ document.body.appendChild(div);
 export const toastWithPortal = ({ children, open, ...props }: ToastWithPortalProps) => {
   const [_, updateArgs] = useArgs();
   return (
-    <ToastWithPortal {...props} open={open} onEval={() => updateArgs({ open: false })}>
+    <ToastWithPortal {...props} open={open} onClose={() => updateArgs({ open: false })}>
       {children}
     </ToastWithPortal>
   );

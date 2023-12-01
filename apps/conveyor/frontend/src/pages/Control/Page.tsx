@@ -11,7 +11,7 @@ import { Button } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
-import useToasts from '#/useToasts';
+import useToastsForControl from '#/useToastsForControl';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -23,7 +23,7 @@ const Control = () => {
   const { data: serverData } = useServerInfo();
   const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
   const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
-  const { Toasts, adapterEvent } = useToasts({ selectedRows: [0] });
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [0] });
   const disabled = useMemo(() => resumeIsMutating || pauseIsMutating, [resumeIsMutating, pauseIsMutating]);
 
   /* ======   function    ====== */

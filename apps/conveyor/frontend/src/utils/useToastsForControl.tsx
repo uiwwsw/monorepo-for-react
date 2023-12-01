@@ -3,6 +3,7 @@ import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
   selectedRows: T[];
+  duration?: number;
 }
 export interface ToastProps {
   message: string;
@@ -14,9 +15,9 @@ export interface UseToastError<T> {
 }
 /* ======    global     ====== */
 const logger = createLogger('utils/useToastsForControl');
-const useToastsForControl = <T,>(props?: UseToastProps<T>) => {
+const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProps<T>) => {
   /* ======   variables   ====== */
-  const { showToast, Toasts } = useToasts();
+  const { showToast, hideToast, Toasts } = useToasts();
   /* ======   function    ====== */
   const adapterEvent = async ({
     startMsg,
@@ -29,13 +30,13 @@ const useToastsForControl = <T,>(props?: UseToastProps<T>) => {
     successMsg: string;
     event: (id: T) => void | Promise<unknown>;
   }) => {
-    if (!props?.selectedRows) return showToast({ message: '선택되지 않았습니다.' });
-    logger(props?.selectedRows + '이벤트 시작');
-    showToast({ message: startMsg });
+    if (!selectedRows) return showToast({ message: '선택되지 않았습니다.' });
+    logger(selectedRows + '이벤트 시작');
+    showToast({ message: startMsg, duration: duration * selectedRows.length });
 
     const fails: { id: T; message?: string }[] = [];
 
-    for (const id of props.selectedRows) {
+    for (const id of selectedRows) {
       try {
         await event(id);
       } catch (e) {
@@ -47,6 +48,7 @@ const useToastsForControl = <T,>(props?: UseToastProps<T>) => {
       }
     }
 
+    hideToast(startMsg);
     if (fails.length > 0) {
       showToast({
         message: failMsg(fails),
@@ -58,7 +60,7 @@ const useToastsForControl = <T,>(props?: UseToastProps<T>) => {
         duration: Infinity,
       });
     }
-    logger('이벤트 종료' + props?.selectedRows + '!!!' + fails.map((x) => x.id + (x?.message ?? '')).join());
+    logger('이벤트 종료' + selectedRows + '!!!' + fails.map((x) => x.id + (x?.message ?? '')).join());
   };
   /* ======   useEffect   ====== */
   return {

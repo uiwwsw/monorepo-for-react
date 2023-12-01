@@ -20,6 +20,10 @@ import { Button, Checkbox, Input, Pagination, Skeleton } from '@library-frontend
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
+import { pageSizeOptions } from '#/constants';
+import { storage } from '#/storage';
+import { STORAGE } from '!/storage/domain';
+import useSetting from '#/useSetting';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
@@ -60,14 +64,8 @@ const Table = <T,>({
     );
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const pageSizeOptions = [
-    { value: '5', label: t('5개씩 보기') },
-    { value: '10', label: t('10개씩 보기') },
-    { value: '20', label: t('20개씩 보기') },
-    { value: '30', label: t('30개씩 보기') },
-    { value: '40', label: t('40개씩 보기') },
-    { value: '50', label: t('50개씩 보기') },
-  ];
+  const { defaultPageSize } = useSetting();
+
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
       ...(renderSelectComponent
@@ -146,6 +144,7 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
+    pageCount: defaultPageSize,
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
@@ -166,9 +165,10 @@ const Table = <T,>({
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  const selectedRows = useMemo(() => {
-    return table.getRowModel().rows.filter((row) => rowSelection[row.id]);
-  }, [table, rowSelection]);
+  const selectedRows = useMemo(
+    () => table.getRowModel().rows.filter((row) => rowSelection[row.id]),
+    [table, rowSelection],
+  );
   /* ======   function    ====== */
   const getNumericMsg = (newValue: number, limit: number) =>
     t('페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.', { newValue, limit });
@@ -275,7 +275,9 @@ const Table = <T,>({
                     </tr>
                     {row.getIsExpanded() && renderSubComponent && (
                       <tr>
-                        <td colSpan={row.getVisibleCells().length}>{cloneElement(renderSubComponent, { row })}</td>
+                        <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
+                          {cloneElement(renderSubComponent, { row })}
+                        </td>
                       </tr>
                     )}
                   </Fragment>
@@ -307,6 +309,7 @@ const Table = <T,>({
             onChange={(index) => table.setPageIndex(index)}
             onChangePer={(index) => table.setPageSize(index)}
             max={table.getPageCount()}
+            per={defaultPageSize}
             sizeOptions={pageSizeOptions}
             maxMessage={getNumericMsg}
             minMessage={getNumericMsg}

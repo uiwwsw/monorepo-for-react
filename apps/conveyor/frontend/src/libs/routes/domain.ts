@@ -23,4 +23,5 @@ export const enum ROUTES_PATH {
   '/sign-in' = '/sign-in',
   '/sign-up' = '/sign-up',
   '/help' = '/help',
+  '/setting' = '/setting',
 }

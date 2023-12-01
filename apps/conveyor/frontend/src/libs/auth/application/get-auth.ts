@@ -1,17 +1,15 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { Auth } from '../domain';
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { STORAGE } from '!/storage/domain';
-import { HttpError } from '#/http';
+import { storage } from '#/storage';
 const logger = createLogger('auth/useGetAuth');
 
-function fetcher(url: string) {
-  const res = LocalStorage.get<Auth>(url);
+function fetcher() {
+  const res = storage.get<Auth>(STORAGE['auth']);
   logger(res);
-  if (res) return res;
-  throw new HttpError('Forbidden', { status: 403 });
-  //   return await http({ url });
+  return res ?? null;
 }
 
 export function useGetAuth() {

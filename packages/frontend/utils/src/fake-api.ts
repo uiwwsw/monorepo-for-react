@@ -1,6 +1,5 @@
 import { wait } from './wait';
 import { createLogger } from './logger';
-import { LocalStorage } from '.';
 const logger = createLogger('@package-frontend/utils/fakeApi');
 // const makeErrorBtn = () => {
 //   if (document.getElementById('test-btn')) return;
@@ -26,8 +25,8 @@ const logger = createLogger('@package-frontend/utils/fakeApi');
 // };
 export const fakeApi = async <T>(res?: T): Promise<T | undefined> => {
   // makeErrorBtn();
-  const error = LocalStorage.get<number>('fake-error');
-  const random = Math.random() > (error ?? 0);
+  const error = localStorage.getItem('fake-error');
+  const random = Math.random() > +(error ?? 0);
   const time = 1000 * (Math.floor(Math.random() * 3) + 1);
   logger(`랜덤 성공실패:${random}. 타이머: ${time}`);
   if (!random) {
