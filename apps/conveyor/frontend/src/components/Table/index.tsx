@@ -21,8 +21,6 @@ import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
 import { pageSizeOptions } from '#/constants';
-import { storage } from '#/storage';
-import { STORAGE } from '!/storage/domain';
 import useSetting from '#/useSetting';
 
 /* ======   interface   ====== */

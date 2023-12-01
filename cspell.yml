@@ -9,6 +9,10 @@ words:
   - pretendard
   # noto 폰트
   - noto
+  # ViteFaviconsPlugin 플러그인명
+  - ViteFaviconsPlugin
+  # ymtc 회사명
+  - ymtc
 ignoreWords:
   - noopener
 ignorePaths:
