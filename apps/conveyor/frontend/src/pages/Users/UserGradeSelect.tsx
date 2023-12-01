@@ -45,7 +45,7 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   return (
     <>
       {Toasts}
-      <div className="flex p-2 items-center">
+      <div className="flex p-2 items-center justify-end">
         <span>유저 등급 변경: </span>
         <Select defaultValue={row?.original.grade} options={options} onChange={handleChange} />
       </div>

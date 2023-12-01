@@ -46,14 +46,11 @@ const Combo = ({
     setValue(value);
     onChange && onChange(value);
   };
-  const handleFinished = (val: any) => {
-    logger(val);
+  const handleFinished = () => {
     ref.current!.value = '';
     setSearch('');
   };
-  const handleInputClick = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
+  const handleInputClick = (e: MouseEvent) => e.stopPropagation();
   /* ======   useEffect   ====== */
   logger('render');
   return (
@@ -74,7 +71,7 @@ const Combo = ({
         />
       }
     >
-      <div className="bg-white shadow-sm">
+      <div className="bg-white shadow-2xl">
         <Input
           type="search"
           ref={ref}
@@ -92,7 +89,7 @@ const Combo = ({
           {memoSearchOptions.map((x) => (
             <Button
               key={x.label}
-              themeSize={'xs'}
+              themeSize="sm"
               disabled={x.disabled}
               themeColor={x.value === value ? 'primary' : 'secondary'}
               onClick={() => handleClick(x.value)}

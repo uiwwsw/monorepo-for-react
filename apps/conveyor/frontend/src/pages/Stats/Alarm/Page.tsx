@@ -1,6 +1,6 @@
 import { useHeaderContext } from '@/HeaderContext';
 import { Pagination, ToastWithPortal } from '@library-frontend/ui';
-import { LocalStorage, createLogger, newDate } from '@package-frontend/utils';
+import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { Arg, useAlarmStats } from '!/stats/application/get-alarm-stats';
@@ -8,33 +8,29 @@ import Table from '@/Table';
 import { STORAGE } from '!/storage/domain';
 import { VisibilityState } from '@tanstack/react-table';
 import StatsCalendar from '../Calendar';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
+import { pageSizeOptions } from '#/constants';
+import { storage } from '#/storage';
+import useSetting from '#/useSetting';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const pageSize = 10;
 const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {
   /* ======   variables   ====== */
-  const { t } = useTranslation();
-  const pageSizeOptions = [
-    { value: '5', label: t('5개씩 보기') },
-    { value: '10', label: t('10개씩 보기') },
-    { value: '20', label: t('20개씩 보기') },
-    { value: '30', label: t('30개씩 보기') },
-    { value: '40', label: t('40개씩 보기') },
-    { value: '50', label: t('50개씩 보기') },
-  ];
-  const fixedCalendar = LocalStorage.get<string[]>(STORAGE['stats/calendar']);
-  const columnVisibility = LocalStorage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
+  // const { t } = useTranslation();
+  const { defaultPageSize, defaultDuration } = useSetting();
+
+  const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
+  const columnVisibility = storage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
 
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-7, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
-    page_size: pageSize,
+    page_size: defaultPageSize,
     find_key: '',
   });
   const currentPer = useMemo(() => arg.page_size ?? 10, [arg]);
@@ -46,7 +42,7 @@ const StatsAlarm = () => {
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
-    LocalStorage.set(STORAGE['alarm/table'], value);
+    storage.set(STORAGE['alarm/table'], value);
     logger(value);
   };
   const handleCalenderChange = async (duration: Dayjs[]) => {

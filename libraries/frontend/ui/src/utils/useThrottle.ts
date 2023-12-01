@@ -6,12 +6,13 @@ const useThrottle = <T>(fn?: (e: T) => unknown, delay: number = 300) => {
   if (!fn) return () => null;
   const sto = useRef<NodeJS.Timeout | null>();
   const handleRun = (e: T) => {
-    if (!sto.current)
+    if (!sto.current) {
       sto.current = setTimeout(async () => {
         logger('이벤트 실행', e);
-        await fn(e);
         sto.current = null;
+        return await fn(e);
       }, delay);
+    }
   };
 
   return handleRun;

@@ -30,6 +30,7 @@ const resources = {
       유저관리: 'Users',
       비밀번호변경: 'Update PW',
       //gram
+      '10개씩 보기': '10 ',
       '기간을 선택해 주세요.': 'Please select a date range.',
       '날짜를 선택해 주세요.': 'Please select a duration.',
       '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.':

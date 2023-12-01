@@ -34,7 +34,8 @@ const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 50
   /* ======   useEffect   ====== */
   useSmooth({ value: open, delay: 500, ref: elRef, onFinished: handleClosed });
   useEffect(() => {
-    if (!open || isInfinity) return;
+    if (isInfinity) return;
+    if (!open) return onClose && onClose();
     const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
   }, [open]);
