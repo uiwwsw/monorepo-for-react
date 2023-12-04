@@ -61,7 +61,7 @@ async function main() {
     // WebSocket 서버 설정
     const wss = new WebSocket.Server({ server });
     wss.on('connection', (ws: WebSocket, request:Request) => {
-        const auth_token: string | undefined = request.headers['authorization'];
+        const auth_token: string | undefined = request.headers['authorization'] || request.url?.split('token=')[1];
         Service.Inst.Clients.addClient(ws, auth_token as string);
     });
 
