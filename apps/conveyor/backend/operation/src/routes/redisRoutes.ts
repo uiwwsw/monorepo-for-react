@@ -27,7 +27,7 @@ const router: Router = Router();
  *   get:
  *     summary: 장비 설정 값 조회
  *     description: 시스템에 설정된 특정 장비의 값을 조회합니다.
- *     tags: [Equipment Management]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -89,7 +89,7 @@ router.get('/get-equipment-value', verifyToken, asyncWrapper<IGetSystemEquipValu
  *   post:
  *     summary: 장비 설정 값 변경
  *     description: 시스템에 설정된 특정 장비의 값을 변경합니다.
- *     tags: [Equipment Management]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -164,7 +164,7 @@ router.post('/set-equipment-value', verifyToken, asyncWrapper<ISetSystemEquipVal
  *   get:
  *     summary: 모션 파라미터 정보 조회
  *     description: 특정 Zone ID에 대한 모션 파라미터 정보를 조회합니다.
- *     tags: [Motion Parameters]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -273,7 +273,7 @@ router.get('/motion-parameter-info', verifyToken, asyncWrapper<IMotionParamInfoR
  *   get:
  *     summary: 확장 모션 파라미터 정보 조회
  *     description: 특정 Zone ID에 대한 확장 모션 파라미터 정보를 조회합니다.
- *     tags: [Extended Motion Parameters]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -343,7 +343,7 @@ router.get('/motion-parameter-ex-info', verifyToken, asyncWrapper<IEquipmentExIn
  *   get:
  *     summary: 오프셋 정보 조회
  *     description: 특정 Zone ID에 대한 오프셋 정보를 조회합니다.
- *     tags: [Offset Information]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -456,7 +456,7 @@ router.get('/offset-info', verifyToken, asyncWrapper<IOffsetInfoReq, IOffsetInfo
  *   get:
  *     summary: TCM 클라이언트 상태 확인
  *     description: 지정된 TCM ID에 대한 클라이언트 상태를 확인합니다.
- *     tags: [TCM Management]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -520,7 +520,7 @@ router.get('/check-tcm-client', verifyToken, asyncWrapper<ICheckTcmClientReq, IC
  *   get:
  *     summary: 리프터 위치 속성 조회
  *     description: 지정된 Zone ID, 레벨, 위치에 대한 리프터의 위치 속성을 조회합니다.
- *     tags: [Attribute Lifter]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -598,7 +598,7 @@ router.get('/attribute-lifter/position', verifyToken, asyncWrapper<IAttributeLif
  *   get:
  *     summary: Zone 정보 조회
  *     description: 시스템에서 사용 가능한 모든 Zone의 정보를 조회합니다.
- *     tags: [Zone Management]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -665,7 +665,7 @@ router.get('/zone-info', verifyToken, asyncWrapper<IZoneInfoReq, IZoneInfoResp>(
  *   get:
  *     summary: SMM 에뮬레이션 사용 여부 조회
  *     description: 시스템에서 SMM 에뮬레이션의 사용 여부를 조회합니다.
- *     tags: [System Information]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -719,7 +719,7 @@ router.get('/info/use-smm-emul', verifyToken, asyncWrapper<IGetUseSmmEmulReq, IG
  *   get:
  *     summary: TCM 포트 정보 조회
  *     description: 지정된 TCM ID에 대한 네트워크 포트 정보를 조회합니다.
- *     tags: [TCM Management]
+ *     tags: [Redis Management]
  *     security:
  *       - bearerAuth: []
  *     parameters:
