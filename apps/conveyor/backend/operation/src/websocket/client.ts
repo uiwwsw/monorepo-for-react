@@ -48,28 +48,32 @@ export class Client {
     }
 
     private onRecvMessage = async (body:string) => {
-        const msg:WebSocketMessage = JSON.parse(body);
-        let result = 'OK';
         try {
-            if (msg.compress === 1) {
-                msg.data = await utils.uncompressBase64ToJson(msg.data);
+            const msg:WebSocketMessage = JSON.parse(body);
+            let result = 'OK';
+            try {
+                if (msg.compress === 1) {
+                    msg.data = await utils.uncompressBase64ToJson(msg.data);
+                }
+                switch(msg.type) {
+                    case ActionTypes.ZONE_GET_INFO:
+                        await initailizeRedisInfo(this);
+                        this.isReady = true;
+                        break;
+                    default:
+                        logger.warn(`Unknown message type: ${msg.type}, body: ${msg.data}`);
+                        break;
+                }
+            } catch (err) {
+                logger.error(`Failed to process uid:${this.session.uid} message: ${msg.type}, body: ${msg.data}`);
+                result = (err as Error).message;
             }
-            switch(msg.type) {
-                case ActionTypes.ZONE_GET_INFO:
-                    await initailizeRedisInfo(this);
-                    this.isReady = true;
-                    break;
-                default:
-                    logger.warn(`Unknown message type: ${msg.type}, body: ${msg.data}`);
-                    break;
+    
+            if (msg.tid) {
+                this.send('MessageResult', { result: result, tid: msg.tid });
             }
-        } catch (err) {
-            logger.error(`Failed to process uid:${this.session.uid} message: ${msg.type}, body: ${msg.data}`);
-            result = (err as Error).message;
-        }
-
-        if (msg.tid) {
-            this.send('MessageResult', { result: result, tid: msg.tid });
+        } catch (ex) {
+            logger.error(`onRecvMessage. uid:${this.session.uid}, body:${body} ex: ${ex}`);
         }
     }
 }

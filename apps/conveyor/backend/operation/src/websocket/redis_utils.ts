@@ -74,7 +74,6 @@ const initializeTaskInfos = async (client:Client) => {
     client.send('tcmTransferInfo', tranferInfos);
 }
 
-
 const initializeAlarms = async (client:Client) => {
     const alarms:unknown[] = [];
 
