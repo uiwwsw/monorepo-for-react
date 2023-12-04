@@ -7,15 +7,19 @@ import * as utils from '../libs/utils';
 import logger from '../libs/logger';
 
 export class Client {
-    private client: WebSocket;
+    private socket: WebSocket;
     private session: UserSession;
     private isReady : boolean = false;
 
-    public constructor(client: WebSocket, session : UserSession) {
-        this.client = client;
+    public constructor(socket: WebSocket, session : UserSession) {
+        this.socket = socket;
         this.session = session;
 
-        this.client.on('message', this.onRecvMessage);
+        this.socket.on('message', this.onRecvMessage);
+    }
+
+    public close() {
+        this.socket.close();
     }
 
     public async send(type:string, data:object) {
@@ -28,15 +32,16 @@ export class Client {
                 data: compressed,
                 compress: 1
             };
-            this.client.send(JSON.stringify(msg));
+            this.socket.send(JSON.stringify(msg));
         } else {
             const msg:WebSocketMessage = {
                 type: type,
                 data: json,
                 compress: 0
             };
-            this.client.send(JSON.stringify(msg));
+            this.socket.send(JSON.stringify(msg));
         }
+        logger.debug(`send. uid:${this.session.uid}, type:${type}, data:${json}`);
     }
 
     public get ClientType() : number {

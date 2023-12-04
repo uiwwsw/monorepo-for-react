@@ -48,3 +48,9 @@ export const scanRedisKeys = async (redis:Redis, pattern:string) : Promise<strin
 
     return keys;
 }
+
+export const sleep =async (timeout:number) => {
+    await new Promise((resolve) => {
+        setTimeout(resolve, timeout);
+    });
+}
