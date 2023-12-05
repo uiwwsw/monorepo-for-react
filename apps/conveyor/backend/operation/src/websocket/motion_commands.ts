@@ -1,0 +1,1 @@
+../../src/packages/backend/types/src/socket/motion_commands.ts

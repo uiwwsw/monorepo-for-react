@@ -12,6 +12,7 @@ import logger from './libs/logger';
 import userRouter from './routes/userRoutes';
 import zoneRouter from './routes/zoneRoutes';
 import statsRouter from './routes/statsRoutes';
+import redisRouter from './routes/redisRoutes';
 import { errorHandler } from './routes/error';
 
 async function main() {
@@ -55,13 +56,14 @@ async function main() {
     app.use('/users', userRouter);
     app.use('/zone', zoneRouter);
     app.use('/stats', statsRouter);
+    app.use('/redis', redisRouter);
 
     app.use(errorHandler);
 
     // WebSocket 서버 설정
     const wss = new WebSocket.Server({ server });
     wss.on('connection', (ws: WebSocket, request:Request) => {
-        const auth_token: string | undefined = request.headers['authorization'];
+        const auth_token: string | undefined = request.headers['authorization'] || request.url?.split('token=')[1];
         Service.Inst.Clients.addClient(ws, auth_token as string);
     });
 

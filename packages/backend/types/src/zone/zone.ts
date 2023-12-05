@@ -20,10 +20,17 @@ export interface Profile {
 export interface AttributeQS {
     Included?: number;
     East?: unknown;
+    EastOut?: unknown;
     West?: unknown;
+    WestOut?: unknown;
     North?: unknown;
     South?: unknown;
+    SouthOut?: unknown;
     HomeOffset?: unknown;
+    HomeDirection?: unknown;
+    NegativeOffset?: unknown;
+    PositiveOffset?: unknown;
+    IsWayPoint?: unknown;
 }
 
 export interface AttributeLD {

@@ -1,7 +1,8 @@
 import { Service } from '../service';
 import { ZoneType } from '../zone/zoneType';
-import { Zone, baseObject } from '../packages/backend/types/src/zone/zone';
+import { Zone, cctv, baseObject } from '../packages/backend/types/src/zone/zone';
 import logger from '../libs/logger';
+import * as utils from '../libs/utils';
 
 export class ZoneRepo {
     public useRealPostion: boolean = false;
@@ -10,13 +11,15 @@ export class ZoneRepo {
     async getZoneRepo() : Promise<Map<number, Zone>> {
         this.Data.clear();
 
-        const zoneKeys = await this.getZoneKeys();
-        const zones = this.makeMappedRepository(zoneKeys);
-
         const useRealPostion = await Service.Inst.Redis.hget('System:Configuration:GUI', 'UseRealPostion');
         this.useRealPostion = useRealPostion === '1';
 
-        await this.setZoneRepositoryAttributes(zones);
+        const zones = await this.getZoneRepository();
+        const idler = await this.getIdlerRepositorys();
+        const cctv = await this.getCCTVRepositorys();
+        this.setData(zones);
+        this.setData(idler);
+        this.setData(cctv);
 
         return zones;
     }
@@ -25,20 +28,6 @@ export class ZoneRepo {
         value.forEach((value: Zone) => {
             this.Data.set(value.ZoneID, value);
         });
-    }
-
-    async getZoneKeys() : Promise<string[]> {
-        let cursor = '0';
-        const keys: string[] = [];
-    
-        do {
-            // SCAN 명령 실행
-            const result: [string, string[]] = await Service.Inst.Redis.scan(cursor, 'MATCH', 'Zone:*[0-9]', 'COUNT', 100);
-            cursor = result[0];
-            keys.push(...result[1]);
-        } while (cursor !== '0');
-    
-        return keys;
     }
 
     makeMappedRepository(keys:string[]) : Map<number, Zone> {
@@ -52,6 +41,13 @@ export class ZoneRepo {
             }
         });
         return repo;
+    }
+
+    async getZoneRepository() : Promise<Map<number, Zone>> {
+        const zoneKeys = await utils.scanRedisKeys(Service.Inst.Redis, 'Zone:*[0-9]');
+        const zones = this.makeMappedRepository(zoneKeys);
+        await this.setZoneRepositoryAttributes(zones);
+        return zones;
     }
 
     async setZoneRepositoryAttributes(zoneRepository: Map<number, Zone>) {
@@ -75,7 +71,8 @@ export class ZoneRepo {
                     value.posY = +(await redis.hget(`Zone:${value.ZoneID}`, 'posY') || 0);
     
                     value.NextZone = +(await redis.hget(`Zone:${value.ZoneID}`, 'NextZone') || 0);
-    
+                    value.PrevZone = +(await redis.hget(`Zone:${value.ZoneID}`, 'ZonePrev') || 0);
+
                     value.RefDirection = +(await redis.hget(`Zone:${value.ZoneID}`, 'RefDirection') || 0);
                     value.EtherCATID = +(await redis.hget(`Zone:${value.ZoneID}`, 'EtherCATID') || 0);
                     value.EtherCATName = await redis.hget(`Zone:${value.ZoneID}`, 'EtherCATName') || '';
@@ -86,6 +83,7 @@ export class ZoneRepo {
                     value.SensorReverseZone = +(await redis.hget(`Zone:${value.ZoneID}`, 'SensorReverseZone') || 0);
                     value.MotorReverse = +(await redis.hget(`Zone:${value.ZoneID}`, 'MotorReverse') || 0);
                     value.GearRatio = +(await redis.hget(`Zone:${value.ZoneID}`, 'MotorRevGearRatioerse') || 0);
+                    value.LogicalType = +(await redis.hget(`Zone:${value.ZoneID}`, 'LogicalType') || 0);
                     value.PLCSlaveID = +(await redis.hget(`Zone:${value.ZoneID}`, 'PLCSlaveID') || 0);
                     value.HasAirShower = +(await redis.hget(`Zone:${value.ZoneID}`, 'HasAirShower') || 0);
     
@@ -106,6 +104,7 @@ export class ZoneRepo {
                         SensorReverseZone.push(+(await redis.hget(`Zone:${value.ZoneID}:AttributeLD`, 'SensorReverseZone2') || 0));
                         SensorReverseZone.push(+(await redis.hget(`Zone:${value.ZoneID}:AttributeLD`, 'SensorReverseZone3') || 0));
     
+                        if (IncludedLD) { value.AttributeLD.Included = +IncludedLD; }
                         if (E84PortNumber) { value.AttributeLD.E84PortNumber = +E84PortNumber; }
                         if (RFIDPortNumber) { value.AttributeLD.RFIDPortNumber = +RFIDPortNumber; }
                         if (SGTPortNumber) { value.AttributeLD.SGTPortNumber = +SGTPortNumber; }
@@ -113,7 +112,6 @@ export class ZoneRepo {
                         if (IOEtherCATID) { value.AttributeLD.IOEtherCATID = IOEtherCATID; }
                         if (AutoIOPort) { value.AttributeLD.AutoIOPort = +AutoIOPort; }
                         if (DefaultOutputZoneID) { value.AttributeLD.DefaultOutputZoneID = +DefaultOutputZoneID; }
-                        if (IncludedLD) { value.AttributeLD.Included = +IncludedLD; }
                         if (GroupNumber) { value.AttributeLD.GroupNumber = +GroupNumber; }
                         if (SensorReverseZone.reduce((a, b) => a + b) > 0) {
                             value.AttributeLD.SensorReversZones = SensorReverseZone;
@@ -213,6 +211,90 @@ export class ZoneRepo {
                 }
                 idx++;
             }
+            jobs.push(job);
+        }
+        await Promise.all(jobs.map(job => job()));
+    }
+
+    async getIdlerRepositorys() : Promise<Map<number, Zone>> {
+        const otherKeys = await utils.scanRedisKeys(Service.Inst.Redis, 'Idler:*[0-9]');
+        const IdlerRepository = this.makeMappedRepository(otherKeys);
+        await this.setIdlerRepositoryAttributes(IdlerRepository);
+        return IdlerRepository;
+    }
+
+    async setIdlerRepositoryAttributes(idlerRepository: Map<number, Zone>) {
+        if (idlerRepository.size == 0) {
+            return;
+        }
+        const redis = Service.Inst.Redis;
+        const total = idlerRepository.size;
+        let idx = 0;
+
+        const jobs = [];
+        for(const [id, value] of idlerRepository) {
+            const begin = Date.now();
+            const job = async() => {
+                try {
+                    value.PhysicalType = +(await redis.hget(`Idler:${value.ZoneID}`, 'PhysicalType') || 0);
+
+                    value.posX = +(await redis.hget(`Idler:${value.ZoneID}`, 'posX') || 0);
+                    value.posY = +(await redis.hget(`Idler:${value.ZoneID}`, 'posY') || 0);
+                    value.NextZone = +(await redis.hget(`Idler:${value.ZoneID}`, 'NextZone') || 0);
+                    value.PrevZone = +(await redis.hget(`Idler:${value.ZoneID}`, 'ZonePrev') || 0);
+                    value.RefDirection = +(await redis.hget(`Idler:${value.ZoneID}`, 'RefDirection') || 0);
+                    value.DisplayName = (await redis.hget(`Idler:${value.ZoneID}`, 'DisplayName') || '');
+                    value.Level = +(await redis.hget(`Idler:${value.ZoneID}`, 'Level') || 0);
+                    value.ZoneDrawCount = +(await redis.hget(`Idler:${value.ZoneID}`, 'ZoneDrawCount') || 1);
+
+                    logger.info(`ZoneRepo.setIdlerRepositoryAttributes(${idx}/${total}) id:${id}, elasped:${Date.now() - begin}ms`);
+                } catch (ex) {
+                    logger.error(`ZoneRepo.setIdlerRepositoryAttributes: id:${id}, ${ex}`);
+                }                
+                idx++;
+            };
+            jobs.push(job);
+        }
+        await Promise.all(jobs.map(job => job()));
+    }
+
+    async getCCTVRepositorys() : Promise<Map<number, Zone>> {
+        const otherKeys = await utils.scanRedisKeys(Service.Inst.Redis, 'CCTV:*[0-9]');
+        const IdlerRepository = this.makeMappedRepository(otherKeys);
+        await this.setIdlerRepositoryAttributes(IdlerRepository);
+        return IdlerRepository;
+    }
+
+    async setCCTVRepositoryAttributes(cctvRepository: Map<number, cctv>) {
+        if (cctvRepository.size == 0) {
+            return;
+        }
+
+        const redis = Service.Inst.Redis;
+        const total = cctvRepository.size;
+        let idx = 0;
+
+        const jobs = [];
+        for(const [id, value] of cctvRepository) {
+            const begin = Date.now();
+            const job = async() => {
+                try {
+                    value.PhysicalType = +(await redis.hget(`CCTV:${value.ZoneID}`, 'PhysicalType') || 0);
+                    value.posX = +(await redis.hget(`CCTV:${value.ZoneID}`, 'posX') || 0);
+                    value.posY = +(await redis.hget(`CCTV:${value.ZoneID}`, 'posY') || 0);
+                    value.DisplayName = (await redis.hget(`CCTV:${value.ZoneID}`, 'DisplayName') || '');
+                    value.Level = +(await redis.hget(`CCTV:${value.ZoneID}`, 'Level') || 0);
+
+                    value.TCMID = +(await redis.hget(`CCTV:${value.ZoneID}`, 'TCMID') || 0);
+                    value.IPAddress = (await redis.hget(`CCTV:${value.ZoneID}`, 'IPAddress') || '');
+                    value.rotationDeg = +(await redis.hget(`CCTV:${value.ZoneID}`, 'rotationDeg') || 0);
+
+                    logger.info(`ZoneRepo.setCCTVRepositoryAttributes(${idx}/${total}) id:${id}, elasped:${Date.now() - begin}ms`);
+                } catch (ex) {
+                    logger.error(`ZoneRepo.setCCTVRepositoryAttributes: id:${id}, ${ex}`);
+                }                
+                idx++;
+            };
             jobs.push(job);
         }
         await Promise.all(jobs.map(job => job()));

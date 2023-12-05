@@ -110,15 +110,19 @@ export class Clients {
         logger.info(`addClient. A new WebSocket connection has been established. uid: ${session.uid}`);
 
         ws.on('close', () => {
-            this.clients.delete(session.uid);
+            if (this.clients.get(session.uid)) {
+                this.clients.delete(session.uid);
+            }
             logger.info(`The WebSocket connection has been terminated. uid: ${session.uid}`);
         });
     }
 
-    public async broadcast(type: string, data: object) {
+    public async broadcast(type: string, data: object, toALL:boolean=true) {
         this.clients.forEach((client) => {
             if (client.IsReady) {
-                client.send(type, data);
+                if (toALL || client.ClientType !== 1) {
+                    client.send(type, data);
+                }
             }
         });
     }
@@ -127,15 +131,15 @@ export class Clients {
         try {
             if (this.tcmTransferInfo.length > 0) {
                 const transferinfo = this.tcmTransferInfo.splice(0, this.tcmTransferInfo.length);
-                this.broadcast('tcmTransferInfo', transferinfo);
+                this.broadcast('tcmTransferInfo', transferinfo, false);
             }
             if (this.tcmZoneOccupiedAttributes.length > 0) {
                 const tcmZoneOccupied = this.tcmZoneOccupiedAttributes.splice(0, this.tcmZoneOccupiedAttributes.length);
-                this.broadcast('UpdateZoneOccupiedState', tcmZoneOccupied);
+                this.broadcast('UpdateZoneOccupiedState', tcmZoneOccupied, false);
             }
             if (this.tcmZoneStateAttributes.length > 0) {
                 const tcmZoneOccupied = this.tcmZoneStateAttributes.splice(0, this.tcmZoneStateAttributes.length);
-                this.broadcast('UpdateZoneState', tcmZoneOccupied);
+                this.broadcast('UpdateZoneState', tcmZoneOccupied, false);
             }
             if(this.tcsEventSet.length > 0){
                 const eventSet = this.tcsEventSet.splice(0, this.tcsEventSet.length);

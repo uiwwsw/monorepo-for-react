@@ -1,0 +1,16 @@
+shape: sequence_diagram
+
+client : Client
+server : Server
+
+client -> server : connect
+server -> client : ok
+
+client -> server : ZONE_GET_INFO
+server -> client : guiRenderInfo
+server -> client : tcmAlarmSet
+server -> client : initialmodulestate
+server -> client : himEquipmentStateInfo
+server -> client : initailizeTCMInfo    
+server -> client : initializedataSend
+

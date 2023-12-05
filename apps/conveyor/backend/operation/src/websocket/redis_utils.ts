@@ -74,7 +74,6 @@ const initializeTaskInfos = async (client:Client) => {
     client.send('tcmTransferInfo', tranferInfos);
 }
 
-
 const initializeAlarms = async (client:Client) => {
     const alarms:unknown[] = [];
 
@@ -228,7 +227,7 @@ async function initializeModuleState(client:Client) {
                 const Alive = await redis.hmget(`${key}:Alive`, 'Alive');
                 const data = {
                     StateType: 'TCM',
-                    ID: TCMID - 1,
+                    ID: TCMID,
                     Alive: Alive[0] !== null ? Alive[0] : '0',
                 }
                 client.send('initialmodulestate', data);
