@@ -20,12 +20,10 @@ const StatsAlarm = () => {
   /* ======   variables   ====== */
   // const { t } = useTranslation();
   const { defaultPageSize, defaultDuration } = useSetting();
-
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = storage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
-
   const [arg, setArg] = useState<Arg>({
     start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
@@ -43,17 +41,19 @@ const StatsAlarm = () => {
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
     storage.set(STORAGE['alarm/table'], value);
-    logger(value);
+    logger('handleVisibility', value);
   };
   const handleCalenderChange = async (duration: Dayjs[]) => {
     await Promise.all([
       setArg((prev) => ({ ...prev, start_time: duration[0].toISOString(), end_time: duration[1].toISOString() })),
     ]);
     mutate();
+    logger('handleCalenderChange', duration);
   };
 
   const handleSearchKeyword = async (character: string) => {
     if (character === arg.find_key && arg.page === 1) return;
+
     await Promise.all([
       setArg((prev) => ({
         ...prev,
@@ -62,6 +62,7 @@ const StatsAlarm = () => {
       })),
     ]);
     mutate();
+    logger('handleSearchKeyword', character);
   };
   const handleChangePer = async (value: number) => {
     await Promise.all([
@@ -72,6 +73,7 @@ const StatsAlarm = () => {
       })),
     ]);
     mutate();
+    logger('handleChangePer', value);
   };
   const handleChangePage = async (page: number) => {
     if (page === currentPage) return;
@@ -84,15 +86,16 @@ const StatsAlarm = () => {
       })),
     ]);
     mutate();
+    logger('handleChangePage', nextPage);
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
     setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
 
+    logger('useEffect');
     return () => setChildren(undefined);
   }, [currentDuration]);
-  logger('render', data);
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>

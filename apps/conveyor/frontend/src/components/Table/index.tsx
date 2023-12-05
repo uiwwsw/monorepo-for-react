@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import {
   useReactTable,
   ColumnDef,
@@ -186,12 +186,14 @@ const Table = <T,>({
   const handleChangePage = (index: number) => table.setPageIndex(index);
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect: columnVisibility', columnVisibility);
+
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
+    logger('useEffect: allRowSelectTick, table.getState().pagination.pageIndex', allRowSelectTick);
     if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
   }, [allRowSelectTick, table.getState().pagination.pageIndex]);
-  logger('render');
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
       {cacheColumnVisibility && (

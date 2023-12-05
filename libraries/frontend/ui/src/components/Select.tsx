@@ -1,7 +1,7 @@
 import { ChangeEvent, SelectHTMLAttributes, forwardRef, useCallback, useState } from 'react';
 import Underbar from '$/Underbar';
 import Caret from '$/Caret';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value'> {
   error?: boolean;
@@ -14,7 +14,6 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Select');
-
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
     { defaultValue = '', placeholder = 'Select box', disabled, onChange, className, error, options = [], ...props },
@@ -32,6 +31,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       // if (ref && 'current' in ref) (ref.current as HTMLSelectElement).blur();
       onChange && onChange(e);
       !init && setInit(true);
+      logger('adapterChange');
     };
     const getOptionClassName = useCallback(
       (x: { disabled?: boolean }) => (x.disabled ? 'text-gray-400' : 'text-gray-800'),
@@ -39,7 +39,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     );
 
     /* ======   useEffect   ====== */
-    logger('render');
     return (
       <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
         <select

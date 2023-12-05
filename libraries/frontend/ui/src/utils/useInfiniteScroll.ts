@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import useDebouce from '#/useDebounce';
-
+import { createLogger } from '@package-frontend/utils';
+const logger = createLogger('utils/useDebounce');
 const useInfiniteScroll = () => {
   const heightRef = useRef(0);
   const tickRef = useRef(0);
@@ -12,11 +13,17 @@ const useInfiniteScroll = () => {
     scrollYRef.current = 0;
     await setScrollDeps(0);
     window.scrollTo(0, 0);
+    logger('trigger');
   };
   const isDocumentEnd = () => {
     const { scrollY, innerHeight } = window;
     const { clientHeight } = document.body;
-    if (scrollY + innerHeight >= clientHeight - 50) return true;
+
+    if (scrollY + innerHeight >= clientHeight - 50) {
+      logger('isDocumentEnd: true');
+      return true;
+    }
+    logger('isDocumentEnd: false');
     return false;
   };
   const event = () => {
@@ -24,6 +31,8 @@ const useInfiniteScroll = () => {
   };
   const onScroll = useDebouce(event, 500);
   useEffect(() => {
+    logger('useEffect');
+
     document.addEventListener('scroll', onScroll);
 
     return () => document.removeEventListener('scroll', onScroll);

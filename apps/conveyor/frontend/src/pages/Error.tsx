@@ -1,12 +1,12 @@
 import PageCenter from '@/PageCenter';
 import { Accordion, Button } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Error');
+// const logger = createLogger('pages/Error');
 const Error = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
@@ -16,7 +16,6 @@ const Error = () => {
   const handleRefresh = () => (parent.document.location.href = parent.document.location.href);
   const handleGoMain = () => (parent.document.location.href = '/');
   /* ======   useEffect   ====== */
-  logger('render', location);
   return (
     <>
       <PageCenter icon="😧" title={t('오류가 발생했어요')}>

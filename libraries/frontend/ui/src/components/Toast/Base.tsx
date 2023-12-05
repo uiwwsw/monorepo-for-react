@@ -1,7 +1,7 @@
 import Button from '@/Button';
 import useSmooth from '#/useSmooth';
 import Close from '$/Close';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { ReactNode, useEffect, useRef } from 'react';
 /* ======   interface   ====== */
 export interface ToastBaseProps {
@@ -38,11 +38,13 @@ const ToastBase = ({
   const handleClosed = (value: boolean) => {
     if (value) return;
     onClosed && onClosed();
+    logger('handleClosed');
   };
   /* ======   useEffect   ====== */
   useSmooth({ value: open, delay: 500, ref: elRef, onFinished: handleClosed });
   useEffect(() => {
     if (notClose) return;
+    logger(`useEffect: open = ${open}`);
     if (!open) return onClose && onClose();
     const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
@@ -50,7 +52,6 @@ const ToastBase = ({
   // useEffect(() => {
   //   if (!_open) setOpen(false)
   // }, [_open])
-  logger('render');
   return (
     <div
       className={`relative flex items-center border border-gray-400 px-5 py-2 rounded-sm bg-white overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${

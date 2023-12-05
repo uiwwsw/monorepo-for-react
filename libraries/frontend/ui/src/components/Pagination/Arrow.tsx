@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { MouseEvent, MouseEventHandler, memo } from 'react';
 /* ======   interface   ====== */
 export interface PaginationArrowProps {
@@ -11,12 +11,12 @@ const logger = createLogger('components/Pagination/PaginationArrow');
 const PaginationArrow = ({ children, disabled, onClick }: PaginationArrowProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
-  /* ======   useEffect   ====== */
-  logger('render');
   const handleClick = (e: MouseEvent) => {
     if (disabled) return;
     onClick && onClick(e);
+    logger('handleClick');
   };
+  /* ======   useEffect   ====== */
 
   return (
     <div

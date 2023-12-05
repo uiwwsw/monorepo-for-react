@@ -1,6 +1,6 @@
 // import io from 'socket.io-client';
 import { useEffect, useRef, useState } from 'react';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 /* ======   interface   ====== */
 
@@ -61,7 +61,7 @@ const useSocket = <K, T = unknown>(type: UseSocketProps<K>) => {
   }, []);
   useEffect(() => {
     if (status === 'OPEN') {
-      logger(status);
+      logger('useEffect', status);
       mutate();
     }
   }, [status]);

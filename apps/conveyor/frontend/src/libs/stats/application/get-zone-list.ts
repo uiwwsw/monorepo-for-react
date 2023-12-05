@@ -1,5 +1,5 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { ZoneList } from '../domain';
 import { http } from '#/http';

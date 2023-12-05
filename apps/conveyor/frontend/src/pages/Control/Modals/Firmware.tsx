@@ -4,7 +4,7 @@ import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import useToastsForControl from '#/useToastsForControl';
 import H2 from '@/Typography/H2';
 import { Button, Combo, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useEffect, useState } from 'react';
 
 /* ======   interface   ====== */

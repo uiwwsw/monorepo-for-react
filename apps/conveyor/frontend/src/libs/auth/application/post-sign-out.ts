@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { http } from '#/http';
 import { usePostAuth } from './post-auth';
 const logger = createLogger('auth/useSignOut');

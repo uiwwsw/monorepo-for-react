@@ -1,4 +1,4 @@
-// import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 
 import { STORAGE } from '!/storage/domain';

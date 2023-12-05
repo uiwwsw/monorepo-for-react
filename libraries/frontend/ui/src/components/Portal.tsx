@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 /* ======   interface   ====== */
@@ -7,12 +7,11 @@ export interface PortalProps {
   root?: string;
 }
 /* ======    global     ====== */
-const logger = createLogger('components/Portal');
+// const logger = createLogger('components/Portal');
 const Portal = ({ children, root }: PortalProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return createPortal(children, document.getElementById(root ?? '') ?? document.body);
 };
 

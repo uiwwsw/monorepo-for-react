@@ -1,5 +1,5 @@
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 import ModalUpdate from './Modals/Update';
 import { useTcmStart } from '!/control/application/post-tcm-start';
 import { TcmInfo } from '!/control/domain';
@@ -14,7 +14,7 @@ export interface TcmSelectProps {
   selectedRows?: Row<TcmInfo>[];
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/TcmSelect');
+// const logger = createLogger('pages/Control/TcmSelect');
 const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   /* ======   variables   ====== */
   const { trigger: startTrigger, isMutating: startIsMutating } = useTcmStart();
@@ -81,7 +81,6 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

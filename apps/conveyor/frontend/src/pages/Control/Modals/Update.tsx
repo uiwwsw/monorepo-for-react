@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import ProgressBar from '../ProgressBar';
 import { UPLOAD_STATUS } from '!/control/domain';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import Upload from '../Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
 
@@ -35,9 +35,14 @@ const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
     setProgressStates(initialStates);
   };
 
-  const handleUpdateStop = () => (continueUpdatingRef.current = false);
+  const handleUpdateStop = () => {
+    continueUpdatingRef.current = false;
+    logger('handleUpdateStop');
+  };
 
   const handleUpload = async (file: File) => {
+    logger('handleUpload');
+
     continueUpdatingRef.current = true;
     const uploadFile = await uploadTrigger({ file });
     if (uploadFile === undefined) return;
@@ -47,6 +52,7 @@ const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
 
     for (let index = 0; index < selectedRows.length; index++) {
       if (!continueUpdatingRef.current) throw new Error('강제 종료');
+      logger('handleUpload', index);
 
       const tid = selectedRows[index];
       setProgressStates((prev) => ({
@@ -68,7 +74,6 @@ const ModalUpdate = ({ selectedRows, disabled }: ModalUpdateProps) => {
   };
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ModalWithBtn

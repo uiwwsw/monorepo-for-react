@@ -1,5 +1,5 @@
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useServerLogList } from '!/control/application/get-server-log-list';
 import H2 from '@/Typography/H2';
 import { formatFileSize } from '!/control/domain';
@@ -13,9 +13,11 @@ const ModalLogsServer = ({ sid }: ModalLogsServerProps) => {
   /* ======   variables   ====== */
   const { trigger, data, isMutating, error } = useServerLogList();
   /* ======   function    ====== */
-  const handleClick = () => trigger({ sid });
+  const handleClick = () => {
+    trigger({ sid });
+    logger('handleClick');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>

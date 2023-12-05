@@ -1,5 +1,5 @@
 import { useTcmInfo } from '!/control/application/get-tcm-info';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import Table from '@/Table';
 import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
@@ -54,7 +54,7 @@ const Control = () => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render,123', data, status);
+  logger('render', data, status);
   return (
     <>
       {Toasts}

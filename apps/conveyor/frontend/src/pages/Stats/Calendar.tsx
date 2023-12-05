@@ -1,7 +1,7 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import { Button, Calendar, Checkbox, Tutorial } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,8 +33,8 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
       value = currentDuration;
     }
     storage.set(STORAGE['stats/calendar'], value);
-    logger(value);
     fixedCalendar.current = value;
+    logger('handleFixedCalendar', value);
   };
   const handleChange = (duration: Dayjs | Dayjs[]) => {
     if (!(duration instanceof Array)) return;
@@ -42,10 +42,10 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
     logger(fixedCalendar.current, arg);
     fixedCalendar.current?.length && storage.set(STORAGE['stats/calendar'], arg);
     onChange && onChange(duration);
+    logger('handleChange', duration);
   };
 
   /* ======   useEffect   ====== */
-  logger('render', currentDuration);
   return (
     <>
       <Tutorial guide={guides} />

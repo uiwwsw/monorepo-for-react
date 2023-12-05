@@ -4,7 +4,7 @@ import Sidebar from '@/Sidebar/index';
 import { ReactNode, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { HttpError } from '#/http';
 /* ======   interface   ====== */
@@ -20,10 +20,9 @@ const PrivateLayout = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
-    logger(data);
+    logger('useEffect', data);
     if (!data) throw new HttpError('invalid-session', { status: 403 });
   }, [data]);
-  logger('render');
   return (
     <div className="flex min-h-screen">
       <Sidebar />

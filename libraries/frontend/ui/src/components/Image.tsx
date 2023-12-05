@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { ImgHTMLAttributes, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from './Skeleton';
 import Smooth from './Smooth';
@@ -20,7 +20,7 @@ const Image = ({ width, height, block, ...props }: ImageProps) => {
   /* ======   function    ====== */
   const handleLazyLoad = (value?: boolean) => {
     if (stoRef.current === null) return;
-
+    logger('handleLazyLoad');
     clearTimeout(stoRef.current);
     if (value) {
       setLoad(value);
@@ -31,9 +31,9 @@ const Image = ({ width, height, block, ...props }: ImageProps) => {
   const handleError = () => setError(true);
   /* ======   useEffect   ====== */
   useLayoutEffect(() => {
+    logger('useLayoutEffect');
     load !== true && handleLazyLoad(false);
   }, []);
-  logger('render');
   return (
     <div className={block || full ? 'flex items-center justify-center' : 'inline-flex'}>
       <div

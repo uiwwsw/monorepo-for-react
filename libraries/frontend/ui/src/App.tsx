@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import ToastWithPortal from '@/Toast/WithPortal';
 import { useState } from 'react';
 /* ======   interface   ====== */

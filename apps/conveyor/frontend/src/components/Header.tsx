@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from './HeaderContext';
 import { Button } from '@library-frontend/ui';
 import { useNavigate } from 'react-router-dom';
@@ -17,9 +17,11 @@ const Header = (_: HeaderProps) => {
   const { children } = useHeaderContext();
 
   /* ======   function    ====== */
-  const handleLogout = () => navigate('/sign-out');
+  const handleLogout = () => {
+    navigate('/sign-out');
+    logger('handleLogout');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <header className="sticky flex items-center h-20 top-0 z-10 p-3 bg-slate-300 gap-2">
       <div className="flex-auto">{children}</div>

@@ -31,6 +31,7 @@ const SignOut = () => {
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect');
     (async () => {
       const res = await tryUntilSuccess();
       let query = '';

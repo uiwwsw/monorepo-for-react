@@ -1,6 +1,6 @@
 import { Button, Input } from '@library-frontend/ui';
 import { useState } from 'react';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import WarningMessage from '@/Typography/WarningMessage';

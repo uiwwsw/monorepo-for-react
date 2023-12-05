@@ -2,7 +2,7 @@
 // import useSocket from '#/useSocket';
 import { ROUTES_PATH } from '!/routes/domain';
 import { Accordion, Button, Tutorial } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';
@@ -19,9 +19,9 @@ const Help = () => {
   const handleReset = () => {
     localStorage.clear();
     location.reload();
+    logger('handleReset');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <Tutorial guide={[{ ref: helpRef, text: '도움말 페이지입니다. 미리 작성된 질문과 답변을 볼 수 있습니다.' }]} />

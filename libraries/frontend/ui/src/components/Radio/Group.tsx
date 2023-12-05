@@ -1,6 +1,6 @@
 import { WithTheme } from '#/componentTypes';
 import Radio, { RadioBaseProps } from '@/Radio/Base';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent, useRef } from 'react';
 /* ======   interface   ====== */
 export interface RadioGroupProps extends RadioBaseProps, WithTheme {
@@ -27,9 +27,9 @@ const RadioGroup = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     ref.current = e.target.value;
     onChange && onChange(e);
+    logger('handleChange');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className={groupClassName} data-size={themeSize} data-color={themeColor}>
       {labels.map((label, index) => (

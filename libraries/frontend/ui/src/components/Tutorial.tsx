@@ -48,6 +48,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
     if (ref.current) {
       ref.current.tabIndex = 0;
       ref.current.focus();
+      logger('setStyle');
     }
   };
   const handleClick = async () => {
@@ -57,16 +58,16 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
       setDone(true);
       tutorialStorage.set(id, new Date().toISOString());
     }
+    logger('handleClick');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (didSee) return;
     setStyle();
     trigger();
+    logger('useEffect');
   }, [step]);
 
-  logger('render', didSee, id);
-  // logger('render', step, ref, guide[step]?.ref, position);
   return !didSee ? (
     <Portal>
       {!finish && (

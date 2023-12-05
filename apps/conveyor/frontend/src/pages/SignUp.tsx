@@ -1,7 +1,7 @@
 import { useSignUp } from '!/auth/application/post-sign-up';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -34,11 +34,11 @@ const SignUp = () => {
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    logger('handleSubmit', arg);
   };
   const handleModalClose = () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
   /* ======   useEffect   ====== */
 
-  logger('render');
   return (
     <>
       <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('로그인 페이지로 이동')]} persist>

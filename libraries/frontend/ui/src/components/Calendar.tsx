@@ -17,9 +17,11 @@ export interface CalendarProps {
   button?: ReactElement;
 }
 /* ======    global     ====== */
-const convertFromValueToDate = (value: CalendarProps['defaultValue']) =>
-  value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
 const logger = createLogger('components/Calendar');
+const convertFromValueToDate = (value: CalendarProps['defaultValue']) => {
+  logger('convertFromValueToDate');
+  return value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
+};
 const Calendar = ({
   button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
   selectRange,
@@ -47,22 +49,25 @@ const Calendar = ({
   const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    logger('handleClick');
   };
   const handleChange = (e: unknown) => {
     const value = convertFromValueToDate(e as CalendarProps['defaultValue']);
     setValue(value);
     fakeRef.current?.click();
     onChange && onChange(value);
+    logger('handleChange');
   };
   const handleTooltipClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    logger('handleTooltipClick');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
     setValue(defaultValue ? convertFromValueToDate(defaultValue) : undefined);
+    logger('useEffect');
   }, [defaultValue]);
-  logger('render');
   return (
     <Menu
       width="300px"

@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import Input, { InputProps } from '.';
 import { ChangeEvent, useRef, useState } from 'react';
 import useToasts from '#/useToasts';
@@ -48,10 +48,10 @@ const InputNumeric = ({
       setValue(`${newValue}`);
       onChange && onChange(e);
     }
+    logger('handleChange', e);
   };
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

@@ -1,4 +1,3 @@
-import { createLogger } from '#/logger';
 import { ReactNode } from 'react';
 /* ======   interface   ====== */
 export interface WarningMessageProps {
@@ -6,12 +5,10 @@ export interface WarningMessageProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('components/Typography/WarningMessage');
 const WarningMessage = ({ children }: WarningMessageProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return <p className={`text-red-500${children === undefined ? ' hidden' : ''}`}>💥 {children}</p>;
 };
 

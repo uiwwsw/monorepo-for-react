@@ -2,7 +2,7 @@ import { useTcmLogList } from '!/control/application/get-tcm-log-list';
 import { formatFileSize } from '!/control/domain';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 export interface ModalLogsTcmProps {
@@ -18,10 +18,12 @@ const ModalLogsTcm = ({ tid }: ModalLogsTcmProps) => {
   const { data, trigger, isMutating, error } = useTcmLogList();
 
   /* ======   function    ====== */
-  const handleClick = () => trigger({ tid });
+  const handleClick = () => {
+    trigger({ tid });
+    logger('handleClick');
+  };
   /* ======   useEffect   ====== */
 
-  logger('render');
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>

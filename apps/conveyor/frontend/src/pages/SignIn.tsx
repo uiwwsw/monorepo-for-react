@@ -46,17 +46,20 @@ const SignIn = () => {
   const handleModalClose = async () => {
     await wait(500);
     navigate(urlNextUrl);
+    logger('handleModalClose');
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    logger('handleSubmit', arg);
   };
   const handleGoSignUp = () => navigate('/sign-up');
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect');
+
     if (urlToast) setToast(queryParamToastMsgs[urlToast]);
   }, [location]);
-  logger('render');
   return (
     <>
       <ToastWithPortal open={!!toast}>{toast}</ToastWithPortal>

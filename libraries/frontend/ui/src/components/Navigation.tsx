@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useMemo } from 'react';
 import Button from '@/Button';
 import { WithEval } from '#/componentTypes';
@@ -12,9 +12,11 @@ const Navigation = ({ onEval }: NavigationProps) => {
   const { pathname } = location;
   const paths = useMemo(() => pathname.split('/').filter((x) => x), [pathname]);
   /* ======   function    ====== */
-  const handleClick = (i: number) => onEval && onEval('/' + paths.slice(0, i + 1).join('/'));
+  const handleClick = (i: number) => {
+    onEval && onEval('/' + paths.slice(0, i + 1).join('/'));
+    logger('handleClick');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="flex items-center h-full px-3 gap-3">
       {paths.map((x, i) => (

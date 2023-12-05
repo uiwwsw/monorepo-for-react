@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import ToastBase, { ToastBaseProps } from './Base';
 import Portal from '@/Portal';
 import { useEffect, useState } from 'react';
@@ -16,23 +16,26 @@ const ToastWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
   const handleOpen = () => {
     setOpen(true);
     setVisible(true);
+    logger('handleOpen');
   };
   const handleClose = () => {
     setOpen(false);
     onClose && onClose();
+    logger('handleClose');
   };
   const handleClosed = () => {
     onClosed && onClosed();
     setVisible(false);
+    logger('handleClosed');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!defaultOpen) return handleClose();
+    logger('useEffect');
 
     handleOpen();
   }, [defaultOpen]);
 
-  logger('render');
   return visible ? (
     <Portal root="toast">
       <ToastBase {...props} open={open} onClose={handleClose} onClosed={handleClosed}>

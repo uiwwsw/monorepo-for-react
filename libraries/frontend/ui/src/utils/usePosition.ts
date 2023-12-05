@@ -1,10 +1,13 @@
 import { RefObject, useState } from 'react';
+import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
+
 export interface UsePositionProps {
   targetRef: RefObject<HTMLElement>;
   withSize?: boolean;
 }
 /* ======    global     ====== */
+const logger = createLogger('utils/useDebounce');
 const getScrollbarWidth = () => {
   const outer = document.createElement('div');
   outer.style.visibility = 'hidden';
@@ -17,7 +20,7 @@ const getScrollbarWidth = () => {
   const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
 
   outer.parentNode?.removeChild(outer);
-
+  logger('scrollbarWidth', scrollbarWidth);
   return scrollbarWidth;
 };
 const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
@@ -67,6 +70,7 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
       bottom: bottom !== undefined ? `${bottom}px` : 'initial',
       right: right !== undefined ? `${right}px` : 'initial',
     });
+    logger('trigger', top, left, bottom, right, targetRefRect);
   };
   /* ======   useEffect   ====== */
 

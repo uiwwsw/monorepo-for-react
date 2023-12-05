@@ -8,7 +8,7 @@ const NotFound = lazy(() => import('src/pages/NotFound'));
 const Loading = lazy(() => import('src/pages/Loading'));
 const Error = lazy(() => import('src/pages/Error'));
 const SignOut = lazy(() => import('src/pages/SignOut'));
-// import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 // const logger = createLogger('App');

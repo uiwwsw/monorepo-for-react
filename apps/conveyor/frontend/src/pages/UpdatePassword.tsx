@@ -1,6 +1,6 @@
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -31,10 +31,13 @@ const UpdatePassword = () => {
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    logger('handleSubmit', arg);
   };
-  const handleModalClose = () => navigate('/sign-in?update-profile=true');
+  const handleModalClose = () => {
+    navigate('/sign-in?update-profile=true');
+    logger('handleModalClose');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('로그인 페이지로 이동')]} persist>

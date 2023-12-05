@@ -1,5 +1,5 @@
 import { WithTheme } from '#/componentTypes';
-import { createLogger } from '#/logger';
+// import { createLogger } from '@package-frontend/utils';
 import { InputHTMLAttributes, forwardRef } from 'react';
 /* ======   interface   ====== */
 export interface RadioBaseProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {
@@ -7,7 +7,7 @@ export interface RadioBaseProps extends InputHTMLAttributes<HTMLInputElement>, W
   className?: string;
 }
 /* ======    global     ====== */
-const logger = createLogger('components/RadioBase');
+// const logger = createLogger('components/RadioBase');
 const labelClassName = `
 ml-2
 [[data-size="sm"]>&]:text-sm
@@ -40,7 +40,6 @@ const RadioBase = forwardRef<HTMLInputElement, RadioBaseProps>(
     /* ======   variables   ====== */
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
-    logger('render');
     return (
       <label role="button" className="inline-flex items-center" data-color={themeColor} data-size={themeSize}>
         <input ref={ref} type="radio" className="hidden" {...props} />

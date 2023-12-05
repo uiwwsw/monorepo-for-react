@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import Button from './Button';
 import { useState } from 'react';
 import { WithEval } from '#/componentTypes';
@@ -25,9 +25,9 @@ const Chip = ({ labels, className, defaultValue = [], multiChoice = true, themeS
       ? setActive((prev) => (prev.includes(index) ? prev.filter((x) => x !== index) : [...prev, index]))
       : setActive([index]);
     onChange && onChange(index);
+    logger('handleClick');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className={chipClassName}>
       {labels.map((x, index) => (

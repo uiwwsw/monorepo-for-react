@@ -1,7 +1,7 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import { Auth } from '../domain';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { mutate } from 'swr';
 const logger = createLogger('auth/usePostAuth');
 

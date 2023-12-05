@@ -1,7 +1,7 @@
 import { MouseEvent, SetStateAction, useCallback } from 'react';
 import Button, { ButtonProps } from '@/Button';
 import { ModalBaseProps, ModalErrors, ModalResult } from './Base';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface ModalFooterProps {
   open?: boolean;
@@ -49,11 +49,11 @@ const ModalFooter = ({
           }));
       }
       onLoading(false);
+      logger('adapterClick');
     },
     [onLoading, onClose, hasToast, setErrors],
   );
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="flex gap-3 mt-auto pt-3">
       {hasButton?.map((x, i) => (

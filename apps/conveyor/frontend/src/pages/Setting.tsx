@@ -4,7 +4,7 @@ import { STORAGE } from '!/storage/domain';
 import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
 import { useToasts, RadioGroup } from '@library-frontend/ui';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from '@/PageCenter';
@@ -24,13 +24,14 @@ const Setting = () => {
   const handleChangePageSize = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/default-page-size'], e.target.value);
     showToast({ message: t('변경에 성공했습니다.') });
+    logger('handleChangePageSize', e);
   };
   const handleChangeDuration = (e: ChangeEvent<HTMLSelectElement>) => {
     storage.set(STORAGE['setting/default-duration'], +e.target.value);
     showToast({ message: t('변경에 성공했습니다.') });
+    logger('handleChangeDuration', e);
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

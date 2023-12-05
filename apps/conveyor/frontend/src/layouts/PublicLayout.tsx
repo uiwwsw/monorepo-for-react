@@ -1,12 +1,10 @@
 import Sidebar from '@/Sidebar/index';
 import { Outlet } from 'react-router-dom';
-import { createLogger } from '#/logger';
 import Header from '@/Header';
 import { useGetAuth } from '!/auth/application/get-auth';
 // import AsyncBoundary from '@/AsyncBoundary';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('layout/PublicLayout');
 
 const PublicLayout = () => {
   /* ======   variables   ====== */
@@ -14,7 +12,6 @@ const PublicLayout = () => {
   const isLoggedIn = !!data;
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="flex min-h-screen">
       <Sidebar />

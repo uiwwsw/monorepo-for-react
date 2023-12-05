@@ -4,13 +4,11 @@ import Sidebar from '@/Sidebar/index';
 import { ReactNode, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
-import { createLogger } from '#/logger';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { Loading } from '@library-frontend/ui';
 import { ToastWithPortal } from '@library-frontend/ui';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('layout/PrivateLayout');
 
 const PrivateLayout = () => {
   /* ======   variables   ====== */
@@ -25,7 +23,6 @@ const PrivateLayout = () => {
   //   logger(data);
   //   if (!data) navigate(`/sign-in?from=${location.pathname}`);
   // }, [data]);
-  logger('render');
 
   return (
     <>

@@ -3,7 +3,7 @@ import { wait } from '@package-frontend/utils';
 import useSmooth from '#/useSmooth';
 import Spinner from '$/Spinner';
 import generateRipple from '#/generateRipple';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */
@@ -79,7 +79,6 @@ const Button = ({
     [loading, disabled, smoothLoading, setLoading, onClick],
   );
   /* ======   useEffect   ====== */
-  logger('render');
   useSmooth({ value: loading, delay: 500, ref: elRef });
   return (
     <button

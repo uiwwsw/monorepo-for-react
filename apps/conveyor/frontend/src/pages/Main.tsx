@@ -1,6 +1,6 @@
 import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 import { ToastWithPortal, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -35,9 +35,9 @@ const Main = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect');
     if (urlToast) setToast(queryParamToastMsgs[urlToast]);
   }, [location]);
-  logger('render');
   return (
     <>
       <ToastWithPortal notClose open={!toastTutorial}>

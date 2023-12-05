@@ -1,4 +1,4 @@
-import { createLogger } from '#/logger';
+import { createLogger } from '@package-frontend/utils';
 // import { faker } from '@faker-js/faker';
 import useSWR from 'swr';
 import { User } from '../domain';

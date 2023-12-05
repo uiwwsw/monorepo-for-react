@@ -73,7 +73,6 @@ const StatsSummary = () => {
   /* ======   function    ====== */
   const handleCalenderChange = async (duration: Dayjs[]) => {
     if (!(duration instanceof Array)) return;
-    logger(fixedCalendar, arg);
 
     await Promise.all([
       setArg({
@@ -84,13 +83,15 @@ const StatsSummary = () => {
 
     await mutate();
     setAllRowSelectTick((prev) => prev + 1);
+    logger('handleCalenderChange', duration);
   };
 
   useEffect(() => {
     setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
+    logger('useEffect');
+
     return () => setChildren(undefined);
   }, [currentDuration]);
-  logger('render');
   return (
     <>
       <ToastWithPortal open={statsError?.message}>{statsError?.message}</ToastWithPortal>

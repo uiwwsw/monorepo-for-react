@@ -1,15 +1,12 @@
-import { createLogger } from '#/logger';
 import { memo } from 'react';
 
 /* ======   interface   ====== */
 export interface SpinnerProps {}
 /* ======    global     ====== */
-const logger = createLogger('components/Spinner');
 const Spinner = (_: SpinnerProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <svg
       aria-label="spinner"
