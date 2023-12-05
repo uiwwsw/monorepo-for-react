@@ -17,8 +17,9 @@ const SignOut = () => {
   const tryUntilSuccess = async (): Promise<boolean> => {
     logger('사인아웃 호출');
     try {
-      await trigger();
-      return true;
+      const res = await trigger();
+      logger('사인아웃 성공', 'e, count', res);
+      return !!res;
     } catch (e) {
       logger('사인아웃 오류', e, count);
       if (--count) {
@@ -33,8 +34,9 @@ const SignOut = () => {
     (async () => {
       const res = await tryUntilSuccess();
       let query = '';
-      if (res) query = '?' + new URLSearchParams({ toast: MAIN_QUERY_PARAM_TOAST['success-sign-out'] }).toString();
-      navigate(`/${query}`, { replace: true });
+      if (res) query = new URLSearchParams({ toast: MAIN_QUERY_PARAM_TOAST['success-sign-out'] }).toString();
+      else query = new URLSearchParams({ toast: MAIN_QUERY_PARAM_TOAST['failed-sign-out'] }).toString();
+      navigate(`/?${query}`, { replace: true });
     })();
   }, []);
   return <iframe className="w-screen h-screen" src="/loading" />;

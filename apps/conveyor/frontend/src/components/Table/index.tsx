@@ -26,6 +26,7 @@ import useSetting from '#/useSetting';
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
+  fixHead?: Record<string, string>;
   data?: T[];
   allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
@@ -43,6 +44,7 @@ const logger = createLogger('components/Table');
 const Table = <T,>({
   thead,
   onSearch,
+  fixHead,
   data,
   allRowSelectTick,
   textAlignCenter = true,
@@ -95,10 +97,12 @@ const Table = <T,>({
 
       ...thead.map((key) => ({
         accessorKey: key,
-        header: key
-          .replace(/([A-Z])/g, ' $1')
-          .trim()
-          .toLowerCase(),
+        header:
+          fixHead?.[key] ??
+          key
+            .replace(/([A-Z])/g, ' $1')
+            .trim()
+            .toLowerCase(),
         footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent
@@ -142,7 +146,11 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
-    pageCount: defaultPageSize,
+    initialState: {
+      pagination: {
+        pageSize: defaultPageSize,
+      },
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
@@ -301,18 +309,16 @@ const Table = <T,>({
         </table>
       </div>
       {makePagination && (
-        <>
-          <Pagination
-            index={table.getState().pagination.pageIndex}
-            onChange={(index) => table.setPageIndex(index)}
-            onChangePer={(index) => table.setPageSize(index)}
-            max={table.getPageCount()}
-            per={defaultPageSize}
-            sizeOptions={pageSizeOptions}
-            maxMessage={getNumericMsg}
-            minMessage={getNumericMsg}
-          />
-        </>
+        <Pagination
+          index={table.getState().pagination.pageIndex}
+          onChange={(index) => table.setPageIndex(index)}
+          onChangePer={(index) => table.setPageSize(index)}
+          max={table.getPageCount()}
+          per={defaultPageSize}
+          sizeOptions={pageSizeOptions}
+          maxMessage={getNumericMsg}
+          minMessage={getNumericMsg}
+        />
       )}
       <hr />
     </div>

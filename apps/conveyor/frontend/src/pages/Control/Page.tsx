@@ -6,12 +6,14 @@ import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Button } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
+import useSocket from '#/useSocket';
+import { CTRL_SOCKET_NAME } from '!/control/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -19,6 +21,7 @@ import useToastsForControl from '#/useToastsForControl';
 const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
+  const { data, status } = useSocket<CTRL_SOCKET_NAME>('ZONE_GET_INFO');
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
   const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
@@ -51,7 +54,7 @@ const Control = () => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render');
+  logger('render,123', data, status);
   return (
     <>
       {Toasts}

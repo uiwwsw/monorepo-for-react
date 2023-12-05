@@ -7,25 +7,33 @@ import { ReactNode, useEffect, useRef } from 'react';
 export interface ToastBaseProps {
   open?: boolean;
   children?: ReactNode;
-  notClosed?: boolean;
+  notClose?: boolean;
   duration?: number;
+  hasClose?: boolean;
+  hasGauge?: boolean;
   className?: string;
   onClose?: () => void;
   onClosed?: () => void;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ToastBase');
-const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 5000, className }: ToastBaseProps) => {
+const ToastBase = ({
+  hasClose,
+  hasGauge,
+  notClose = false,
+  onClosed,
+  open,
+  children,
+  onClose,
+  duration = 5000,
+  className,
+}: ToastBaseProps) => {
   /* ======   variables   ====== */
-  const isInfinity = notClosed ?? duration === Infinity;
+  if (hasClose === undefined) hasClose = !!notClose;
+  if (hasGauge === undefined) hasGauge = !notClose;
+  const isImportant = notClose && hasGauge;
   const elRef = useRef<HTMLDivElement>(null);
-
-  const toastClassName = `relative flex border border-gray-400 px-5 py-2 rounded-sm bg-white [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${
-    className ? ` ${className}` : ''
-  }`;
-  const toastLayerClassName = `absolute left-0 bottom-0 h-1 bg-black origin-left${
-    open && !isInfinity ? ' w-full animate-count-down' : ''
-  }${isInfinity ? ' w-full' : ''}`;
+  const delay = Math.max(duration - 1000, 0);
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {
     if (value) return;
@@ -34,7 +42,7 @@ const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 50
   /* ======   useEffect   ====== */
   useSmooth({ value: open, delay: 500, ref: elRef, onFinished: handleClosed });
   useEffect(() => {
-    if (isInfinity) return;
+    if (notClose) return;
     if (!open) return onClose && onClose();
     const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
@@ -44,14 +52,40 @@ const ToastBase = ({ notClosed, onClosed, open, children, onClose, duration = 50
   // }, [_open])
   logger('render');
   return (
-    <div className={toastClassName} role="alert" ref={elRef}>
-      <i className={toastLayerClassName} style={{ animationDuration: duration + 'ms' }} />
+    <div
+      className={`relative flex items-center border border-gray-400 px-5 py-2 rounded-sm bg-white overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${
+        className ? ` ${className}` : ''
+      }`}
+      role="alert"
+      ref={elRef}
+    >
+      <i
+        className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
+          isImportant ? '' : ' animate-count-down-bg'
+        }${open && hasGauge ? ' w-full' : ''}`}
+        style={{
+          animationDelay: delay + 'ms',
+        }}
+      >
+        <i
+          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' animate-count-down-fake' : ''}`}
+          style={{
+            animationDuration: duration + 'ms',
+          }}
+        />
+        <i
+          className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
+          style={{
+            animationDuration: duration + 'ms',
+          }}
+        />
+      </i>
       <span className="flex-1">{children}</span>
-      {isInfinity ? (
+      {hasClose && (
         <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
           <Close />
         </Button>
-      ) : null}
+      )}
     </div>
   );
 };

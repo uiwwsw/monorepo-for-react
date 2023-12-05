@@ -58,4 +58,4 @@ export interface UploadFile {
   type: string;
 }
 
-export type CTRL_SOCKET_NAME = 'time';
+export type CTRL_SOCKET_NAME = 'ZONE_GET_INFO';

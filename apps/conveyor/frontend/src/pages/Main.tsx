@@ -18,6 +18,7 @@ const Main = () => {
   const { t } = useTranslation();
   const queryParamToastMsgs = {
     [MAIN_QUERY_PARAM_TOAST['success-sign-out']]: t('로그아웃 성공했습니다.'),
+    [MAIN_QUERY_PARAM_TOAST['failed-sign-out']]: t('로그아웃에 실패했습니다.'),
   };
   const [toast, setToast] = useState<string>();
   const location = useLocation();

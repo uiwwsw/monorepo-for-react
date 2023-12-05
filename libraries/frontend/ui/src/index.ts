@@ -85,4 +85,5 @@ export { default as usePosition } from './utils/usePosition';
 export { default as useSmooth } from './utils/useSmooth';
 export { default as useThrottle } from './utils/useThrottle';
 export { default as useToasts } from './utils/useToasts';
+export * from './utils/useToasts';
 export { default as useInfiniteScroll } from './utils/useInfiniteScroll';
