@@ -6,7 +6,6 @@ import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
 import { Client } from './client';
 import logger from '../libs/logger';
-import * as utils from '../libs/utils';
 
 export class Clients {
     private clients: Map<number, Client> = new Map<number, Client>();
@@ -104,14 +103,6 @@ export class Clients {
             logger.error('addClient. Invalid auth token');
             ws.close();
             return;
-        }
-
-        if (this.clients.get(session.uid)) {
-            const prev = this.clients.get(session.uid);
-            logger.error(`addClient. A WebSocket connection already exists. uid: ${session.uid}`);
-            this.clients.delete(session.uid);
-            prev?.close();
-            await utils.sleep(1000);
         }
 
         const client = new Client(ws, session);

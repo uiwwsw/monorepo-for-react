@@ -3,6 +3,10 @@ import WebSocket from 'ws';
 import { WebSocketMessage, UserSession } from '@package-backend/types';
 import { initailizeRedisInfo } from './redis_utils';
 import { ActionTypes } from './action_type';
+import { ZoneType } from '../zone/zoneType';
+import { MotionCommands, MotionCommandReq } from './motion_commands';
+import { Service } from '../service';
+import * as MsgUtils from './message';
 import * as utils from '../libs/utils';
 import logger from '../libs/logger';
 
@@ -53,6 +57,7 @@ export class Client {
     }
 
     private onRecvMessage = async (body:string) => {
+        const begin = new Date().getTime();
         try {
             const msg:WebSocketMessage = JSON.parse(body);
             let result = 'OK';
@@ -64,6 +69,45 @@ export class Client {
                     case ActionTypes.ZONE_GET_INFO:
                         await initailizeRedisInfo(this);
                         this.isReady = true;
+                        break;
+                    case ActionTypes.INITIAL_REDIS_SUBSCRIBER:
+                        break;
+                    case ActionTypes.ZONE_COMMAND_HOME:
+                        {
+                            const req:MotionCommandReq = JSON.parse(msg.data);
+                            this.onZoneCommand(MotionCommands.COMMAND_HOMMING, req.ZoneID, 0, 0);
+                        }
+                        break;
+                    case ActionTypes.ZONE_COMMAND_MOVE:
+                        {
+                            const zoneRepo = Service.Inst.ZoneRepo;
+                            let direction = 0;
+                            const req:MotionCommandReq = JSON.parse(msg.data);
+                            const zone = zoneRepo.Data.get(req.ZoneID);
+                            if (!zone) {
+                                throw new Error(`Zone not found. zone_id:${req.ZoneID}`);
+                            }
+                            if (zone.PhysicalType !== ZoneType.TYPE_LIFTER && zone.PhysicalType !== ZoneType.TYPE_LIFTER_SINGLE) {
+                                if (req.MoveType === 0) {
+                                    direction = 0;
+                                    this.onZoneCommand(MotionCommands.COMMAND_MOVE_VEL, req.ZoneID, direction, 0);
+                                } else if (req.MoveType === 1) {
+                                    direction = 1;
+                                    this.onZoneCommand(MotionCommands.COMMAND_MOVE_VEL, req.ZoneID, direction, 0);
+                                } else if (req.MoveType === 2) {
+                                    direction = 0;
+                                    this.onZoneCommand(MotionCommands.COMMAND_MOVE_TURN, req.ZoneID, direction, 0);
+                                } else if (req.MoveType === 3) {
+                                    direction = 1;
+                                    this.onZoneCommand(MotionCommands.COMMAND_MOVE_TURN, req.ZoneID, direction, 0);
+                                } else if (req.MoveType === 4) {
+                                    direction = 2;
+                                    this.onZoneCommand(MotionCommands.COMMAND_MOVE_TURN, req.ZoneID, direction, 0);
+                                }
+                            } else {
+                                this.onZoneCommand(MotionCommands.COMMAND_MOVE_LIFT, req.ZoneID, req.MoveType, 0);
+                            }
+                        }
                         break;
                     default:
                         logger.warn(`Unknown message type: ${msg.type}, body: ${msg.data}`);
@@ -77,8 +121,20 @@ export class Client {
             if (msg.tid) {
                 this.send('MessageResult', { result: result, tid: msg.tid });
             }
+            const end = new Date().getTime();
+            logger.debug(`onRecvMessage. uid:${this.session.uid}, type:${msg.type}, data:${msg.data}, result:${result}, elapsed:${end - begin}ms`);
         } catch (ex) {
             logger.error(`onRecvMessage. uid:${this.session.uid}, body:${body} ex: ${ex}`);
+        }
+    }
+
+    onZoneCommand(commandId: number, zoneId: number, direction: number, position: number, taskId = -1) {
+        const speedType = 1;
+        const channel = `TCMCmdCh:${Math.floor(zoneId / 100)}`;
+
+        if (commandId > 0) {
+            const message = MsgUtils.makeTcmMotionCommand(taskId, zoneId, commandId, speedType, direction, position);
+            Service.Inst.Redis.publish(channel, message);
         }
     }
 }
