@@ -687,7 +687,6 @@ router.get('/zone-info', verifyToken, asyncWrapper<IZoneInfoReq, IZoneInfoResp>(
  *       properties:
  *         use_smm_emul:
  *           type: number
- *           description: SMM 에뮬레이션 사용 여부 (0: 사용 안 함, 1: 사용 함).
  *     STResponseIGetUseSmmEmulResp:
  *       type: object
  *       properties:

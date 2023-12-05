@@ -135,7 +135,7 @@ export interface HimChangeCmdReq {
     DataValue: unknown;
 }
 
-export function makeHimChangeCmdReq(taskID:number, changeCommand:number, oldValue:string = '', newValue:string = '', dataValue:string = '') {
+export function makeHimChangeCmdReq(taskID:number, changeCommand:string, oldValue:string = '', newValue:string = '', dataValue:string = '') {
     const data: HimChangeCmdReq = {
         BaseTime: currentTimeInMilliseconds(),
         TaskID: taskID,
@@ -220,10 +220,10 @@ export function makeTcmRoutePathUpdateReq(taskID:number, zoneIDFrom:number, zone
 export interface UimZoneStateChangeReq {
     BaseTime: string;
     ZoneID: number;
-    NewState: number;
+    NewState: string;
 }
 
-export function makeUimZoneStateChangeReq(zoneID:number, newState:number) {
+export function makeUimZoneStateChangeReq(zoneID:number, newState:string) {
     const data: UimZoneStateChangeReq = {
         BaseTime: currentTimeInMilliseconds(),
         ZoneID: zoneID,

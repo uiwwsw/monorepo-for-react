@@ -37,9 +37,16 @@ export enum MotionCommands {
     COMMAND_ALL_MOVE_VEL,
 }
 
-export interface MotionCommandReq {
+export interface ZoneCmdReq {
     ZoneID : number;
     MoveType : number;
+    Position : number;
+    TaskID : number;
+    CarrierID : string;
+    OffsetType : number;
+    ZoneIDCurrent: number;
+    NewLocation: number;
+    DefaultDest: number;
 }
 
 export interface TcmMotionCommand {
