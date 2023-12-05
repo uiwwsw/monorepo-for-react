@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useState } from 'react';
 import ToastWithPortal, { ToastWithPortalProps } from '@/Toast/WithPortal';
 import useThrottle from './useThrottle';

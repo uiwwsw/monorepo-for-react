@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import ToastBase, { ToastBaseProps } from './Base';
 import Portal from '@/Portal';
 import { useEffect, useState } from 'react';

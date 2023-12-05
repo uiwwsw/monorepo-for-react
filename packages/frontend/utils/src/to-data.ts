@@ -41,11 +41,11 @@ export const toData = <T>(obj: T): T => {
     if (Array.isArray(obj)) {
       return obj.map(toData) as T;
     } else {
-      return Object.keys(obj).reduce((acc, key) => {
+      return Object.keys(obj).reduce((acc: any, key: string) => {
         const camelKey = isPascalOrSnakeCase(key) ? toCamelCase(key) : key;
-        (acc as any)[camelKey] = toData((obj as any)[key]);
+        acc[camelKey] = toData((obj as any)[key]);
         return acc;
-      }, {} as T);
+      }, {});
     }
   }
   return obj;

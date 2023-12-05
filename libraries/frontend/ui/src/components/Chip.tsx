@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Button from './Button';
 import { useState } from 'react';
 import { WithEval } from '#/componentTypes';

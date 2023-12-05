@@ -1,5 +1,5 @@
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useServerLogList } from '!/control/application/get-server-log-list';
 import H2 from '@/Typography/H2';
 import { formatFileSize } from '!/control/domain';

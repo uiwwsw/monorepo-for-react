@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { Auth } from '../domain';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 const logger = createLogger('auth/useGetAuth');

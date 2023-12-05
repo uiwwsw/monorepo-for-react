@@ -1,5 +1,5 @@
 import { WithTheme } from '#/componentTypes';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { InputHTMLAttributes, forwardRef } from 'react';
 /* ======   interface   ====== */
 export interface RadioBaseProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {

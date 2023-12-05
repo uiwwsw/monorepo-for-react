@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ModalBaseProps, ModalResult } from './Base';
 import { ReactNode, useState } from 'react';
 import Button from '@/Button';

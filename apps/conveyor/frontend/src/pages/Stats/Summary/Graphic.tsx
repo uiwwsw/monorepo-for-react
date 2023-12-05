@@ -1,5 +1,5 @@
 import ChartLine from '@/Chart/Line';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useTranslation } from 'react-i18next';
 import { LineProps } from '@nivo/line';
 import { Row } from '@tanstack/react-table';

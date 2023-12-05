@@ -1,6 +1,6 @@
 import Smooth from '@/Smooth';
 import Spinner from '$/Spinner';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface LoadingProps {
   show: boolean;

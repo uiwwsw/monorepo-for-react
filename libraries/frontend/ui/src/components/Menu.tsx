@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Portal from '@/Portal';
 import { MouseEvent, ReactNode, useMemo, useRef, useState } from 'react';
 import Smooth from '@/Smooth';

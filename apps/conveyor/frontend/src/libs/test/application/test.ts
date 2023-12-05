@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import useSWR from 'swr';
 import { http } from '#/http';
 const logger = createLogger('test/useTest');

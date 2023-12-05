@@ -1,5 +1,5 @@
 import { Spinner } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */

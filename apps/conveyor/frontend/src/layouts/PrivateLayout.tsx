@@ -4,7 +4,7 @@ import Sidebar from '@/Sidebar/index';
 import { ReactNode, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { HttpError } from '#/http';
 /* ======   interface   ====== */

@@ -4,7 +4,7 @@ import { STORAGE } from '!/storage/domain';
 import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
 import { useToasts, RadioGroup } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from '@/PageCenter';

@@ -1,7 +1,7 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import { Select } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */

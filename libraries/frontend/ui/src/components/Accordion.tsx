@@ -1,6 +1,6 @@
 import Caret from '$/Caret';
 import Underbar from '$/Underbar';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ReactNode, useRef, useState } from 'react';
 /* ======   interface   ====== */
 export interface AccordionProps {

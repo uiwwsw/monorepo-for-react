@@ -1,7 +1,7 @@
 import { ChangeEvent, SelectHTMLAttributes, forwardRef, useCallback, useState } from 'react';
 import Underbar from '$/Underbar';
 import Caret from '$/Caret';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value'> {
   error?: boolean;

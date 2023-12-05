@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { useUpdateFirmware } from '!/control/application/post-update-firmware';
 import ProgressBar from '../ProgressBar';
 import { UPLOAD_STATUS } from '!/control/domain';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Upload from '../Upload';
 import { useUploadFirmware } from '!/control/application/post-upload-firmware';
 

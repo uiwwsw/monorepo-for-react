@@ -1,6 +1,6 @@
 import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ToastWithPortal, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -40,7 +40,7 @@ const Main = () => {
   logger('render');
   return (
     <>
-      <ToastWithPortal notClosed open={!toastTutorial}>
+      <ToastWithPortal notClose open={!toastTutorial}>
         {
           //튜토리얼용 토스트
         }

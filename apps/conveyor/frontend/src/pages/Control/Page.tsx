@@ -1,12 +1,12 @@
 import { useTcmInfo } from '!/control/application/get-tcm-info';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Table from '@/Table';
 import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Button } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';

@@ -1,5 +1,5 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { http } from '#/http';
 import { MD5 } from 'crypto-js';
 import useSWR from 'swr/mutation';

@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { MouseEvent, MouseEventHandler, memo } from 'react';
 /* ======   interface   ====== */
 export interface PaginationArrowProps {

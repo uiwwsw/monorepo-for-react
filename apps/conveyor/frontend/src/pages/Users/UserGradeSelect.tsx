@@ -2,7 +2,7 @@ import { useUpdateGrade } from '!/auth/application/put-update-grade';
 import { User } from '!/auth/domain';
 import { Select, useToasts } from '@library-frontend/ui';
 import { UserGrade } from '@package-backend/types';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { Row } from '@tanstack/react-table';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

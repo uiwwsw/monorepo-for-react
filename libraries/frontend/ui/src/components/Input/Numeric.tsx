@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Input, { InputProps } from '.';
 import { ChangeEvent, useRef, useState } from 'react';
 import useToasts from '#/useToasts';

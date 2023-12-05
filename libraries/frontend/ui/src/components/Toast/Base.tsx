@@ -1,7 +1,7 @@
 import Button from '@/Button';
 import useSmooth from '#/useSmooth';
 import Close from '$/Close';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ReactNode, useEffect, useRef } from 'react';
 /* ======   interface   ====== */
 export interface ToastBaseProps {
@@ -33,7 +33,7 @@ const ToastBase = ({
   if (hasGauge === undefined) hasGauge = !notClose;
   const isImportant = notClose && hasGauge;
   const elRef = useRef<HTMLDivElement>(null);
-  const delay = Math.max(duration - 1000, 0);
+  const delay = Math.max(duration - 1000 + (isImportant ? 20000 : 0), 0);
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {
     if (value) return;
@@ -61,16 +61,16 @@ const ToastBase = ({
     >
       <i
         className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
-          isImportant ? '' : ' animate-count-down-bg'
-        }${open && hasGauge ? ' w-full' : ''}`}
+          open && hasGauge ? ' w-full animate-count-down-bg' : ''
+        }`}
         style={{
           animationDelay: delay + 'ms',
         }}
       >
         <i
-          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' animate-count-down-fake' : ''}`}
+          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' basis-1/2 animate-count-down-fake' : ''}`}
           style={{
-            animationDuration: duration + 'ms',
+            animationDelay: duration + 'ms',
           }}
         />
         <i

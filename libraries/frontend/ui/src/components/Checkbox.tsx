@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */

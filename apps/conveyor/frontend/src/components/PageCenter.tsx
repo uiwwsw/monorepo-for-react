@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ReactNode } from 'react';
 import H1 from './Typography/H1';
 /* ======   interface   ====== */

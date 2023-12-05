@@ -4,7 +4,7 @@ import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
 import ModalFooter from './Footer';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ButtonProps } from '@/Button';
 import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';

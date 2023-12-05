@@ -1,5 +1,5 @@
 import { useToasts, ToastProps } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
   selectedRows: T[];

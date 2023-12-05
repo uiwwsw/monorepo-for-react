@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Arrow from './Arrow';
 import Numeric, { InputNumericProps } from '@/Input/Numeric';

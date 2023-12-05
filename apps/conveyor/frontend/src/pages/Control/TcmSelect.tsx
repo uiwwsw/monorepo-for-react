@@ -1,5 +1,5 @@
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import ModalUpdate from './Modals/Update';
 import { useTcmStart } from '!/control/application/post-tcm-start';
 import { TcmInfo } from '!/control/domain';

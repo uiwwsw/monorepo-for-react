@@ -1,6 +1,6 @@
 import { WithTheme } from '#/componentTypes';
 import Radio, { RadioBaseProps } from '@/Radio/Base';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ChangeEvent, useRef } from 'react';
 /* ======   interface   ====== */
 export interface RadioGroupProps extends RadioBaseProps, WithTheme {

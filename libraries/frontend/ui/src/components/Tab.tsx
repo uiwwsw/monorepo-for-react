@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode, useEffect, useRef } from 'react';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import generateRipple from '#/generateRipple';
 /* ======   interface   ====== */
 export interface TabProps {

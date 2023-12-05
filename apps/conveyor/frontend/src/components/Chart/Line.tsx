@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { LineProps, ResponsiveLine } from '@nivo/line';
 import { Skeleton } from '@library-frontend/ui';
 /* ======   interface   ====== */

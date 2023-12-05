@@ -1,6 +1,6 @@
 import { GLOBAL_QUERY_PARAM } from '!/routes/domain';
 import { Component, ReactNode } from 'react';
-// import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '#/logger';
 
 /* ======   interface   ====== */
 export interface ErrorBoundaryProps {

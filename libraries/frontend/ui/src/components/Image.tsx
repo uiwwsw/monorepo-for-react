@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { ImgHTMLAttributes, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Skeleton from './Skeleton';
 import Smooth from './Smooth';

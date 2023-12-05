@@ -5,7 +5,7 @@ import { useServerStop } from '!/control/application/post-server-stop';
 import { ServerInfo } from '!/control/domain';
 import useToastsForControl from '#/useToastsForControl';
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { Row } from '@tanstack/react-table';
 import { useMemo } from 'react';
 /* ======   interface   ====== */

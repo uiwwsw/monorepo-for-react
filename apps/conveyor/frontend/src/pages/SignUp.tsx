@@ -1,7 +1,7 @@
 import { useSignUp } from '!/auth/application/post-sign-up';
 import PageCenter from '@/PageCenter';
 import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';

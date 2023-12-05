@@ -1,5 +1,5 @@
 import useSmooth from '#/useSmooth';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { HTMLAttributes, ReactNode, useMemo, useRef } from 'react';
 /* ======   interface   ====== */
 export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {

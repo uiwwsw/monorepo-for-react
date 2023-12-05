@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
 import { MD5 } from 'crypto-js';

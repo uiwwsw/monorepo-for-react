@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { NavLink as RouterLink, useLocation, NavLinkProps } from 'react-router-dom';
 import { GLOBAL_QUERY_PARAM } from '!/routes/domain';
 import { MouseEvent } from 'react';

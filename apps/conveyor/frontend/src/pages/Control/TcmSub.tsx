@@ -1,5 +1,5 @@
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { Row } from '@tanstack/react-table';
 import { TcmInfo } from '!/control/domain';
 import ModalFirmware from './Modals/Firmware';

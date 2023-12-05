@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useMemo } from 'react';
 import Button from '@/Button';
 import { WithEval } from '#/componentTypes';

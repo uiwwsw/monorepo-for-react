@@ -3,7 +3,7 @@ import { wait } from '@package-frontend/utils';
 import useSmooth from '#/useSmooth';
 import Spinner from '$/Spinner';
 import generateRipple from '#/generateRipple';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */

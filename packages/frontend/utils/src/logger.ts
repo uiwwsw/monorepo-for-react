@@ -4,5 +4,7 @@ const getRandomColor = () => {
   const blue = Math.floor(Math.random() * 256);
   return `rgb(${red}, ${green}, ${blue})`;
 };
-export const createLogger = (componentName: string) =>
-  import.meta.env.DEV ? console.info.bind(null, `%c${componentName}:`, `color: ${getRandomColor()};`) : () => null;
+export const createLogger = (componentName: string, mode?: 'package' | 'service') =>
+  import.meta.env.DEV || localStorage.getItem('mode') === mode
+    ? console.info.bind(null, `%c${componentName}:`, `color: ${getRandomColor()};`)
+    : () => null;

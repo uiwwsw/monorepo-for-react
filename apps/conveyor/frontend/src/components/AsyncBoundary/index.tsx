@@ -2,7 +2,7 @@
 import { ReactNode, Suspense } from 'react';
 import { SWRConfig } from 'swr';
 import ErrorBoundary, { ErrorBoundaryProps } from './ErrorBoundary';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface AsyncBoundaryProps extends ErrorBoundaryProps {
   loading?: ReactNode;

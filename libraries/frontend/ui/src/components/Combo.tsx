@@ -1,6 +1,6 @@
 import { ChangeEvent, MouseEvent, useMemo, useRef, useState } from 'react';
 import Caret from '$/Caret';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Input from './Input';
 import Menu from './Menu';
 import Button from './Button';

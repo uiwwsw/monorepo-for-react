@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useRef } from 'react';
 
 const logger = createLogger('utils/useThrottle');

@@ -9,7 +9,7 @@
 
 ```tsx
 import { HTMLAttributes } from 'react';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface componentNameProps extends HTMLAttributes<HTMLElement> {}
 /* ======    global     ====== */

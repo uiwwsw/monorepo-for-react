@@ -2,7 +2,7 @@ import { useTcmLogList } from '!/control/application/get-tcm-log-list';
 import { formatFileSize } from '!/control/domain';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 
 /* ======   interface   ====== */
 export interface ModalLogsTcmProps {

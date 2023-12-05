@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';

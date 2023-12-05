@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useHeaderContext } from './HeaderContext';
 import { Button } from '@library-frontend/ui';
 import { useNavigate } from 'react-router-dom';

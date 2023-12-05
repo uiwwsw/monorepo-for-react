@@ -1,5 +1,5 @@
 import PageCenter from '@/PageCenter';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 /* ======    global     ====== */

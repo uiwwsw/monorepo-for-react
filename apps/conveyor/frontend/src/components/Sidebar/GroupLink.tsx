@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab } from 'src/routes';

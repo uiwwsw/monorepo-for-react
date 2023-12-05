@@ -1,5 +1,5 @@
 // import { http } from '@package-frontend/utils';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
 import { http } from '#/http';

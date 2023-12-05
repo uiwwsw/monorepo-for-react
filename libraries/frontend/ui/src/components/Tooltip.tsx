@@ -1,5 +1,5 @@
 import { useState, useRef, ReactNode, HTMLAttributes } from 'react';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Portal from './Portal';
 import Smooth from './Smooth';
 import usePosition from '#/usePosition';

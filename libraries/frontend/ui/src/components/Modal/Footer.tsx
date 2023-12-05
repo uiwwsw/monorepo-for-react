@@ -1,7 +1,7 @@
 import { MouseEvent, SetStateAction, useCallback } from 'react';
 import Button, { ButtonProps } from '@/Button';
 import { ModalBaseProps, ModalErrors, ModalResult } from './Base';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 /* ======   interface   ====== */
 export interface ModalFooterProps {
   open?: boolean;

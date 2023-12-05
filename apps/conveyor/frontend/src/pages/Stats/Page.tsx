@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 

@@ -1,6 +1,6 @@
 import Sidebar from '@/Sidebar/index';
 import { Outlet } from 'react-router-dom';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import Header from '@/Header';
 import { useGetAuth } from '!/auth/application/get-auth';
 // import AsyncBoundary from '@/AsyncBoundary';

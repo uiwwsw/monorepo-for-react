@@ -1,7 +1,7 @@
 import { ClientStatus, TCM_CONNECTION_STATUS } from '!/control/domain';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 
 interface ModalDetailProps {
   clientStatus?: ClientStatus[];

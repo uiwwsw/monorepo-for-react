@@ -1,5 +1,5 @@
 import { ServerInfo } from '!/control/domain';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { Row } from '@tanstack/react-table';
 import ModalLogsServer from './Modals/LogsServer';
 /* ======   interface   ====== */

@@ -2,7 +2,7 @@
 // import useSocket from '#/useSocket';
 import { ROUTES_PATH } from '!/routes/domain';
 import { Accordion, Button, Tutorial } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from 'src/components/PageCenter';

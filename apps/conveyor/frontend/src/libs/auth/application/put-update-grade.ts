@@ -1,6 +1,6 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger } from '#/logger';
 import { http } from '#/http';
 import { UserEditGradeRequest } from '@package-backend/types';
 
