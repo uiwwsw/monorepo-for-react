@@ -1,5 +1,5 @@
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
 import { TcmInfo } from '!/control/domain';
 import ModalFirmware from './Modals/Firmware';
@@ -12,7 +12,7 @@ export interface TcmSubProps {
   row?: Row<TcmInfo>;
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/TcmSub');
+// const logger = createLogger('pages/Control/TcmSub');
 const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
@@ -35,7 +35,6 @@ const TcmSub = ({ row }: TcmSubProps) => {
       },
     });
 
-  logger('render');
   /* ======   useEffect   ====== */
   return (
     <>

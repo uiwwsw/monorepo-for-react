@@ -48,10 +48,10 @@ const InputNumeric = ({
       setValue(`${newValue}`);
       onChange && onChange(e);
     }
+    logger('handleChange', e);
   };
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

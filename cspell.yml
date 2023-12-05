@@ -17,6 +17,17 @@ words:
   - i18next-browser-languagedetector
   # tailwindcss 플러그인명
   - tailwindcss
+
+  # convayor 데이터 maint
+  - maint
+  # convayor 데이터 initializedataSend
+  - initializedataSend
+  # convayor 데이터 initialmodulestate
+  - initialmodulestate
+  # convayor 데이터 resetdata
+  - resetdata
+  # convayor 데이터 resouceInfo
+  - resouceInfo
 ignoreWords:
   - noopener
 ignorePaths:

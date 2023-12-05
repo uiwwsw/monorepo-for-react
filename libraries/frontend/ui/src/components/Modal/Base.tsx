@@ -57,12 +57,6 @@ const ModalBase = ({
     if (open) return arr;
     return arr.map(([key, value]) => [key, { ...value, open: false }]);
   }, [errors, open]);
-  const modalClassName = `relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
-    className ? ` ${className}` : ''
-  }`;
-  const modalContentClassName = `flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
-    animate ? ' animate-shake' : ''
-  }`;
   /* ======   function    ====== */
   const adapterClose: () => void = useCallback(
     () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose('NONE')),
@@ -71,11 +65,14 @@ const ModalBase = ({
   const handleClosed = (value: boolean) => {
     if (value) return;
     onClosed && onClosed();
+    logger('handleClosed');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
     open && setTimeout(() => elRef.current?.focus(), 0);
     document.body.style.overflow = open ? 'hidden' : '';
+    logger('useEffect');
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -86,12 +83,23 @@ const ModalBase = ({
     ref: elRef,
     onFinished: handleClosed,
   });
-  logger('render');
   return (
     <>
-      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0} autoFocus>
+      <div
+        className={`relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
+          className ? ` ${className}` : ''
+        }`}
+        role="dialog"
+        ref={elRef}
+        tabIndex={0}
+        autoFocus
+      >
         <ModalOverlay onClose={adapterClose} />
-        <div className={modalContentClassName}>
+        <div
+          className={`flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
+            animate ? ' animate-shake' : ''
+          }`}
+        >
           <Loading show={defaultLoading} className="absolute" />
           {hasCloseBtn && <ModalClose onClose={adapterClose} disabled={loading} />}
           <div>{children}</div>

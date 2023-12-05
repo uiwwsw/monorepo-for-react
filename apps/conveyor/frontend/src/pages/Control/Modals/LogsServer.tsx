@@ -13,9 +13,11 @@ const ModalLogsServer = ({ sid }: ModalLogsServerProps) => {
   /* ======   variables   ====== */
   const { trigger, data, isMutating, error } = useServerLogList();
   /* ======   function    ====== */
-  const handleClick = () => trigger({ sid });
+  const handleClick = () => {
+    trigger({ sid });
+    logger('handleClick');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>

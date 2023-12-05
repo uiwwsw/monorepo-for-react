@@ -14,7 +14,9 @@ export default {
         show: 'show .3s forwards',
         hide: 'hide .3s forwards',
         shake: 'shake 150ms 2 linear',
-        'count-down': 'count-down 5s linear forwards',
+        'count-down-x': 'count-down-x 5s ease-in forwards',
+        'count-down-bg': 'count-down-bg 1s ease-in forwards infinite',
+        'count-down-fake': 'count-down-fake 30s forwards',
         ripple: 'ripple 0.6s linear',
       },
       keyframes: {
@@ -69,38 +71,28 @@ export default {
             transform: 'translate(0, 0)',
           },
         },
-        'count-down': {
-          '0%': {
-            transform: 'scaleX(1)',
+        'count-down-bg': {
+          '0%,20%,40%,60%,80%,100%': {
             backgroundColor: 'black',
           },
-          '75%': {
+          '10%,30%,50%,70%,90%': {
             backgroundColor: 'red',
           },
-          '80%': {
-            backgroundColor: 'white',
-          },
-          '85%': {
-            backgroundColor: 'red',
-          },
-          '87.5%': {
-            backgroundColor: 'white',
-          },
-          '90%': {
-            backgroundColor: 'red',
-          },
-          '92.5%': {
-            backgroundColor: 'white',
-          },
-          '95%': {
-            backgroundColor: 'red',
-          },
-          '97.5%': {
-            backgroundColor: 'white',
+        },
+        'count-down-x': {
+          '0%': {
+            flex: '0',
           },
           '100%': {
-            backgroundColor: 'red',
-            transform: 'scaleX(0)',
+            flex: '100%',
+          },
+        },
+        'count-down-fake': {
+          '0%': {
+            'flex-basis': '50%',
+          },
+          '100%': {
+            'flex-basis': '6%',
           },
         },
         ripple: {

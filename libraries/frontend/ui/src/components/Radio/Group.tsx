@@ -27,9 +27,9 @@ const RadioGroup = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     ref.current = e.target.value;
     onChange && onChange(e);
+    logger('handleChange');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className={groupClassName} data-size={themeSize} data-color={themeColor}>
       {labels.map((label, index) => (

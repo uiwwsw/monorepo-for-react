@@ -27,11 +27,9 @@
     "react-hook-form": "^7.48.2",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.15.0",
-    "socket.io-client": "^4.7.2",
     "swr": "^2.2.2"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.2.0",
     "@types/crypto-js": "^4.2.1",
     "@types/node": "^20.5.9",
     "@types/react": "^18.2.15",

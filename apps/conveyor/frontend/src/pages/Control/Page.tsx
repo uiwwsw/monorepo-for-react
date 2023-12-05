@@ -1,5 +1,4 @@
 import { useTcmInfo } from '!/control/application/get-tcm-info';
-import { createLogger } from '@package-frontend/utils';
 import Table from '@/Table';
 import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
@@ -12,11 +11,13 @@ import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
+// import { useDataContext } from '@/DataContext';
+// import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 
-const logger = createLogger('pages/Control');
+// const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
   const { data: tcmData } = useTcmInfo();
@@ -51,7 +52,6 @@ const Control = () => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

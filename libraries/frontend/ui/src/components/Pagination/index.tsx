@@ -41,12 +41,19 @@ export default function Pagination({
   const disabledRightArrow = useMemo(() => currentPage >= max, [currentPage, max]);
   const disabledLeftArrow = useMemo(() => currentPage <= 1, [currentPage]);
   /* ======   function    ====== */
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => handleClick(+e.target.value);
-  const handleChangePer = (e: ChangeEvent<HTMLSelectElement>) => onChangePer && onChangePer(+e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleClick(+e.target.value);
+    logger('handleChange');
+  };
+  const handleChangePer = (e: ChangeEvent<HTMLSelectElement>) => {
+    onChangePer && onChangePer(+e.target.value);
+    logger('handleChangePer');
+  };
   const handleClick = useCallback(
     (newPage: number) => {
       setCurrentPage(newPage);
       onChange && onChange(newPage - 1);
+      logger('handleClick');
     },
     [max, setCurrentPage, onChange],
   );
@@ -58,9 +65,9 @@ export default function Pagination({
   /* ======   useEffect   ====== */
   useEffect(() => {
     const newValue = index + 1;
+    logger('useEffect');
     if (newValue !== currentPage) setCurrentPage(index + 1);
   }, [index]);
-  logger('render');
   return (
     <div className="w-fit m-auto flex items-center gap-2">
       <Arrow onClick={handleLeftDbArrowClick} disabled={disabledLeftArrow}>

@@ -41,13 +41,14 @@ const StatsCarrier = () => {
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
     storage.set(STORAGE['carrier/table'], value);
-    logger(value);
+    logger('handleVisibility', value);
   };
   const handleCalenderChange = async (duration: Dayjs[]) => {
     await Promise.all([
       setArg((prev) => ({ ...prev, start_time: duration[0].toISOString(), end_time: duration[1].toISOString() })),
     ]);
     mutate();
+    logger('handleCalenderChange', duration);
   };
 
   const handleSearchKeyword = async (character: string) => {
@@ -60,6 +61,7 @@ const StatsCarrier = () => {
       })),
     ]);
     mutate();
+    logger('handleSearchKeyword', character);
   };
   const handleChangePer = async (value: number) => {
     await Promise.all([
@@ -70,6 +72,7 @@ const StatsCarrier = () => {
       })),
     ]);
     mutate();
+    logger('handleChangePer', value);
   };
 
   const handleChangePage = async (page: number) => {
@@ -83,6 +86,7 @@ const StatsCarrier = () => {
       })),
     ]);
     mutate();
+    logger('handleChangePage', nextPage);
   };
 
   /* ======   useEffect   ====== */
@@ -90,6 +94,7 @@ const StatsCarrier = () => {
   useEffect(() => {
     setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
 
+    logger('useEffect');
     return () => setChildren(undefined);
   }, [currentDuration]);
   logger('render', storage.get<VisibilityState>(STORAGE['carrier/table']));

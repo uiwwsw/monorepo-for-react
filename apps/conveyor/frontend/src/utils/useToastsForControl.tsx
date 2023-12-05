@@ -1,13 +1,9 @@
-import { useToasts } from '@library-frontend/ui';
+import { useToasts, ToastProps } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
   selectedRows: T[];
-  duration?: number;
-}
-export interface ToastProps {
-  message: string;
-  duration?: number;
+  duration?: ToastProps['duration'];
 }
 export interface UseToastError<T> {
   id: T;
@@ -32,7 +28,13 @@ const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProp
   }) => {
     if (!selectedRows) return showToast({ message: '선택되지 않았습니다.' });
     logger(selectedRows + '이벤트 시작');
-    showToast({ message: startMsg, duration: duration * selectedRows.length });
+    showToast({
+      message: startMsg,
+      duration: duration * selectedRows.length,
+      hasClose: false,
+      notClose: true,
+      hasGauge: true,
+    });
 
     const fails: { id: T; message?: string }[] = [];
 
@@ -52,12 +54,10 @@ const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProp
     if (fails.length > 0) {
       showToast({
         message: failMsg(fails),
-        duration: Infinity,
       });
     } else {
       showToast({
         message: successMsg,
-        duration: Infinity,
       });
     }
     logger('이벤트 종료' + selectedRows + '!!!' + fails.map((x) => x.id + (x?.message ?? '')).join());

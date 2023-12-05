@@ -1,7 +1,6 @@
 import { ClientStatus, TCM_CONNECTION_STATUS } from '!/control/domain';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
 
 interface ModalDetailProps {
   clientStatus?: ClientStatus[];
@@ -9,7 +8,6 @@ interface ModalDetailProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/Modals/Detail');
 
 const ModalDetail = ({ clientStatus, tid }: ModalDetailProps) => {
   /* ======   variables   ====== */
@@ -17,7 +15,6 @@ const ModalDetail = ({ clientStatus, tid }: ModalDetailProps) => {
   /* ======   function    ====== */
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ModalWithBtn

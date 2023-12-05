@@ -45,12 +45,13 @@ const Menu = ({
     e.stopPropagation();
     setOpen(true);
     trigger();
+    logger('handleOpen');
   };
   const handleClose = () => {
     setOpen(false);
+    logger('handleClose');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div onClick={handleClose} className="inline-flex" ref={wrapRef} style={{ width: widthStyle }}>
       <span className="flex-1" onClick={handleOpen}>

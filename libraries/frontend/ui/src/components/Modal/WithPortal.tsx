@@ -17,21 +17,23 @@ const ModalWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
     if (e === 'NONE') onClose && onClose(e);
     else onClose && (await onClose(e));
     setOpen(false);
+    logger('handleClose');
   };
   const handleClosed = () => {
     onClosed && onClosed();
     setVisible(false);
+    logger('handleClosed');
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!defaultOpen) return;
+    logger('useEffect');
 
     setOpen(true);
     setVisible(true);
   }, [defaultOpen]);
 
-  logger('render');
   return visible ? (
     <Portal root="modal">
       <ModalBase {...props} open={open} onClose={handleClose} onClosed={handleClosed}>

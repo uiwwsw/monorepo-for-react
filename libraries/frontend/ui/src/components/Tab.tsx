@@ -25,6 +25,7 @@ const Tab = ({ children, header, activeIndex = 0, onChange }: TabProps) => {
     moveUnderline(index);
     generateRipple(e);
     onChange && onChange(index);
+    logger('handleTabEvent');
   };
   const moveUnderline = (index: number) => {
     const headerCurrent = headerRef.current?.children[index] as HTMLElement;
@@ -36,8 +37,8 @@ const Tab = ({ children, header, activeIndex = 0, onChange }: TabProps) => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     moveUnderline(activeIndex);
+    logger('useEffect');
   }, [activeIndex]);
-  logger('render');
   return (
     <div data-index={activeIndex} ref={containerRef}>
       <span className="relative block">

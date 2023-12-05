@@ -1,6 +1,6 @@
 import { ChangeEvent, InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 import Underbar from '$/Underbar';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import useDebounce from '#/useDebounce';
 
 /* ======   interface   ====== */
@@ -10,7 +10,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   slots?: ReactNode;
 }
 /* ======    global     ====== */
-const logger = createLogger('components/Input');
+// const logger = createLogger('components/Input');
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
@@ -28,22 +28,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     /* ======   variables   ====== */
     const handleChange = debounceTime ? useDebounce<ChangeEvent<HTMLInputElement>>(onChange, debounceTime) : onChange;
-    const wrapClassName = `inline-flex items-center relative${className ? ` ${className}` : ''}`;
-    const inputClassName = `w-full focus:outline-none p-3 bg-transparent outline-none`;
-
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
-    logger('render');
 
     return (
-      <label className={wrapClassName}>
+      <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
         {type === 'search' ? <span className="ml-3 -mr-4 pr-2">🔍︎</span> : ''}
         <input
           {...props}
           type={type}
           ref={ref}
           placeholder={placeholder}
-          className={inputClassName}
+          className={`w-full focus:outline-none p-3 bg-transparent outline-none`}
           onChange={handleChange}
         />
         {slots}

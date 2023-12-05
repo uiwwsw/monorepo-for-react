@@ -1,5 +1,5 @@
 import ChartLine from '@/Chart/Line';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 import { LineProps } from '@nivo/line';
 import { Row } from '@tanstack/react-table';
@@ -13,7 +13,7 @@ export interface StatsSummaryGraphicProps<T> {
   selectedRows?: Row<T>[];
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Stats/Summary/Graphic');
+// const logger = createLogger('pages/Stats/Summary/Graphic');
 
 const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphicProps<T>) => {
   /* ======   variables   ====== */
@@ -85,7 +85,6 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
 
   /* ======   useEffect   ====== */
 
-  logger('render');
   return (
     <div className="absolute top-4 left-0 w-full bg-white">
       <div className="h-60 flex rounded-xl border mb-3">

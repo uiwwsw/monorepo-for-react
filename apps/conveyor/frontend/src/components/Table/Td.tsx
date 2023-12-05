@@ -17,7 +17,6 @@ const Td = <T,>({ cell, textAlignCenter }: TdProps<T>) => {
   const render = flexRender(cell.column.columnDef.cell, context);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  // logger('render');
   return (
     <td className={`px-6 py-4 text-sm align-middle${textAlignCenter ? ` text-center` : ''} ${emptyClassName}`}>
       {isDateString(`${strRender}`) ? newDate(`${strRender}`).format(FORMAT) : render}

@@ -1,4 +1,3 @@
-import { createLogger } from '@package-frontend/utils';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tab } from 'src/routes';
@@ -9,14 +8,13 @@ export interface GroupLinkProps {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('components/GroupLink');
+// const logger = createLogger('components/GroupLink');
 const GroupLink = ({ routes }: GroupLinkProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="p-2 flex flex-col gap-3">
       {routes.map((tab) => (

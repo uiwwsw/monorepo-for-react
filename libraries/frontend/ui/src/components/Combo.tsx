@@ -45,14 +45,18 @@ const Combo = ({
   const handleClick = (value: string) => {
     setValue(value);
     onChange && onChange(value);
+    logger('handleClick');
   };
   const handleFinished = () => {
     ref.current!.value = '';
     setSearch('');
+    logger('handleFinished');
   };
-  const handleInputClick = (e: MouseEvent) => e.stopPropagation();
+  const handleInputClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    logger('handleInputClick');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <Menu
       onFinished={handleFinished}

@@ -22,7 +22,6 @@ const ComponentName = (props: ComponentNameProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return <div {...props}>ComponentName Component</div>;
 };
 

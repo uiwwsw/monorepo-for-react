@@ -18,10 +18,12 @@ const ModalLogsTcm = ({ tid }: ModalLogsTcmProps) => {
   const { data, trigger, isMutating, error } = useTcmLogList();
 
   /* ======   function    ====== */
-  const handleClick = () => trigger({ tid });
+  const handleClick = () => {
+    trigger({ tid });
+    logger('handleClick');
+  };
   /* ======   useEffect   ====== */
 
-  logger('render');
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>

@@ -5,7 +5,7 @@ import { useServerStop } from '!/control/application/post-server-stop';
 import { ServerInfo } from '!/control/domain';
 import useToastsForControl from '#/useToastsForControl';
 import { Button } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
 import { useMemo } from 'react';
 /* ======   interface   ====== */
@@ -13,7 +13,7 @@ export interface ServerSelectProps {
   selectedRows?: Row<ServerInfo>[];
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/ServerSelect');
+// const logger = createLogger('pages/Control/ServerSelect');
 const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   /* ======   variables   ====== */
   const { trigger: startTrigger, isMutating: startIsMutating } = useServerStart();
@@ -80,7 +80,6 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       {Toasts}

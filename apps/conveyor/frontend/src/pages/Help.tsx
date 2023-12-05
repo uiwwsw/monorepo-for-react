@@ -19,9 +19,9 @@ const Help = () => {
   const handleReset = () => {
     localStorage.clear();
     location.reload();
+    logger('handleReset');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <Tutorial guide={[{ ref: helpRef, text: '도움말 페이지입니다. 미리 작성된 질문과 답변을 볼 수 있습니다.' }]} />

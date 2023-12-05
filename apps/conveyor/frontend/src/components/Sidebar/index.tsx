@@ -102,10 +102,11 @@ const Nav = (_: NavProps) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect');
+
     const id = tutorialStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
     setOpen(!id);
   }, []);
-  logger('render');
   return (
     <>
       <div

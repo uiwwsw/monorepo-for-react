@@ -20,10 +20,9 @@ const PrivateLayout = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
-    logger(data);
+    logger('useEffect', data);
     if (!data) throw new HttpError('invalid-session', { status: 403 });
   }, [data]);
-  logger('render');
   return (
     <div className="flex min-h-screen">
       <Sidebar />

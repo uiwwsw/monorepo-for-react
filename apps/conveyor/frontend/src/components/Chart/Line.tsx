@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import { LineProps, ResponsiveLine } from '@nivo/line';
 import { Skeleton } from '@library-frontend/ui';
 /* ======   interface   ====== */
@@ -8,12 +8,11 @@ export interface ChartLineProps {
 
 /* ======    global     ====== */
 
-const logger = createLogger('pages/Chart/Line');
+// const logger = createLogger('pages/Chart/Line');
 const ChartLine = ({ data }: ChartLineProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="overflow-hidden" style={{ height: 'inherit' }}>
       {data ? (

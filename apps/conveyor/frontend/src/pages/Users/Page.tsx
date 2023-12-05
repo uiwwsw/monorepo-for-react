@@ -1,11 +1,11 @@
 import { useUserList } from '!/auth/application/get-user-list';
 import Table from '@/Table';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import UserGradeSelect from './UserGradeSelect';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Users');
+// const logger = createLogger('pages/Users');
 const Users = () => {
   /* ======   variables   ====== */
   const { data } = useUserList();
@@ -14,16 +14,13 @@ const Users = () => {
   // useEffect(() => {
   //   trigger();
   // }, []);
-  logger('render');
   return (
-    <>
-      <Table
-        renderSubComponent={<UserGradeSelect />}
-        thead={['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess']}
-        data={data}
-        makePagination
-      />
-    </>
+    <Table
+      renderSubComponent={<UserGradeSelect />}
+      thead={['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess']}
+      data={data}
+      makePagination
+    />
   );
 };
 

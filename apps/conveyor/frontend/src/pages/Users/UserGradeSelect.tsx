@@ -35,13 +35,12 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
     const grade = +e.target.value;
     if (!row || isNaN(grade)) return;
     const id = row.original.userId;
-    logger(id, grade);
     await trigger({ id, grade });
     mutate('/api/users/user-list');
     showToast({ message: t('{{id}} 유저의 등급을 {{grade}} 등급으로 바꿨습니다', { id, grade: UserGrade[grade] }) });
+    logger('handleChange', id, grade);
   };
   /* ======   useEffect   ====== */
-  logger('render', row);
   return (
     <>
       {Toasts}

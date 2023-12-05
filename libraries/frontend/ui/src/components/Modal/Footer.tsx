@@ -49,11 +49,11 @@ const ModalFooter = ({
           }));
       }
       onLoading(false);
+      logger('adapterClick');
     },
     [onLoading, onClose, hasToast, setErrors],
   );
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className="flex gap-3 mt-auto pt-3">
       {hasButton?.map((x, i) => (

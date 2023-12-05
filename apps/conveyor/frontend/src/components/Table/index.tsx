@@ -26,6 +26,7 @@ import useSetting from '#/useSetting';
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
+  fixHead?: Record<string, string>;
   data?: T[];
   allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
@@ -43,6 +44,7 @@ const logger = createLogger('components/Table');
 const Table = <T,>({
   thead,
   onSearch,
+  fixHead,
   data,
   allRowSelectTick,
   textAlignCenter = true,
@@ -73,9 +75,9 @@ const Table = <T,>({
               header: ({ table }: { table: Table<T> }) => (
                 <div className="text-left">
                   <Checkbox
-                    checked={table.getIsAllRowsSelected()}
-                    indeterminate={table.getIsSomeRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
+                    checked={table.getIsAllPageRowsSelected()}
+                    indeterminate={table.getIsSomePageRowsSelected()}
+                    onChange={table.getToggleAllPageRowsSelectedHandler()}
                   />
                 </div>
               ),
@@ -95,10 +97,12 @@ const Table = <T,>({
 
       ...thead.map((key) => ({
         accessorKey: key,
-        header: key
-          .replace(/([A-Z])/g, ' $1')
-          .trim()
-          .toLowerCase(),
+        header:
+          fixHead?.[key] ??
+          key
+            .replace(/([A-Z])/g, ' $1')
+            .trim()
+            .toLowerCase(),
         footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent
@@ -110,7 +114,7 @@ const Table = <T,>({
                 return row.getCanExpand() ? (
                   <Button
                     themeColor={null}
-                    themeSize={null}
+                    themeSize="xl"
                     onClick={row.getToggleExpandedHandler()}
                     style={{ cursor: 'pointer' }}
                   >
@@ -142,7 +146,11 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
-    pageCount: defaultPageSize,
+    initialState: {
+      pagination: {
+        pageSize: defaultPageSize,
+      },
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
@@ -175,15 +183,17 @@ const Table = <T,>({
     if (onSearch) onSearch(keyword);
     else setGlobalFilter(keyword);
   };
+  const handleChangePage = (index: number) => table.setPageIndex(index);
   /* ======   useEffect   ====== */
   useEffect(() => {
+    logger('useEffect: columnVisibility', columnVisibility);
+
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    logger(allRowSelectTick);
+    logger('useEffect: allRowSelectTick, table.getState().pagination.pageIndex', allRowSelectTick);
     if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
-  }, [allRowSelectTick]);
-  logger('render');
+  }, [allRowSelectTick, table.getState().pagination.pageIndex]);
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
       {cacheColumnVisibility && (
@@ -301,18 +311,16 @@ const Table = <T,>({
         </table>
       </div>
       {makePagination && (
-        <>
-          <Pagination
-            index={table.getState().pagination.pageIndex}
-            onChange={(index) => table.setPageIndex(index)}
-            onChangePer={(index) => table.setPageSize(index)}
-            max={table.getPageCount()}
-            per={defaultPageSize}
-            sizeOptions={pageSizeOptions}
-            maxMessage={getNumericMsg}
-            minMessage={getNumericMsg}
-          />
-        </>
+        <Pagination
+          index={table.getState().pagination.pageIndex}
+          onChange={handleChangePage}
+          onChangePer={(index) => table.setPageSize(index)}
+          max={table.getPageCount()}
+          per={defaultPageSize}
+          sizeOptions={pageSizeOptions}
+          maxMessage={getNumericMsg}
+          minMessage={getNumericMsg}
+        />
       )}
       <hr />
     </div>
