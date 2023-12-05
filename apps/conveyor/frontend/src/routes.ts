@@ -1,7 +1,8 @@
 import { ROUTES_PATH } from '!/routes/domain';
 import { LazyExoticComponent, lazy } from 'react';
 
-const Control = lazy(() => import('src/pages/Control/Page'));
+const Control = lazy(() => import('src/pages/OldControl/Page'));
+// const Control = lazy(() => import('src/pages/Control/Page'));
 const SignUp = lazy(() => import('src/pages/SignUp'));
 const SignIn = lazy(() => import('src/pages/SignIn'));
 const Stats = lazy(() => import('src/pages/Stats/Page'));

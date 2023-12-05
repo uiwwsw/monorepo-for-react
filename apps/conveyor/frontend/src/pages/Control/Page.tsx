@@ -1,5 +1,4 @@
 import { useTcmInfo } from '!/control/application/get-tcm-info';
-import { createLogger } from '@package-frontend/utils';
 import Table from '@/Table';
 import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
@@ -12,16 +11,15 @@ import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
-import useSocket from '#/useSocket';
-import { CTRL_SOCKET_NAME } from '!/control/domain';
+// import { useDataContext } from '@/DataContext';
+// import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 
-const logger = createLogger('pages/Control');
+// const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { data, status } = useSocket<CTRL_SOCKET_NAME>('ZONE_GET_INFO');
   const { data: tcmData } = useTcmInfo();
   const { data: serverData } = useServerInfo();
   const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
@@ -54,7 +52,6 @@ const Control = () => {
     });
 
   /* ======   useEffect   ====== */
-  logger('render', data, status);
   return (
     <>
       {Toasts}

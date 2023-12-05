@@ -79,7 +79,7 @@ export * from './components/Color';
 export * from './components/Size';
 
 export { default as useAnimate } from './utils/useAnimate';
-export { default as useDebouce } from './utils/useDebounce';
+export { default as useDebounce } from './utils/useDebounce';
 export { default as useCounter } from './utils/useCounter';
 export { default as usePosition } from './utils/usePosition';
 export { default as useSmooth } from './utils/useSmooth';

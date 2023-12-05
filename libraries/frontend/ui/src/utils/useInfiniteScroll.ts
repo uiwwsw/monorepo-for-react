@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import useDebouce from '#/useDebounce';
+import useDebounce from '#/useDebounce';
 import { createLogger } from '@package-frontend/utils';
 const logger = createLogger('utils/useDebounce');
 const useInfiniteScroll = () => {
@@ -29,7 +29,7 @@ const useInfiniteScroll = () => {
   const event = () => {
     if (isDocumentEnd()) setScrollDeps(++tickRef.current);
   };
-  const onScroll = useDebouce(event, 500);
+  const onScroll = useDebounce(event, 500);
   useEffect(() => {
     logger('useEffect');
 
