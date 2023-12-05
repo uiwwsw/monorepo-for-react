@@ -48,11 +48,12 @@ const useSocket = <K, T = unknown>(type: UseSocketProps<K>) => {
     ws.current.onclose = () => setStatus('CLOSED');
     ws.current.onmessage = (message: MessageEvent<T>) => {
       logger(message);
-      const data = strToParse(message.data) as { type: string; data: T };
-      setData((prev) => ({
-        ...prev,
-        [data.type]: data.data,
-      }));
+      setData(message.data as any); // TODO 종상님 테스트 편하기 위한 롤백
+      // const data = strToParse(message.data) as { type: string; data: T };
+      // setData((prev) => ({
+      //   ...prev,
+      //   [data.type]: data.data,
+      // }));
     };
     // return () => {
     //   if (ws.current.readyState === ws.current.OPEN) ws.current.close();
