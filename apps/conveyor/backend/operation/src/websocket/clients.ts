@@ -4,6 +4,7 @@ import { Redis } from 'ioredis';
 import { getSessionFromToken } from '../routes/session';
 import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
+import { INTERNAL_EVENT_ID } from '../models/tcmEventId';
 import { Client } from './client';
 import logger from '../libs/logger';
 
@@ -79,6 +80,7 @@ export class Clients {
                     break;
                 case 'tcsEventSet':
                     this.tcsEventSet.push(msg.MessageData as ITcsEventSet);
+                    this.onRecvEvent(msg.MessageData as ITcsEventSet);
                     break;
                 case 'tcsWarningSet':
                     this.broadcast('tcsWarningSet', msg.MessageData, true);
@@ -158,5 +160,41 @@ export class Clients {
         } finally {
             setTimeout(this.sendRunner, 200);
         }
+    }
+
+    private onRecvEvent(evt:ITcsEventSet) {
+        let stateType = '';
+        let id = 0;
+        let isAlive = true;
+
+        switch(evt.EventCode){
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_TCM:
+                stateType = 'TCM';
+                id = evt.Location;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM:
+                stateType = 'TCM';
+                id = evt.Location;
+                isAlive = false;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
+                isAlive = false;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
+                isAlive = false;
+                break;
+        }
+
+        const data = {
+            StateType : stateType,
+            ID : id,
+            Alive : isAlive ? 1 : 0,
+        }
+
+        this.broadcast('initialmodulestate', data, true);
     }
 }

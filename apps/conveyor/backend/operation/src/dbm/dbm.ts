@@ -3,7 +3,7 @@ import { Redis } from 'ioredis';
 import logger from '../libs/logger';
 import { MsgQueueRow, TaskTransferInfoRow, CompleteCarrierRow, DestinationZoneRow } from '../models/R301';
 import { ITaskTransferInfoRow, ICompleteCarrierRow, IDestinationZoneRow } from '@package-backend/types';
-import { TITAN_INTERNAL_EVENT_ID } from '../models/tcmEventId';
+import { INTERNAL_EVENT_ID } from '../models/tcmEventId';
 import { ITaskTransferInfo } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
 import { IWarningInfo } from '../models/warningInfo';
@@ -345,20 +345,20 @@ export class DBM {
     private handleEventLogs(tcmEvent: ITcsEventSet, row : MsgQueueRow) {
         let comment = '';
         switch (tcmEvent.EventCode) {
-            case TITAN_INTERNAL_EVENT_ID.EVENT_READ_RFID:
+            case INTERNAL_EVENT_ID.EVENT_READ_RFID:
                 this.transList.push(new TransItem(row.No, 'update tasktransferinfo set carrierId = ? where taskId = ?', [ tcmEvent.CarrierID, tcmEvent.TaskID ]));
                 comment = `read RFID zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_INSTALLED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_INSTALLED:
                 /**CARRIER ID 화인 될 경우 CARRIER ID UPDATE */
                 this.transList.push(new TransItem(row.No, 'update tasktransferinfo set carrierId = ?, zoneIdFrom = ? where taskId = ?', [ tcmEvent.CarrierID, tcmEvent.Location, tcmEvent.TaskID ]));
                 comment = `carrier installed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_ABORTED:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_ABORTED:
                 /** MANUAL ABORT 할 경우 DB에 저장 */
                 comment = `transfer aborted zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_COMPLETED:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_COMPLETED:
                 /** 이송 완료 될 경우 DB에 저장 */
                 this.transList.push(new TransItem(row.No, 'update tasktransferinfo set zoneIdTo=?, endTime = ? where taskId = ?', [ tcmEvent.Location, row.Date, tcmEvent.TaskID ]));
 
@@ -401,34 +401,34 @@ export class DBM {
                 delete this.taskTransferInfos[tcmEvent.TaskID];
                 comment = `transfer completed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_INITIATED:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_INITIATED:
                 comment = `transfer initiated zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_RESUMED:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_RESUMED:
                 comment = `transfer resumed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_READ_RFID_FAILED:
+            case INTERNAL_EVENT_ID.EVENT_READ_RFID_FAILED:
                 comment = `read RFID failed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_ARRIVED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_ARRIVED:
                 comment = `carrier arrived zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_REMOVED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_REMOVED:
                 comment = `carrier removed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_ID_DUPLICATED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_ID_DUPLICATED:
                 comment = `carrier ID duplicated zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_STORE_COMPLETED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_STORE_COMPLETED:
                 comment = `carrier store completed zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_TRANSFERRING:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_TRANSFERRING:
                 comment = `transfer transferring zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_TRANSFER_PAUSED:
+            case INTERNAL_EVENT_ID.EVENT_TRANSFER_PAUSED:
                 comment = `transfer paused zone[${tcmEvent.Location}]`;
                 break;
-            case TITAN_INTERNAL_EVENT_ID.EVENT_CARRIER_DETECTED:
+            case INTERNAL_EVENT_ID.EVENT_CARRIER_DETECTED:
                 comment = `carrier detected zone[${tcmEvent.Location}]`;
                 break;
         }
