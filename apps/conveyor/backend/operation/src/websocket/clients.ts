@@ -85,10 +85,10 @@ export class Clients {
                     this.broadcast('tcsWarningSet', msg.MessageData);
                     break;
                 case 'tcmTransferInfo':
-                    if (msg.MessageData.Object && msg.MessageData.Object.UseZoneIDJunctions && Array.isArray(msg.MessageData.Object.Junctions) == false) {
+                    if (msg.MessageData.Object && msg.MessageData.Object.Junctions && Array.isArray(msg.MessageData.Object.Junctions) == false) {
                         const junctions = msg.MessageData.Object.Junctions;
                         msg.MessageData.Object.Junctions = [];
-                        if (junctions.length > 0) {
+                        if (junctions) {
                             msg.MessageData.Object.Junctions.push(junctions);
                         }
                     }
