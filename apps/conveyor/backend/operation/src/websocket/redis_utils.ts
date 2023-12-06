@@ -61,7 +61,7 @@ const initializeTaskInfos = async (client:Client) => {
                         CarrierID: taskInfo[2],
                         ZoneIDFrom: taskInfo[1],
                         ZoneIDTo: taskInfo[5],
-                        ZoneIDJunctions: taskInfo[6],
+                        ZoneIDJunctions: taskInfo[6] ? [taskInfo[6]] : [],
                         State: taskInfo[3],
                         ZoneIDCurrent: taskInfo[0],
                         InstalledTime: taskInfo[7],

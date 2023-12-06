@@ -48,11 +48,13 @@ export class Clients {
                     this.tcmZoneOccupiedAttributes.push(msg.MessageData);
                     break;
                 case 'tcmAlarmSet':
-                    this.broadcast('tcmAlarmSet', [msg.MessageData]);
+                    this.broadcast('tcmAlarmSet', [{ Object : msg.MessageData }]);
+                    logger.debug(`onRecvMessage. tcmAlarmSet: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcsAlarmClear':
                 case 'tcmAlarmCleared':
-                    this.broadcast('tcsAlarmClear', msg.MessageData);
+                    this.broadcast('tcsAlarmClear', [{ Object : msg.MessageData }]);
+                    logger.debug(`onRecvMessage. tcsAlarmClear: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcmZoneStateChangeCompleted':
                     {
@@ -83,6 +85,13 @@ export class Clients {
                     this.broadcast('tcsWarningSet', msg.MessageData);
                     break;
                 case 'tcmTransferInfo':
+                    if (msg.MessageData.Object && msg.MessageData.Object.UseZoneIDJunctions && Array.isArray(msg.MessageData.Object.Junctions) == false) {
+                        const junctions = msg.MessageData.Object.Junctions;
+                        msg.MessageData.Object.Junctions = [];
+                        if (junctions.length > 0) {
+                            msg.MessageData.Object.Junctions.push(junctions);
+                        }
+                    }
                     this.tcmTransferInfo.push(msg.MessageData);
                     break;
                 case 'himEquipmentStateInfo':
@@ -93,7 +102,7 @@ export class Clients {
                     break;
             }
         } catch (ex) {
-            logger.warn(`Received the following message from ${channel}: ${message}, ex: ${ex}`);
+            logger.warn(`Received the following message from ${channel}: ${message}, ex: ${ex}\n${(ex as Error).stack}}`);
         }
     }
 

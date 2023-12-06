@@ -232,7 +232,7 @@ export class Client {
             }
     
             if (msg.tid) {
-                this.send('MessageResult', { result: result, tid: msg.tid });
+                this.send('MessageResult', { result: result, type : msg.type, tid: msg.tid });
             }
             const end = new Date().getTime();
             logger.debug(`onRecvMessage. uid:${this.session.uid}, type:${msg.type}, data:${msg.data}, result:${result}, elapsed:${end - begin}ms`);

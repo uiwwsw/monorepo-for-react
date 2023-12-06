@@ -7,6 +7,7 @@ export interface WebSocketMessage {
 
 export interface MessageResult {
     result : string;
+    type : string;
     tid : number;
 }
 
