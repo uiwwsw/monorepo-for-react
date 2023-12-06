@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext } from 'react';
 
-interface ContextProps {
+export interface ContextProps {
   children?: ReactNode;
   setChildren: (children: ReactNode) => void;
 }

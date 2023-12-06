@@ -47,9 +47,9 @@ export interface TcmInfo {
   tid: number;
   status: CONTROL_STATUS;
   version: string;
-  adjTcmConnection: string;
-  adjTcmConnectionDetail: ClientStatus[];
-  Process: string[];
+  // adjTcmConnection: string;
+  // adjTcmConnectionDetail: ClientStatus[];
+  // Process: string[];
 }
 
 export interface UploadFile {

@@ -1,82 +1,79 @@
-export const onAlaram = (
-  alarmCode: TITAN_INTERNAL_EVENT_ID,
-  carrierID?: string,
-  zoneID?: string,
-  reasonCode?: string,
-) => {
+import { Alarm } from '!/socket/domain';
+
+export const convertAlarmToMessage = ({ alarmCode, carrierID, reason }: Alarm<TITAN_INTERNAL_EVENT_ID>) => {
   switch (alarmCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
-      return `Invalid mater configuration zone[${zoneID}] reason[${reasonCode}]`;
+      return `Invalid mater configuration reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_SLVAE_CONF_INVALID:
-      return `Invalid slave configuration zone[${zoneID}] reason[${reasonCode}]`;
+      return `Invalid slave configuration reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_SLVAE_CONNECTION_ERROR:
-      return `Slave connection error zone[${zoneID}] reason[${reasonCode}]`;
+      return `Slave connection error reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MOTOR_ERROR: {
-      if (reasonCode === TITAN_INTERNAL_EVENT_ID.ERROR_EX_SAFE_LOCK_SUB_01) {
-        return `Motor Error Safe lock activated zone[${zoneID}] reason[${reasonCode}]`;
+      if (reason === TITAN_INTERNAL_EVENT_ID.ERROR_EX_SAFE_LOCK_SUB_01) {
+        return `Motor Error Safe lock activated reason[${reason}]`;
       } else {
-        return `Motor Error zone[${zoneID}] reason[${reasonCode}]`;
+        return `Motor Error reason[${reason}]`;
       }
     }
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_COMMUNICATION_ERROR:
-      return `Communication Error zone[${zoneID}] reason[${reasonCode}]`;
+      return `Communication Error reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_TURN_HOME_FAILED:
-      return `Turn home failed in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Turn home failed in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_TURN_FAILED:
-      return `Turn failed in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Turn failed in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_LIFT_HOME_FAILED:
-      return `Lift home failed in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Lift home failed in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_LIFT_FAILED:
-      return `Lift failed in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Lift failed in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_CARRIER_STUCK:
-      return `Carrier ${carrierID} stucked in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier ${carrierID} stucked in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_FOUND:
-      return `Carrier found in a not allowed zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier found in a not allowed reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_IO_FAILED:
-      return `Carrier handoff E84 Failed in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 Failed in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP1_TIMEOUT:
-      return `Carrier handoff E84 TP1 timeout, TR_REQ did not turn ON in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 TP1 timeout, TR_REQ did not turn ON in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP2_TIMEOUT:
-      return `Carrier handoff E84 TP2 timeout, BUSY did not turn ON in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 TP2 timeout, BUSY did not turn ON in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP3_TIMEOUT:
-      return `Carrier handoff E84 TP3 timeout, Carrier was not installed/removed inside E84 in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 TP3 timeout, Carrier was not installed/removed inside E84 in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP4_TIMEOUT:
-      return `Carrier handoff E84 TP4 timeout in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 TP4 timeout in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP5_TIMEOUT:
-      return `Carrier handoff E84 TP5 timeout in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier handoff E84 TP5 timeout in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_MANUAL_PORT_SENSOR_ERROR:
-      return `Manual port sensor error in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Manual port sensor error in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_LOST:
-      return `Carrier lost in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier lost in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_EXIT_ZONE_FAILED:
-      return `Carrier exit error in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier exit error in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_ENTER_ZONE_FAILED:
-      return `Carrier enter error in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Carrier enter error in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_SYNC_LIFT_LEAD_FAILED:
-      return `Sync lifting lead error in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Sync lifting lead error in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_SYNC_LIFT_FOLLOW_FAILED:
-      return `Sync lifting follow error in zone[${zoneID}] reason[${reasonCode}]`;
+      return `Sync lifting follow error in reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_EMERGENCY: {
-      if (reasonCode === '1') {
-        return `ALARM TCM EMERGENCY zone[${zoneID}] reason[${reasonCode}] ALARM_REASON_FIREWALL_SIGNAL_ACTIVATED`;
+      if (reason === '1') {
+        return `ALARM TCM EMERGENCY reason[${reason}] ALARM_REASON_FIREWALL_SIGNAL_ACTIVATED`;
       } else {
-        return `ALARM TCM EMERGENCY zone[${zoneID}] reason[${reasonCode}]`;
+        return `ALARM TCM EMERGENCY reason[${reason}]`;
       }
     }
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_INIT_FAILED:
-      return `Initialize failed(check h/w, e84, etc, ...) in zone[${zoneID}] reason[${reasonCode}]`;
-    case TITAN_INTERNAL_EVENT_ID.ALARM_SYSTEM_FAILOVERED:
-      return `System Failovered reason[${reasonCode}]`;
+      return `Initialize failed(check h/w, e84, etc, ...) in reason[${reason}]`;
+    case TITAN_INTERNAL_EVENT_ID.ALARM_SYSTEM_FAIL_OVERED:
+      return `System Failovered reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_ABNORMAL_TCM_DISCONNECTED:
-      return `terminate abnormally in tcm ${zoneID}  reason[${reasonCode}]`;
+      return `terminate abnormally in tcm reason[${reason}]`;
 
     case TITAN_INTERNAL_EVENT_ID.ALARM_TSC_NO_ROUTE:
-      return `Can not find path in zone[${zoneID}] reason[${reasonCode}]`;
-    case TITAN_INTERNAL_EVENT_ID.ALARM_TSC_AIRSHOWER_NOT_AVAILABLE:
-      return `Airshower is not available. Please check. Reason[${reasonCode}]`;
+      return `Can not find path in reason[${reason}]`;
+    case TITAN_INTERNAL_EVENT_ID.ALARM_TSC_AIR_SHOWER_NOT_AVAILABLE:
+      return `Airshower is not available. Please check. Reason[${reason}]`;
 
     default:
-      break;
+      return 'unknown error';
   }
 };
 
@@ -119,13 +116,13 @@ export const enum TITAN_INTERNAL_EVENT_ID {
   ALARM_TCM_SYNC_LIFT_FOLLOW_FAILED = '12440',
   ALARM_TCM_EMERGENCY = '12450', //ALARM_REASON_UNKNOWN = -1, ALARM_REASON_NONE = 0, ALARM_REASON_FIREWALL_SIGNAL_ACTIVATED = 1,
   ALARM_ABNORMAL_TCM_DISCONNECTED = '12500',
-  ALARM_SYSTEM_FAILOVERED = '12510',
+  ALARM_SYSTEM_FAIL_OVERED = '12510',
   ALARM_TCM_INIT_FAILED = '12900',
 
   /** Can not find Path in Zone - 이송할 경로를 찾지 못했을 때 발생. */
   ALARM_TSC_NO_ROUTE = '19010',
-  /** Airshower가 valid count 이하로 동작할 경우 발생 */
-  ALARM_TSC_AIRSHOWER_NOT_AVAILABLE = '19020',
+  /** Air shower가 valid count 이하로 동작할 경우 발생 */
+  ALARM_TSC_AIR_SHOWER_NOT_AVAILABLE = '19020',
 
   /** Reason */
   ERROR_EX_SAFE_LOCK_SUB_01 = '21001', // ALARM_MOTION_MOTOR_ERROR = 11040, reason

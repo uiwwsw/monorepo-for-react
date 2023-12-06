@@ -1,21 +1,22 @@
 // import { createLogger } from '@package-frontend/utils';
 
 // import renderObject from '#/renderObject';
-import { useDataContext } from '@/DataContext';
+// import { useSocketDataContext } from '@/SocketDataContext';
 import { createLogger } from '@package-frontend/utils';
 import ControlItem from './Item';
 import { Button } from '@library-frontend/ui';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('pages/Control');
+// const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { data } = useDataContext();
+  // const { data, tcmInfo, moduleState } = useSocketDataContext();
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger(data);
+
+  // logger(data, tcmInfo, moduleState);
   return (
     <>
       <ControlItem title="Communication">

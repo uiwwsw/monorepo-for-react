@@ -64,7 +64,7 @@ const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
   logger(error);
   return (
     <>
-      {Toasts}
+      <Toasts />
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <ModalWithBtn
         button={

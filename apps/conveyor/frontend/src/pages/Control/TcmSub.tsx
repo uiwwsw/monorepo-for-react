@@ -38,7 +38,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   useEffect   ====== */
   return (
     <>
-      {Toasts}
+      <Toasts />
       <div className="flex justify-end space-x-2 items-center p-2">
         <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
           Process Kill

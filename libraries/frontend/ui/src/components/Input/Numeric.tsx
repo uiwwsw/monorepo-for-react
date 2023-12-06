@@ -54,7 +54,7 @@ const InputNumeric = ({
   /* ======   useEffect   ====== */
   return (
     <>
-      {Toasts}
+      <Toasts />
       <Input
         {...props}
         value={focus ? undefined : value}

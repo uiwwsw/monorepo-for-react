@@ -1,5 +1,5 @@
 const handleFixedWords = (str: string): string => {
-  ['ID', 'TCM'].forEach((word) => {
+  ['ID', 'TCM', 'IP'].forEach((word) => {
     const regExp = new RegExp(word, 'g'); // Use word boundary to match whole words
     str = str.replace(regExp, (match, offset) => {
       // Convert to lowercase, but if it's not at the start of the string, capitalize the first letter

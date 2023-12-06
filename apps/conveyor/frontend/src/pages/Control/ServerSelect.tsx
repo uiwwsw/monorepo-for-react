@@ -82,7 +82,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   /* ======   useEffect   ====== */
   return (
     <>
-      {Toasts}
+      <Toasts />
       <div className="flex justify-end space-x-2 items-center">
         <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
           Start
