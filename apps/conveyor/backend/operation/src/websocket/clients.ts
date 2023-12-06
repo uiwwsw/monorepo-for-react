@@ -20,7 +20,6 @@ export class Clients {
         this.subs = redis;
 
         this.subs.subscribe('AlarmEventCh');
-        this.subs.subscribe('AlarmEventCh');
         this.subs.subscribe('TransferInfoCh');
         this.subs.subscribe('UIMCh');
         this.subs.psubscribe('TCMZoneCh:*');
@@ -48,12 +47,12 @@ export class Clients {
                     this.tcmZoneOccupiedAttributes.push(msg.MessageData);
                     break;
                 case 'tcmAlarmSet':
-                    this.broadcast('tcmAlarmSet', [{ Object : msg.MessageData }]);
+                    this.broadcast('tcmAlarmSet', [{ Object : msg.MessageData }], true);
                     logger.debug(`onRecvMessage. tcmAlarmSet: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcsAlarmClear':
                 case 'tcmAlarmCleared':
-                    this.broadcast('tcsAlarmClear', [{ Object : msg.MessageData }]);
+                    this.broadcast('tcsAlarmClear', [{ Object : msg.MessageData }], true);
                     logger.debug(`onRecvMessage. tcsAlarmClear: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcmZoneStateChangeCompleted':
@@ -82,7 +81,7 @@ export class Clients {
                     this.tcsEventSet.push(msg.MessageData as ITcsEventSet);
                     break;
                 case 'tcsWarningSet':
-                    this.broadcast('tcsWarningSet', msg.MessageData);
+                    this.broadcast('tcsWarningSet', msg.MessageData, true);
                     break;
                 case 'tcmTransferInfo':
                     if (msg.MessageData.Object && msg.MessageData.Object.Junctions && Array.isArray(msg.MessageData.Object.Junctions) == false) {
@@ -95,7 +94,7 @@ export class Clients {
                     this.tcmTransferInfo.push(msg.MessageData);
                     break;
                 case 'himEquipmentStateInfo':
-                    this.broadcast('himEquipmentStateInfo', msg.MessageData.Object);
+                    this.broadcast('himEquipmentStateInfo', msg.MessageData.Object, true);
                     break;
                 case 'tcmTransferComplete':
                     logger.info('tcmTransferComplete');
