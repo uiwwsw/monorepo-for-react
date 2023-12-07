@@ -17,7 +17,7 @@ const PrivateLayout = () => {
   // const navigate = useNavigate();
   // const location = useLocation();
   const { children, setChildren } = useHeader();
-  const data = useGetAuth();
+  const { data } = useGetAuth();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
