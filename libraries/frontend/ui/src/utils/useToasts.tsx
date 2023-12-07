@@ -46,15 +46,11 @@ const useToasts = (debounce: number = 300) => {
   return {
     showToast: adapterShowToast,
     hideToast,
-    Toasts: () => (
-      <>
-        {toastMessages.map((x) => (
-          <ToastWithPortal {...x} open={!x.close} key={x.id} onClosed={() => deleteToast(x.id)}>
-            {x.message}
-          </ToastWithPortal>
-        ))}
-      </>
-    ),
+    Toasts: toastMessages.map((x) => (
+      <ToastWithPortal {...x} open={!x.close} key={x.id} onClosed={() => deleteToast(x.id)}>
+        {x.message}
+      </ToastWithPortal>
+    )),
   };
 };
 

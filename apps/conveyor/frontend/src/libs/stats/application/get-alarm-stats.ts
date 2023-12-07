@@ -2,7 +2,7 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsAlarmData } from '../domain';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 import { AlarmStatsInRequest } from '@package-backend/types';
 
 export interface Arg extends Omit<AlarmStatsInRequest, 'start_time' | 'end_time'> {

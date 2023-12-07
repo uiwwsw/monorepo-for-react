@@ -28,6 +28,8 @@ words:
   - resetdata
   # convayor 데이터 resouceInfo
   - resouceInfo
+  # convayor 데이터 RFID
+  - RFID
 ignoreWords:
   - noopener
 ignorePaths:

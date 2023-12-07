@@ -1,4 +1,4 @@
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 import { TcmClient } from '../domain';

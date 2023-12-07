@@ -1,3 +1,5 @@
+import { SERVER_TYPE } from '!/control/domain';
+
 export interface SocketData<T> {
   type: SOCKET_MESSAGE;
   data: T;
@@ -11,7 +13,18 @@ export interface TcmInfo {
 export interface ModuleState {
   alive: number;
   id?: number;
-  stateType: 'DCM' | 'TCM' | 'HIM';
+  stateType: SERVER_TYPE | 'TCM';
+}
+export interface TcsEvent {
+  commandId: string;
+  carrierId: string;
+  time: string;
+  taskId: string;
+  serialNo: number;
+  eventCode: number;
+  location: number;
+  reason: number;
+  baseTime: string;
 }
 export interface HimState {
   mcs1: HimStateInfo;
@@ -24,12 +37,12 @@ export interface HimStateInfo {
 }
 export interface Alarm<T = string> {
   alarmCode?: T;
-  carrierID: string;
-  commandID: string;
+  carrierId: string;
+  commandId: string;
   location?: unknown;
   reason: string;
   serialNo: number;
-  taskID: string;
+  taskId: string;
   time: number;
 }
 export const enum SOCKET_NAME {

@@ -10,7 +10,7 @@ export const enum HttpErrorType {
   AUTH = 4,
   SERVER,
 }
-export const http = async <T = unknown>({
+export const http = async <T, J = unknown>({
   url,
   arg,
   method = 'GET',
@@ -19,7 +19,7 @@ export const http = async <T = unknown>({
 }: {
   url: string;
   contentType?: string;
-  arg?: T;
+  arg?: J;
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
 }) => {
@@ -46,27 +46,27 @@ export const http = async <T = unknown>({
     headers,
     body,
   });
+
   const res = await fetch(url, {
     headers,
     method,
     body,
   });
-  if (res.ok) return res;
-  const message = await res.text();
-  throw new HttpError(message, res);
-};
-export const toText = async (res: Response) => {
-  const text = await res.text();
-  return text;
-};
-export const toBlob = async (res: Response) => {
-  const blob = await res.blob();
-  return blob;
-};
-export const toJson = async <T>(res: Response) => {
-  const json = (await res.json()) as STResponse<T>;
-  if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;
-  return toFormat(json) as STResponseSuccess<T>;
+
+  try {
+    if (res.ok) {
+      const json = (await res.json()) as STResponse<T>;
+      if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;
+      throw new HttpError(json.message ?? 'unknown error', res);
+    } else {
+      const text = await res.text();
+      const error = new HttpError(text, res);
+      throw error;
+    }
+  } catch (e) {
+    const { message } = e as Error;
+    throw new HttpError(message, res);
+  }
 };
 export class HttpError extends Error implements STResponseFailed {
   status: number;

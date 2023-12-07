@@ -2,7 +2,7 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 import { CarrierStatsInRequest } from '@package-backend/types';
 const logger = createLogger('stats/useCarrierStats');
 export interface Arg extends Omit<CarrierStatsInRequest, 'start_time' | 'end_time'> {

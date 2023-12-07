@@ -2,7 +2,7 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsSummaryData } from '../domain';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 
 export interface Arg {
   start_time: string;

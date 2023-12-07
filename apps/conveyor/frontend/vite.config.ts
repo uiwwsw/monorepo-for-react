@@ -15,6 +15,9 @@ export default defineConfig(({ mode }) => {
     build: {
       chunkSizeWarningLimit: 1024 * 1024, // 1 MB
     },
+    define: {
+      'process.env': env,
+    },
     resolve: {
       alias: {
         $: fileURLToPath(new URL('./src/assets', import.meta.url)),

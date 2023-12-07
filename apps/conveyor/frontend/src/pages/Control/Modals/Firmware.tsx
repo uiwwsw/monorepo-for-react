@@ -1,43 +1,52 @@
-import { useTcmBackupDelete } from '!/control/application/delete-tcm-backup';
-import { useTcmBackup } from '!/control/application/get-tcm-backup';
-import { useUpdateFirmware } from '!/control/application/post-update-firmware';
+import { useDeleteBackup } from '!/control/application/delete-backup-firmware';
+import { useFirmList } from '!/control/application/get-backup-firmware';
+import { useUpdateFirm } from '!/control/application/post-update-firmware';
+import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import useToastsForControl from '#/useToastsForControl';
 import H2 from '@/Typography/H2';
 import { Button, Combo, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 /* ======   interface   ====== */
 export interface ModalFirmwareProps {
-  tid?: number;
+  tcmId?: number;
+  address?: string;
 }
 
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Firmware');
 
-const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
+const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
   /* ======   variables   ====== */
-  const [backupFiles, setBackupFiles] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState('');
-  const { data, error, trigger, isMutating } = useTcmBackup();
-  const { trigger: deleteTrigger } = useTcmBackupDelete();
-  const { trigger: updateTrigger } = useUpdateFirmware();
+  const { data, error, trigger, isMutating } = useFirmList();
+  const { trigger: deleteTrigger } = useDeleteBackup();
+  const { trigger: updateTrigger } = useUpdateFirm();
+  const { trigger: networkTrigger } = useTcmNetwork();
   const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [selectedFile] });
 
   /* ======   function    ====== */
-  const handleClick = () => trigger({ tid });
+  const handleFirmList = async () => {
+    if (!tcmId || !address) return;
+    const port = await networkTrigger({ tcm_id: tcmId });
+    trigger({ port, address });
+  };
 
   const handleFileSelect = (selectedFileName: string) => setSelectedFile(selectedFileName);
 
-  const handleFileDelete = () => {
-    if (tid === undefined) return;
-    deleteTrigger({
-      tid,
+  const handleFileDelete = async () => {
+    if (!tcmId || !address) return;
+    const port = await networkTrigger({ tcm_id: tcmId });
+
+    await deleteTrigger({
       fileName: selectedFile,
+      address,
+      port,
     });
 
-    setBackupFiles(backupFiles.filter((file) => file !== selectedFile));
     setSelectedFile('');
+    await handleFirmList();
   };
 
   const handleFileUpdate = () =>
@@ -48,27 +57,26 @@ const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
         logger(fails);
         return fails.map((v) => `${v.id}파일 ${v.message} 에러 발생`).join(',');
       },
-      event(id) {
-        if (tid === undefined) return;
+      async event(id) {
+        if (!tcmId || !address) return;
+        const port = await networkTrigger({ tcm_id: tcmId });
         return updateTrigger({
-          tid,
           fileName: id,
+          address,
+          port,
         });
       },
     });
 
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    if (data) setBackupFiles(data.map((fileInfo) => fileInfo.fileName));
-  }, [data]);
-  logger(error);
+  logger(error, data);
   return (
     <>
-      <Toasts />
+      {Toasts}
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <ModalWithBtn
         button={
-          <Button themeSize="sm" themeColor={'tertiary'} onClick={handleClick}>
+          <Button themeSize="sm" themeColor={'tertiary'} onClick={handleFirmList}>
             Firmware
           </Button>
         }
@@ -76,18 +84,11 @@ const ModalFirmware = ({ tid }: ModalFirmwareProps) => {
         defaultLoading={isMutating}
         hasCloseBtn
       >
-        <H2>TCM {tid} 펌웨어 업데이트</H2>
+        <H2>TCM {tcmId} 펌웨어 업데이트</H2>
         <div className="flex flex-col space-y-4 mt-4">
           <div>
             <span className="text-sm font-medium">파일 선택:</span>
-            <Combo
-              onChange={handleFileSelect}
-              placeholder="백업 파일"
-              options={backupFiles.map((file) => ({
-                value: file,
-                label: file,
-              }))}
-            ></Combo>
+            <Combo onChange={handleFileSelect} placeholder="백업 파일" options={[]}></Combo>
           </div>
           {selectedFile && (
             <div className="flex items-center space-x-2">

@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
   readonly API: string;
-  // readonly SOCKET: string;
+  readonly WS_API: string;
   readonly PORT: string;
 }
 

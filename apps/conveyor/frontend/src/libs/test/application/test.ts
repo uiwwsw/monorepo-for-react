@@ -1,6 +1,6 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 const logger = createLogger('test/useTest');
 async function fetcher(url: string) {
   const res = await http({

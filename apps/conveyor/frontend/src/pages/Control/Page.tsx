@@ -1,6 +1,6 @@
-import { useTcmInfo } from '!/control/application/get-tcm-info';
+// import { useTcmInfo } from '!/control/application/get-tcm-info';
 import Table from '@/Table';
-import { useServerInfo } from '!/control/application/get-server-info';
+// import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
@@ -11,7 +11,7 @@ import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
-import { STATUS, useSocketDataContext } from '@/SocketDataContext';
+import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -22,9 +22,9 @@ import { STATUS, useSocketDataContext } from '@/SocketDataContext';
 const Control = () => {
   /* ======   variables   ====== */
   const { tcmList, serverList, status } = useSocketDataContext();
-  if (status !== STATUS.OPEN) return <Loading show />;
+  // if (status !== WS_STATUS.OPEN) return <Loading show />;
   // const { data: tcmData } = useTcmInfo();
-  const { data: serverData } = useServerInfo();
+  // const { data: serverData } = useServerInfo();
   const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
   const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
   const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [0] });
@@ -57,7 +57,8 @@ const Control = () => {
   /* ======   useEffect   ====== */
   return (
     <>
-      <Toasts />
+      {Toasts}
+      <Loading show={status !== WS_STATUS.OPEN} />
       <div className="flex gap-5 flex-col">
         <div className="flex ml-auto gap-2">
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
@@ -70,7 +71,7 @@ const Control = () => {
         <div>
           <H2>TCM Control</H2>
           <Table
-            thead={['tcmId', 'status', 'buildDate', 'buildNum', 'ipAddress']}
+            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
             data={tcmList}
             makePagination={false}
             renderSelectComponent={<TcmSelect />}
@@ -80,7 +81,7 @@ const Control = () => {
         <div>
           <H2>Server Control</H2>
           <Table
-            thead={['alive', 'stateType']}
+            thead={['status', 'stateType']}
             data={serverList}
             makePagination={false}
             renderSelectComponent={<ServerSelect />}

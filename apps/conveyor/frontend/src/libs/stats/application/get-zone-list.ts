@@ -2,7 +2,7 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { ZoneList } from '../domain';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 
 const logger = createLogger('stats/useZoneList');
 async function fetcher(url: string) {

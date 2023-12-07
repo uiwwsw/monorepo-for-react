@@ -1,12 +1,12 @@
 // import io from 'socket.io-client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { createLogger, toData } from '@package-frontend/utils';
+import { createLogger, toFormat } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
-import { ServerList, TcmList } from '!/controls/domain';
+import { CONTROL_STATUS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
 import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
-import { ContextProps, STATUS } from '@/SocketDataContext';
+import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('utils/useSocket');
@@ -27,12 +27,12 @@ const strToParse = <T>(unknown: unknown): T => {
     return unknown as T;
   }
 };
-const webSocketUrl = (token: string) => `ws://192.168.101.14:7080/ws?token=${token}`;
+const webSocketUrl = (token: string) => `${process.env.WS_API}/ws?token=${token}`;
 const useSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   variables   ====== */
   const { data: auth } = useGetAuth();
   const ws = useRef<WebSocket | null>(null);
-  const [status, setStatus] = useState<STATUS>(ws.current?.readyState ?? STATUS['CONNECTING']);
+  const [status, setStatus] = useState<WS_STATUS>(ws.current?.readyState ?? WS_STATUS['CONNECTING']);
   const [data, setData] = useState<SocketData<unknown>[]>([]);
   const [alarm, setAlarm] = useState<Alarm<TITAN_INTERNAL_EVENT_ID>[]>([]);
   const moduleState: Map<string, ModuleState> = useMemo(
@@ -40,43 +40,62 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
       data
         .filter((x) => x.type === SOCKET_MESSAGE.INITIAL_MODULE_STATE)
         .reduce((a, v) => {
-          const data = toData(v.data) as ModuleState;
+          const data = toFormat(v.data) as ModuleState;
           a.set(`${data.id ?? data.stateType}`, data);
           return a;
         }, new Map()),
     [data],
   );
+  // const tcsEventSet: Map<string, TcsEvent> = useMemo(
+  //   () =>
+  //     data
+  //       .filter((x) => x.type === SOCKET_MESSAGE.TCM_EVENT_SET)
+  //       .reduce((a, v) => {
+  //         const data = toFormat(v.data) as TcsEvent;
+  //         a.set(`${data.location}`, data.eventCode);
+  //         return a;
+  //       }, new Map()),
+  //   [data],
+  // );
   const tcmInfo: Map<string, TcmInfo> = useMemo(
     () =>
       data
         .filter((x) => x.type === SOCKET_MESSAGE.TCM_INFO)
         .reduce((a, v) => {
-          const data = toData(v.data) as TcmInfo;
+          const data = toFormat(v.data) as TcmInfo;
           a.set(`${data.tcmId}`, data);
           return a;
         }, new Map()),
     [data],
   );
   const tcmList: TcmList[] = useMemo(
-    () => Array.from(tcmInfo).map(([id, x]) => ({ ...x, status: moduleState.get(id)?.alive ?? 0 })),
+    () =>
+      Array.from(tcmInfo).map(([id, x]) => ({
+        ...x,
+        status: CONTROL_STATUS[moduleState.get(id)?.alive ?? 0] as keyof typeof CONTROL_STATUS,
+      })),
     [moduleState, tcmInfo],
   );
-  const serverList: ServerList[] = useMemo(
-    () =>
-      Array.from(moduleState)
-        .filter(([id]) => isNaN(Number(id)))
-        .map(([id, x]) => ({ ...x, status: moduleState.get(id)?.alive ?? 0 })),
-    [moduleState],
-  );
+  const serverList: ServerList[] = useMemo(() => {
+    const servers = Array.from(moduleState)
+      .filter(([_, x]) => ['HIM', 'DCM'].includes(x.stateType))
+      .reverse()
+      .map(([id, x]) => ({
+        ...x,
+        stateType: x.stateType as SERVER_TYPE,
+        status: CONTROL_STATUS[moduleState.get(id)?.alive ?? 0] as keyof typeof CONTROL_STATUS,
+      }));
+    return [servers.find((x) => x.stateType === 'HIM')!, servers.find((x) => x.stateType === 'DCM')!].filter((x) => x);
+  }, [moduleState]);
   // const initialModuleState = useMemo(() => data?.[SOCKET_MESSAGE.INITIAL_MODULE_STATE], [data]);
   /* ======   function    ====== */
-  const send = <T>(type: SOCKET_NAME, arg: T | null = null) =>
-    ws.current?.send(JSON.stringify({ type, compress: 0, arg }));
+  const send = <T>(type: SOCKET_NAME, data: T | null = null) =>
+    ws.current?.send(JSON.stringify({ type, compress: 0, data: JSON.stringify(data) }));
   const init = useDebounce<void>(() => send(type));
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!auth?.token) return;
-    if (status === STATUS.OPEN) init();
+    if (status === WS_STATUS.OPEN) init();
 
     if (ws.current) return;
     logger('useEffect init');
@@ -84,11 +103,11 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     ws.current = new WebSocket(webSocketUrl(auth.token));
     ws.current.onopen = () => {
       window.send = send;
-      setStatus(STATUS.OPEN);
+      setStatus(WS_STATUS.OPEN);
     };
     ws.current.onclose = () => {
       ws.current = null;
-      setStatus(STATUS.CLOSED);
+      setStatus(WS_STATUS.CLOSED);
     };
     ws.current.onmessage = (message: MessageEvent<SocketData<unknown>>) => {
       logger(message);
@@ -98,10 +117,17 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         case SOCKET_MESSAGE.TCM_INFO:
           setData((prev) => [...prev, data]);
           break;
+        case SOCKET_MESSAGE.TCM_EVENT_SET:
+          setAlarm(
+            Object.values(data.data as Object)
+              .map((x) => toFormat({ ...x, alarmCode: x.EventCode }))
+              .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
+          );
+          break;
         case SOCKET_MESSAGE.TCM_ALARM_SET:
           setAlarm(
             Object.values(data.data as Object)
-              .map((x) => toData(x.Object))
+              .map((x) => toFormat(x.Object))
               .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
           );
           break;

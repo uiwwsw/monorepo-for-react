@@ -43,7 +43,7 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
   /* ======   useEffect   ====== */
   return (
     <>
-      <Toasts />
+      {Toasts}
       <div className="flex p-2 items-center justify-end">
         <span>유저 등급 변경: </span>
         <Select defaultValue={row?.original.grade} options={options} onChange={handleChange} />

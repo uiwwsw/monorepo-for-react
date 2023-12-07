@@ -1,7 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { User } from '../domain';
-import { http } from '#/http';
+import { http } from '#/ondhttp';
 import { UserGrade } from '@package-backend/types';
 const logger = createLogger('auth/useUserList');
 

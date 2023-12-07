@@ -1,4 +1,5 @@
 import { SOCKET_NAME } from '!/socket/domain';
+import { ControlModuleReq } from '@package-backend/types';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
@@ -9,14 +10,11 @@ async function fetcher(
   {
     arg,
   }: {
-    arg: {
-      address: string;
-      port?: number;
-    };
+    arg: ControlModuleReq;
   },
 ) {
   logger(arg, url);
-  window.send(SOCKET_NAME.MODULE_START_TCM);
+  window.send(SOCKET_NAME.MODULE_START_TCM, arg);
 }
 
 export function useTcmStart() {

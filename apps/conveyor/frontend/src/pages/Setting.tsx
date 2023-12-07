@@ -34,7 +34,7 @@ const Setting = () => {
   /* ======   useEffect   ====== */
   return (
     <>
-      <Toasts />
+      {Toasts}
       <PageCenter title={t('설정')} icon="⚙️">
         <div className="flex items-center">
           <span className="text-lg">{t('기본 테이블 갯수')}</span>:

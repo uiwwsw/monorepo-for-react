@@ -1,5 +1,5 @@
 import { createLogger } from '@package-frontend/utils';
-import { ContextProps, useHeaderContext } from './HeaderContext';
+import { useHeaderContext } from './HeaderContext';
 import { Button } from '@library-frontend/ui';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
