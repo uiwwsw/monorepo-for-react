@@ -1,4 +1,4 @@
-import { http } from '#/ondhttp';
+import { http } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
@@ -9,10 +9,10 @@ export interface Arg {
   position: number;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<unknown, Arg>({ url, arg });
+  const res = await http<Arg>({ url, arg });
   logger(res);
-
-  return res;
+  if (res.ok) return true;
+  return false;
 }
 
 export function useLifterPosition() {

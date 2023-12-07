@@ -1,4 +1,4 @@
-import { http } from '#/ondhttp';
+import { http } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
@@ -8,10 +8,10 @@ export interface Arg {
   value: string;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<unknown, Arg>({ url, arg, method: 'POST' });
+  const res = await http<Arg>({ url, arg, method: 'POST' });
   logger(res);
-
-  return res;
+  if (res.ok) return true;
+  return false;
 }
 
 export function useUpdateEquipmentValue() {

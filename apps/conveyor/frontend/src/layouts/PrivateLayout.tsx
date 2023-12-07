@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 // import AsyncBoundary from '@/AsyncBoundary';
 import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
-import { HttpError } from '#/ondhttp';
+import { HttpError } from '#/http';
 import useHeader from '#/useHeader';
 /* ======   interface   ====== */
 /* ======    global     ====== */

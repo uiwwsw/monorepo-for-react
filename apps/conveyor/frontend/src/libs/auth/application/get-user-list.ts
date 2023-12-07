@@ -1,16 +1,17 @@
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { User } from '../domain';
-import { http } from '#/ondhttp';
+import { http, toJson } from '#/http';
 import { UserGrade } from '@package-backend/types';
 const logger = createLogger('auth/useUserList');
 
 async function fetcher(url: string) {
-  const res = await http<{ users: User[] }>({
+  const res = await http({
     url,
   });
   logger(url, res);
-  return res!.users.map((x) => {
+  const json = await toJson<{ users: User[] }>(res);
+  return json!.users.map((x) => {
     const res = {
       ...x,
       gradeName: UserGrade[x.grade],

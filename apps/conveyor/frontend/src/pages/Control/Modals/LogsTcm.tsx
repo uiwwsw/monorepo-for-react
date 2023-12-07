@@ -1,5 +1,5 @@
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, onDownload, onView } from '@package-frontend/utils';
 import { useTcmLogList } from '!/control/application/get-tcm-log-list';
 import H2 from '@/Typography/H2';
 import { useTcmLog } from '!/control/application/get-tcm-log';
@@ -33,27 +33,12 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
   };
   const handleDownload = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName; // 저장할 파일 이름
-    document.body.appendChild(a);
-    a.click(); // 프로그래밍 방식으로 클릭 이벤트 발생
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url); // URL 해제
+    onDownload(blob, fileName);
     logger('handleDownload');
   };
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click(); // 프로그래밍 방식으로 클릭 이벤트 발생
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url); // URL 해제
+    onView(blob);
     logger('handleView');
   };
   /* ======   useEffect   ====== */

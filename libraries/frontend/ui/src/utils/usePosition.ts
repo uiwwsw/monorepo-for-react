@@ -1,6 +1,5 @@
 import { RefObject, useState } from 'react';
-import { createLogger } from '@package-frontend/utils';
-import { getScrollbarWidth } from './ui';
+import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 /* ======   interface   ====== */
 
 export interface UsePositionProps {

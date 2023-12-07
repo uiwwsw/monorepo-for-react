@@ -1,4 +1,4 @@
-import { http } from '#/ondhttp';
+import { http, toJson } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 import { TcmClient } from '../domain';
@@ -8,10 +8,11 @@ export interface Arg {
   tcm_id: number;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<TcmClient, Arg>({ url, arg });
+  const res = await http<Arg>({ url, arg });
   logger(res);
+  const json = await toJson<TcmClient>(res);
 
-  return res;
+  return json;
 }
 
 export function useCheckTcmClient() {

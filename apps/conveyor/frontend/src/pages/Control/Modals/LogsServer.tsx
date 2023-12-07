@@ -1,10 +1,11 @@
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, onDownload, onView } from '@package-frontend/utils';
 import { useServerLogList } from '!/control/application/get-server-log-list';
 import H2 from '@/Typography/H2';
 import { SERVER_TYPE } from '!/control/domain';
 import { useServerLog } from '!/control/application/get-server-log';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
 export interface ModalLogsServerProps {
@@ -30,29 +31,21 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
   };
   const handleDownload = async (fileName: string) => {
     const blob = await logTrigger({ fileName });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName; // 저장할 파일 이름
-    document.body.appendChild(a);
-    a.click(); // 프로그래밍 방식으로 클릭 이벤트 발생
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url); // URL 해제
+    onDownload(blob, fileName);
     logger('handleDownload');
   };
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click(); // 프로그래밍 방식으로 클릭 이벤트 발생
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url); // URL 해제
+
+    onView(blob);
     logger('handleView');
   };
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    return () => {
+      logger('ㅂ클리어');
+    };
+  }, []);
   return (
     <>
       <ToastWithPortal open={logListError?.message}>{logListError?.message}</ToastWithPortal>
@@ -67,7 +60,7 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
         defaultLoading={isLogListMutating}
         hasCloseBtn
       >
-        <H2>{t('서버 {{stateType}} 로그', { stateType })}</H2>
+        <H2>{t('{{stateType}} 로그', { stateType })}</H2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {logListData?.map((fileName, index) => (
             <div

@@ -271,26 +271,35 @@ const Table = <T,>({
               </tr>
             ))}
           </thead>
+
           <tbody className="bg-white divide-y divide-gray-200">
             {data.length > 0 ? (
-              table.getRowModel().rows.map((row) => {
-                return (
-                  <Fragment key={row.id}>
-                    <tr>
-                      {row.getVisibleCells().map((cell) => (
-                        <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
-                      ))}
-                    </tr>
-                    {row.getIsExpanded() && renderSubComponent && (
+              table.getFilteredRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => {
+                  return (
+                    <Fragment key={row.id}>
                       <tr>
-                        <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
-                          {cloneElement(renderSubComponent, { row })}
-                        </td>
+                        {row.getVisibleCells().map((cell) => (
+                          <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
+                        ))}
                       </tr>
-                    )}
-                  </Fragment>
-                );
-              })
+                      {row.getIsExpanded() && renderSubComponent && (
+                        <tr>
+                          <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
+                            {cloneElement(renderSubComponent, { row })}
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={99} className="text-center pt-8 pb-4">
+                    <Empty>{t('검색 결과가 없습니다.')}</Empty>
+                  </td>
+                </tr>
+              )
             ) : (
               <tr>
                 <td colSpan={99} className="text-center pt-8 pb-4">
