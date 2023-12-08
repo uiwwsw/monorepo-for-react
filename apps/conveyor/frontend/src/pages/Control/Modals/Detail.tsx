@@ -10,7 +10,7 @@ interface ModalDetailProps {
 
 const ModalDetail = ({ tid }: ModalDetailProps) => {
   /* ======   variables   ====== */
-  const { trigger, data } = useCheckTcmClient();
+  const { trigger } = useCheckTcmClient();
   /* ======   function    ====== */
   const handleGetTcmStatus = async () => {
     if (!tid) return;

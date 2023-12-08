@@ -2,11 +2,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createLogger, toFormat } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
-import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo, TcsEvent } from '!/socket/domain';
+import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
 import { CONTROL_STATUS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
+import { HttpError } from './http';
+
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('utils/useSocket');
@@ -27,7 +29,10 @@ const strToParse = <T>(unknown: unknown): T => {
     return unknown as T;
   }
 };
-const webSocketUrl = (token: string) => `${process.env.WS_API}/ws?token=${token}`;
+
+let sto: NodeJS.Timeout;
+const limit = 5;
+let tryOut = 0;
 const useSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   variables   ====== */
   const { data: auth } = useGetAuth();
@@ -89,14 +94,17 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     if (status === WS_STATUS.OPEN) init();
 
     if (ws.current) return;
-    logger('useEffect init');
 
-    ws.current = new WebSocket(webSocketUrl(auth.token));
+    ws.current = new WebSocket(`${process.env.WS_API}/ws/?token=${auth.token}`);
     ws.current.onopen = () => {
       window.send = send;
       setStatus(WS_STATUS.OPEN);
+      clearTimeout(sto);
+      sto = setTimeout(() => (tryOut = limit), 1000);
     };
     ws.current.onclose = () => {
+      clearTimeout(sto);
+      if (++tryOut > limit) throw new HttpError('invalid-session', { status: 403 });
       ws.current = null;
       setStatus(WS_STATUS.CLOSED);
     };
@@ -168,19 +176,8 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
               }
             });
           break;
-        // case SOCKET_MESSAGE.TCM_ALARM_SET:
-        //   setAlarm(
-        //     Object.values(data.data as Object)
-        //       .map((x) => toFormat(x.Object))
-        //       .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
-        //   );
-        //   break;
       }
     };
-    // return () => {
-    //   logger('clear', ws.current.readyState === ws.current.OPEN);
-    //   if (ws.current.readyState === ws.current.OPEN) ws.current.close();
-    // };
   }, [auth?.token, status]);
   return {
     status,

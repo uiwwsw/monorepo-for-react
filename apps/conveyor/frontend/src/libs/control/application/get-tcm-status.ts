@@ -1,4 +1,4 @@
-import { http, toBlob, toJson } from '#/http';
+import { http, toJson } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 const logger = createLogger('control/useTcmStatus');

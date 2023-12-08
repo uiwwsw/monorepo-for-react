@@ -41,7 +41,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   const handleStopClick = () =>
     adapterEvent({
       startMsg: '선택한 TCM STOP 중입니다.',
-      duration: 5000,
+      duration: 10000,
       event(TCM_ID) {
         return stopTrigger({ TCM_ID });
       },
@@ -49,7 +49,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
   const handleRestartClick = () =>
     adapterEvent({
       startMsg: '선택한 TCM RESTART 중입니다.',
-      duration: 10000,
+      duration: 15000,
       event(TCM_ID) {
         return restartTrigger({ TCM_ID });
       },
