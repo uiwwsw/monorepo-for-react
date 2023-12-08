@@ -307,7 +307,7 @@ router.get('/user-list', verifyToken, asyncWrapper<UserListRequest, UserListResp
 router.post('/sign-up', asyncWrapper<SignUpRequest, SignUpResponse>(async (req, res) => {
     const { user_id, username, password } = req.body;
     const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid FROM users WHERE user_id = ?', [user_id]);
-    const grade = UserGrade.PENDING;
+    const grade = UserGrade.OPERATOR;
     if (rows.length > 0) {
         throw new Error('ALREADY_EXISTED_USER_ID');
     }
