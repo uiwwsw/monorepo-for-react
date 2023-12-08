@@ -52,8 +52,12 @@ export interface IOffsetInfoResp extends AttributeQS {
 export interface ICheckTcmClientReq {
     tcm_id : number;
 }
+export interface TcmClientAlive {
+    tcm_id : number;
+    alive : number;
+}
 export interface ICheckTcmClientResp {
-    state : number;
+    state? : TcmClientAlive[];
     write_log : number;
 }
 
