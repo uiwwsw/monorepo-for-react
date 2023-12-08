@@ -66,6 +66,7 @@ export const toBlob = async (res: Response) => {
 export const toJson = async <T>(res: Response) => {
   const json = (await res.json()) as STResponse<T>;
   if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;
+  if (json.message) throw new HttpError(json.message, res);
   return toFormat(json) as STResponseSuccess<T>;
 };
 export class HttpError extends Error implements STResponseFailed {
