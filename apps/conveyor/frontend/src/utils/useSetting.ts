@@ -11,10 +11,12 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   variables   ====== */
   const defaultPageSize = storage.get<number>(STORAGE['setting/default-page-size']) ?? 10;
   const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
+  const defaultViewBrowser = storage.get<boolean>(STORAGE['setting/default-view-browser']) ?? false;
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {
+    defaultViewBrowser,
     defaultPageSize,
     defaultDuration,
   };

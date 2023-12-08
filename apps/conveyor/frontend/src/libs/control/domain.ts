@@ -3,7 +3,8 @@ export enum CONTROL_STATUS {
   OFF,
   ON,
 }
-export type SERVER_TYPE = 'DCM' | 'HIM';
+export const SERVERS = ['DCM', 'HIM'] as const;
+export type SERVER_TYPE = (typeof SERVERS)[number];
 export interface ProcessList {
   procList: { procId: number; procName: string }[];
 }

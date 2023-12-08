@@ -88,7 +88,12 @@ const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
         <div className="flex flex-col space-y-4 mt-4">
           <div>
             <span className="text-sm font-medium">파일 선택:</span>
-            <Combo onChange={handleFileSelect} placeholder="백업 파일" options={[]}></Combo>
+            <Combo
+              width="300px"
+              onChange={handleFileSelect}
+              placeholder="백업 파일"
+              options={data?.map((x) => ({ value: x, label: x }))}
+            ></Combo>
           </div>
           {selectedFile && (
             <div className="flex items-center space-x-2">

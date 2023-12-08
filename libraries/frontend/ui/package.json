@@ -2,9 +2,9 @@
   "name": "@library-frontend/ui",
   "private": true,
   "version": "0.0.1",
-  "main": "dist/index.es.js",
-  "umd:main": "dist/index.umd.js",
-  "types": "dist/src/index.d.ts",
+  "main": "./dist/index.es.js",
+  "umd:main": "./dist/index.umd.js",
+  "types": "./dist/src/index.d.ts",
   "type": "module",
   "scripts": {
     "dev": "vite",

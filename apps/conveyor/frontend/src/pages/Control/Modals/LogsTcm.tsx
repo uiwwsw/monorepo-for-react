@@ -5,6 +5,8 @@ import H2 from '@/Typography/H2';
 import { useTcmLog } from '!/control/application/get-tcm-log';
 import { useTranslation } from 'react-i18next';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
+import { storage } from '#/storage';
+import { STORAGE } from '!/storage/domain';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
 export interface ModalLogsTcmProps {
@@ -34,11 +36,13 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
   const handleDownload = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
     onDownload(blob, fileName);
+
     logger('handleDownload');
   };
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
-    onView(blob);
+    onView(blob, storage.get(STORAGE['setting/default-view-browser']) ? '' : fileName);
+
     logger('handleView');
   };
   /* ======   useEffect   ====== */
@@ -67,10 +71,10 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
                 <div className="font-medium">{fileName}</div>
               </div>
               <div className="flex space-x-2">
-                <Button onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
+                <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
                   {t('보기')}
                 </Button>
-                <Button onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
+                <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
                   {t('다운로드')}
                 </Button>
               </div>

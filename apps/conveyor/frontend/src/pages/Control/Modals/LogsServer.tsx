@@ -6,6 +6,8 @@ import { SERVER_TYPE } from '!/control/domain';
 import { useServerLog } from '!/control/application/get-server-log';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { storage } from '#/storage';
+import { STORAGE } from '!/storage/domain';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
 export interface ModalLogsServerProps {
@@ -37,7 +39,7 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName });
 
-    onView(blob);
+    onView(blob, storage.get(STORAGE['setting/default-view-browser']) ? '' : fileName);
     logger('handleView');
   };
   /* ======   useEffect   ====== */
@@ -49,7 +51,7 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
   return (
     <>
       <ToastWithPortal open={logListError?.message}>{logListError?.message}</ToastWithPortal>
-
+      {/* <Tutorial/> */}
       <ModalWithBtn
         button={
           <Button themeSize="sm" themeColor={'tertiary'} onClick={handleOpenLogModal}>
@@ -71,10 +73,10 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
                 <div className="font-medium">{fileName}</div>
               </div>
               <div className="flex space-x-2">
-                <Button onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
+                <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
                   {t('보기')}
                 </Button>
-                <Button onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
+                <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
                   {t('다운로드')}
                 </Button>
               </div>

@@ -30,6 +30,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   const handleStartClick = () =>
     adapterEvent({
       startMsg: '선택한 서버 START 중입니다.',
+      duration: 2000,
       event(type) {
         return startTrigger(type);
       },
@@ -37,6 +38,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   const handleStopClick = () =>
     adapterEvent({
       startMsg: '선택한 서버 STOP 중입니다.',
+      duration: 10000,
       event(type) {
         return stopTrigger(type);
       },
@@ -45,6 +47,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
   const handleRestartClick = () =>
     adapterEvent({
       startMsg: '선택한 서버 RESTART 중입니다.',
+      duration: 15000,
       event(type) {
         return restartTrigger(type);
       },

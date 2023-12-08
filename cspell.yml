@@ -30,6 +30,8 @@ words:
   - resouceInfo
   # convayor 데이터 RFID
   - RFID
+  # convayor client api url
+  - checktcmclient
 ignoreWords:
   - noopener
 ignorePaths:

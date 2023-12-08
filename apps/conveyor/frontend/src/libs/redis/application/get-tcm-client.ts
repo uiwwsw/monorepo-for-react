@@ -11,6 +11,7 @@ async function fetcher(url: string, { arg }: { arg: Arg }) {
   const res = await http<Arg>({ url, arg });
   logger(res);
   const json = await toJson<TcmClient>(res);
+  logger(json);
 
   return json;
 }

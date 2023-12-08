@@ -77,13 +77,13 @@ export const convertAlarmToMessage = ({ alarmCode, carrierId, reason, location }
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM:
       return `TCM ${location}이 멈췄습니다.`;
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
-      return `DCM ${location}이 시작되었습니다.`;
+      return `DCM이 시작되었습니다.`;
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
-      return `DCM ${location}이 멈췄습니다.`;
+      return `DCM이 멈췄습니다.`;
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
-      return `HIM ${location}이 시작되었습니다.`;
+      return `HIM이 시작되었습니다.`;
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
-      return `HIM ${location}이 멈췄습니다.`;
+      return `HIM이 멈췄습니다.`;
 
     default:
       return `정의되지 않은 알람코드입니다 ${alarmCode}`;
@@ -179,3 +179,11 @@ export const enum TITAN_INTERNAL_EVENT_ID {
   EVENT_TSC_ERR_NONE = '29070',
   EVENT_TSC_ERR_ALARM = '29080',
 }
+export const MODULE_STATE_CHANGE_MSGS = [
+  // TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_TCM,
+  // TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM,
+  TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM,
+  TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM,
+  TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM,
+  TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM,
+];

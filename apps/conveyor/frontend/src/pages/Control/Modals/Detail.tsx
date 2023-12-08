@@ -1,3 +1,4 @@
+import { useCheckTcmClient } from '!/redis/application/get-tcm-client';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn } from '@library-frontend/ui';
 
@@ -9,15 +10,18 @@ interface ModalDetailProps {
 
 const ModalDetail = ({ tid }: ModalDetailProps) => {
   /* ======   variables   ====== */
-
+  const { trigger, data } = useCheckTcmClient();
   /* ======   function    ====== */
-
+  const handleGetTcmStatus = async () => {
+    if (!tid) return;
+    trigger({ tcm_id: tid });
+  };
   /* ======   useEffect   ====== */
   return (
     <>
       <ModalWithBtn
         button={
-          <Button themeSize="sm" themeColor={'tertiary'}>
+          <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
             Alive
           </Button>
         }

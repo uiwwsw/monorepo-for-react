@@ -2,7 +2,7 @@ import { ChangeEvent, MouseEvent, useMemo, useRef, useState } from 'react';
 import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 import Input from './Input';
-import Menu from './Menu';
+import Menu, { MenuProps } from './Menu';
 import Button from './Button';
 import Underbar from '$/Underbar';
 /* ======   interface   ====== */
@@ -19,6 +19,7 @@ export interface ComboProps {
     disabled?: boolean;
     hidden?: boolean;
   }[];
+  width?: MenuProps['width'];
   defaultValue?: string;
 }
 /* ======    global     ====== */
@@ -31,6 +32,7 @@ const Combo = ({
   searchPlaceholder = '검색어를 입력하세요.',
   defaultValue = '',
   options = [],
+  width = '200px',
   error,
 }: ComboProps) => {
   /* ======   variables   ====== */
@@ -59,6 +61,7 @@ const Combo = ({
   /* ======   useEffect   ====== */
   return (
     <Menu
+      width={width}
       onFinished={handleFinished}
       zIndex={50}
       button={

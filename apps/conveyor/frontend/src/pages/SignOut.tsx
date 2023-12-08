@@ -17,7 +17,7 @@ const SignOut = () => {
   const tryUntilSuccess = async (): Promise<boolean> => {
     logger('사인아웃 호출');
     try {
-      const res = await Promise.all([trigger(), wait(100)]);
+      const [res] = await Promise.all([trigger(), wait(100)]);
       logger('사인아웃 성공', 'e, count', res);
       return res;
     } catch (e) {

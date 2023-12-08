@@ -2,10 +2,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createLogger, toFormat } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
-import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo } from '!/socket/domain';
+import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo, TcsEvent } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
 import { CONTROL_STATUS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
-import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
+import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -35,6 +35,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   const [status, setStatus] = useState<WS_STATUS>(ws.current?.readyState ?? WS_STATUS['CONNECTING']);
   const [data, setData] = useState<SocketData<unknown>[]>([]);
   const [alarm, setAlarm] = useState<Alarm<TITAN_INTERNAL_EVENT_ID>[]>([]);
+
   const moduleState: Map<string, ModuleState> = useMemo(
     () =>
       data
@@ -46,17 +47,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         }, new Map()),
     [data],
   );
-  // const tcsEventSet: Map<string, TcsEvent> = useMemo(
-  //   () =>
-  //     data
-  //       .filter((x) => x.type === SOCKET_MESSAGE.TCM_EVENT_SET)
-  //       .reduce((a, v) => {
-  //         const data = toFormat(v.data) as TcsEvent;
-  //         a.set(`${data.location}`, data.eventCode);
-  //         return a;
-  //       }, new Map()),
-  //   [data],
-  // );
+
   const tcmInfo: Map<string, TcmInfo> = useMemo(
     () =>
       data
@@ -118,19 +109,72 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
           setData((prev) => [...prev, data]);
           break;
         case SOCKET_MESSAGE.TCM_EVENT_SET:
-          setAlarm(
-            Object.values(data.data as Object)
-              .map((x) => toFormat({ ...x, alarmCode: x.EventCode }))
-              .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
-          );
+          const alarm = Object.values(data.data as Object)
+            .map((x) => toFormat({ ...x, alarmCode: x.EventCode }))
+            .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[];
+          setAlarm(alarm);
+          alarm
+            .filter((x) => x.alarmCode && MODULE_STATE_CHANGE_MSGS.includes(x.alarmCode))
+            .forEach((x) => {
+              switch (x.alarmCode) {
+                case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
+                  setData((prev) => [
+                    ...prev,
+                    {
+                      type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
+                      data: {
+                        alive: 1,
+                        stateType: 'DCM',
+                      },
+                    },
+                  ]);
+                  break;
+                case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
+                  setData((prev) => [
+                    ...prev,
+                    {
+                      type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
+                      data: {
+                        alive: 0,
+                        stateType: 'DCM',
+                      },
+                    },
+                  ]);
+                  break;
+                case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
+                  setData((prev) => [
+                    ...prev,
+                    {
+                      type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
+                      data: {
+                        alive: 1,
+                        stateType: 'HIM',
+                      },
+                    },
+                  ]);
+                  break;
+                case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
+                  setData((prev) => [
+                    ...prev,
+                    {
+                      type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
+                      data: {
+                        alive: 0,
+                        stateType: 'HIM',
+                      },
+                    },
+                  ]);
+                  break;
+              }
+            });
           break;
-        case SOCKET_MESSAGE.TCM_ALARM_SET:
-          setAlarm(
-            Object.values(data.data as Object)
-              .map((x) => toFormat(x.Object))
-              .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
-          );
-          break;
+        // case SOCKET_MESSAGE.TCM_ALARM_SET:
+        //   setAlarm(
+        //     Object.values(data.data as Object)
+        //       .map((x) => toFormat(x.Object))
+        //       .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[],
+        //   );
+        //   break;
       }
     };
     // return () => {
