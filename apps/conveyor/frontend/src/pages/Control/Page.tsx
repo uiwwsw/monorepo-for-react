@@ -1,16 +1,17 @@
-import { useTcmInfo } from '!/control/application/get-tcm-info';
+// import { useTcmInfo } from '!/control/application/get-tcm-info';
 import Table from '@/Table';
-import { useServerInfo } from '!/control/application/get-server-info';
+// import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
 import { useMemo } from 'react';
-import { Button } from '@library-frontend/ui';
+import { Button, Loading } from '@library-frontend/ui';
 import { useResume } from '!/control/application/post-resume';
 import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
+import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -20,8 +21,10 @@ import useToastsForControl from '#/useToastsForControl';
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { data: tcmData } = useTcmInfo();
-  const { data: serverData } = useServerInfo();
+  const { tcmList, serverList, status } = useSocketDataContext();
+  // if (status !== WS_STATUS.OPEN) return <Loading show />;
+  // const { data: tcmData } = useTcmInfo();
+  // const { data: serverData } = useServerInfo();
   const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
   const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
   const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [0] });
@@ -55,6 +58,7 @@ const Control = () => {
   return (
     <>
       {Toasts}
+      <Loading show={status !== WS_STATUS.OPEN} />
       <div className="flex gap-5 flex-col">
         <div className="flex ml-auto gap-2">
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
@@ -67,8 +71,8 @@ const Control = () => {
         <div>
           <H2>TCM Control</H2>
           <Table
-            thead={['tid', 'status', 'version', 'adjTcmConnection', 'Process']}
-            data={tcmData}
+            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
+            data={tcmList}
             makePagination={false}
             renderSelectComponent={<TcmSelect />}
             renderSubComponent={<TcmSub />}
@@ -77,8 +81,8 @@ const Control = () => {
         <div>
           <H2>Server Control</H2>
           <Table
-            thead={['sid', 'type', 'status', 'version']}
-            data={serverData}
+            thead={['status', 'stateType']}
+            data={serverList}
             makePagination={false}
             renderSelectComponent={<ServerSelect />}
             renderSubComponent={<ServerSub />}

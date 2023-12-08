@@ -4,7 +4,7 @@ import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
 import ModalFooter from './Footer';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 import { ButtonProps } from '@/Button';
 import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';
@@ -58,6 +58,12 @@ const ModalBase = ({
     return arr.map(([key, value]) => [key, { ...value, open: false }]);
   }, [errors, open]);
   /* ======   function    ====== */
+  const init = (open: boolean) => {
+    const scrollbarWidth = getScrollbarWidth();
+    const { body } = document;
+    body.style.paddingRight = open ? scrollbarWidth + 'px' : '';
+    body.style.overflow = open ? 'hidden' : '';
+  };
   const adapterClose: () => void = useCallback(
     () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose('NONE')),
     [setAnimate, hasToast, persist, onClose, setErrors],
@@ -70,11 +76,11 @@ const ModalBase = ({
   /* ======   useEffect   ====== */
   useEffect(() => {
     open && setTimeout(() => elRef.current?.focus(), 0);
-    document.body.style.overflow = open ? 'hidden' : '';
+    init(!!open);
     logger('useEffect');
 
     return () => {
-      document.body.style.overflow = '';
+      init(false);
     };
   }, [open]);
   useSmooth({
@@ -102,7 +108,7 @@ const ModalBase = ({
         >
           <Loading show={defaultLoading} className="absolute" />
           {hasCloseBtn && <ModalClose onClose={adapterClose} disabled={loading} />}
-          <div>{children}</div>
+          <div className="max-h-[80vh] overflow-auto">{children}</div>
           {hasFooter && (
             <ModalFooter
               errorToastMsg={errorToastMsg}

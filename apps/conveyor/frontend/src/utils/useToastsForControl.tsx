@@ -1,9 +1,8 @@
-import { useToasts, ToastProps } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { useToasts } from '@library-frontend/ui';
+import { createLogger, wait } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
   selectedRows: T[];
-  duration?: ToastProps['duration'];
 }
 export interface UseToastError<T> {
   id: T;
@@ -11,7 +10,7 @@ export interface UseToastError<T> {
 }
 /* ======    global     ====== */
 const logger = createLogger('utils/useToastsForControl');
-const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProps<T>) => {
+const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
   /* ======   variables   ====== */
   const { showToast, hideToast, Toasts } = useToasts();
   /* ======   function    ====== */
@@ -19,29 +18,36 @@ const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProp
     startMsg,
     failMsg,
     successMsg,
+    duration = 3000,
     event,
   }: {
     startMsg: string;
-    failMsg: (errors: UseToastError<T>[]) => string;
-    successMsg: string;
+    failMsg?: (errors: UseToastError<T>[]) => string;
+    successMsg?: string;
+    duration?: number;
     event: (id: T) => void | Promise<unknown>;
   }) => {
     if (!selectedRows) return showToast({ message: '선택되지 않았습니다.' });
+    const onlyStartMsg = !failMsg || !successMsg;
     logger(selectedRows + '이벤트 시작');
-    showToast({
-      message: startMsg,
-      duration: duration * selectedRows.length,
-      hasClose: false,
-      notClose: true,
-      hasGauge: true,
-    });
+    if (onlyStartMsg) showToast({ message: startMsg, duration: duration * selectedRows.length });
+    else
+      showToast({
+        message: startMsg,
+        duration: duration * selectedRows.length,
+        hasClose: false,
+        notClose: true,
+        hasGauge: true,
+      });
 
     const fails: { id: T; message?: string }[] = [];
 
     for (const id of selectedRows) {
       try {
         await event(id);
+        if (onlyStartMsg) await wait(duration);
       } catch (e) {
+        if (onlyStartMsg) return;
         const { message } = e as Error;
         fails.push({
           id,
@@ -49,6 +55,7 @@ const useToastsForControl = <T,>({ selectedRows, duration = 3000 }: UseToastProp
         });
       }
     }
+    if (onlyStartMsg) return;
 
     hideToast(startMsg);
     if (fails.length > 0) {

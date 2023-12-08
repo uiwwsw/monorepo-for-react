@@ -1,4 +1,6 @@
-import { createLogger, fakeApi } from '@package-frontend/utils';
+import { SOCKET_NAME } from '!/socket/domain';
+import { ControlModuleReq } from '@package-backend/types';
+import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
 const logger = createLogger('control/useTcmStart');
@@ -8,22 +10,11 @@ async function fetcher(
   {
     arg,
   }: {
-    arg: {
-      tid: number;
-    };
+    arg: ControlModuleReq;
   },
 ) {
   logger(arg, url);
-
-  //temporary
-  const mockData = {
-    result: 'SUCCESS',
-    reason: 'fakeAPI',
-  };
-
-  const res = await fakeApi(mockData);
-
-  return res;
+  window.send(SOCKET_NAME.MODULE_START_TCM, arg);
 }
 
 export function useTcmStart() {

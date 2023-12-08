@@ -39,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           type={type}
           ref={ref}
           placeholder={placeholder}
-          className={`w-full focus:outline-none p-3 bg-transparent outline-none`}
+          className={`w-full focus:outline-none p-3 bg-transparent outline-none text-ellipsis`}
           onChange={handleChange}
         />
         {slots}

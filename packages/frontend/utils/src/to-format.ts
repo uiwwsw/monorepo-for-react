@@ -1,5 +1,5 @@
 const handleFixedWords = (str: string): string => {
-  ['ID', 'TCM'].forEach((word) => {
+  ['ID', 'TCM', 'IP'].forEach((word) => {
     const regExp = new RegExp(word, 'g'); // Use word boundary to match whole words
     str = str.replace(regExp, (match, offset) => {
       // Convert to lowercase, but if it's not at the start of the string, capitalize the first letter
@@ -36,14 +36,14 @@ const toCamelCase = (key: string): string => {
     // return key.charAt(0).toLowerCase() + key.slice(1).replace(/[A-Z]{2,}/g, replaceUpperCase);
   }
 };
-export const toData = <T>(obj: T): T => {
+export const toFormat = <T>(obj: T): T => {
   if (obj !== null && typeof obj === 'object') {
     if (Array.isArray(obj)) {
-      return obj.map(toData) as T;
+      return obj.map(toFormat) as T;
     } else {
       return Object.keys(obj).reduce((acc: any, key: string) => {
         const camelKey = isPascalOrSnakeCase(key) ? toCamelCase(key) : key;
-        acc[camelKey] = toData((obj as any)[key]);
+        acc[camelKey] = toFormat((obj as any)[key]);
         return acc;
       }, {});
     }

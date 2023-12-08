@@ -1,60 +1,81 @@
-import { useTcmLogList } from '!/control/application/get-tcm-log-list';
-import { formatFileSize } from '!/control/domain';
-import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
-
+import { createLogger, onDownload, onView } from '@package-frontend/utils';
+import { useTcmLogList } from '!/control/application/get-tcm-log-list';
+import H2 from '@/Typography/H2';
+import { useTcmLog } from '!/control/application/get-tcm-log';
+import { useTranslation } from 'react-i18next';
+import { useTcmNetwork } from '!/redis/application/get-tcm-network';
+import { storage } from '#/storage';
+import { STORAGE } from '!/storage/domain';
+// import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
 export interface ModalLogsTcmProps {
-  tid?: number;
+  tcmId?: number;
+  address?: string;
 }
-
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/LogsTcm');
-
-const ModalLogsTcm = ({ tid }: ModalLogsTcmProps) => {
+const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
   /* ======   variables   ====== */
-
-  const { data, trigger, isMutating, error } = useTcmLogList();
-
+  const { t } = useTranslation();
+  const { trigger: networkTrigger, data: port } = useTcmNetwork();
+  const {
+    trigger: logListTrigger,
+    data: logListData,
+    isMutating: isLogListMutating,
+    error: logListError,
+  } = useTcmLogList();
+  const { trigger: logTrigger } = useTcmLog();
   /* ======   function    ====== */
-  const handleClick = () => {
-    trigger({ tid });
-    logger('handleClick');
+  const handleOpenLogModal = async () => {
+    if (!tcmId) return;
+    const port = await networkTrigger({ tcm_id: tcmId });
+    logListTrigger({ port: port!, address: address! });
+    logger('handleOpenLogModal');
+  };
+  const handleDownload = async (fileName: string) => {
+    const blob = await logTrigger({ fileName, port: port!, address: address! });
+    onDownload(blob, fileName);
+
+    logger('handleDownload');
+  };
+  const handleView = async (fileName: string) => {
+    const blob = await logTrigger({ fileName, port: port!, address: address! });
+    onView(blob, storage.get(STORAGE['setting/default-view-browser']) ? '' : fileName);
+
+    logger('handleView');
   };
   /* ======   useEffect   ====== */
-
   return (
     <>
-      <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
+      <ToastWithPortal open={logListError?.message}>{logListError?.message}</ToastWithPortal>
+
       <ModalWithBtn
         button={
-          <Button themeSize="sm" themeColor={'tertiary'} onClick={handleClick}>
-            Logs
+          <Button themeSize="sm" themeColor={'tertiary'} onClick={handleOpenLogModal}>
+            {t('Logs')}
           </Button>
         }
         hasButton={['CANCEL']}
-        defaultLoading={isMutating}
+        defaultLoading={isLogListMutating}
         hasCloseBtn
       >
-        <H2>TCM {tid} 로그</H2>
-
+        <H2>{t('TCM {{tcmId}} 로그', { tcmId })}</H2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {data?.map((log, index) => (
+          {logListData?.map((fileName, index) => (
             <div
               key={index}
-              className="bg-yellow-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
+              className="bg-green-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
             >
               <div className="truncate">
-                <div className="font-medium">{log.fileName}</div>
-                <div className="text-sm text-black">{formatFileSize(log.fileSize)}</div>
+                <div className="font-medium">{fileName}</div>
               </div>
               <div className="flex space-x-2">
-                <Button themeSize="sm" themeColor="secondary">
-                  보기
+                <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
+                  {t('보기')}
                 </Button>
-                <Button themeSize="sm" themeColor="secondary">
-                  다운로드
+                <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
+                  {t('다운로드')}
                 </Button>
               </div>
             </div>

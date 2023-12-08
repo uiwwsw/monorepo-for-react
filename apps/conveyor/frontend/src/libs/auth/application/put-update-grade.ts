@@ -17,7 +17,7 @@ async function fetcher(
     };
   },
 ) {
-  const res = await http<unknown, UserEditGradeRequest>({
+  const res = await http<UserEditGradeRequest>({
     url,
     method: 'PUT',
     arg: {
@@ -26,8 +26,8 @@ async function fetcher(
     },
   });
   logger(res);
-
-  return res;
+  if (res.ok) return true;
+  return false;
 }
 
 export function useUpdateGrade() {

@@ -3,12 +3,11 @@
 import { STORAGE } from '!/storage/domain';
 import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
-import { useToasts, RadioGroup } from '@library-frontend/ui';
+import { useToasts, RadioGroup, Select, Checkbox } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageCenter from '@/PageCenter';
-import { Select } from '@library-frontend/ui';
 import useSetting from '#/useSetting';
 
 /* ======   interface   ====== */
@@ -17,7 +16,7 @@ const logger = createLogger('pages/Setting');
 const Setting = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize, defaultDuration } = useSetting();
+  const { defaultPageSize, defaultDuration, defaultViewBrowser } = useSetting();
 
   const { Toasts, showToast } = useToasts();
   /* ======   function    ====== */
@@ -30,6 +29,11 @@ const Setting = () => {
     storage.set(STORAGE['setting/default-duration'], +e.target.value);
     showToast({ message: t('변경에 성공했습니다.') });
     logger('handleChangeDuration', e);
+  };
+  const handleChangeBrowser = (e: ChangeEvent<HTMLInputElement>) => {
+    storage.set(STORAGE['setting/default-view-browser'], e.target.checked);
+    showToast({ message: t('변경에 성공했습니다.') });
+    logger('handleChangeBrowser', e);
   };
   /* ======   useEffect   ====== */
   return (
@@ -71,6 +75,12 @@ const Setting = () => {
               ]}
               onChange={handleChangeDuration}
             />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <span className="text-lg">{t('로그 뷰어 새창')}</span>:
+          <div className="ml-3">
+            <Checkbox onChange={handleChangeBrowser} checked={defaultViewBrowser} />
           </div>
         </div>
       </PageCenter>

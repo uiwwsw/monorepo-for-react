@@ -5,11 +5,11 @@ import useThrottle from './useThrottle';
 /* ======   interface   ====== */
 
 export interface ToastProps extends ToastWithPortalProps {
-  message: string;
+  message: string | number;
 }
 /* ======    global     ====== */
 const logger = createLogger('utils/useToasts');
-const useToasts = () => {
+const useToasts = (debounce: number = 300) => {
   /* ======   variables   ====== */
   const [toastMessages, setToastMessages] = useState<(ToastProps & { id: string; close?: true })[]>([]);
 
@@ -20,7 +20,7 @@ const useToasts = () => {
       ...prev,
       {
         ...toast,
-        id: new Date().valueOf().toString(),
+        id: new Date().valueOf().toString() + prev.length,
       },
     ]);
   };
@@ -40,10 +40,11 @@ const useToasts = () => {
 
     setToastMessages((prev) => prev.filter((x) => x.id !== id));
   };
+  const adapterShowToast = debounce ? useThrottle(showToast, debounce) : showToast;
 
   /* ======   useEffect   ====== */
   return {
-    showToast: useThrottle(showToast, 300),
+    showToast: adapterShowToast,
     hideToast,
     Toasts: toastMessages.map((x) => (
       <ToastWithPortal {...x} open={!x.close} key={x.id} onClosed={() => deleteToast(x.id)}>

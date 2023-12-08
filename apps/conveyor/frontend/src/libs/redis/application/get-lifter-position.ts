@@ -9,10 +9,10 @@ export interface Arg {
   position: number;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<unknown, Arg>({ url, arg });
+  const res = await http<Arg>({ url, arg });
   logger(res);
-
-  return res;
+  if (res.ok) return true;
+  return false;
 }
 
 export function useLifterPosition() {

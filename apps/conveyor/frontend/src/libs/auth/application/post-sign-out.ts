@@ -10,7 +10,9 @@ async function fetcher(url: string) {
   const res = await http({ url, method: 'POST' });
   const trigger = usePostAuth();
   await trigger(undefined);
-  return res;
+  logger(res.ok);
+  if (res.ok) return true;
+  return false;
   //   return await http({ url });
 }
 

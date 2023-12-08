@@ -1,59 +1,27 @@
-export const formatFileSize = (size: number) => {
-  if (size < 1024) return size + ' bytes';
-  if (size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB';
-  return (size / (1024 * 1024)).toFixed(2) + ' MB';
-};
-
-export enum UPLOAD_STATUS {
-  IDLE,
-  UPDATING,
-  COMPLETED,
-  ERROR,
-}
-
-export const enum CONTROL_STATUS {
-  ONLINE,
-  OFFLINE,
-}
-
-export const enum TCM_CONNECTION_STATUS {
-  ON,
+import { TcmInfo, ModuleState } from '!/socket/domain';
+export enum CONTROL_STATUS {
   OFF,
+  ON,
 }
-
-export interface FileInfo {
-  fileName: string;
-  fileSize: number; //byte
-  //add file info
+export const SERVERS = ['DCM', 'HIM'] as const;
+export type SERVER_TYPE = (typeof SERVERS)[number];
+export interface ProcessList {
+  procList: { procId: number; procName: string }[];
 }
-
-export interface FirmwareStatus {
-  status: UPLOAD_STATUS;
+export interface TcmList extends TcmInfo {
+  status: keyof typeof CONTROL_STATUS;
 }
-
-export interface ClientStatus {
-  tid: number;
-  cStatus: TCM_CONNECTION_STATUS;
+export interface ServerList extends ModuleState {
+  status: keyof typeof CONTROL_STATUS;
+  stateType: SERVER_TYPE;
 }
-
-export interface ServerInfo {
-  sid: number;
-  type: string;
-  status: CONTROL_STATUS;
-  version: string;
-}
-
-export interface TcmInfo {
-  tid: number;
-  status: CONTROL_STATUS;
-  version: string;
-  adjTcmConnection: string;
-  adjTcmConnectionDetail: ClientStatus[];
-  Process: string[];
-}
-
-export interface UploadFile {
-  name: string;
-  size: number;
-  type: string;
-}
+// export const convertToControlStatus = (value: number) => {
+//   switch (value) {
+//     case CONTROL_STATUS.ON:
+//       return 'on';
+//     default:
+//       return 'off';
+//   }
+// };
+// const d: CONTROL_STATUS = CONTROL_STATUS.OFF;
+// console.log(d === 0);

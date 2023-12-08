@@ -1,4 +1,4 @@
-import { http } from '#/http';
+import { http, toJson } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
@@ -7,10 +7,10 @@ export interface Arg {
   tcm_id: number;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<{ port: number }, Arg>({ url, arg });
+  const res = await http<Arg>({ url, arg });
   logger(res);
-
-  return res;
+  const json = await toJson<{ port: number }>(res);
+  return json?.port || 5000;
 }
 
 export function useTcmNetwork() {
