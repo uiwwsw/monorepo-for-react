@@ -20,6 +20,8 @@ async function fetcher(
     };
   },
 ) {
+  logger(url);
+
   const res = await http<SignInRequest>({
     url,
     method: 'POST',
@@ -28,7 +30,7 @@ async function fetcher(
       password: MD5(pw).toString(),
     },
   });
-  logger(res);
+  logger(res.ok);
   const json = await toJson<Auth>(res);
   const trigger = usePostAuth();
   await trigger(json);

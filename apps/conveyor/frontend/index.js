@@ -6,7 +6,6 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'dist')));
-
 app.use(
   '/api',
   createProxyMiddleware({
@@ -18,6 +17,15 @@ app.use(
     // 기타 설정
   }),
 );
+app.get('/config', (req, res) => {
+  // 전송할 환경 변수 선택
+  const clientConfig = {
+    WS_API: process.env.WS_API,
+    API: process.env.API,
+  };
+
+  res.json(clientConfig);
+});
 app.get('*', (_, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
