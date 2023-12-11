@@ -21,7 +21,7 @@ import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { tcmList, serverList, status } = useSocketDataContext();
+  const { tcmList, serverList, communicationList, status } = useSocketDataContext();
   // if (status !== WS_STATUS.OPEN) return <Loading show />;
   // const { data: tcmData } = useTcmInfo();
   // const { data: serverData } = useServerInfo();
@@ -69,23 +69,34 @@ const Control = () => {
           </Button>
         </div>
         <div>
-          <H2>TCM Control</H2>
+          <H2>Communication Control</H2>
           <Table
-            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
-            data={tcmList}
+            thead={['type', 'commState', 'controlState', 'processingState']}
+            data={communicationList}
             makePagination={false}
-            renderSelectComponent={<TcmSelect />}
-            renderSubComponent={<TcmSub />}
           ></Table>
         </div>
         <div>
           <H2>Server Control</H2>
           <Table
+            fixHead={{ status: 'alive' }}
             thead={['status', 'stateType']}
             data={serverList}
             makePagination={false}
             renderSelectComponent={<ServerSelect />}
             renderSubComponent={<ServerSub />}
+          ></Table>
+        </div>
+
+        <div>
+          <H2>TCM Control</H2>
+          <Table
+            fixHead={{ status: 'alive' }}
+            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
+            data={tcmList}
+            makePagination={false}
+            renderSelectComponent={<TcmSelect />}
+            renderSubComponent={<TcmSub />}
           ></Table>
         </div>
       </div>

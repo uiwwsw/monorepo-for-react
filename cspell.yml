@@ -34,6 +34,8 @@ words:
   - RFID
   # convayor client api url
   - checktcmclient
+  # convayor data
+  - TCMID
 ignoreWords:
   - noopener
 ignorePaths:

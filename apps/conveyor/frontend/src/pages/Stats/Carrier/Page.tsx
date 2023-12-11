@@ -12,13 +12,15 @@ import StatsCalendar from '../Calendar';
 import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
 import useSetting from '#/useSetting';
+import H1 from '@/Typography/H1';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { defaultPageSize, defaultDuration } = useSetting();
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = storage.get<VisibilityColumn>(STORAGE['carrier/table']) ?? {};
@@ -101,6 +103,8 @@ const StatsCarrier = () => {
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
+      <H1>{t('케리어')}</H1>
+
       <Table
         thead={[
           'carrierId',

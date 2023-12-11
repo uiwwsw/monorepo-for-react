@@ -1,49 +1,6 @@
-import { SERVER_TYPE } from '!/control/domain';
-
 export interface SocketData<T> {
   type: SOCKET_MESSAGE;
   data: T;
-}
-export interface TcmInfo {
-  buildDate: number;
-  buildNum: number;
-  ipAddress: string;
-  tcmId: number;
-}
-export interface ModuleState {
-  alive: number;
-  id?: number;
-  stateType: SERVER_TYPE | 'TCM';
-}
-export interface TcsEvent {
-  commandId: string;
-  carrierId: string;
-  time: string;
-  taskId: string;
-  serialNo: number;
-  eventCode: number;
-  location: number;
-  reason: number;
-  baseTime: string;
-}
-export interface HimState {
-  mcs1: HimStateInfo;
-  mcs2: HimStateInfo;
-}
-export interface HimStateInfo {
-  commState?: number;
-  controlState: number;
-  processingState: number;
-}
-export interface Alarm<T = string> {
-  alarmCode?: T;
-  carrierId: string;
-  commandId: string;
-  location?: unknown;
-  reason: string;
-  serialNo: number;
-  taskId: string;
-  time: number;
 }
 export const enum SOCKET_NAME {
   ZONE_GET_INFO = 'ZONE_GET_INFO',

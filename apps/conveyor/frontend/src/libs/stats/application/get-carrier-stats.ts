@@ -3,7 +3,7 @@ import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
 import { http, toJson } from '#/http';
-import { CarrierStatsInRequest } from '@package-backend/types';
+import { CarrierStatsInRequest, CarrierStatsResponse } from '@package-backend/types';
 const logger = createLogger('stats/useCarrierStats');
 export interface Arg extends Omit<CarrierStatsInRequest, 'start_time' | 'end_time'> {
   start_time: string;
@@ -23,8 +23,8 @@ async function fetcher(
     arg,
   });
   logger(url, arg, res);
-  const json = await toJson<StatsCarrierData>(res);
-  return json;
+  const json = await toJson<CarrierStatsResponse>(res);
+  return json ? new StatsCarrierData(json) : undefined;
 }
 
 export function useCarrierStats(arg: Arg) {

@@ -10,6 +10,8 @@ import StatsSummaryGraphic, { StatsSummaryGraphicProps } from './Graphic';
 import StatsCalendar from '../Calendar';
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
+import H1 from '@/Typography/H1';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 // enum TOT_AVR {
@@ -40,6 +42,8 @@ const logger = createLogger('pages/Stats/Summary');
 
 const StatsSummary = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const { setChildren } = useHeaderContext();
@@ -98,11 +102,12 @@ const StatsSummary = () => {
       <ToastWithPortal open={zoneError?.message}>{zoneError?.message}</ToastWithPortal>
 
       <div className="relative pt-80">
+        <H1>{t('서머리')}</H1>
         {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
         <Table
           allRowSelectTick={allRowSelectTick}
           // initialRowSelection={}
-          thead={['no', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
+          thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
           // cacheColumnVisibility={columnVisibility}
           // setCacheColumnVisibility={handleVisibility}
           data={renderZone}

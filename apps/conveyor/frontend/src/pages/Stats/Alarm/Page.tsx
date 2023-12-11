@@ -12,13 +12,15 @@ import StatsCalendar from '../Calendar';
 import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
 import useSetting from '#/useSetting';
+import H1 from '@/Typography/H1';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {
   /* ======   variables   ====== */
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { defaultPageSize, defaultDuration } = useSetting();
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = storage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
@@ -99,6 +101,7 @@ const StatsAlarm = () => {
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
+      <H1>{t('알람')}</H1>
 
       <Table
         thead={[

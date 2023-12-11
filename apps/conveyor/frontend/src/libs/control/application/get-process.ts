@@ -1,7 +1,6 @@
 import { http, toJson } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { ProcessList } from '../domain';
 
 const logger = createLogger('control/useProcessId');
 
@@ -19,11 +18,13 @@ async function fetcher(
   logger(arg, url);
 
   const res = await http({ url, arg });
-  const json = await toJson<ProcessList>(res);
+  const json = await toJson<{ ProcList: { ProcId: number; ProcName: 'tcm' }[] }>(res);
   logger(json);
-  return json?.procList[0].procId;
+  return json?.ProcList[0].ProcId;
 }
-
+// 0
+// :
+// {ProcId: 607, ProcName: "tcm"}
 export function useProcessId() {
   return useSWR('/api/api/tcm/process/list', fetcher);
 }

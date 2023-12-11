@@ -2,7 +2,6 @@
 import useSWR from 'swr/mutation';
 import { createLogger } from '@package-frontend/utils';
 import { usePostAuth } from './post-auth';
-import { Auth } from '../domain';
 import { MD5 } from 'crypto-js';
 import { http, toJson } from '#/http';
 import { UserPasswordRequest } from '@package-backend/types';
@@ -27,9 +26,9 @@ async function fetcher(
     },
   });
   logger(res);
-  const json = await toJson<Auth>(res);
+  await toJson(res);
   const trigger = usePostAuth();
-  await trigger(json);
+  await trigger(undefined);
 
   return res;
 }

@@ -1,7 +1,7 @@
-import { Alarm } from '!/socket/domain';
+import { Alarm } from '!/control/domain';
 
-export const convertAlarmToMessage = ({ alarmCode, carrierId, reason, location }: Alarm<TITAN_INTERNAL_EVENT_ID>) => {
-  switch (alarmCode) {
+export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }: Alarm) => {
+  switch (eventCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
       return `Invalid mater configuration zone[${location}] reason[${reason}]`;
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_SLAVE_CONF_INVALID:
@@ -86,7 +86,7 @@ export const convertAlarmToMessage = ({ alarmCode, carrierId, reason, location }
       return `HIM이 멈췄습니다.`;
 
     default:
-      return `정의되지 않은 알람코드입니다 ${alarmCode}`;
+      return `정의되지 않은 알람코드입니다 ${eventCode}`;
   }
 };
 
