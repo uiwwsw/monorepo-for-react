@@ -140,9 +140,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
           const alarm = Object.values(data.data as AlarmInfoObject).map((x) => new Alarm(x));
           setAlarm(alarm);
           alarm
-            .filter((x) => x.alarmCode && MODULE_STATE_CHANGE_MSGS.includes(x.alarmCode))
+            .filter((x) => x.eventCode && MODULE_STATE_CHANGE_MSGS.includes(x.eventCode))
             .forEach((x) => {
-              switch (x.alarmCode) {
+              switch (x.eventCode) {
                 case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
                   setData((prev) => [
                     ...prev,

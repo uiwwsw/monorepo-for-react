@@ -1,20 +1,6 @@
-export enum ALIVE {
-  OFFLINE,
-  CONNECTED,
-}
 export interface SocketData<T> {
   type: SOCKET_MESSAGE;
   data: T;
-}
-export interface Alarm<T = string> {
-  alarmCode?: T;
-  carrierId: string;
-  commandId: string;
-  location?: unknown;
-  reason: string;
-  serialNo: number;
-  taskId: string;
-  time: number;
 }
 export const enum SOCKET_NAME {
   ZONE_GET_INFO = 'ZONE_GET_INFO',

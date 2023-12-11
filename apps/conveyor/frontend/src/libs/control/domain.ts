@@ -1,10 +1,13 @@
 import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
-import { ALIVE } from '!/socket/domain';
-import { AlarmInfoObject, EquipmentStateObject, ModuleState, TCMInfo } from '@package-backend/types';
+import { AlarmInfoObject, EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 export const SERVERS = ['DCM', 'HIM'] as const;
 export type SERVER_TYPE = (typeof SERVERS)[number];
 export interface ProcessList {
   procList: { procId: number; procName: string }[];
+}
+export enum ALIVE {
+  OFFLINE,
+  CONNECTED,
 }
 export class CommunicationList {
   type: string;
@@ -48,7 +51,7 @@ export class TcmList {
 }
 
 export class Alarm {
-  alarmCode: TITAN_INTERNAL_EVENT_ID;
+  eventCode: TITAN_INTERNAL_EVENT_ID;
   carrierId: string;
   commandId: string;
   location?: unknown;
@@ -56,8 +59,8 @@ export class Alarm {
   serialNo: number;
   taskId: string;
   time: string;
-  constructor({ SerialNo, AlarmCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: AlarmInfoObject) {
-    this.alarmCode = AlarmCode as any;
+  constructor({ SerialNo, EventCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: WarningInfo) {
+    this.eventCode = EventCode as any;
     this.carrierId = CarrierID;
     this.commandId = CommandID;
     this.location = Location;
