@@ -12,7 +12,7 @@ import { SOCKET_NAME } from '!/socket/domain';
 
 const App = () => {
   /* ======   variables   ====== */
-  const { tcmList, serverList, alarm, status } = useSocket(SOCKET_NAME.ZONE_GET_INFO);
+  const { tcmList, serverList, alarm, communicationList, status } = useSocket(SOCKET_NAME.ZONE_GET_INFO);
   const { Toasts, showToast } = useToastsForAlarm();
   // const t = import.meta.env.VITE_APP
   /* ======   function    ====== */
@@ -23,7 +23,7 @@ const App = () => {
   return (
     <>
       {Toasts}
-      <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status }}>
+      <SocketDataContext.Provider value={{ tcmList, serverList, alarm, communicationList, status }}>
         <Pages />
       </SocketDataContext.Provider>
     </>

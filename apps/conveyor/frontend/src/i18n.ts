@@ -24,7 +24,7 @@ const resources = {
       '비밀번호 확인': 'Confirm Password',
       새로고침: 'Refresh',
       // routes
-      요약: 'Summary',
+      서머리: 'Summary',
       알람: 'Alarm',
       케리어: 'Carrier',
       유저관리: 'Users',
@@ -83,7 +83,7 @@ const resources = {
       '비밀번호 확인': '确认密码',
       새로고침: '刷新',
       // routes
-      요약: '摘要',
+      서머리: '摘要',
       알람: '闹钟',
       케리어: '运营商',
       유저관리: '用户管理',

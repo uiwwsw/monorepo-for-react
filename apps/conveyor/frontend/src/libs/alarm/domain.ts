@@ -1,6 +1,6 @@
-import { Alarm } from '!/socket/domain';
+import { Alarm } from '!/control/domain';
 
-export const convertAlarmToMessage = ({ alarmCode, carrierId, reason, location }: Alarm<TITAN_INTERNAL_EVENT_ID>) => {
+export const convertAlarmToMessage = ({ alarmCode, carrierId, reason, location }: Alarm) => {
   switch (alarmCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
       return `Invalid mater configuration zone[${location}] reason[${reason}]`;

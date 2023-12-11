@@ -36,7 +36,7 @@ const toCamelCase = (key: string): string => {
     // return key.charAt(0).toLowerCase() + key.slice(1).replace(/[A-Z]{2,}/g, replaceUpperCase);
   }
 };
-export const toFormat = <T>(obj: T): T => {
+export const toFormat = <T>(obj: unknown): T => {
   if (obj !== null && typeof obj === 'object') {
     if (Array.isArray(obj)) {
       return obj.map(toFormat) as T;
@@ -48,5 +48,5 @@ export const toFormat = <T>(obj: T): T => {
       }, {});
     }
   }
-  return obj;
+  return obj as T;
 };

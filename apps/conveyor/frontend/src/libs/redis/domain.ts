@@ -44,7 +44,10 @@ export interface OffsetInfo {
   isWayPoint: unknown;
 }
 export interface TcmClient {
-  state: number;
+  state: {
+    tcmId: number;
+    alive: number;
+  }[];
   writeLog: number;
 }
 export interface ZoneInfo {

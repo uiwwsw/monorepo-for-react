@@ -1,14 +1,15 @@
 // import io from 'socket.io-client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { createLogger, toFormat } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
-import { Alarm, ModuleState, SOCKET_MESSAGE, SOCKET_NAME, SocketData, TcmInfo } from '!/socket/domain';
+import { SOCKET_MESSAGE, SOCKET_NAME, SocketData } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
-import { CONTROL_STATUS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
+import { Alarm, CommunicationList, ServerList, TcmList } from '!/control/domain';
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from './http';
 import { useConfig } from '!/config/application/get-config';
+import { AlarmInfoObject, EquipmentStateObject, ModuleState, TCMInfo } from '@package-backend/types';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -41,50 +42,63 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   const ws = useRef<WebSocket | null>(null);
   const [status, setStatus] = useState<WS_STATUS>(ws.current?.readyState ?? WS_STATUS['CONNECTING']);
   const [data, setData] = useState<SocketData<unknown>[]>([]);
-  const [alarm, setAlarm] = useState<Alarm<TITAN_INTERNAL_EVENT_ID>[]>([]);
+  const [alarm, setAlarm] = useState<Alarm[]>([]);
+  const [equipment, setEquipment] = useState<EquipmentStateObject>();
 
   const moduleState: Map<string, ModuleState> = useMemo(
     () =>
       data
         .filter((x) => x.type === SOCKET_MESSAGE.INITIAL_MODULE_STATE)
         .reduce((a, v) => {
-          const data = toFormat(v.data) as ModuleState;
-          a.set(`${data.id ?? data.stateType}`, data);
+          const data = v.data as ModuleState;
+          a.set(`${data.ID ?? data.StateType}`, data);
           return a;
         }, new Map()),
     [data],
   );
 
-  const tcmInfo: Map<string, TcmInfo> = useMemo(
+  const tcmInfo: Map<string, TCMInfo> = useMemo(
     () =>
       data
         .filter((x) => x.type === SOCKET_MESSAGE.TCM_INFO)
         .reduce((a, v) => {
-          const data = toFormat(v.data) as TcmInfo;
-          a.set(`${data.tcmId}`, data);
+          const data = v.data as TCMInfo;
+          a.set(`${data.TCMID}`, { ...data });
           return a;
         }, new Map()),
     [data],
   );
   const tcmList: TcmList[] = useMemo(
-    () =>
-      Array.from(tcmInfo).map(([id, x]) => ({
-        ...x,
-        status: CONTROL_STATUS[moduleState.get(id)?.alive ?? 0] as keyof typeof CONTROL_STATUS,
-      })),
+    () => Array.from(tcmInfo).map(([id, x]) => new TcmList({ ...x, alive: moduleState.get(id)?.Alive ?? 0 })),
     [moduleState, tcmInfo],
   );
-  const serverList: ServerList[] = useMemo(() => {
-    const servers = Array.from(moduleState)
-      .filter(([_, x]) => ['HIM', 'DCM'].includes(x.stateType))
-      .reverse()
-      .map(([id, x]) => ({
-        ...x,
-        stateType: x.stateType as SERVER_TYPE,
-        status: CONTROL_STATUS[moduleState.get(id)?.alive ?? 0] as keyof typeof CONTROL_STATUS,
-      }));
-    return [servers.find((x) => x.stateType === 'HIM')!, servers.find((x) => x.stateType === 'DCM')!].filter((x) => x);
-  }, [moduleState]);
+  // const serverList: ServerList[] = useMemo(() => {
+  //   const servers = Array.from(moduleState)
+  //     .filter(([_, x]) => ['HIM', 'DCM'].includes(x.stateType))
+  //     .reverse()
+  //     .map(([_, x]) => ({
+  //       ...x,
+  //       stateType: x.stateType as SERVER_TYPE,
+  //       status: ALIVE[x.alive ?? 0] as keyof typeof ALIVE,
+  //     }));
+  //   return [servers.find((x) => x.stateType === 'HIM')!, servers.find((x) => x.stateType === 'DCM')!].filter((x) => x);
+  // }, [moduleState]);
+  const serverList: ServerList[] = useMemo(
+    () =>
+      Array.from(moduleState)
+        .filter(([_, x]) => ['HIM', 'DCM'].includes(x.StateType))
+        .reverse()
+        .map(([_, x]) => new ServerList(x)),
+    [moduleState],
+  );
+  const communicationList: CommunicationList[] = useMemo(
+    () =>
+      Object.entries(equipment ?? {})
+        .filter(([_, value]) => value && Object.values(value).length > 0)
+        .map(([key, value]) => new CommunicationList({ ...value, type: key })),
+    [equipment],
+  );
+
   // const initialModuleState = useMemo(() => data?.[SOCKET_MESSAGE.INITIAL_MODULE_STATE], [data]);
   /* ======   function    ====== */
   const send = <T>(type: SOCKET_NAME, data: T | null = null) =>
@@ -119,10 +133,11 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         case SOCKET_MESSAGE.TCM_INFO:
           setData((prev) => [...prev, data]);
           break;
+        case SOCKET_MESSAGE.HIM_EQUIPMENT_STATE_INFO:
+          setEquipment(data.data as EquipmentStateObject);
+          break;
         case SOCKET_MESSAGE.TCM_EVENT_SET:
-          const alarm = Object.values(data.data as Object)
-            .map((x) => toFormat({ ...x, alarmCode: x.EventCode }))
-            .filter((x) => x) as Alarm<TITAN_INTERNAL_EVENT_ID>[];
+          const alarm = Object.values(data.data as AlarmInfoObject).map((x) => new Alarm(x));
           setAlarm(alarm);
           alarm
             .filter((x) => x.alarmCode && MODULE_STATE_CHANGE_MSGS.includes(x.alarmCode))
@@ -134,9 +149,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
                     {
                       type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
                       data: {
-                        alive: 1,
-                        stateType: 'DCM',
-                      },
+                        Alive: 1,
+                        StateType: 'DCM',
+                      } as ModuleState,
                     },
                   ]);
                   break;
@@ -146,9 +161,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
                     {
                       type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
                       data: {
-                        alive: 0,
-                        stateType: 'DCM',
-                      },
+                        Alive: 0,
+                        StateType: 'DCM',
+                      } as ModuleState,
                     },
                   ]);
                   break;
@@ -158,9 +173,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
                     {
                       type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
                       data: {
-                        alive: 1,
-                        stateType: 'HIM',
-                      },
+                        Alive: 0,
+                        StateType: 'HIM',
+                      } as ModuleState,
                     },
                   ]);
                   break;
@@ -170,9 +185,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
                     {
                       type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
                       data: {
-                        alive: 0,
-                        stateType: 'HIM',
-                      },
+                        Alive: 0,
+                        StateType: 'HIM',
+                      } as ModuleState,
                     },
                   ]);
                   break;
@@ -184,6 +199,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   }, [auth?.token, config?.WS_API, status]);
   return {
     status,
+    communicationList,
     tcmList,
     serverList,
     alarm,
