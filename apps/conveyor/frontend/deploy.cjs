@@ -35,7 +35,6 @@ async function main() {
     // dist 폴더와 index.js 파일 복사
     await copyDir('./apps/conveyor/frontend/dist', './deploy/dist');
     await copyFile('./apps/conveyor/frontend/index.js', './deploy/index.js');
-    await copyFile('./apps/conveyor/frontend/.env', './deploy/.env');
     await copyFile('./apps/conveyor/frontend/package-deploy.json', './deploy/package.json');
 
     // 종속성 설치

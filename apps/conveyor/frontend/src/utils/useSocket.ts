@@ -8,6 +8,7 @@ import { CONTROL_STATUS, SERVER_TYPE, ServerList, TcmList } from '!/control/doma
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from './http';
+import { useConfig } from '!/config/application/get-config';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -35,6 +36,7 @@ const limit = 5;
 let tryOut = 0;
 const useSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   variables   ====== */
+  const { data: config } = useConfig();
   const { data: auth } = useGetAuth();
   const ws = useRef<WebSocket | null>(null);
   const [status, setStatus] = useState<WS_STATUS>(ws.current?.readyState ?? WS_STATUS['CONNECTING']);
@@ -90,12 +92,11 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   const init = useDebounce<void>(() => send(type));
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!auth?.token) return;
+    if (!auth?.token || !config?.WS_API) return;
     if (status === WS_STATUS.OPEN) init();
 
     if (ws.current) return;
-
-    ws.current = new WebSocket(`${process.env.WS_API}/ws/?token=${auth.token}`);
+    ws.current = new WebSocket(`${config?.WS_API}/ws/?token=${auth.token}`);
     ws.current.onopen = () => {
       window.send = send;
       setStatus(WS_STATUS.OPEN);
@@ -104,6 +105,8 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     };
     ws.current.onclose = () => {
       clearTimeout(sto);
+      // TODO 인증정보 체크하는 api 가 필요한 부분
+      // 소켓이라 인증 정보가 유효한지 체크하지 못함
       if (++tryOut > limit) throw new HttpError('invalid-session', { status: 403 });
       ws.current = null;
       setStatus(WS_STATUS.CLOSED);
@@ -178,7 +181,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
           break;
       }
     };
-  }, [auth?.token, status]);
+  }, [auth?.token, config?.WS_API, status]);
   return {
     status,
     tcmList,
