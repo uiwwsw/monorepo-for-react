@@ -1,5 +1,5 @@
 import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
-import { AlarmInfoObject, EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
+import { EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 export const SERVERS = ['DCM', 'HIM'] as const;
 export type SERVER_TYPE = (typeof SERVERS)[number];
 export interface ProcessList {
@@ -28,8 +28,8 @@ export class ServerList {
   alive: number;
   constructor({ StateType, ID, Alive }: ModuleState) {
     this.stateType = StateType as SERVER_TYPE;
-    this.id = ID as any;
-    this.alive = Alive as any;
+    this.id = Number(ID);
+    this.alive = Alive;
     this.status = ALIVE[Alive] as keyof typeof ALIVE;
   }
 }
@@ -42,7 +42,7 @@ export class TcmList {
   ipAddress: string;
   constructor({ IPAddress, TCMID, BuildNum, BuildDate, alive }: TCMInfo & { alive: number }) {
     this.alive = alive;
-    this.tcmId = TCMID as any;
+    this.tcmId = Number(TCMID);
     this.ipAddress = IPAddress;
     this.buildNum = BuildNum;
     this.buildDate = BuildDate;
@@ -60,7 +60,7 @@ export class Alarm {
   taskId: string;
   time: string;
   constructor({ SerialNo, EventCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: WarningInfo) {
-    this.eventCode = EventCode as any;
+    this.eventCode = EventCode as TITAN_INTERNAL_EVENT_ID;
     this.carrierId = CarrierID;
     this.commandId = CommandID;
     this.location = Location;

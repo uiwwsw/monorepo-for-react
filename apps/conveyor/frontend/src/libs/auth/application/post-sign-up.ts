@@ -3,7 +3,7 @@ import { createLogger } from '@package-frontend/utils';
 import { http, toJson } from '#/http';
 import { MD5 } from 'crypto-js';
 import useSWR from 'swr/mutation';
-import { SignUpRequest } from '@package-backend/types';
+import { SignUpRequest, SignUpResponse } from '@package-backend/types';
 const logger = createLogger('auth/useSignUp');
 async function fetcher(
   url: string,
@@ -27,7 +27,7 @@ async function fetcher(
       password: MD5(pw).toString(),
     },
   });
-  const json = await toJson<{ grade: number }>(res);
+  const json = await toJson<SignUpResponse>(res);
 
   return json;
 }

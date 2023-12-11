@@ -45,10 +45,10 @@ export interface OffsetInfo {
 }
 export interface TcmClient {
   state: {
-    tcmId: number;
+    tcm_id: number;
     alive: number;
   }[];
-  writeLog: number;
+  write_log: number;
 }
 export interface ZoneInfo {
   zones: {

@@ -1,54 +1,139 @@
-export interface StatsSummaryData {
+import {
+  AlarmStatsResponse,
+  CarrierStatsResponse,
+  CarrierStatsRow,
+  IAlarminfoRow,
+  Zone,
+  ZoneListResponse,
+  ZoneStatsItem,
+  ZoneStatsResponse,
+} from '@package-backend/types';
+
+export class StatsSummaryData {
   rows: StatsSummaryDataRow[];
+  constructor({ rows }: ZoneStatsResponse) {
+    this.rows = rows.map((x) => new StatsSummaryDataRow(x));
+  }
 }
-export interface StatsSummaryDataRow {
-  date: string;
-  zoneId: number;
-  alarmNum: number;
-  carrierNum: number;
-  warningNum: number;
-}
-
-export interface StatsAlarmDataRow {
-  no: number;
-  serialNo: number;
-  alarmCode: number;
-  taskId: number;
-  location: number;
-  reason: number;
-  tcmId: number;
-  commandId: string;
-  carrierId: string;
-  setTime: string;
-  clearTime: string;
+export class StatsSummaryDataRow {
+  date?: string;
+  zoneId?: number;
+  alarmNum?: number;
+  carrierNum?: number;
+  warningNum?: number;
+  constructor({ date, zoneId, carrierNum, alarmNum, warningNum }: ZoneStatsItem) {
+    this.date = date;
+    this.zoneId = zoneId;
+    this.alarmNum = alarmNum;
+    this.carrierNum = carrierNum;
+    this.warningNum = warningNum;
+  }
 }
 
-export interface StatsAlarmData {
+export class StatsAlarmDataRow {
+  no?: number;
+  serialNo?: number;
+  alarmCode?: number;
+  taskId?: number;
+  location?: number;
+  reason?: number;
+  tcmId?: number;
+  commandId?: string;
+  carrierId?: string;
+  setTime?: string;
+  clearTime?: string;
+  constructor({
+    No,
+    SerialNo,
+    AlarmCode,
+    TaskID,
+    Location,
+    Reason,
+    CommandID,
+    TCMID,
+    CarrierID,
+    SetTime,
+    ClearTime,
+  }: IAlarminfoRow) {
+    this.no = No;
+    this.serialNo = SerialNo;
+    this.alarmCode = AlarmCode;
+    this.taskId = TaskID;
+    this.location = Location;
+    this.reason = Reason;
+    this.tcmId = TCMID;
+    this.commandId = CommandID;
+    this.carrierId = CarrierID;
+    this.setTime = `${SetTime}`;
+    this.clearTime = `${ClearTime}`;
+  }
+}
+
+export class StatsAlarmData {
   rows: StatsAlarmDataRow[];
   totalCount: number;
+  constructor({ rows, total_count }: AlarmStatsResponse) {
+    this.rows = rows.map((x) => new StatsAlarmDataRow(x));
+    this.totalCount = total_count;
+  }
 }
 
-export interface StatsCarrierDataRow {
-  carrierID: string;
+export class StatsCarrierDataRow {
+  commandId?: string;
+  carrierId?: string;
   endTime?: string;
-  startTime: string;
-  taskID: number;
-  zoneIDFrom: number;
-  zoneIDFromName: string;
-  zoneIDTo: number;
-  zoneIDToName: string;
+  startTime?: string;
+  taskId?: number;
+  zoneIdFrom?: number;
+  zoneIdFromName?: string;
+  zoneIdTo?: number;
+  zoneIdToName?: string;
+  constructor({
+    TaskID,
+    ZoneIDTo,
+    CommandID,
+    CarrierID,
+    ZoneIDFrom,
+    StartTime,
+    EndTime,
+    ZoneIDToName,
+    ZoneIDFromName,
+  }: CarrierStatsRow) {
+    this.commandId = CommandID;
+    this.carrierId = CarrierID;
+    this.endTime = `${EndTime}`;
+    this.startTime = `${StartTime}`;
+    this.taskId = TaskID;
+    this.zoneIdFrom = ZoneIDFrom;
+    this.zoneIdFromName = ZoneIDFromName;
+    this.zoneIdTo = ZoneIDTo;
+    this.zoneIdToName = ZoneIDToName;
+  }
 }
 
-export interface StatsCarrierData {
+export class StatsCarrierData {
   rows: StatsCarrierDataRow[];
   totalCount: number;
+  constructor({ rows, total_count }: CarrierStatsResponse) {
+    this.rows = rows.map((x) => new StatsCarrierDataRow(x));
+    this.totalCount = total_count;
+  }
 }
-export interface ZoneList {
+export class ZoneList {
   zones: ZoneListZone[];
+  constructor({ zones }: ZoneListResponse) {
+    this.zones = zones.map((x) => new ZoneListZone(x));
+  }
 }
-export interface ZoneListZone {
-  no: number;
+export class ZoneListZone {
+  level: number;
   zoneId: number;
-  displayName: string;
-  physicalType: number;
+  displayName?: string;
+  physicalType?: number;
+  constructor({ Level, ZoneID, DisplayName, PhysicalType }: Zone) {
+    this.level = Level;
+    this.zoneId = ZoneID;
+    this.displayName = DisplayName;
+    this.physicalType = PhysicalType;
+  }
 }

@@ -107,7 +107,7 @@ const StatsSummary = () => {
         <Table
           allRowSelectTick={allRowSelectTick}
           // initialRowSelection={}
-          thead={['no', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
+          thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
           // cacheColumnVisibility={columnVisibility}
           // setCacheColumnVisibility={handleVisibility}
           data={renderZone}

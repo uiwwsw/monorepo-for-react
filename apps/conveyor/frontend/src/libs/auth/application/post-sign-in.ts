@@ -5,7 +5,7 @@ import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
 import { MD5 } from 'crypto-js';
 import { http, toJson } from '#/http';
-import { SignInRequest } from '@package-backend/types';
+import { SignInRequest, SignInResponse } from '@package-backend/types';
 
 const logger = createLogger('auth/useSignIn');
 
@@ -31,9 +31,13 @@ async function fetcher(
     },
   });
   logger(res.ok);
-  const json = await toJson<Auth>(res);
+  const json = await toJson<SignInResponse>(res);
   const trigger = usePostAuth();
-  await trigger(json);
+  if (json) {
+    await trigger(new Auth(json));
+  } else {
+    await trigger(undefined);
+  }
 
   return res;
 }

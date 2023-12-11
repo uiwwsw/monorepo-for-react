@@ -2,7 +2,7 @@
 import useSWR from 'swr/mutation';
 import { createLogger } from '@package-frontend/utils';
 import { http } from '#/http';
-import { UserEditGradeRequest } from '@package-backend/types';
+import { UserEditGradeRequest, UserGrade } from '@package-backend/types';
 
 const logger = createLogger('auth/useUpdateGrade');
 
@@ -22,7 +22,7 @@ async function fetcher(
     method: 'PUT',
     arg: {
       user_id: id,
-      grade,
+      grade: grade as UserGrade,
     },
   });
   logger(res);

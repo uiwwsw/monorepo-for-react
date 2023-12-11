@@ -28,8 +28,8 @@ async function fetcher(
     // },
     method: 'PUT',
   });
-  const json = await toJson<{ fileName: string }>(res);
-  return json?.fileName;
+  const json = await toJson<{ filename: string }>(res);
+  return json?.filename;
 }
 
 export function useUploadFirm() {

@@ -2,7 +2,7 @@ import { Auth } from '!/auth/domain';
 import { STORAGE } from '!/storage/domain';
 import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
-import { createLogger, toFormat } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import i18n from 'src/i18n';
 import { storage } from './storage';
 const logger = createLogger('utils/http');
@@ -63,11 +63,17 @@ export const toBlob = async (res: Response) => {
   const blob = await res.blob();
   return blob;
 };
+// export const toJson = async <T>(res: Response) => {
+//   const json = (await res.json()) as STResponse<T>;
+//   if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;
+//   if (json.message) throw new HttpError(json.message, res);
+//   return toFormat(json) as STResponseSuccess<T>;
+// };
 export const toJson = async <T>(res: Response) => {
   const json = (await res.json()) as STResponse<T>;
-  if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;
+  if (json?.data) return json.data as STResponseSuccess<T>;
   if (json.message) throw new HttpError(json.message, res);
-  return toFormat(json) as STResponseSuccess<T>;
+  return json as STResponseSuccess<T>;
 };
 export class HttpError extends Error implements STResponseFailed {
   status: number;

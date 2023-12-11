@@ -6,6 +6,7 @@ import 'react-calendar/dist/Calendar.css';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
 import Button from './Button';
+import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
@@ -87,8 +88,8 @@ const Calendar = ({
       <i ref={fakeRef} />
       <div onClick={handleClick} aria-label="react-calendar">
         <ReactCalendar
-          value={value as any}
-          defaultValue={defaultValue as any}
+          value={value as unknown as LooseValue}
+          defaultValue={defaultValue as unknown as LooseValue}
           selectRange={selectRange}
           onChange={handleChange}
         />
