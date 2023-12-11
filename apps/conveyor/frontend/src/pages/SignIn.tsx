@@ -62,7 +62,9 @@ const SignIn = () => {
   }, [location]);
   return (
     <>
-      <ToastWithPortal open={!!toast}>{toast}</ToastWithPortal>
+      <ToastWithPortal notClose open={!!toast}>
+        {toast}
+      </ToastWithPortal>
       <ModalWithPortal
         onClose={handleModalClose}
         open={success}

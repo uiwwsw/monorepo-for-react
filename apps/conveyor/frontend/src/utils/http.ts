@@ -6,7 +6,7 @@ import { createLogger, toFormat } from '@package-frontend/utils';
 import i18n from 'src/i18n';
 import { storage } from './storage';
 const logger = createLogger('utils/http');
-export const enum HttpErrorType {
+export const enum HTTP_ERROR_TYPE {
   AUTH = 4,
   SERVER,
 }
@@ -94,9 +94,9 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res?.status ?? 0;
     this.statusText = res.statusText ?? 'unknown error';
-    if (HttpErrorType.SERVER === this.type) this.message = i18n.t('서버에 문제가 발생한 것 같아요.🤦‍♂️');
+    if (HTTP_ERROR_TYPE.SERVER === this.type) this.message = i18n.t('서버에 문제가 발생한 것 같아요.🤦‍♂️');
 
-    if (HttpErrorType.AUTH === this.type) {
+    if (HTTP_ERROR_TYPE.AUTH === this.type) {
       storage.set(STORAGE['auth']);
       location.replace(`/sign-in${this.query}`);
     }

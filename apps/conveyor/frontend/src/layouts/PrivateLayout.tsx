@@ -8,12 +8,15 @@ import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { HttpError } from '#/http';
 import useHeader from '#/useHeader';
+import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('layout/PrivateLayout');
 
 const PrivateLayout = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   // const navigate = useNavigate();
   // const location = useLocation();
   const { children, setChildren } = useHeader();
@@ -22,7 +25,7 @@ const PrivateLayout = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     logger('useEffect', data);
-    if (!data) throw new HttpError('invalid-session', { status: 403 });
+    if (!data) throw new HttpError(t('유저 정보가 없습니다.'), { status: 403 });
   }, [data]);
   return (
     <div className="flex min-h-screen">
