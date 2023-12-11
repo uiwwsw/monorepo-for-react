@@ -69,16 +69,6 @@ const Control = () => {
           </Button>
         </div>
         <div>
-          <H2>TCM Control</H2>
-          <Table
-            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
-            data={tcmList}
-            makePagination={false}
-            renderSelectComponent={<TcmSelect />}
-            renderSubComponent={<TcmSub />}
-          ></Table>
-        </div>
-        <div>
           <H2>Server Control</H2>
           <Table
             thead={['status', 'stateType']}
@@ -86,6 +76,16 @@ const Control = () => {
             makePagination={false}
             renderSelectComponent={<ServerSelect />}
             renderSubComponent={<ServerSub />}
+          ></Table>
+        </div>
+        <div>
+          <H2>TCM Control</H2>
+          <Table
+            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
+            data={tcmList}
+            makePagination={false}
+            renderSelectComponent={<TcmSelect />}
+            renderSubComponent={<TcmSub />}
           ></Table>
         </div>
       </div>
