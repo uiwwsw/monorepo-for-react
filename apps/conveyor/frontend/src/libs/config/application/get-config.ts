@@ -8,17 +8,10 @@ async function fetcher(url: string): Promise<Config> {
   logger(url);
 
   const res = await fetch(url);
-  try {
-    const json = await res.json();
-    return json;
-  } catch {
-    return {
-      WS_API: process.env.WS_API!,
-      API: process.env.API!,
-    };
-  }
+  const json = await res.json();
+  return json;
 }
 
 export function useConfig() {
-  return useSWR('/config', fetcher);
+  return useSWR('/config.json', fetcher);
 }

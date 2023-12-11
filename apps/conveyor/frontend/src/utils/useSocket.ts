@@ -105,6 +105,8 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     };
     ws.current.onclose = () => {
       clearTimeout(sto);
+      // TODO 인증정보 체크하는 api 가 필요한 부분
+      // 소켓이라 인증 정보가 유효한지 체크하지 못함
       if (++tryOut > limit) throw new HttpError('invalid-session', { status: 403 });
       ws.current = null;
       setStatus(WS_STATUS.CLOSED);

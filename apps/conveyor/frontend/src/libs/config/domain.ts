@@ -1,4 +1,2 @@
-export interface Config {
-  WS_API: ImportMetaEnv['WS_API'];
-  API: ImportMetaEnv['API'];
-}
+import config from 'public/config.json';
+export type Config = typeof config;

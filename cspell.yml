@@ -11,6 +11,8 @@ words:
   - noto
   # ViteFaviconsPlugin 플러그인명
   - ViteFaviconsPlugin
+  # commitlint 플러그인명
+  - commitlint
   # ymtc 회사명
   - ymtc
   # i18next-browser-languagedetector 플러그인명
