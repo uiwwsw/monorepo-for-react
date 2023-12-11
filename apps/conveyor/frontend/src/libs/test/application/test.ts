@@ -11,5 +11,5 @@ async function fetcher(url: string) {
   return json;
 }
 export function useTest() {
-  return useSWR('/api/users/user-list', fetcher);
+  return useSWR('/api/users/heartbeat', fetcher);
 }
