@@ -4,11 +4,9 @@ import useSWR from 'swr';
 import { http, toJson } from '#/http';
 import { AlarmStatsInRequest, AlarmStatsResponse } from '@package-backend/types';
 import { StatsAlarmData } from '../domain';
+import { Arg as StatsArg } from './get-zone-stats';
 
-export interface Arg extends Omit<AlarmStatsInRequest, 'start_time' | 'end_time'> {
-  start_time: string;
-  end_time: string;
-}
+export interface Arg extends Omit<AlarmStatsInRequest, 'start_time' | 'end_time'>, StatsArg {}
 
 const logger = createLogger('stats/useAlarmStats');
 async function fetcher(

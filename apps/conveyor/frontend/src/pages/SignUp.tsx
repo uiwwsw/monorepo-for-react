@@ -45,7 +45,7 @@ const SignUp = () => {
         <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.')}</p>
       </ModalWithPortal>
       <PageCenter title={t('회원가입')} icon="🔐">
-        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
 
         <form className="flex flex-col gap-3">
           <label>

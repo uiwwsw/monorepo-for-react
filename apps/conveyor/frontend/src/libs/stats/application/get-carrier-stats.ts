@@ -4,11 +4,9 @@ import useSWR from 'swr';
 import { StatsCarrierData } from '../domain';
 import { http, toJson } from '#/http';
 import { CarrierStatsInRequest, CarrierStatsResponse } from '@package-backend/types';
+import { Arg as StatsArg } from './get-zone-stats';
 const logger = createLogger('stats/useCarrierStats');
-export interface Arg extends Omit<CarrierStatsInRequest, 'start_time' | 'end_time'> {
-  start_time: string;
-  end_time: string;
-}
+export interface Arg extends Omit<CarrierStatsInRequest, 'start_time' | 'end_time'>, StatsArg {}
 async function fetcher(
   url: string,
   {

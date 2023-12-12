@@ -9,7 +9,7 @@ const WarningMessage = ({ children }: WarningMessageProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return <p className={`text-red-500${children === undefined ? ' hidden' : ''}`}>💥 {children}</p>;
+  return <p className={`text-red-500${!children ? ' hidden' : ''}`}>💥 {children}</p>;
 };
 
 export default WarningMessage;

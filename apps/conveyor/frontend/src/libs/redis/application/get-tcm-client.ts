@@ -10,10 +10,19 @@ export interface Arg {
 async function fetcher(url: string, { arg }: { arg: Arg }) {
   const res = await http<Arg>({ url, arg });
   logger(res);
-  const json = await toJson<TcmClient>(res);
+  const json = await toJson<{
+    state: {
+      tcm_id: number;
+      alive: number;
+    }[];
+    write_log: number;
+  }>(res);
   logger(json);
-
-  return json;
+  if (json) {
+    return new TcmClient(json);
+  } else {
+    return undefined;
+  }
 }
 
 export function useCheckTcmClient() {
