@@ -6,8 +6,8 @@ import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 const logger = createLogger('auth/useGetAuth');
 
-function fetcher() {
-  const res = storage.get<Auth>(STORAGE['auth']);
+function fetcher(url: STORAGE) {
+  const res = storage.get<Auth>(url);
   logger(res);
   return res ?? null;
 }

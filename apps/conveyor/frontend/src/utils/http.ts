@@ -28,7 +28,7 @@ export const http = async <T = unknown>({
     'Content-type': contentType,
   };
   if (auth?.token) headers['x-access-token'] = auth.token;
-  let body: string | null = arg ? JSON.stringify(arg) : null;
+  let body: FormData | string | null = arg ? JSON.stringify(arg) : null;
 
   // GET 메소드에 대한 처리
   if (method === 'GET' && body) {
@@ -39,7 +39,8 @@ export const http = async <T = unknown>({
 
   // 나머지 메소드에 대한 처리 (TODO: 파일 처리, 다른 컨텐트 타입 등)
   if (file) {
-    // 파일 처리 로직
+    body = new FormData();
+    body.append('file', file);
   }
 
   logger({
