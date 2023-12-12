@@ -33,7 +33,7 @@ const ToastBase = ({
   if (hasGauge === undefined) hasGauge = !notClose;
   const isImportant = notClose && hasGauge;
   const elRef = useRef<HTMLDivElement>(null);
-  const delay = Math.max(duration - 1000 + (isImportant ? 20000 : 0), 0);
+  const delay = (4 / 5) * duration;
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {
     if (value) return;

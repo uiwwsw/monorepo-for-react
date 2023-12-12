@@ -241,7 +241,7 @@ const Table = <T,>({
           <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
         )}
       </div>
-      <div className="mb-4 overflow-y-hidden">
+      <div className="mb-4 overflow-y-hidden lg:overflow-visible">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
