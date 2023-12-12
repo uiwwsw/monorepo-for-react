@@ -1,6 +1,5 @@
 // import { createLogger } from '@package-frontend/utils';
 
-// import renderObject from '#/renderObject';
 // import { useSocketDataContext } from '@/SocketDataContext';
 import ControlItem from './Item';
 import { Button } from '@library-frontend/ui';
@@ -41,9 +40,6 @@ const Control = () => {
         <Button themeColor="quaternary">reload</Button>
         <Button themeColor="quaternary">log</Button>
       </ControlItem>
-      {/* <div>{renderObject(data, 'initialmodulestate', 'ID')}</div>
-      <div>{renderObject(data, 'initialmodulestate', 'StateType')}</div>
-      <div>{renderObject(data, 'initialmodulestate', 'StateType3')}</div> */}
     </>
   );
 };

@@ -22,7 +22,7 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
   const guides = [
     {
       ref: checkboxRef,
-      text: '달력을 고정하면 통계 서머리, 알람, 케리어의 달력이 동기화 됩니다.\n동기화 하지 않으면 각각 오늘부터 1주일전까지의 데이터를 보여줍니다.',
+      text: '달력을 고정하면 통계 요약, 알람, 케리어의 달력이 동기화 됩니다.\n동기화 하지 않으면 각각 오늘부터 1주일전까지의 데이터를 보여줍니다.',
     },
   ];
 
@@ -56,13 +56,14 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
           </Checkbox>
         </span>
         <Calendar
+          width="auto"
           defaultValue={currentDuration}
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
           selectRange
           onChange={handleChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
+          button={<Button themeColor={'secondary'} themeSize="sm" />}
         />
       </div>
     </>
