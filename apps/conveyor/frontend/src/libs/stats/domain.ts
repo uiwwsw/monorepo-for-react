@@ -8,6 +8,7 @@ import {
   ZoneStatsItem,
   ZoneStatsResponse,
 } from '@package-backend/types';
+import { FORMAT, FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 
 export class StatsSummaryData {
   rows: StatsSummaryDataRow[];
@@ -16,13 +17,13 @@ export class StatsSummaryData {
   }
 }
 export class StatsSummaryDataRow {
-  date?: string;
+  date: string;
   zoneId?: number;
   alarmNum?: number;
   carrierNum?: number;
   warningNum?: number;
   constructor({ date, zoneId, carrierNum, alarmNum, warningNum }: ZoneStatsItem) {
-    this.date = date;
+    this.date = date ? newDate(date).format(FORMAT_WITHOUT_TIME) : '';
     this.zoneId = zoneId;
     this.alarmNum = alarmNum;
     this.carrierNum = carrierNum;
@@ -40,8 +41,8 @@ export class StatsAlarmDataRow {
   tcmId?: number;
   commandId?: string;
   carrierId?: string;
-  setTime?: string;
-  clearTime?: string;
+  setTime: string;
+  clearTime: string;
   constructor({
     No,
     SerialNo,
@@ -64,8 +65,8 @@ export class StatsAlarmDataRow {
     this.tcmId = TCMID;
     this.commandId = CommandID;
     this.carrierId = CarrierID;
-    this.setTime = `${SetTime}`;
-    this.clearTime = `${ClearTime}`;
+    this.setTime = SetTime ? newDate(SetTime).format(FORMAT) : '';
+    this.clearTime = ClearTime ? newDate(ClearTime).format(FORMAT) : '';
   }
 }
 
@@ -81,8 +82,9 @@ export class StatsAlarmData {
 export class StatsCarrierDataRow {
   commandId?: string;
   carrierId?: string;
-  endTime?: string;
-  startTime?: string;
+  endTime: string;
+  startTime: string;
+  test?: Date;
   taskId?: number;
   zoneIdFrom?: number;
   zoneIdFromName?: string;
@@ -101,8 +103,9 @@ export class StatsCarrierDataRow {
   }: CarrierStatsRow) {
     this.commandId = CommandID;
     this.carrierId = CarrierID;
-    this.endTime = `${EndTime}`;
-    this.startTime = `${StartTime}`;
+    this.endTime = EndTime ? newDate(EndTime).format(FORMAT) : '';
+    this.startTime = StartTime ? newDate(StartTime).format(FORMAT) : '';
+    this.test = StartTime;
     this.taskId = TaskID;
     this.zoneIdFrom = ZoneIDFrom;
     this.zoneIdFromName = ZoneIDFromName;

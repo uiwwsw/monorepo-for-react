@@ -22,7 +22,7 @@ const SignIn = () => {
   const { t } = useTranslation();
   const queryParamToastMsgs = {
     [SIGN_IN_QUERY_PARAM_TOAST['invalid-session']]: t('로그인 정보가 없어요. 로그인 완료 후 이전 페이지로 이동합니다.'),
-    [SIGN_IN_QUERY_PARAM_TOAST['session-expired']]: t('세선만료'),
+    [SIGN_IN_QUERY_PARAM_TOAST['session-expired']]: t('세선이 만료됐습니다.'),
     [SIGN_IN_QUERY_PARAM_TOAST['success-update-password']]: t(
       '비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.',
     ),
@@ -72,7 +72,7 @@ const SignIn = () => {
         hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기')]}
         persist
       >
-        {t(`로그인이 완료됐어요.`)}
+        {t('로그인이 완료됐어요.')}
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
         {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}

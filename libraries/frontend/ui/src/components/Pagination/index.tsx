@@ -37,9 +37,10 @@ export default function Pagination({
 }: PaginationProps) {
   /* ======   variables   ====== */
   const [currentPage, setCurrentPage] = useState(index + 1);
-  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? undefined : currentPage), [currentPage]);
+  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? undefined : currentPage), [currentPage, max]);
   const disabledRightArrow = useMemo(() => currentPage >= max, [currentPage, max]);
   const disabledLeftArrow = useMemo(() => currentPage <= 1, [currentPage]);
+  const disabled = max === 0;
   /* ======   function    ====== */
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleClick(+e.target.value);
@@ -87,6 +88,7 @@ export default function Pagination({
         <span className="w-20 [&>*]:w-full">
           <Numeric
             value={inputPage}
+            disabled={disabled}
             onChange={handleChange}
             max={max}
             min={1}
@@ -96,7 +98,7 @@ export default function Pagination({
             placeholder="page"
           />
         </span>
-        <span>of</span>
+        <span>/</span>
         <span>{max}</span>
       </div>
 

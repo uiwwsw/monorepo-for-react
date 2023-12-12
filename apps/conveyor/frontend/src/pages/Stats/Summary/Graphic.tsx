@@ -90,25 +90,25 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
       <div className="h-60 flex rounded-xl border mb-3">
         <div className="h-full w-1/5 p-1 border-r-2 pt-4 flex flex-col gap-1">
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
-            <dt className="whitespace-nowrap text-sm">{t('Zone ID')}:</dt>
+            <dt className="whitespace-nowrap text-sm">{t('존 아이디')}:</dt>
             <dd title={zoneId} className="truncate font-semibold">
               {zoneId}
             </dd>
           </dl>
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
-            <dt className="whitespace-nowrap text-sm">{t('Carrier Total')}:</dt>
+            <dt className="whitespace-nowrap text-sm">{t('케리어 토탈')}:</dt>
             <dd className="truncate font-semibold">{carrierTotal}</dd>
           </dl>
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
-            <dt className="whitespace-nowrap text-sm">{t('Carrier Average')}:</dt>
+            <dt className="whitespace-nowrap text-sm">{t('케리어 평균')}:</dt>
             <dd className="truncate font-semibold">{carrierAverage}</dd>
           </dl>
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
-            <dt className="whitespace-nowrap text-sm">{t('Alarm Total')}:</dt>
+            <dt className="whitespace-nowrap text-sm">{t('알람 토탈')}:</dt>
             <dd className="truncate font-semibold">{alarmTotal}</dd>
           </dl>
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">
-            <dt className="whitespace-nowrap text-sm">{t('Alarm Average')}:</dt>
+            <dt className="whitespace-nowrap text-sm">{t('알람 평균')}:</dt>
             <dd className="truncate font-semibold">{alarmAverage}</dd>
           </dl>
         </div>

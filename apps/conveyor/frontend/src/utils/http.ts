@@ -63,6 +63,18 @@ export const toBlob = async (res: Response) => {
   const blob = await res.blob();
   return blob;
 };
+// export const toTest = async <T>(data: unknown): Promise<T> =>
+//   data instanceof Array
+//     ? (data.map((x) => toTest(x)) as T)
+//     : data instanceof Object
+//     ? Object.entries(data).reduce((a, [key, value]) => {
+//         return {
+//           ...a,
+//           [key]: value,
+//         };
+//       }, {} as T)
+//     : (data as T);
+
 // export const toJson = async <T>(res: Response) => {
 //   const json = (await res.json()) as STResponse<T>;
 //   if (json?.data) return toFormat(json.data) as STResponseSuccess<T>;

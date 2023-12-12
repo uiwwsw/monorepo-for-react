@@ -17,7 +17,7 @@ const PublicLayout = () => {
       <Sidebar />
       <div className="flex-auto flex flex-col max-w-full">
         {isLoggedIn && <Header />}
-        <main className="flex-auto flex flex-col p-3 xl:max-w-7xl lg:max-w-3xl m-auto w-full">
+        <main className="flex-auto flex flex-col p-3 max-w-none lg:max-w-[calc(100vw-232px)] 2xl:max-w-fit m-auto w-full">
           <Outlet />
         </main>
       </div>
