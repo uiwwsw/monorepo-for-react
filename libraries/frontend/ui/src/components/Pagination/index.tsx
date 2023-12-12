@@ -37,7 +37,7 @@ export default function Pagination({
 }: PaginationProps) {
   /* ======   variables   ====== */
   const [currentPage, setCurrentPage] = useState(index + 1);
-  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? undefined : currentPage), [currentPage, max]);
+  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? 0 : currentPage), [currentPage, max]);
   const disabledRightArrow = useMemo(() => currentPage >= max, [currentPage, max]);
   const disabledLeftArrow = useMemo(() => currentPage <= 1, [currentPage]);
   const disabled = max === 0;

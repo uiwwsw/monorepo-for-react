@@ -102,7 +102,7 @@ const StatsSummary = () => {
       <ToastWithPortal open={zoneError?.message}>{zoneError?.message}</ToastWithPortal>
 
       <div className="relative pt-80">
-        <H1>{t('서머리')}</H1>
+        <H1>{t('요약')}</H1>
         {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
         <Table
           allRowSelectTick={allRowSelectTick}
