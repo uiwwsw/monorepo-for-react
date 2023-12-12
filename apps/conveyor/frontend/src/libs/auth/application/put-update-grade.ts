@@ -13,7 +13,7 @@ async function fetcher(
   }: {
     arg: {
       id: string;
-      grade: number;
+      grade: UserGrade;
     };
   },
 ) {
@@ -22,7 +22,7 @@ async function fetcher(
     method: 'PUT',
     arg: {
       user_id: id,
-      grade: grade as UserGrade,
+      grade,
     },
   });
   logger(res);
