@@ -56,13 +56,14 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
           </Checkbox>
         </span>
         <Calendar
+          width="auto"
           defaultValue={currentDuration}
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}
           tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
           selectRange
           onChange={handleChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
+          button={<Button themeColor={'secondary'} themeSize="sm" />}
         />
       </div>
     </>
