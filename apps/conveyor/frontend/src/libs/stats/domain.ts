@@ -8,6 +8,7 @@ import {
   ZoneStatsItem,
   ZoneStatsResponse,
 } from '@package-backend/types';
+import { FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 
 export class StatsSummaryData {
   rows: StatsSummaryDataRow[];
@@ -22,7 +23,7 @@ export class StatsSummaryDataRow {
   carrierNum?: number;
   warningNum?: number;
   constructor({ date, zoneId, carrierNum, alarmNum, warningNum }: ZoneStatsItem) {
-    this.date = date;
+    this.date = newDate(date).format(FORMAT_WITHOUT_TIME);
     this.zoneId = zoneId;
     this.alarmNum = alarmNum;
     this.carrierNum = carrierNum;

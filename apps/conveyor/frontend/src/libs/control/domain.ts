@@ -1,5 +1,6 @@
 import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
+import { FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 export const SERVERS = ['DCM', 'HIM'] as const;
 export type SERVER_TYPE = (typeof SERVERS)[number];
 export interface ProcessList {
@@ -45,7 +46,7 @@ export class TcmList {
     this.tcmId = Number(TCMID);
     this.ipAddress = IPAddress;
     this.buildNum = BuildNum;
-    this.buildDate = BuildDate;
+    this.buildDate = newDate(BuildDate).format(FORMAT_WITHOUT_TIME);
     this.status = ALIVE[alive] as keyof typeof ALIVE;
   }
 }
