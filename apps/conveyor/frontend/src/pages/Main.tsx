@@ -51,7 +51,7 @@ const Main = () => {
       <Tutorial
         guide={[
           {
-            text: tutorialToastMsg,
+            text: t(tutorialToastMsg),
 
             position: {
               bottom: '30px',
