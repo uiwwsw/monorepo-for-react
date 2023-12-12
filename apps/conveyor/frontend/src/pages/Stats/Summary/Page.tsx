@@ -59,9 +59,15 @@ const StatsSummary = () => {
     () =>
       statsData?.rows.map((x) => {
         const currentZoneList = zoneData?.zones.find((z) => z.zoneId === x.zoneId);
+        // if (!currentZoneList) return;
+        // const { displayName, level, physicalType, zoneId } = currentZoneList ?? {};
         return {
           ...x,
           ...currentZoneList,
+          // displayName: displayName ? displayName : '',
+          // level: level ? level : '',
+          // physicalType: physicalType ? physicalType : '',
+          // zoneId: zoneId ? zoneId : '',
         };
       }),
     [statsData, zoneData],
