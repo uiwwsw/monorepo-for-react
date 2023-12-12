@@ -19,6 +19,7 @@ async function fetcher(
       pw: string;
     };
   },
+  trigger: (arg: Auth | undefined) => Promise<Auth | undefined>,
 ) {
   logger(url);
 
@@ -32,7 +33,6 @@ async function fetcher(
   });
   logger(res.ok);
   const json = await toJson<SignInResponse>(res);
-  const trigger = usePostAuth();
   if (json) {
     await trigger(new Auth(json));
   } else {
@@ -43,5 +43,7 @@ async function fetcher(
 }
 
 export function useSignIn() {
-  return useSWR('/api/users/sign-in', fetcher);
+  const { trigger } = usePostAuth();
+
+  return useSWR('/api/users/sign-in', (url, { arg }) => fetcher(url, { arg }, trigger));
 }
