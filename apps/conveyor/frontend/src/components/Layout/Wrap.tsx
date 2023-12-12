@@ -15,7 +15,7 @@ const LayoutWrap = ({ children }: LayoutWrapProps) => {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-auto flex flex-col max-w-full">{children}</div>
+      <div className="flex-auto flex flex-col max-lg:max-w-full">{children}</div>
     </div>
   );
 };

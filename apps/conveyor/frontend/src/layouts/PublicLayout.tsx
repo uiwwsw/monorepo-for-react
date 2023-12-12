@@ -15,7 +15,6 @@ const PublicLayout = () => {
   return (
     <LayoutWrap>
       {isLoggedIn && <Header />}
-
       <LayoutMain />
     </LayoutWrap>
   );

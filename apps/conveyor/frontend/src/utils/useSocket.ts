@@ -43,7 +43,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   const [status, setStatus] = useState<WS_STATUS>(ws.current?.readyState ?? WS_STATUS['CONNECTING']);
   const [data, setData] = useState<SocketData<unknown>[]>([]);
   const [alarm, setAlarm] = useState<Alarm[]>([]);
-  const [equipment, setEquipment] = useState<EquipmentStateObject>();
+  // const [equipment, setEquipment] = useState<EquipmentStateObject>();
 
   const moduleState: Map<string, ModuleState> = useMemo(
     () =>
@@ -91,13 +91,13 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         .map(([_, x]) => new ServerList(x)),
     [moduleState],
   );
-  const communicationList: CommunicationList[] = useMemo(
-    () =>
-      Object.entries(equipment ?? {})
-        .filter(([_, value]) => value && Object.values(value).length > 0)
-        .map(([key, value]) => new CommunicationList({ ...value, type: key })),
-    [equipment],
-  );
+  // const communicationList: CommunicationList[] = useMemo(
+  //   () =>
+  //     Object.entries(equipment ?? {})
+  //       .filter(([_, value]) => value && Object.values(value).length > 0)
+  //       .map(([key, value]) => new CommunicationList({ ...value, type: key })),
+  //   [equipment],
+  // );
 
   // const initialModuleState = useMemo(() => data?.[SOCKET_MESSAGE.INITIAL_MODULE_STATE], [data]);
   /* ======   function    ====== */
@@ -133,9 +133,9 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         case SOCKET_MESSAGE.TCM_INFO:
           setData((prev) => [...prev, data]);
           break;
-        case SOCKET_MESSAGE.HIM_EQUIPMENT_STATE_INFO:
-          setEquipment(data.data as EquipmentStateObject);
-          break;
+        // case SOCKET_MESSAGE.HIM_EQUIPMENT_STATE_INFO:
+        //   setEquipment(data.data as EquipmentStateObject);
+        //   break;
         case SOCKET_MESSAGE.TCM_EVENT_SET:
           const alarm = Object.values(data.data as AlarmInfoObject).map((x) => new Alarm(x));
           setAlarm(alarm);
@@ -173,7 +173,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
                     {
                       type: SOCKET_MESSAGE.INITIAL_MODULE_STATE,
                       data: {
-                        Alive: 0,
+                        Alive: 1,
                         StateType: 'HIM',
                       } as ModuleState,
                     },
@@ -199,7 +199,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   }, [auth?.token, config?.WS_API, status]);
   return {
     status,
-    communicationList,
+    // communicationList,
     tcmList,
     serverList,
     alarm,

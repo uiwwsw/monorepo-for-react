@@ -3,20 +3,19 @@ import { EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@packag
 import { FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 export const SERVERS = ['DCM', 'HIM'] as const;
 export type SERVER_TYPE = (typeof SERVERS)[number];
-export interface ProcessList {
-  procList: { procId: number; procName: string }[];
-}
 export enum ALIVE {
   OFFLINE,
   CONNECTED,
 }
+export const COMMUNICATION_KEYS = ['MCS1', 'MCS2'] as const;
+export type COMMUNICATION_TYPE = (typeof COMMUNICATION_KEYS)[number];
 export class CommunicationList {
-  type: string;
+  type: COMMUNICATION_TYPE;
   commState: string;
   controlState: string;
   processingState: string;
   constructor({ type, CommState, ControlState, ProcessingState }: EquipmentStateObject & { type: string }) {
-    this.type = type;
+    this.type = type as COMMUNICATION_TYPE;
     this.commState = CommState;
     this.controlState = ControlState;
     this.processingState = ProcessingState;

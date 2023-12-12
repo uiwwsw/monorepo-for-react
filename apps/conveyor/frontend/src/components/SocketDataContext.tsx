@@ -1,4 +1,4 @@
-import { Alarm, CommunicationList, ServerList, TcmList } from '!/control/domain';
+import { Alarm, ServerList, TcmList } from '!/control/domain';
 import { createContext, useContext } from 'react';
 export const enum WS_STATUS {
   CONNECTING,
@@ -8,14 +8,14 @@ export const enum WS_STATUS {
 }
 export interface ContextProps {
   status: WS_STATUS;
-  communicationList: CommunicationList[];
+  // communicationList: CommunicationList[];
   tcmList: TcmList[];
   serverList: ServerList[];
   alarm: Alarm[];
 }
 const SocketDataContext = createContext<ContextProps>({
   status: WS_STATUS.CONNECTING,
-  communicationList: [],
+  // communicationList: [],
   tcmList: [],
   serverList: [],
   alarm: [],

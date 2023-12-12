@@ -68,14 +68,14 @@ const Control = () => {
             Pause
           </Button>
         </div>
-        <div>
+        {/* <div>
           <H2>Communication Control</H2>
           <Table
             thead={['type', 'commState', 'controlState', 'processingState']}
             data={communicationList}
             makePagination={false}
           ></Table>
-        </div>
+        </div> */}
         <div>
           <H2>Server Control</H2>
           <Table
