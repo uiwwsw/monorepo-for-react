@@ -75,7 +75,7 @@ const SignIn = () => {
         {t(`로그인이 완료됐어요.`)}
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
-        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
 
         <form className="flex flex-col gap-3">
           <label>

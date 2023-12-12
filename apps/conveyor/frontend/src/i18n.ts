@@ -6,6 +6,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // (tip move them in a JSON file and import them,
 // or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
 const resources = {
+  ko: {
+    translation: {
+      USER_NOT_FOUND: '아이디를 찾을 수 없습니다.',
+      PASSWORD_NOT_MATCH: '비밀번호가 틀렸습니다.',
+      USER_NOT_AUTHORIZED: '계정이 인증되지 않았습니다.',
+    },
+  },
   en: {
     translation: {
       //word
