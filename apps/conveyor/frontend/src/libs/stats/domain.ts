@@ -17,7 +17,7 @@ export class StatsSummaryData {
   }
 }
 export class StatsSummaryDataRow {
-  date?: string;
+  date: string;
   zoneId?: number;
   alarmNum?: number;
   carrierNum?: number;
@@ -41,8 +41,8 @@ export class StatsAlarmDataRow {
   tcmId?: number;
   commandId?: string;
   carrierId?: string;
-  setTime?: string;
-  clearTime?: string;
+  setTime: string;
+  clearTime: string;
   constructor({
     No,
     SerialNo,
@@ -82,8 +82,9 @@ export class StatsAlarmData {
 export class StatsCarrierDataRow {
   commandId?: string;
   carrierId?: string;
-  endTime?: string;
-  startTime?: string;
+  endTime: string;
+  startTime: string;
+  test?: Date;
   taskId?: number;
   zoneIdFrom?: number;
   zoneIdFromName?: string;
@@ -104,6 +105,7 @@ export class StatsCarrierDataRow {
     this.carrierId = CarrierID;
     this.endTime = EndTime ? newDate(EndTime).format(FORMAT) : '';
     this.startTime = StartTime ? newDate(StartTime).format(FORMAT) : '';
+    this.test = StartTime;
     this.taskId = TaskID;
     this.zoneIdFrom = ZoneIDFrom;
     this.zoneIdFromName = ZoneIDFromName;

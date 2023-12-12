@@ -13,7 +13,7 @@ const Td = <T,>({ cell, textAlignCenter }: TdProps<T>) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
-    <td className={`px-6 py-4 text-sm align-middle${textAlignCenter ? ` text-center` : ''} ${emptyClassName}`}>
+    <td className={`px-6 py-4 truncate text-sm align-middle${textAlignCenter ? ` text-center` : ''} ${emptyClassName}`}>
       {flexRender(cell.column.columnDef.cell, cell.getContext())}
     </td>
   );

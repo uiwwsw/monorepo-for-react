@@ -8,9 +8,8 @@ dayjs.tz.guess();
 export const FORMAT = (() => {
   switch (getLang()) {
     case 'ko':
-      return 'YYYY년 MM월 DD일 HH시 mm분 ss초';
+      return 'YYYY년 MM월 DD일 HH:mm:ss';
     case 'en':
-      return 'MMMM DD, YYYY HH:mm:ss';
     case 'cn':
       return 'MMMM DD, YYYY HH:mm:ss';
   }
@@ -20,7 +19,6 @@ export const FORMAT_WITHOUT_TIME = (() => {
     case 'ko':
       return 'YYYY년 MM월 DD일';
     case 'en':
-      return 'MMMM DD, YYYY';
     case 'cn':
       return 'MMMM DD, YYYY';
   }
