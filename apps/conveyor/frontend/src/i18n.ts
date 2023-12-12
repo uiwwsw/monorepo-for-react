@@ -17,7 +17,7 @@ const resources = {
   en: {
     translation: {
       설정: 'Settings',
-      빈값: 'EMPTY',
+      '데이터가 없습니다.': 'EMPTY',
       한글: 'Korean',
       이름: 'Name',
       영어: 'English',
@@ -99,7 +99,7 @@ const resources = {
   'zh-CN': {
     translation: {
       설정: '设置',
-      빈값: '空',
+      '데이터가 없습니다.': '空',
       한글: '韩文',
       이름: '姓名',
       영어: '英语',
