@@ -36,6 +36,8 @@ words:
   - checktcmclient
   # convayor data
   - TCMID
+  # convayor interface name
+  - IAlarminfoRow
 ignoreWords:
   - noopener
 ignorePaths:
