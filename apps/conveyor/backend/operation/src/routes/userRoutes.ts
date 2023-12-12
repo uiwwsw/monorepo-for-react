@@ -92,7 +92,7 @@ router.post('/sign-in', asyncWrapper<SignInRequest, SignInResponse>(async (req, 
     }
     const row = rows[0];
     if (row.password !== password) {
-      throw new Error('PASSWORD_NOT_MATCH');
+        throw new Error('PASSWORD_NOT_MATCH');
     }
     if (row.grade >= UserGrade.PENDING) {
         throw new Error('USER_NOT_AUTHORIZED');
