@@ -4,12 +4,12 @@ import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { SOCKET_MESSAGE, SOCKET_NAME, SocketData } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
-import { Alarm, CommunicationList, ServerList, TcmList } from '!/control/domain';
+import { Alarm, ServerList, TcmList } from '!/control/domain';
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from './http';
 import { useConfig } from '!/config/application/get-config';
-import { AlarmInfoObject, EquipmentStateObject, ModuleState, TCMInfo } from '@package-backend/types';
+import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */

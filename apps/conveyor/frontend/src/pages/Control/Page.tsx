@@ -21,7 +21,7 @@ import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { tcmList, serverList, communicationList, status } = useSocketDataContext();
+  const { tcmList, serverList, status } = useSocketDataContext();
   // if (status !== WS_STATUS.OPEN) return <Loading show />;
   // const { data: tcmData } = useTcmInfo();
   // const { data: serverData } = useServerInfo();
