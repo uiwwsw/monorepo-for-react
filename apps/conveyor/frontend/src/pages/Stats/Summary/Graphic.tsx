@@ -86,7 +86,7 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
   /* ======   useEffect   ====== */
 
   return (
-    <div className="absolute top-4 left-0 w-full bg-white">
+    <div className="bg-white">
       <div className="h-60 flex rounded-xl border mb-3">
         <div className="h-full w-1/5 p-1 border-r-2 pt-4 flex flex-col gap-1">
           <dl className="flex-1 gap-2 items-center flex w-full bg-slate-300 rounded-md p-1">

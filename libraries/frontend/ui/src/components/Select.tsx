@@ -40,14 +40,14 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     /* ======   useEffect   ====== */
     return (
-      <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
+      <label className={`inline-flex items-center overflow-hidden relative${className ? ` ${className}` : ''}`}>
         <select
           {...props}
           defaultValue={defaultValue}
           disabled={disabled}
           onChange={adapterChange}
           ref={ref}
-          className={`flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
+          className={`w-full whitespace-nowrap text-ellipsis flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
             !defaultValue && !init ? ' text-gray-400' : ''
           }`}
         >

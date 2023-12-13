@@ -6,6 +6,7 @@ import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
+import Test from '@/Test';
 /* ======   interface   ====== */
 export interface NavProps {}
 
@@ -73,25 +74,24 @@ const Nav = (_: NavProps) => {
     //     height: '140px',
     //   },
     // },
-    // {
-    //   ref: langRef,
-    //   text: '언어 변경이 가능합니다.\n브라우저의 언어를 변경하면 좀 더 완벽한 언어 지원이 가능합니다.(캘린더 등)',
-    //   button: (
-    //     <Button
-    //       themeColor={'secondary'}
-    //       onClick={() => {
-    //         window.open('https://www.google.com/search?q=How%20to%20change%20browser%20language');
-    //       }}
-    //     >
-    //       브라우저 언어 변경 방법
-    //     </Button>
-    //   ),
-    // },
+    {
+      ref: langRef,
+      text: '언어 변경이 가능합니다.\n브라우저의 언어를 변경하면 좀 더 완벽한 언어 지원이 가능합니다.(캘린더 등)',
+      button: (
+        <Button
+          themeColor={'secondary'}
+          onClick={() => {
+            window.open('https://www.google.com/search?q=How%20to%20change%20browser%20language');
+          }}
+        >
+          브라우저 언어 변경 방법
+        </Button>
+      ),
+    },
     {
       text: '처음 접속하셨다면 회원가입 후 로그인해보세요~',
       position: {
-        // bottom: '80px',
-        bottom: '30px',
+        bottom: '80px',
         left: '0',
       },
       size: {
@@ -136,11 +136,11 @@ const Nav = (_: NavProps) => {
           <GroupLink routes={commonRoutes} />
         </nav>
         <hr className="border-dashed" />
-        {false && (
-          <span ref={langRef} className="flex">
+        <span ref={langRef} className="flex">
+          <Test>
             <Language />
-          </span>
-        )}
+          </Test>
+        </span>
 
         <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>
       </div>

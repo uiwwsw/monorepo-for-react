@@ -9,7 +9,7 @@ export interface CaretProps {
 }
 /* ======    global     ====== */
 const Caret = ({ active, className, disabled }: CaretProps) => {
-  /* ======   variables   ====== */ className = '';
+  /* ======   variables   ====== */
   const wrapClassName = `relative w-4 -translate-x-2 h-0 pointer-events-none transition align-middle self-center [:focus~&]:-scale-y-100 [:focus~&]:-translate-y-0${
     className ? ` ${className}` : ''
   }${active ? ' -scale-y-100' : ''}`;

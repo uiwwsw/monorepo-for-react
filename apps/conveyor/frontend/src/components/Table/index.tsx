@@ -22,6 +22,7 @@ import Td from './Td';
 import Empty from '@/Empty';
 import { pageSizeOptions } from '#/constants';
 import useSetting from '#/useSetting';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
@@ -34,6 +35,7 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
+  renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
   onSearch?: (keyword: string) => Promise<unknown>;
@@ -55,6 +57,7 @@ const Table = <T,>({
   makePagination = false,
   renderSubComponent,
   renderSelectComponent,
+  renderSelectComponentAtTop,
 }: TableProps<T>) => {
   if (!data)
     return (
@@ -70,7 +73,7 @@ const Table = <T,>({
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
-      ...(renderSelectComponent
+      ...(renderSelectComponent || renderSelectComponentAtTop
         ? [
             {
               id: 'select',
@@ -130,7 +133,7 @@ const Table = <T,>({
           ]
         : []),
     ],
-    [thead, renderSelectComponent, renderSubComponent],
+    [thead, renderSelectComponent, renderSubComponent, renderSelectComponentAtTop],
   );
 
   const [globalFilter, setGlobalFilter] = useState('');
@@ -203,6 +206,7 @@ const Table = <T,>({
   }, [allRowSelectTick, table.getState().pagination.pageSize, table.getState().pagination.pageIndex, globalFilter]);
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
+      {renderSelectComponentAtTop && cloneElement(renderSelectComponentAtTop, { selectedRows })}
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
@@ -232,8 +236,10 @@ const Table = <T,>({
           </div>
         </div>
       )}
-      <div className="flex justify-between items-center relative">
+      <div className="flex justify-between items-center">
         <div className="flex gap-2">
+          {onSearch && <Test />}
+
           <Input
             type="search"
             autoComplete="table-search"
@@ -293,7 +299,7 @@ const Table = <T,>({
                         ))}
                       </tr>
                       {row.getIsExpanded() && renderSubComponent && (
-                        <tr>
+                        <tr className="!border-t-0 !border-b-gray-400 !border-b-2">
                           <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
                             {cloneElement(renderSubComponent, { row })}
                           </td>

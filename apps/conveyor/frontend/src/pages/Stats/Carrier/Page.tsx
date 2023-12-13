@@ -14,7 +14,6 @@ import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
-import Test from '@/Test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -107,7 +106,6 @@ const StatsCarrier = () => {
       <H1>{t('케리어')}</H1>
 
       <Table
-        renderSelectComponent={<Test className="left-0" />}
         thead={[
           'carrierId',
           'endTime',

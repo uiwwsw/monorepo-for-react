@@ -38,7 +38,10 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
     if (!id) return;
     await trigger({ id, grade });
     mutate('/api/users/user-list');
-    showToast({ message: t('{{id}} 유저의 등급을 {{grade}} 등급으로 바꿨습니다', { id, grade: UserGrade[grade] }) });
+    showToast({
+      duration: 5000,
+      message: t('{{id}} 유저의 등급을 {{grade}} 등급으로 바꿨습니다', { id, grade: UserGrade[grade].toLowerCase() }),
+    });
     logger('handleChange', id, grade);
   };
   /* ======   useEffect   ====== */
@@ -46,7 +49,7 @@ const UserGradeSelect = ({ row }: UserGradeSelectProps) => {
     <>
       {Toasts}
       <div className="flex p-2 items-center justify-end">
-        <span>유저 등급 변경: </span>
+        <span>{t('{{id}} 등급 변경', { id: row?.original.userId })}: </span>
         <Select defaultValue={row?.original.grade} options={options} onChange={handleChange} />
       </div>
     </>
