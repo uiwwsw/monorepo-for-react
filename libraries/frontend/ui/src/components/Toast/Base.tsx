@@ -2,10 +2,11 @@ import Button from '@/Button';
 import useSmooth from '#/useSmooth';
 import Close from '$/Close';
 import { createLogger } from '@package-frontend/utils';
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 /* ======   interface   ====== */
 export interface ToastBaseProps {
   open?: boolean;
+  errorMsg?: string;
   children?: ReactNode;
   notClose?: boolean;
   duration?: number;
@@ -18,6 +19,7 @@ export interface ToastBaseProps {
 /* ======    global     ====== */
 const logger = createLogger('components/ToastBase');
 const ToastBase = ({
+  errorMsg,
   hasClose,
   hasGauge,
   notClose = false,
@@ -34,6 +36,7 @@ const ToastBase = ({
   const isImportant = notClose && hasGauge;
   const elRef = useRef<HTMLDivElement>(null);
   const delay = (4 / 5) * duration;
+  const [error, setError] = useState<string>();
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {
     if (value) return;
@@ -49,9 +52,11 @@ const ToastBase = ({
     const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
   }, [open]);
-  // useEffect(() => {
-  //   if (!_open) setOpen(false)
-  // }, [_open])
+  useEffect(() => {
+    if (!isImportant) return;
+    const timer = setTimeout(() => setError(errorMsg), duration + 30000);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div
       className={`relative flex items-center border border-gray-400 px-5 py-2 rounded-sm bg-white overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${
@@ -60,29 +65,36 @@ const ToastBase = ({
       role="alert"
       ref={elRef}
     >
-      <i
-        className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
-          open && hasGauge ? ' w-full animate-count-down-bg' : ''
-        }`}
-        style={{
-          animationDelay: delay + 'ms',
-        }}
-      >
+      {!error && (
         <i
-          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' basis-1/2 animate-count-down-fake' : ''}`}
+          className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
+            open && hasGauge ? ' w-full animate-count-down-bg' : ''
+          }`}
           style={{
-            animationDelay: duration + 'ms',
+            animationDelay: delay + 'ms',
           }}
-        />
-        <i
-          className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
-          style={{
-            animationDuration: duration + 'ms',
-          }}
-        />
-      </i>
-      <span className="flex-1">{children}</span>
-      {hasClose && (
+        >
+          <i
+            className={`flex-auto${hasGauge ? '' : ' flex-0'}${
+              isImportant ? ' basis-1/12 animate-count-down-fake' : ''
+            }`}
+            style={{
+              animationDelay: duration + 'ms',
+            }}
+          />
+          <i
+            className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
+            style={{
+              animationDuration: duration + 'ms',
+            }}
+          />
+        </i>
+      )}
+      <span className="flex-1">
+        {error}
+        {children}
+      </span>
+      {(hasClose || !!error) && (
         <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
           <Close />
         </Button>

@@ -89,10 +89,10 @@ export default {
         },
         'count-down-fake': {
           '0%': {
-            'flex-basis': '50%',
+            'flex-basis': '8.333333%',
           },
           '100%': {
-            'flex-basis': '6%',
+            'flex-basis': '2%',
           },
         },
         ripple: {
