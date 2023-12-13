@@ -4,6 +4,9 @@ import useUpload from '#/useUpload';
 const logger = createLogger('test/useUploadTest');
 async function fetcher(_: string, { arg }: { arg: { file: File } }, process: number, trigger: (file: File) => void) {
   trigger(arg.file);
+  setTimeout(() => {
+    throw new Error('타임 아웃 에러');
+  }, 30000);
   try {
     while (true) {
       await wait(500);

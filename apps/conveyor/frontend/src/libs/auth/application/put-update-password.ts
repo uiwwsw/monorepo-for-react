@@ -5,18 +5,20 @@ import { usePostAuth } from './post-auth';
 import { MD5 } from 'crypto-js';
 import { http, toJson } from '#/http';
 import { UserPasswordRequest } from '@package-backend/types';
+import { Auth } from '../domain';
 
 const logger = createLogger('auth/useUpdatePassword');
-
+export interface Arg {
+  pw: string;
+}
 async function fetcher(
   url: string,
   {
     arg: { pw },
   }: {
-    arg: {
-      pw: string;
-    };
+    arg: Arg;
   },
+  trigger: (arg: Auth | undefined) => Promise<Auth | undefined>,
 ) {
   const res = await http<UserPasswordRequest>({
     url,
@@ -26,13 +28,13 @@ async function fetcher(
     },
   });
   logger(res);
-  await toJson(res);
-  const trigger = usePostAuth();
   await trigger(undefined);
 
   return res;
 }
 
 export function useUpdatePassword() {
-  return useSWR('/api/users/user-password', fetcher);
+  const { trigger } = usePostAuth();
+
+  return useSWR('/api/users/user-password', (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, trigger));
 }

@@ -8,16 +8,16 @@ import { http, toJson } from '#/http';
 import { SignInRequest, SignInResponse } from '@package-backend/types';
 
 const logger = createLogger('auth/useSignIn');
-
+export interface Arg {
+  id: string;
+  pw: string;
+}
 async function fetcher(
   url: string,
   {
     arg: { id, pw },
   }: {
-    arg: {
-      id: string;
-      pw: string;
-    };
+    arg: Arg;
   },
   trigger: (arg: Auth | undefined) => Promise<Auth | undefined>,
 ) {
@@ -45,5 +45,5 @@ async function fetcher(
 export function useSignIn() {
   const { trigger } = usePostAuth();
 
-  return useSWR('/api/users/sign-in', (url, { arg }) => fetcher(url, { arg }, trigger));
+  return useSWR('/api/users/sign-in', (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, trigger));
 }

@@ -22,10 +22,12 @@ import Td from './Td';
 import Empty from '@/Empty';
 import { pageSizeOptions } from '#/constants';
 import useSetting from '#/useSetting';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
+  placeholder?: string;
   fixHead?: Record<string, string>;
   data?: T[];
   allRowSelectTick?: number;
@@ -33,7 +35,8 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
-  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[] }>;
+  renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
+  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
@@ -46,6 +49,7 @@ const Table = <T,>({
   onSearch,
   fixHead,
   data,
+  placeholder,
   allRowSelectTick,
   textAlignCenter = true,
   cacheColumnVisibility,
@@ -53,6 +57,7 @@ const Table = <T,>({
   makePagination = false,
   renderSubComponent,
   renderSelectComponent,
+  renderSelectComponentAtTop,
 }: TableProps<T>) => {
   if (!data)
     return (
@@ -68,7 +73,7 @@ const Table = <T,>({
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
-      ...(renderSelectComponent
+      ...(renderSelectComponent || renderSelectComponentAtTop
         ? [
             {
               id: 'select',
@@ -128,7 +133,7 @@ const Table = <T,>({
           ]
         : []),
     ],
-    [thead, renderSelectComponent, renderSubComponent],
+    [thead, renderSelectComponent, renderSubComponent, renderSelectComponentAtTop],
   );
 
   const [globalFilter, setGlobalFilter] = useState('');
@@ -191,11 +196,17 @@ const Table = <T,>({
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    logger('useEffect: allRowSelectTick, table.getState().pagination.pageIndex', allRowSelectTick);
+    logger(
+      'useEffect: allRowSelectTick, table.getState().pagination.pageIndex',
+      table.getRowModel().rows,
+      table.getState().pagination.pageSize,
+      allRowSelectTick,
+    );
     if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
-  }, [allRowSelectTick, table.getState().pagination.pageIndex]);
+  }, [allRowSelectTick, table.getState().pagination.pageSize, table.getState().pagination.pageIndex, globalFilter]);
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
+      {renderSelectComponentAtTop && cloneElement(renderSelectComponentAtTop, { selectedRows })}
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
@@ -227,18 +238,22 @@ const Table = <T,>({
       )}
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
+          {onSearch && <Test />}
+
           <Input
-            type="text"
+            type="search"
             autoComplete="table-search"
             defaultValue={globalFilter}
             debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            placeholder="검색어를 입력하세요"
+            placeholder={placeholder ?? onSearch ? t('검색어를 입력하세요.') : t('필터링할 키워드를 입력하세요.')}
           />
         </div>
         {renderSelectComponent && (
-          <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
+          <div className="flex items-center">
+            {cloneElement(renderSelectComponent, { selectedRows, isAllSelected: table.getIsAllPageRowsSelected() })}
+          </div>
         )}
       </div>
       <div className="mb-4 overflow-y-hidden lg:overflow-visible">
@@ -284,7 +299,7 @@ const Table = <T,>({
                         ))}
                       </tr>
                       {row.getIsExpanded() && renderSubComponent && (
-                        <tr>
+                        <tr className="!border-t-0 !border-b-gray-400 !border-b-2">
                           <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
                             {cloneElement(renderSubComponent, { row })}
                           </td>
@@ -295,14 +310,14 @@ const Table = <T,>({
                 })
               ) : (
                 <tr>
-                  <td colSpan={99} className="text-center pt-8 pb-4">
-                    <Empty>{t('검색 결과가 없습니다.')}</Empty>
+                  <td colSpan={99} className="text-center py-8">
+                    <Empty>{onSearch ? t('검색 결과가 없습니다.') : t('필터링 결과가 없습니다.')}</Empty>
                   </td>
                 </tr>
               )
             ) : (
               <tr>
-                <td colSpan={99} className="text-center pt-8 pb-4">
+                <td colSpan={99} className="text-center py-8">
                   <Empty />
                 </td>
               </tr>

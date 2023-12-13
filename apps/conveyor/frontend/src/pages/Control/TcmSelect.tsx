@@ -8,14 +8,18 @@ import { useMemo } from 'react';
 import { Row } from '@tanstack/react-table';
 import useToastsForControl from '#/useToastsForControl';
 import { TcmList } from '!/control/domain';
+import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
   selectedRows?: Row<TcmList>[];
+  isAllSelected?: boolean;
 }
 /* ======    global     ====== */
 // const logger = createLogger('pages/Control/TcmSelect');
-const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
+const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const { trigger: startTrigger, isMutating: startIsMutating } = useTcmStart();
   const { trigger: stopTrigger, isMutating: stopIsMutating } = useTcmStop();
   const { trigger: restartTrigger, isMutating: restartIsMutating } = useTcmReStart();
@@ -28,11 +32,16 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating,
     [selectedRows, startIsMutating, stopIsMutating, restartIsMutating],
   );
-
+  const chooseName = selectedTids.join(', ');
+  const displayName = isAllSelected
+    ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전송', { order })
+    : chooseName.length > 20
+    ? (order: string) => t('{{length}}개의 TCM로 {{order}} 명령어 전송', { order, length: selectedTids.length })
+    : (order: string) => t('TCM {{chooseName}}로 {{order}} 명령어 전송', { order, chooseName });
   /* ======   function    ====== */
   const handleStartClick = () =>
     adapterEvent({
-      startMsg: '선택한 TCM START 중입니다.',
+      startMsg: displayName('START'),
       duration: 3000,
       event(TCM_ID) {
         return startTrigger({ TCM_ID });
@@ -40,7 +49,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     });
   const handleStopClick = () =>
     adapterEvent({
-      startMsg: '선택한 TCM STOP 중입니다.',
+      startMsg: displayName('STOP'),
       duration: 10000,
       event(TCM_ID) {
         return stopTrigger({ TCM_ID });
@@ -48,7 +57,7 @@ const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
     });
   const handleRestartClick = () =>
     adapterEvent({
-      startMsg: '선택한 TCM RESTART 중입니다.',
+      startMsg: displayName('RESTART'),
       duration: 15000,
       event(TCM_ID) {
         return restartTrigger({ TCM_ID });

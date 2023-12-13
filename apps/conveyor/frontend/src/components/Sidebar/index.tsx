@@ -6,6 +6,7 @@ import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
+import Test from '@/Test';
 /* ======   interface   ====== */
 export interface NavProps {}
 
@@ -135,8 +136,10 @@ const Nav = (_: NavProps) => {
           <GroupLink routes={commonRoutes} />
         </nav>
         <hr className="border-dashed" />
-        <span ref={langRef} className="flex ">
-          <Language />
+        <span ref={langRef} className="flex">
+          <Test>
+            <Language />
+          </Test>
         </span>
 
         <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>

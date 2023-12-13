@@ -26,7 +26,7 @@ body {
 }
 
 #modal {
-  @apply [&>*]:z-30 [&>*]:!fixed [&>*]:inset-0;
+  @apply [&>*]:z-30 [&>*]:!fixed [&>*]:inset-0 [&>*]:w-screen [&>*]:h-screen;
 }
 
 :disabled {

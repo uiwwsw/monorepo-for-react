@@ -1,4 +1,5 @@
 // import { createLogger } from '@package-frontend/utils';
+import ScrollTop from '@/ScrollTop';
 import { Outlet } from 'react-router-dom';
 
 /* ======   interface   ====== */
@@ -12,6 +13,7 @@ const LayoutMain = (_: LayoutMainProps) => {
   /* ======   useEffect   ====== */
   return (
     <main className="flex-auto flex flex-col p-3 max-w-fit max-lg:max-w-full m-auto w-full">
+      <ScrollTop />
       <Outlet />
     </main>
   );

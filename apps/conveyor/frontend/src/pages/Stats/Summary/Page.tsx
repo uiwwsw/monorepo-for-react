@@ -60,14 +60,14 @@ const StatsSummary = () => {
       statsData?.rows.map((x) => {
         const currentZoneList = zoneData?.zones.find((z) => z.zoneId === x.zoneId);
         // if (!currentZoneList) return;
-        // const { displayName, level, physicalType, zoneId } = currentZoneList ?? {};
+        const { displayName, level, physicalType, zoneId } = currentZoneList ?? {};
         return {
           ...x,
-          ...currentZoneList,
-          // displayName: displayName ? displayName : '',
-          // level: level ? level : '',
-          // physicalType: physicalType ? physicalType : '',
-          // zoneId: zoneId ? zoneId : '',
+          // ...currentZoneList,
+          displayName: displayName ?? '',
+          level: level ?? '',
+          physicalType: physicalType ?? '',
+          zoneId: zoneId ?? '',
         };
       }),
     [statsData, zoneData],
@@ -107,21 +107,19 @@ const StatsSummary = () => {
       <ToastWithPortal open={statsError?.message}>{statsError?.message}</ToastWithPortal>
       <ToastWithPortal open={zoneError?.message}>{zoneError?.message}</ToastWithPortal>
 
-      <div className="relative pt-80">
-        <H1>{t('요약')}</H1>
-        {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
-        <Table
-          allRowSelectTick={allRowSelectTick}
-          // initialRowSelection={}
-          thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
-          // cacheColumnVisibility={columnVisibility}
-          // setCacheColumnVisibility={handleVisibility}
-          data={renderZone}
-          makePagination={true}
-          renderSelectComponent={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
-          // onSearch={handleSearchKeyword}
-        />
-      </div>
+      <H1>{t('요약')}</H1>
+      {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
+      <Table
+        allRowSelectTick={allRowSelectTick}
+        // initialRowSelection={}
+        thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
+        // cacheColumnVisibility={columnVisibility}
+        // setCacheColumnVisibility={handleVisibility}
+        data={renderZone}
+        makePagination={true}
+        renderSelectComponentAtTop={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
+        // onSearch={handleSearchKeyword}
+      />
     </>
   );
 };

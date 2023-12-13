@@ -95,6 +95,7 @@ const Combo = ({
         >
           {memoSearchOptions.map((x) => (
             <Button
+              className="truncate"
               key={x.label}
               themeSize="sm"
               disabled={x.disabled}

@@ -10,7 +10,6 @@ import WarningMessage from '@/Typography/WarningMessage';
 
 /* ======   interface   ====== */
 interface FormState {
-  id: string;
   pw: string;
 }
 /* ======    global     ====== */
