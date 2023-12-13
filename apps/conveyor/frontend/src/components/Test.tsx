@@ -10,6 +10,8 @@ export interface TestProps {
 // const logger = createLogger('components/Test');
 const Test = ({ children, className }: TestProps) => {
   /* ======   variables   ====== */
+  const frontText = '정상작동';
+  const rotationText = `${frontText}하지 않아요. 추가 개발이 필요합니다.　`;
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
@@ -19,13 +21,11 @@ const Test = ({ children, className }: TestProps) => {
           className ? ` ${className}` : ''
         }`}
       >
-        <i className="opacity-0">TEST</i>
+        <i className="opacity-0">{frontText}</i>
         <i
-          className="whitespace-nowrap animate-led absolute after:content-[attr(data-text)] after:absolute"
-          data-text="TEST"
-        >
-          TEST 정상 작동 하지 않습니다.
-        </i>
+          className="whitespace-nowrap animate-led absolute before:content-[attr(data-text)] after:content-[attr(data-text)] after:absolute"
+          data-text={rotationText}
+        />
       </span>
       {children}
     </>

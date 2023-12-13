@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       animation: {
-        led: 'led 10s linear infinite',
+        led: 'led 4s linear infinite',
       },
       keyframes: {
         led: {

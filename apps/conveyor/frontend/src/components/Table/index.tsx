@@ -232,7 +232,7 @@ const Table = <T,>({
           </div>
         </div>
       )}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center relative">
         <div className="flex gap-2">
           <Input
             type="search"

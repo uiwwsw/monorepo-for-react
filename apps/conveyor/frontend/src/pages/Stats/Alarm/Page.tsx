@@ -14,6 +14,7 @@ import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -117,6 +118,7 @@ const StatsAlarm = () => {
           'setTime',
           'clearTime',
         ]}
+        renderSelectComponent={<Test className="left-0" />}
         data={data?.rows}
         makePagination={false}
         cacheColumnVisibility={columnVisibility}
