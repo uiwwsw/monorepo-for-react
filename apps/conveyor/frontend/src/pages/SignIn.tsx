@@ -1,6 +1,6 @@
 import { useSignIn } from '!/auth/application/post-sign-in';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
+import { Button, Input, ModalWithPortal, ToastWithPortal, useCounter } from '@library-frontend/ui';
 import { createLogger, wait } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -36,6 +36,7 @@ const SignIn = () => {
   const { trigger, error, isMutating } = useSignIn();
   const [toast, setToast] = useState<string>();
   const [success, setSuccess] = useState(false);
+  const { onStart, decrease, done } = useCounter(3);
   const navigate = useNavigate();
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
@@ -43,14 +44,14 @@ const SignIn = () => {
   const urlToast = useMemo(() => url.get('toast') as SIGN_IN_QUERY_PARAM_TOAST_KEY, [location]);
   const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
   /* ======   function    ====== */
-  const handleModalClose = async () => {
-    await wait(500);
+  const handleGoPage = async () => {
     navigate(urlNextUrl);
-    logger('handleModalClose');
+    logger('handleGoPage');
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    onStart();
     logger('handleSubmit', arg);
   };
   const handleGoSignUp = () => navigate('/sign-up');
@@ -60,19 +61,25 @@ const SignIn = () => {
 
     if (urlToast) setToast(queryParamToastMsgs[urlToast]);
   }, [location]);
+  useEffect(() => {
+    if (!done) return;
+    handleGoPage();
+  }, [done]);
   return (
     <>
       <ToastWithPortal notClose open={!!toast}>
         {toast}
       </ToastWithPortal>
       <ModalWithPortal
-        onClose={handleModalClose}
+        onClose={handleGoPage}
         open={success}
         smoothLoading
         hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기')]}
         persist
       >
-        {t('로그인이 완료됐어요.')}
+        <p className="whitespace-pre-line">
+          {t('로그인이 완료됐어요.\n{{seconds}}초 뒤 자동으로 이동합니다.', { seconds: decrease })}
+        </p>
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
         {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
