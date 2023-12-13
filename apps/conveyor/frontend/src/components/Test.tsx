@@ -15,7 +15,7 @@ const Test = ({ children, className }: TestProps) => {
   return (
     <>
       <span
-        className={`flex overflow-hidden pointer-events-none absolute z-50 text-white bg-red-600 p-1 text-xs opacity-30${
+        className={`flex rounded-sm overflow-hidden pointer-events-none absolute z-50 text-white bg-red-600 p-1 text-xs bg-opacity-70${
           className ? ` ${className}` : ''
         }`}
       >
@@ -24,7 +24,7 @@ const Test = ({ children, className }: TestProps) => {
           className="whitespace-nowrap animate-led absolute after:content-[attr(data-text)] after:absolute"
           data-text="TEST"
         >
-          TEST 작업이 완료되지 않았습니다.
+          TEST 정상 작동 하지 않습니다.
         </i>
       </span>
       {children}
