@@ -26,6 +26,7 @@ import useSetting from '#/useSetting';
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
+  placeholder?: string;
   fixHead?: Record<string, string>;
   data?: T[];
   allRowSelectTick?: number;
@@ -46,6 +47,7 @@ const Table = <T,>({
   onSearch,
   fixHead,
   data,
+  placeholder,
   allRowSelectTick,
   textAlignCenter = true,
   cacheColumnVisibility,
@@ -191,9 +193,14 @@ const Table = <T,>({
     setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
   }, [columnVisibility]);
   useEffect(() => {
-    logger('useEffect: allRowSelectTick, table.getState().pagination.pageIndex', allRowSelectTick);
+    logger(
+      'useEffect: allRowSelectTick, table.getState().pagination.pageIndex',
+      table.getRowModel().rows,
+      table.getState().pagination.pageSize,
+      allRowSelectTick,
+    );
     if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
-  }, [allRowSelectTick, table.getState().pagination.pageIndex]);
+  }, [allRowSelectTick, table.getState().pagination.pageSize, table.getState().pagination.pageIndex, globalFilter]);
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
       {cacheColumnVisibility && (
@@ -228,13 +235,13 @@ const Table = <T,>({
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <Input
-            type="text"
+            type="search"
             autoComplete="table-search"
             defaultValue={globalFilter}
             debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            placeholder="검색어를 입력하세요"
+            placeholder={placeholder ?? onSearch ? t('검색어를 입력하세요.') : t('필터링할 키워드를 입력하세요.')}
           />
         </div>
         {renderSelectComponent && (
@@ -297,14 +304,14 @@ const Table = <T,>({
                 })
               ) : (
                 <tr>
-                  <td colSpan={99} className="text-center pt-8 pb-4">
-                    <Empty>{t('검색 결과가 없습니다.')}</Empty>
+                  <td colSpan={99} className="text-center py-8">
+                    <Empty>{onSearch ? t('검색 결과가 없습니다.') : t('필터링 결과가 없습니다.')}</Empty>
                   </td>
                 </tr>
               )
             ) : (
               <tr>
-                <td colSpan={99} className="text-center pt-8 pb-4">
+                <td colSpan={99} className="text-center py-8">
                   <Empty />
                 </td>
               </tr>
