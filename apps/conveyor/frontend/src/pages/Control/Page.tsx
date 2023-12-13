@@ -12,6 +12,8 @@ import { usePause } from '!/control/application/post-pause';
 import H2 from '@/Typography/H2';
 import useToastsForControl from '#/useToastsForControl';
 import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
+import { useTranslation } from 'react-i18next';
+import Test from '@/Test';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -21,6 +23,8 @@ import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const { tcmList, serverList, status } = useSocketDataContext();
   // if (status !== WS_STATUS.OPEN) return <Loading show />;
   // const { data: tcmData } = useTcmInfo();
@@ -33,8 +37,8 @@ const Control = () => {
   /* ======   function    ====== */
   const handleResumeClick = () =>
     adapterEvent({
-      startMsg: '컨베이어 시스템 RESUME 중입니다.',
-      successMsg: '컨베이어 시스템 RESUME 완료',
+      startMsg: t('컨베이어 시스템 RESUME 중입니다.'),
+      successMsg: t('컨베이어 시스템 RESUME 완료'),
       failMsg(fails) {
         return '컨베이어 시스템 RESUME 실패:' + fails[0].message;
       },
@@ -44,8 +48,8 @@ const Control = () => {
     });
   const handlePauseClick = () =>
     adapterEvent({
-      startMsg: '컨베이어 시스템 PAUSE 중입니다.',
-      successMsg: '컨베이어 시스템 PAUSE 완료',
+      startMsg: t('컨베이어 시스템 PAUSE 중입니다.'),
+      successMsg: t('컨베이어 시스템 PAUSE 완료'),
       failMsg(fails) {
         return '컨베이어 시스템 PAUSE 실패:' + fails[0].message;
       },
@@ -62,10 +66,10 @@ const Control = () => {
       <div className="flex gap-5 flex-col">
         <div className="flex ml-auto gap-2">
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
-            Resume
+            <Test className="left-0 top-0">Resume</Test>
           </Button>
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="quaternary" onClick={handlePauseClick}>
-            Pause
+            <Test className="left-0 top-0">Pause</Test>
           </Button>
         </div>
         {/* <div>

@@ -10,6 +10,7 @@ import { TcmList } from '!/control/domain';
 import { useProcessId } from '!/control/application/get-process';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
+import Test from '@/Test';
 // import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
 export interface TcmSubProps {
@@ -54,7 +55,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
       {Toasts}
       <div className="flex justify-end space-x-2 items-center p-2">
         <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
-          Process Kill
+          <Test className="left-0 top-0">Process Kill</Test>
         </Button>
 
         <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} />

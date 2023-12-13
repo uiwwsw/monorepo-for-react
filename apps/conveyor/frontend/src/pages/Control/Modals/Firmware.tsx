@@ -3,6 +3,7 @@ import { useFirmList } from '!/control/application/get-backup-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import useToastsForControl from '#/useToastsForControl';
+import Test from '@/Test';
 import H2 from '@/Typography/H2';
 import { Button, Combo, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
@@ -76,9 +77,11 @@ const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <ModalWithBtn
         button={
-          <Button themeSize="sm" themeColor={'tertiary'} onClick={handleFirmList}>
-            Firmware
-          </Button>
+          <Test>
+            <Button themeSize="sm" themeColor={'tertiary'} onClick={handleFirmList}>
+              Firmware
+            </Button>
+          </Test>
         }
         hasButton={['CANCEL']}
         defaultLoading={isMutating}

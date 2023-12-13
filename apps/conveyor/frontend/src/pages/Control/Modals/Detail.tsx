@@ -1,4 +1,5 @@
 import { useCheckTcmClient } from '!/redis/application/get-tcm-client';
+import Test from '@/Test';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn } from '@library-frontend/ui';
 
@@ -21,9 +22,11 @@ const ModalDetail = ({ tid }: ModalDetailProps) => {
     <>
       <ModalWithBtn
         button={
-          <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
-            Alive
-          </Button>
+          <Test>
+            <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
+              Alive
+            </Button>
+          </Test>
         }
         hasButton={['CANCEL']}
         hasCloseBtn

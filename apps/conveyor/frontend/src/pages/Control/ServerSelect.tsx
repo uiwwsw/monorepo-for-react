@@ -31,11 +31,10 @@ const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
   );
   const chooseName = selectedSids.join(', ');
   const displayName = isAllSelected
-    ? (order: string) => t('모든 서버로 {{order}} 명령어 전달중입니다.', { order })
+    ? (order: string) => t('모든 서버로 {{order}} 명령어 전송', { order })
     : chooseName.length > 20
-    ? (order: string) =>
-        t('{{length}}개의 서버로 {{order}} 명령어 전달중입니다.', { order, length: selectedSids.length })
-    : (order: string) => t('{{chooseName}} 서버로 {{order}} 명령어 전달중입니다.', { order, chooseName });
+    ? (order: string) => t('{{length}}개의 서버로 {{order}} 명령어 전송', { order, length: selectedSids.length })
+    : (order: string) => t('{{chooseName}} 서버로 {{order}} 명령어 전송', { order, chooseName });
   /* ======   function    ====== */
 
   const handleStartClick = () =>

@@ -5,6 +5,7 @@ import Upload from '../Upload';
 import { useUploadFirm } from '!/control/application/put-upload-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 export interface ModalUpdateProps {
@@ -90,9 +91,11 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       <ModalWithBtn
         hasCloseBtn
         button={
-          <Button disabled={disabled} themeColor="tertiary">
-            Update
-          </Button>
+          <Test>
+            <Button disabled={disabled} themeColor="tertiary">
+              Update
+            </Button>
+          </Test>
         }
         hasButton={['CANCEL']}
       >

@@ -34,11 +34,10 @@ const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
   );
   const chooseName = selectedTids.join(', ');
   const displayName = isAllSelected
-    ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전달중입니다.', { order })
+    ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전송', { order })
     : chooseName.length > 20
-    ? (order: string) =>
-        t('{{length}}개의 TCM으로 {{order}} 명령어 전달중입니다.', { order, length: selectedTids.length })
-    : (order: string) => t('{{chooseName}} TCM으로 {{order}} 명령어 전달중입니다.', { order, chooseName });
+    ? (order: string) => t('{{length}}개의 TCM로 {{order}} 명령어 전송', { order, length: selectedTids.length })
+    : (order: string) => t('TCM {{chooseName}}로 {{order}} 명령어 전송', { order, chooseName });
   /* ======   function    ====== */
   const handleStartClick = () =>
     adapterEvent({

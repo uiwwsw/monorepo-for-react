@@ -5,7 +5,7 @@ import H2 from '@/Typography/H2';
 import { SERVER_TYPE } from '!/control/domain';
 import { useServerLog } from '!/control/application/get-server-log';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { storage } from '#/storage';
 import { STORAGE } from '!/storage/domain';
 // import { formatFileSize } from '!/control/domain';
@@ -43,11 +43,7 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
     logger('handleView');
   };
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    return () => {
-      logger('ㅂ클리어');
-    };
-  }, []);
+
   return (
     <>
       <ToastWithPortal open={logListError?.message}>{logListError?.message}</ToastWithPortal>
