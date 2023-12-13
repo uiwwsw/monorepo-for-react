@@ -7,14 +7,18 @@ import { Button } from '@library-frontend/ui';
 import { Row } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { ServerList } from '!/control/domain';
+import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 export interface ServerSelectProps {
   selectedRows?: Row<ServerList>[];
+  isAllSelected?: boolean;
 }
 /* ======    global     ====== */
 // const logger = createLogger('pages/Control/ServerSelect');
-const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
+const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const { trigger: startTrigger, isMutating: startIsMutating } = useServerStart();
   const { trigger: stopTrigger, isMutating: stopIsMutating } = useServerStop();
   const { trigger: restartTrigger, isMutating: restartIsMutating } = useServerReStart();
@@ -25,11 +29,18 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating,
     [selectedRows, startIsMutating, stopIsMutating, restartIsMutating],
   );
+  const chooseName = selectedSids.join(', ');
+  const displayName = isAllSelected
+    ? (order: string) => t('모든 서버로 {{order}} 명령어 전달중입니다.', { order })
+    : chooseName.length > 20
+    ? (order: string) =>
+        t('{{length}}개의 서버로 {{order}} 명령어 전달중입니다.', { order, length: selectedSids.length })
+    : (order: string) => t('{{chooseName}} 서버로 {{order}} 명령어 전달중입니다.', { order, chooseName });
   /* ======   function    ====== */
 
   const handleStartClick = () =>
     adapterEvent({
-      startMsg: '선택한 서버 START 중입니다.',
+      startMsg: displayName('START'),
       duration: 2000,
       event(type) {
         return startTrigger(type);
@@ -37,7 +48,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
     });
   const handleStopClick = () =>
     adapterEvent({
-      startMsg: '선택한 서버 STOP 중입니다.',
+      startMsg: displayName('STOP'),
       duration: 10000,
       event(type) {
         return stopTrigger(type);
@@ -46,7 +57,7 @@ const ServerSelect = ({ selectedRows }: ServerSelectProps) => {
 
   const handleRestartClick = () =>
     adapterEvent({
-      startMsg: '선택한 서버 RESTART 중입니다.',
+      startMsg: displayName('RESTART'),
       duration: 15000,
       event(type) {
         return restartTrigger(type);

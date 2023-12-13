@@ -33,7 +33,7 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
-  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[] }>;
+  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
@@ -238,7 +238,9 @@ const Table = <T,>({
           />
         </div>
         {renderSelectComponent && (
-          <div className="flex items-center">{cloneElement(renderSelectComponent, { selectedRows })}</div>
+          <div className="flex items-center">
+            {cloneElement(renderSelectComponent, { selectedRows, isAllSelected: table.getIsAllPageRowsSelected() })}
+          </div>
         )}
       </div>
       <div className="mb-4 overflow-y-hidden lg:overflow-visible">
