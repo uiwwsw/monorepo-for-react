@@ -1,8 +1,8 @@
 import { useSignUp } from '!/auth/application/post-sign-up';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
+import { Button, Input, ModalWithPortal, useCounter } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -28,21 +28,29 @@ const SignUp = () => {
     watch,
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignUp();
+  const { onStart, decrease, done } = useCounter(5);
+
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   /* ======   function    ====== */
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    onStart();
     logger('handleSubmit', arg);
   };
-  const handleModalClose = () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
+  const handleGoPage = () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
   /* ======   useEffect   ====== */
-
+  useEffect(() => {
+    if (!done) return;
+    handleGoPage();
+  }, [done]);
   return (
     <>
-      <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('로그인 페이지로 이동')]} persist>
-        <p className="whitespace-pre-line">{t('회원가입이 완료됐어요.')}</p>
+      <ModalWithPortal onClose={handleGoPage} open={success} hasButton={[t('로그인 페이지로 이동')]} persist>
+        <p className="whitespace-pre-line">
+          {t('회원가입이 완료됐어요.\n{{seconds}}초 뒤 로그인 페이지로 이동합니다.', { seconds: decrease })}
+        </p>
       </ModalWithPortal>
       <PageCenter title={t('회원가입')} icon="🔐">
         {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}

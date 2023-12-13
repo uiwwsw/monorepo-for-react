@@ -1,20 +1,17 @@
 /* ======   interface   ====== */
 
-import Combo from '@/Combo';
-import Select from '@/Select';
+import useCounter from '#/useCounter';
+import { useEffect } from 'react';
 
 /* ======    global     ====== */
 const App = () => {
   /* ======   variables   ====== */
+  const { increase, onStart } = useCounter(5);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-
-  return (
-    <>
-      <Select options={[{ value: '1', label: 'dawjkdlawdklawjdklawjdlkawdl' }]}></Select>
-      <br />
-      <Combo options={[{ value: '1', label: 'dawjkdlawdklawjdklawjdlkawdl' }]}></Combo>
-    </>
-  );
+  useEffect(() => {
+    onStart();
+  }, []);
+  return <>{increase}</>;
 };
 export default App;
