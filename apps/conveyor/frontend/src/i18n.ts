@@ -12,6 +12,7 @@ const resources = {
       PASSWORD_NOT_MATCH: '비밀번호가 틀렸습니다.',
       USER_NOT_AUTHORIZED: '계정이 인증되지 않았습니다.',
       ALREADY_EXISTED_USER_ID: '이미 동일한 아이디가 존재합니다.',
+      NO_PERMISSION: '권한이 없습니다.',
     },
   },
   en: {

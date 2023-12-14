@@ -8,27 +8,26 @@ export interface TestProps {
 
 /* ======    global     ====== */
 // const logger = createLogger('components/Test');
+const text = '정상작동 하지 않아요. 추가 개발이 필요합니다.';
+const frontLength = 1;
 const Test = ({ children, className }: TestProps) => {
   /* ======   variables   ====== */
-  const frontText = '정';
-  const rotationText = `${frontText}상작동 하지 않아요. 추가 개발이 필요합니다.`;
-  const duration = 1000 * (Math.floor(Math.random() * 9) + 5);
+  const frontText = text.substring(0, frontLength);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
     <>
       <span
-        className={`flex rounded-sm overflow-hidden pointer-events-none absolute z-[2] text-white bg-red-600 px-1 text-xs bg-opacity-70${
+        onClick={(e) => e.stopPropagation()}
+        className={`flex rounded-sm overflow-hidden absolute z-[2] bg-red-600 px-1 text-xs transition-all hover:pr-10 hover:text-xl${
           className ? ` ${className}` : ''
         }`}
       >
         <i className="opacity-0">{frontText}</i>
         <i
-          className="whitespace-nowrap animate-led absolute before:content-[attr(data-text)] after:content-[attr(data-text)] after:absolute"
-          style={{
-            animationDuration: `${duration}ms`,
-          }}
-          data-text={rotationText}
+          className="whitespace-nowrap animate-led absolute before:content-[attr(data-small)] after:content-[attr(data-small)] after:absolute hover:after:content-[attr(data-text)] hover:before:content-[attr(data-text)]"
+          data-small="T E S T　"
+          data-text={text}
         />
       </span>
       {children}
