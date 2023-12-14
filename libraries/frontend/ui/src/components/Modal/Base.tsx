@@ -15,7 +15,7 @@ export interface ModalError {
   open: boolean;
 }
 export type ModalErrors = Record<string, ModalError>;
-export type ModalResult = string | 'NONE';
+export type ModalResult = string | undefined;
 export interface ModalBaseProps {
   hasToast?: boolean;
   children?: ReactNode;
@@ -65,7 +65,7 @@ const ModalBase = ({
     body.style.overflow = open ? 'hidden' : '';
   };
   const adapterClose: () => void = useCallback(
-    () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose('NONE')),
+    () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose()),
     [setAnimate, hasToast, persist, onClose, setErrors],
   );
   const handleClosed = (value: boolean) => {
@@ -107,7 +107,7 @@ const ModalBase = ({
           }`}
         >
           <Loading show={defaultLoading} className="absolute" />
-          {hasCloseBtn && <ModalClose onClose={adapterClose} disabled={loading} />}
+          {hasCloseBtn && <ModalClose onClose={onClose} disabled={loading} />}
           <div className="max-h-[80vh] overflow-auto">{children}</div>
           {hasFooter && (
             <ModalFooter

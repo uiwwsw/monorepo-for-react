@@ -1,10 +1,11 @@
 import Close from '$/Close';
 import Button from '@/Button';
+import { ModalBaseProps } from './Base';
 
 /* ======   interface   ====== */
 export interface ModalCloseProps {
   disabled: boolean;
-  onClose: () => void;
+  onClose: ModalBaseProps['onClose'];
 }
 /* ======    global     ====== */
 const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
