@@ -29,6 +29,7 @@ const Upload = ({ onSubmit, onCancel }: UploadProps) => {
 
   /* ======   function    ====== */
   const adapterSubmit = async ({ fileList }: FormState) => {
+    logger(fileList, '1234');
     const file = fileList[0];
     if (file) {
       setLoading(true);
@@ -37,7 +38,7 @@ const Upload = ({ onSubmit, onCancel }: UploadProps) => {
         logger('upload file success');
         reset();
       } catch (e) {
-        logger('failed to upload file');
+        logger('failed to upload file', e);
       }
       setLoading(false);
     }
