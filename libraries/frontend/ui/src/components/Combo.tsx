@@ -67,6 +67,7 @@ const Combo = ({
       button={
         <Input
           value={label}
+          className="!flex"
           readOnly
           placeholder={placeholder}
           slots={

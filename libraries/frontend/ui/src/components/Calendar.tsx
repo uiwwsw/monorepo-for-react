@@ -12,7 +12,6 @@ export interface CalendarProps {
   placeholder?: string;
   selectRangeHolder?: string;
   tooltipMsg?: string;
-  width?: string;
   selectRange?: boolean;
   defaultValue?: string | string[];
   onChange?: (value: Dayjs | Dayjs[]) => void;
@@ -29,7 +28,6 @@ const Calendar = ({
   selectRange,
   defaultValue,
   onChange,
-  width = '300px',
   placeholder = '날짜를 선택해주세요.',
   selectRangeHolder = '기간을 선택해 주세요.',
   tooltipMsg = '00시 00분 00초 ~ 23시 59분 59초는 생략됩니다.',
@@ -73,14 +71,15 @@ const Calendar = ({
   }, [defaultValue]);
   return (
     <Menu
-      width={width}
+      className="max-sm:!left-0 max-sm:!right-0"
+      width="auto"
       button={cloneElement(button, {
         children: (
           <span className="flex w-fit m-auto items-center">
             <span className="whitespace-nowrap lg:hidden">📅</span>
             <span className="whitespace-nowrap max-lg:hidden">{memoValueForDisplay}</span>
             {selectRange && (
-              <span className="ml-2">
+              <span className="ml-3">
                 <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
               </span>
             )}
@@ -89,7 +88,7 @@ const Calendar = ({
       })}
     >
       <i ref={fakeRef} />
-      <div onClick={handleClick} aria-label="react-calendar">
+      <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-sm:!w-full">
         <ReactCalendar
           value={value as unknown as LooseValue}
           defaultValue={defaultValue as unknown as LooseValue}
