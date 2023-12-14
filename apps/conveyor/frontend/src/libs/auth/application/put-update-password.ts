@@ -28,9 +28,11 @@ async function fetcher(
     },
   });
   logger(res);
-  await trigger(undefined);
-
-  return res;
+  if (res.ok) {
+    await trigger(undefined);
+    return true;
+  }
+  return false;
 }
 
 export function useUpdatePassword() {

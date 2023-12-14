@@ -1,7 +1,7 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 import { createLogger } from '@package-frontend/utils';
-import { http } from '#/http';
+import { http, toJson } from '#/http';
 import { UserEditGradeRequest, UserGrade } from '@package-backend/types';
 
 const logger = createLogger('auth/useUpdateGrade');
@@ -26,8 +26,8 @@ async function fetcher(
     },
   });
   logger(res);
-  if (res.ok) return true;
-  return false;
+  await toJson(res);
+  return true;
 }
 
 export function useUpdateGrade() {

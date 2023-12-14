@@ -33,6 +33,7 @@ export * from './components/Loading';
 export { default as Menu } from './components/Menu';
 export * from './components/Menu';
 
+export * from './components/Modal/Base';
 export { default as ModalWithBtn } from './components/Modal/WithBtn';
 export * from './components/Modal/WithBtn';
 

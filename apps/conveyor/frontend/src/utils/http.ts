@@ -16,7 +16,9 @@ export const http = async <T = unknown>({
   method = 'GET',
   contentType = 'application/json',
   file,
+  timeout = 60000,
 }: {
+  timeout?: number;
   url: string;
   contentType?: string;
   arg?: T;
@@ -47,11 +49,16 @@ export const http = async <T = unknown>({
     headers,
     body,
   });
+
+  const controller = new AbortController();
+  const sti = setTimeout(() => controller.abort(), timeout);
   const res = await fetch(url, {
     headers,
     method,
     body,
+    signal: controller.signal,
   });
+  clearTimeout(sti);
   if (res.ok) return res;
   const message = await res.text();
   throw new HttpError(message, res);
@@ -113,6 +120,7 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res?.status ?? 0;
     this.statusText = res.statusText ?? 'unknown error';
+    this.message = i18n.t(msg);
     if (HTTP_ERROR_TYPE.SERVER === this.type) this.message = i18n.t('서버에 문제가 발생한 것 같아요.🤦‍♂️');
 
     if (HTTP_ERROR_TYPE.AUTH === this.type) {

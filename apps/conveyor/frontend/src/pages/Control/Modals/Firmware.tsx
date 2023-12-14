@@ -98,25 +98,25 @@ const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
               options={data?.map((x) => ({ value: x, label: x }))}
             ></Combo>
           </div>
-          {selectedFile && (
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">선택된 파일: {selectedFile}</span>
-              <ModalWithBtn
-                hasButton={['OK', 'CANCEL']}
-                button={
-                  <Button themeColor="secondary" themeSize="sm">
-                    삭제
-                  </Button>
-                }
-                onClose={(value) => value === 'OK' && handleFileDelete()}
-              >
-                파일을 삭제하시겠습니까?
-              </ModalWithBtn>
-              <Button themeSize={'sm'} onClick={handleFileUpdate}>
-                업데이트
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium mr-auto truncate w-72" title={selectedFile}>
+              선택된 파일: {selectedFile || '없음'}
+            </span>
+            <ModalWithBtn
+              hasButton={['OK', 'CANCEL']}
+              button={
+                <Button disabled={!selectedFile} themeColor="secondary" themeSize="sm">
+                  삭제
+                </Button>
+              }
+              onClose={(value) => value === 'OK' && handleFileDelete()}
+            >
+              파일을 삭제하시겠습니까?
+            </ModalWithBtn>
+            <Button disabled={!selectedFile} themeSize={'sm'} onClick={handleFileUpdate}>
+              업데이트
+            </Button>
+          </div>
         </div>
       </ModalWithBtn>
     </>

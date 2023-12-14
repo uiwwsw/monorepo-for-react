@@ -39,7 +39,7 @@ const SignUp = () => {
     onStart();
     logger('handleSubmit', arg);
   };
-  const handleGoPage = () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
+  const handleGoPage = async () => navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']}`);
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!done) return;

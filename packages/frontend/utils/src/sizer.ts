@@ -1,10 +1,11 @@
 export const getScrollbarWidth = () => {
-  if (document.body.scrollHeight <= window.innerHeight) return 0;
+  const body = document.body;
+  if (body.style.overflow === 'hidden' || body.scrollHeight <= window.innerHeight) return 0;
   const outer = document.createElement('div');
   outer.style.visibility = 'hidden';
   outer.style.overflow = 'scroll';
-  document.body.appendChild(outer);
-
+  body.appendChild(outer);
+  //body.style.paddingRight
   const inner = document.createElement('div');
   outer.appendChild(inner);
 

@@ -218,7 +218,7 @@ const Table = <T,>({
               <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
           </div>
-          <div className="px-2 py-1 flex flex-wrap">
+          <div className="py-1 flex flex-wrap">
             {table.getAllLeafColumns().map((column) => {
               return (
                 <label key={column.id} className="m-2">

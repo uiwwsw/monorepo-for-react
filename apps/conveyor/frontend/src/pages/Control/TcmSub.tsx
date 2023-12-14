@@ -3,7 +3,6 @@ import { Button } from '@library-frontend/ui';
 import { Row } from '@tanstack/react-table';
 import ModalFirmware from './Modals/Firmware';
 import ModalDetail from './Modals/Detail';
-// import { useTcmKill } from '!/control/application/post-tcm-kill';
 import ModalLogsTcm from './Modals/LogsTcm';
 import useToastsForControl from '#/useToastsForControl';
 import { TcmList } from '!/control/domain';

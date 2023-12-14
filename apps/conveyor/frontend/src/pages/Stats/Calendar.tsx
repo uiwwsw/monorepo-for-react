@@ -56,7 +56,6 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
           </Checkbox>
         </span>
         <Calendar
-          width="auto"
           defaultValue={currentDuration}
           placeholder={t('날짜를 선택해 주세요.')}
           selectRangeHolder={t('기간을 선택해 주세요.')}

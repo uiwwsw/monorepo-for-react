@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
 import WarningMessage from '@/Typography/WarningMessage';
+import { ModalResult } from '@library-frontend/ui/dist/src/components/Modal/Base';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -44,7 +45,9 @@ const SignIn = () => {
   const urlToast = useMemo(() => url.get('toast') as SIGN_IN_QUERY_PARAM_TOAST_KEY, [location]);
   const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
   /* ======   function    ====== */
-  const handleGoPage = async () => {
+  const handleGoPage = async (e: ModalResult) => {
+    setSuccess(false);
+    if (e === '닫기') return;
     navigate(urlNextUrl);
     logger('handleGoPage');
   };
@@ -63,7 +66,7 @@ const SignIn = () => {
   }, [location]);
   useEffect(() => {
     if (!done) return;
-    handleGoPage();
+    handleGoPage(success ? 'timeOut' : '닫기');
   }, [done]);
   return (
     <>
@@ -74,8 +77,8 @@ const SignIn = () => {
         onClose={handleGoPage}
         open={success}
         smoothLoading
-        hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기')]}
         persist
+        hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기'), t('닫기')]}
       >
         <p className="whitespace-pre-line">
           {t('로그인이 완료됐어요.\n{{seconds}}초 뒤 자동으로 이동합니다.', { seconds: decrease })}
