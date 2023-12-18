@@ -17,6 +17,10 @@ const resources = {
   },
   en: {
     translation: {
+      '7일': '7 days',
+      '14일': '14 days',
+      '21일': '21 days',
+      '28일': '28 days',
       설정: 'Settings',
       '데이터가 없습니다.': 'EMPTY',
       한글: 'Korean',
@@ -38,6 +42,7 @@ const resources = {
       케리어: 'Carrier',
       유저관리: 'User Management',
       비밀번호변경: 'Change Password',
+      '비밀번호 리셋': 'Reset Password',
       '5개씩 보기': 'View 5 per page',
       '10개씩 보기': 'View 10 per page',
       '20개씩 보기': 'View 20 per page',
@@ -104,6 +109,10 @@ const resources = {
   },
   'zh-CN': {
     translation: {
+      '7일': '七天',
+      '14일': '十四天',
+      '21일': '二十一天',
+      '28일': '二十八天',
       설정: '设置',
       '데이터가 없습니다.': '空',
       한글: '韩文',

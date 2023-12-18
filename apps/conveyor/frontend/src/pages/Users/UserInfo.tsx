@@ -107,10 +107,10 @@ const UserInfo = ({ row }: UserInfoProps) => {
                 <span className="mr-4">{t('{{userName}}님 비번 변경', { userName: row?.original.userName })}:</span>
                 <Input
                   {...register('pw', {
-                    required: t('비밀번호를 입력해주세요.'),
+                    required: t('재설정할 암호를 입력하십시오.'),
                   })}
                   autoComplete="pw"
-                  placeholder={t('비밀번호를 입력해주세요.')}
+                  placeholder={t('재설정할 암호를 입력하십시오.')}
                   error={!!errors?.pw?.message}
                   type="password"
                 />

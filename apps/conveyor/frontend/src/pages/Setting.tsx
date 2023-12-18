@@ -58,19 +58,19 @@ const Setting = () => {
               options={[
                 {
                   value: '7',
-                  label: '7일',
+                  label: t('7일'),
                 },
                 {
                   value: '14',
-                  label: '14일',
+                  label: t('14일'),
                 },
                 {
                   value: '21',
-                  label: '21일',
+                  label: t('21일'),
                 },
                 {
                   value: '28',
-                  label: '28일',
+                  label: t('28일'),
                 },
               ]}
               onChange={handleChangeDuration}
