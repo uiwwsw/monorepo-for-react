@@ -117,6 +117,7 @@ const StatsAlarm = () => {
           'setTime',
           'clearTime',
         ]}
+        totalLength={data?.totalCount}
         data={data?.rows}
         makePagination={false}
         cacheColumnVisibility={columnVisibility}
