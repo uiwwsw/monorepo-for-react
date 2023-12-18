@@ -1,8 +1,8 @@
 import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
 import { createLogger } from '@package-frontend/utils';
-import { ToastWithPortal, Tutorial, tutorialStorage } from '@library-frontend/ui';
-import { useEffect, useMemo, useState } from 'react';
+import { ToastWithPortal, Tutorial, tutorialStorage, useToasts } from '@library-frontend/ui';
+import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MAIN_QUERY_PARAM_TOAST } from '!/routes/domain';
 // import useSocket from '#/useSocket';
@@ -16,11 +16,7 @@ const tutorialToastMsg = '토스트 팝업입니다.\n유저의 이벤트에 피
 const Main = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const queryParamToastMsgs = {
-    [MAIN_QUERY_PARAM_TOAST['success-sign-out']]: t('로그아웃 성공했습니다.'),
-    [MAIN_QUERY_PARAM_TOAST['failed-sign-out']]: t('로그아웃에 실패했습니다.'),
-  };
-  const [toast, setToast] = useState<string>();
+  const { Toasts, showToast } = useToasts();
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
   const urlToast = useMemo(() => url.get('toast') as MAIN_QUERY_PARAM_TOAST, [location]);
@@ -36,17 +32,45 @@ const Main = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     logger('useEffect');
-    if (urlToast) setToast(queryParamToastMsgs[urlToast]);
+    if (urlToast) {
+      switch (urlToast) {
+        case MAIN_QUERY_PARAM_TOAST['success-sign-out']:
+          showToast({
+            message: t('로그아웃 성공했습니다.'),
+            type: 'success',
+          });
+          break;
+
+        case MAIN_QUERY_PARAM_TOAST['failed-sign-out']:
+          showToast({
+            message: t('로그아웃에 실패했습니다.'),
+            type: 'fail',
+          });
+          break;
+      }
+    }
   }, [location]);
   return (
     <>
+      <ToastWithPortal type="success" notClose open={!toastTutorial}>
+        {
+          //튜토리얼용 토스트
+        }
+        이벤트 성공
+      </ToastWithPortal>
+      <ToastWithPortal type="fail" notClose open={!toastTutorial}>
+        {
+          //튜토리얼용 토스트
+        }
+        이벤트 실패
+      </ToastWithPortal>
       <ToastWithPortal notClose open={!toastTutorial}>
         {
           //튜토리얼용 토스트
         }
-        텍스트 영역
+        정보성 메세지
       </ToastWithPortal>
-      <ToastWithPortal open={!!toast}>{toast}</ToastWithPortal>
+      {Toasts}
 
       <Tutorial
         guide={[
@@ -54,12 +78,12 @@ const Main = () => {
             text: t(tutorialToastMsg),
 
             position: {
-              bottom: '30px',
-              right: '40px',
+              bottom: '20px',
+              right: '30px',
             },
             size: {
-              width: '130px',
-              height: '45px',
+              width: '170px',
+              height: '190px',
             },
           },
         ]}

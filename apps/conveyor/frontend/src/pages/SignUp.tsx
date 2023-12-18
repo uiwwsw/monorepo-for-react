@@ -53,7 +53,7 @@ const SignUp = () => {
         </p>
       </ModalWithPortal>
       <PageCenter title={t('회원가입')} icon="🔐">
-        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
+        <WarningMessage show={!isMutating}>{t(error?.message)}</WarningMessage>
 
         <form className="flex flex-col gap-3">
           <label>

@@ -109,8 +109,14 @@ export class HttpError extends Error implements STResponseFailed {
   get query() {
     const url = new URLSearchParams();
     url.append('from', location.pathname);
-    if (this.status === 401) url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['session-expired']);
-    if (this.status === 403) url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['invalid-session']);
+    switch (this.status) {
+      case 401:
+        url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['session-expired']);
+        break;
+      case 403:
+        url.append('toast', SIGN_IN_QUERY_PARAM_TOAST['invalid-session']);
+        break;
+    }
 
     if (url.size === 0) return '';
 
@@ -120,8 +126,8 @@ export class HttpError extends Error implements STResponseFailed {
     super(msg);
     this.status = res?.status ?? 0;
     this.statusText = res.statusText ?? 'unknown error';
+    if (HTTP_ERROR_TYPE.SERVER === this.type) msg = '서버에 문제가 발생한 것 같아요.🤦‍♂️';
     this.message = i18n.t(msg);
-    if (HTTP_ERROR_TYPE.SERVER === this.type) this.message = i18n.t('서버에 문제가 발생한 것 같아요.🤦‍♂️');
 
     if (HTTP_ERROR_TYPE.AUTH === this.type) {
       storage.set(STORAGE['auth']);

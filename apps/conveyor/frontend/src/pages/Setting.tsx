@@ -22,17 +22,17 @@ const Setting = () => {
   /* ======   function    ====== */
   const handleChangePageSize = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/default-page-size'], e.target.value);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangePageSize', e);
   };
   const handleChangeDuration = (e: ChangeEvent<HTMLSelectElement>) => {
     storage.set(STORAGE['setting/default-duration'], +e.target.value);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeDuration', e);
   };
   const handleChangeBrowser = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/default-view-browser'], e.target.checked);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeBrowser', e);
   };
   /* ======   useEffect   ====== */

@@ -14,16 +14,16 @@ import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('utils/useSocket');
-const strToParse = <T>(unknown: unknown): T => {
+const parser = <T>(unknown: unknown): T => {
   // 배열인 경우, 배열의 각 요소를 재귀적으로 파싱합니다.
   logger(unknown, typeof unknown);
-  if (Array.isArray(unknown)) return unknown.map((item) => strToParse(item)) as T;
+  if (Array.isArray(unknown)) return unknown.map((item) => parser(item)) as T;
   if (!isNaN(Number(unknown))) return unknown as T;
   try {
     const obj = JSON.parse(unknown as string);
     // 파싱된 객체의 각 키에 대해 재귀적으로 파싱을 진행합니다.
     return Object.keys(obj).reduce((acc: any, key) => {
-      acc[key] = strToParse(obj[key]);
+      acc[key] = parser(obj[key]);
       return acc;
     }, {} as T);
   } catch (e) {
@@ -127,7 +127,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     };
     ws.current.onmessage = (message: MessageEvent<SocketData<unknown>>) => {
       logger(message);
-      const data = strToParse<SocketData<unknown>>(message.data);
+      const data = parser<SocketData<unknown>>(message.data);
       switch (data.type) {
         case SOCKET_MESSAGE.INITIAL_MODULE_STATE:
         case SOCKET_MESSAGE.TCM_INFO:

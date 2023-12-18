@@ -1,6 +1,6 @@
 import { useSignIn } from '!/auth/application/post-sign-in';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal, ToastWithPortal, useCounter } from '@library-frontend/ui';
+import { Button, Input, ModalWithPortal, ToastWithPortal, useCounter, useToasts } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
 import WarningMessage from '@/Typography/WarningMessage';
 import { ModalResult } from '@library-frontend/ui/dist/src/components/Modal/Base';
+import { useGetAuth } from '!/auth/application/get-auth';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -29,13 +30,16 @@ const SignIn = () => {
     ),
     [SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
   };
+  const { data: auth } = useGetAuth();
+  const isLoggedIn = !!auth;
   const {
     register,
     handleSubmit: handleAdapterSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
-  const [toast, setToast] = useState<string>();
+  const { Toasts, showToast } = useToasts();
+  // const [toast, setToast] = useState<string>();
   const [success, setSuccess] = useState(false);
   const { onStart, decrease, done } = useCounter(3);
   const navigate = useNavigate();
@@ -62,7 +66,15 @@ const SignIn = () => {
   useEffect(() => {
     logger('useEffect');
 
-    if (urlToast) setToast(queryParamToastMsgs[urlToast]);
+    if (urlToast)
+      showToast({
+        message: queryParamToastMsgs[urlToast],
+      });
+    if (isLoggedIn)
+      showToast({
+        notClose: true,
+        message: t('로그인 정보가 있습니다.'),
+      });
   }, [location]);
   useEffect(() => {
     if (!done) return;
@@ -70,9 +82,7 @@ const SignIn = () => {
   }, [done]);
   return (
     <>
-      <ToastWithPortal notClose open={!!toast}>
-        {toast}
-      </ToastWithPortal>
+      {Toasts}
       <ModalWithPortal
         onClose={handleGoPage}
         open={success}
@@ -85,7 +95,7 @@ const SignIn = () => {
         </p>
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
-        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
+        <WarningMessage show={!isMutating}>{t(error?.message)}</WarningMessage>
 
         <form className="flex flex-col gap-3">
           <label>
