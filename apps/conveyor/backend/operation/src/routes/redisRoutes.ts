@@ -331,7 +331,21 @@ router.get('/motion-parameter-ex-info', verifyToken, asyncWrapper<IEquipmentExIn
             OverrideDelay: reply.OverrideDelay,
             DccRatio: reply.DccRatio,
             RunCurrent: reply.RunCurrent,
-            StandbyCurrent: reply.StandbyCurrent
+            StandbyCurrent: reply.StandbyCurrent,
+            PosPlusHtoP : reply.PosPlusHtoP,
+            PosMinusPtoH : reply.PosMinusPtoH,
+            PosPlusHtoN : reply.PosPlusHtoN,
+            PosMinusNtoH : reply.PosMinusNtoH,
+            PosPlusPtoN : reply.PosPlusPtoN,
+            PosMinusNtoP : reply.PosMinusNtoP,
+            PosPlusOffset : reply.PosPlusOffset,
+            PosMinusOffset : reply.PosMinusOffset,
+            QsVel : reply.QsVel,
+            QsAcc : reply.QsAcc,
+            QsDcc : reply.QsDcc,
+            OffsetVel : reply.OffsetVel,
+            OffsetAcc : reply.OffsetAcc,
+            ffsetDcc : reply.ffsetDcc,
         }
     });
 }));

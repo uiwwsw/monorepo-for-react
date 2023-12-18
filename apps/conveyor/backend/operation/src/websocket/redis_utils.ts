@@ -248,9 +248,9 @@ const initializeEquipmentState = async (client : Client) => {
                 ProcessingState: equmentInfo.ProcessingState,
             },
             MCS2 :{
-                CommState: equmentInfo.CommState2,
-                ControlState: equmentInfo.ControlState2,
-                ProcessingState: equmentInfo.ProcessingState2,
+                CommState: equmentInfo.CommState2 || 0,
+                ControlState: equmentInfo.ControlState2 || 0,
+                ProcessingState: equmentInfo.ProcessingState2 || 0,
             }
         };
         client.send('himEquipmentStateInfo', data);

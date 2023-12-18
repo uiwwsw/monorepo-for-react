@@ -44,6 +44,7 @@ export interface SignalTowerReq {
 }
 
 export interface ParamPayload {
+    // Profile
     profileType : number;
     zoneID : number;
     speedType : number;
@@ -51,8 +52,26 @@ export interface ParamPayload {
     acceleration : number;
     deceleration : number;
     jerk : number;
+
+    // ProfileEx
     overrideDelay : number;
     dccRatio : number;
+    runCurrent : number;
+    standbyCurrent : number;
+    posPlusHtoP : number;
+    posMinusPtoH : number;
+    posPlusHtoN : number;
+    posMinusNtoH : number;
+    posPlusPtoN : number;
+    posMinusNtoP : number;
+    posPlusOffset : number;
+    posMinusOffset : number;
+    qsVel : number;
+    qsAcc : number;
+    qsDcc : number;
+    offsetVel : number;
+    offsetAcc : number;
+    ffsetDcc : number;
 }
 
 export interface ChangeParamReq {

@@ -1,8 +1,13 @@
 import WebSocket from 'ws';
 
 import { 
-    WebSocketMessage, UserSession, 
-    AlarmClearReq, ChangeDestReq, ControlModuleReq, StateChangeReq, SignalTowerReq
+    WebSocketMessage,
+    UserSession,
+    AlarmClearReq,
+    ChangeDestReq,
+    ControlModuleReq,
+    StateChangeReq,
+    SignalTowerReq
 } from '@package-backend/types';
 import { initailizeRedisInfo } from './redis_utils';
 import { ActionTypes } from './action_type';

@@ -39,6 +39,20 @@ export interface IEquipmentExInfoResp {
     DccRatio : string;
     RunCurrent : string;
     StandbyCurrent : string;
+    PosPlusHtoP : string;
+    PosMinusPtoH : string;
+    PosPlusHtoN : string;
+    PosMinusNtoH : string;
+    PosPlusPtoN : string;
+    PosMinusNtoP : string;
+    PosPlusOffset : string;
+    PosMinusOffset : string;
+    QsVel : string;
+    QsAcc : string;
+    QsDcc : string;
+    OffsetVel : string;
+    OffsetAcc : string;
+    ffsetDcc : string;
 }
 
 
