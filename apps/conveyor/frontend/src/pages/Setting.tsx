@@ -72,6 +72,26 @@ const Setting = () => {
                   value: '28',
                   label: t('28일'),
                 },
+                {
+                  value: '35',
+                  label: t('35일'),
+                },
+                {
+                  value: '42',
+                  label: t('42일'),
+                },
+                {
+                  value: '49',
+                  label: t('49일'),
+                },
+                {
+                  value: '56',
+                  label: t('56일'),
+                },
+                {
+                  value: '60',
+                  label: t('60일'),
+                },
               ]}
               onChange={handleChangeDuration}
             />
