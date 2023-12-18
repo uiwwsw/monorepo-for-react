@@ -17,9 +17,10 @@ const App = () => {
   // const t = import.meta.env.VITE_APP
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    alarm.forEach((x) => showToast({ message: convertAlarmToMessage(x), serialNo: x.serialNo }));
-  }, [alarm]);
+  useEffect(
+    () => alarm.forEach((x) => showToast({ message: convertAlarmToMessage(x), serialNo: x.serialNo })),
+    [alarm],
+  );
   return (
     <>
       {Toasts}

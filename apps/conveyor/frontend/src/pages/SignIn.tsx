@@ -39,7 +39,6 @@ const SignIn = () => {
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
   const { Toasts, showToast } = useToasts();
-  // const [toast, setToast] = useState<string>();
   const [success, setSuccess] = useState(false);
   const { onStart, decrease, done } = useCounter(3);
   const navigate = useNavigate();
@@ -68,6 +67,7 @@ const SignIn = () => {
 
     if (urlToast)
       showToast({
+        notClose: true,
         message: queryParamToastMsgs[urlToast],
       });
     if (isLoggedIn)

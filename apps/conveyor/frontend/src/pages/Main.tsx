@@ -11,11 +11,11 @@ import { MAIN_QUERY_PARAM_TOAST } from '!/routes/domain';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('pages/Main');
-const tutorialToastMsg = '토스트 팝업입니다.\n유저의 이벤트에 피드백을 주어 서비스를 이해하는데 도움이 됩니다.';
 
 const Main = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const tutorialToastMsg = t('토스트 팝업입니다.\n유저의 이벤트에 피드백을 주어 서비스를 이해하는데 도움이 됩니다.');
   const { Toasts, showToast } = useToasts();
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
@@ -71,11 +71,10 @@ const Main = () => {
         정보성 메세지
       </ToastWithPortal>
       {Toasts}
-
       <Tutorial
         guide={[
           {
-            text: t(tutorialToastMsg),
+            text: tutorialToastMsg,
 
             position: {
               bottom: '20px',
