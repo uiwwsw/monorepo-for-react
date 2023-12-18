@@ -1,11 +1,19 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, Calendar } from '@library-frontend/ui';
+import { Pagination, ToastWithPortal } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { SearchArg, useGetAlarmInfo } from '!/stats/application/get-alarmInfo';
+import { useEffect, useMemo, useState } from 'react';
+import { Arg, useAlarmStats } from '!/stats/application/get-alarm-stats';
 import Table from '@/Table';
+import { STORAGE } from '!/storage/domain';
+import { VisibilityState } from '@tanstack/react-table';
+import StatsCalendar from '../Calendar';
+// import { useTranslation } from 'react-i18next';
+import { pageSizeOptions } from '#/constants';
+import { storage } from '#/storage';
+import useSetting from '#/useSetting';
+import H1 from '@/Typography/H1';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -13,90 +21,118 @@ const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const { defaultPageSize, defaultDuration } = useSetting();
+  const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
+  const columnVisibility = storage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
-
-  const [duration, setDuration] = useState<Dayjs[]>([newDate(), newDate([7, 'day'])]);
-  const [arg, setArg] = useState<SearchArg>({
-    startTime: newDate().toString(),
-    endTime: newDate([1, 'day']).toString(),
+  const [arg, setArg] = useState<Arg>({
+    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
+    end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
+    page: 1,
+    page_size: defaultPageSize,
+    find_key: '',
   });
+  const currentPer = useMemo(() => arg.page_size ?? 10, [arg]);
+  const currentPage = useMemo(() => arg.page - 1, [arg]);
+  const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
 
-  const { error, mutate, data } = useGetAlarmInfo({ arg: arg });
+  const { error, data, mutate } = useAlarmStats(arg);
+  const currentTotalPage = useMemo(() => (data ? Math.ceil(data.totalCount / currentPer) : 0), [data]);
 
   /* ======   function    ====== */
-  const handleCalenderChange = (duration: Dayjs | Dayjs[]) => {
-    if (duration instanceof Array) {
-      setDuration(duration);
-
-      const arg: SearchArg = {
-        startTime: duration[0].toString(),
-        endTime: duration[1].toString(),
-      };
-
-      setArg(arg);
-    }
+  const handleVisibility = async (value: VisibilityState) => {
+    storage.set(STORAGE['alarm/table'], value);
+    logger('handleVisibility', value);
+  };
+  const handleCalenderChange = async (duration: Dayjs[]) => {
+    await Promise.all([
+      setArg((prev) => ({ ...prev, start_time: duration[0].toISOString(), end_time: duration[1].toISOString() })),
+    ]);
+    mutate();
+    logger('handleCalenderChange', duration);
   };
 
   const handleSearchKeyword = async (character: string) => {
-    if (character === '') return;
+    if (character === arg.find_key && arg.page === 1) return;
 
-    const arg: SearchArg = {
-      startTime: duration[0].toString(),
-      endTime: duration[1].toString(),
-      character: character,
-    };
-
-    setArg(arg);
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        page: 1,
+        find_key: character,
+      })),
+    ]);
+    mutate();
+    logger('handleSearchKeyword', character);
   };
+  const handleChangePer = async (value: number) => {
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        page: 1,
+        page_size: value,
+      })),
+    ]);
+    mutate();
+    logger('handleChangePer', value);
+  };
+  const handleChangePage = async (page: number) => {
+    if (page === currentPage) return;
+    const nextPage = page + 1;
 
-  const handleSearch = async (arg: SearchArg) => {
-    setArg(arg);
+    await Promise.all([
+      setArg((prev) => ({
+        ...prev,
+        page: nextPage,
+      })),
+    ]);
+    mutate();
+    logger('handleChangePage', nextPage);
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    mutate();
-  }, [arg]);
-  useEffect(() => {
-    handleSearch({ startTime: newDate().toString(), endTime: newDate([1, 'day']).toString() });
-    setChildren(
-      <div className="flex items-center gap-2">
-        <Calendar
-          placeholder={t('날짜를 선택해 주세요.')}
-          selectRangeHolder={t('기간을 선택해 주세요.')}
-          tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
-          selectRange
-          onChange={handleCalenderChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" className="w-[300px]" />}
-        />
-      </div>,
-    );
+    setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
+
+    logger('useEffect');
     return () => setChildren(undefined);
-  }, []);
-  logger('render', error, mutate, handleSearchKeyword);
+  }, [currentDuration]);
   return (
     <>
+      <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
+      <H1>{t('알람')}</H1>
+
       <Table
-        thead={['no', 'carrierID', 'zoneID', 'setTime', 'clearTime', 'description']}
-        data={
-          data
-            ? data
-            : [
-                {
-                  no: 0,
-                  carrierID: '-',
-                  zoneID: 0,
-                  setTime: '-',
-                  clearTime: '-',
-                  description: '-',
-                },
-              ]
-        }
-        makePagination={true}
-        makeColumnSelect={false}
+        thead={[
+          'no',
+          'serialNo',
+          'alarmCode',
+          'taskId',
+          'location',
+          'reason',
+          'tcmId',
+          'commandId',
+          'carrierId',
+          'setTime',
+          'clearTime',
+        ]}
+        data={data?.rows}
+        makePagination={false}
+        cacheColumnVisibility={columnVisibility}
+        setCacheColumnVisibility={handleVisibility}
         onSearch={handleSearchKeyword}
-      ></Table>
+      />
+      <div className="text-center mt-3">
+        <Pagination
+          per={currentPer}
+          sizeOptions={pageSizeOptions}
+          onChangePer={handleChangePer}
+          onChange={handleChangePage}
+          max={currentTotalPage}
+          index={currentPage}
+        />
+      </div>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import useSmooth from '#/useSmooth';
-import { createLogger } from '@package-frontend/utils';
+// import { createLogger } from '@package-frontend/utils';
 import { HTMLAttributes, ReactNode, useMemo, useRef } from 'react';
 /* ======   interface   ====== */
 export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {
@@ -11,7 +11,7 @@ export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /* ======    global     ====== */
-const logger = createLogger('components/Smooth');
+// const logger = createLogger('components/Smooth');
 const Smooth = ({ onFinished, value, children, className, delay = 500, style, ...props }: SmoothProps) => {
   /* ======   variables   ====== */
   const elRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,6 @@ const Smooth = ({ onFinished, value, children, className, delay = 500, style, ..
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useSmooth({ value, delay, ref: elRef, onFinished });
-  logger('render');
   return (
     <div
       {...props}

@@ -1,4 +1,4 @@
-import { MouseEvent, ReactElement, cloneElement, useMemo, useRef, useState } from 'react';
+import { MouseEvent, ReactElement, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import { Dayjs } from 'dayjs';
 import { FORMAT_WITHOUT_TIME, createLogger, newDate } from '@package-frontend/utils';
@@ -6,20 +6,23 @@ import 'react-calendar/dist/Calendar.css';
 import Menu from './Menu';
 import Tooltip from './Tooltip';
 import Button from './Button';
+import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
   selectRangeHolder?: string;
   tooltipMsg?: string;
   selectRange?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | string[];
   onChange?: (value: Dayjs | Dayjs[]) => void;
   button?: ReactElement;
 }
 /* ======    global     ====== */
-const convertFromValueToDate = (value: string | string[]) =>
-  value instanceof Array ? value.map((x) => newDate(x)) : newDate(value);
 const logger = createLogger('components/Calendar');
+const convertFromValueToDate = (value: CalendarProps['defaultValue']) => {
+  logger('convertFromValueToDate');
+  return value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
+};
 const Calendar = ({
   button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
   selectRange,
@@ -47,28 +50,36 @@ const Calendar = ({
   const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    logger('handleClick');
   };
   const handleChange = (e: unknown) => {
-    const value = convertFromValueToDate(e as string | string[]);
+    const value = convertFromValueToDate(e as CalendarProps['defaultValue']);
     setValue(value);
     fakeRef.current?.click();
     onChange && onChange(value);
+    logger('handleChange');
   };
   const handleTooltipClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    logger('handleTooltipClick');
   };
   /* ======   useEffect   ====== */
-  logger('render');
+  useEffect(() => {
+    setValue(defaultValue ? convertFromValueToDate(defaultValue) : undefined);
+    logger('useEffect');
+  }, [defaultValue]);
   return (
     <Menu
-      width="300px"
+      className="max-sm:!left-0 max-sm:!right-0"
+      width="auto"
       button={cloneElement(button, {
         children: (
           <span className="flex w-fit m-auto items-center">
-            <span>{memoValueForDisplay}</span>
+            <span className="whitespace-nowrap lg:hidden">📅</span>
+            <span className="whitespace-nowrap max-lg:hidden">{memoValueForDisplay}</span>
             {selectRange && (
-              <span className="ml-2">
+              <span className="ml-3">
                 <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
               </span>
             )}
@@ -77,8 +88,13 @@ const Calendar = ({
       })}
     >
       <i ref={fakeRef} />
-      <div onClick={handleClick} aria-label="react-calendar">
-        <ReactCalendar defaultValue={defaultValue} selectRange={selectRange} onChange={handleChange} />
+      <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-sm:!w-full">
+        <ReactCalendar
+          value={value as unknown as LooseValue}
+          defaultValue={defaultValue as unknown as LooseValue}
+          selectRange={selectRange}
+          onChange={handleChange}
+        />
       </div>
     </Menu>
   );

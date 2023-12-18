@@ -1,10 +1,8 @@
 # 배포 가이드
 
-1. `pnpm do @library* build`
-1. `pnpm do @app-conveyor/frontend build`
-1. `./dist폴더와 index.js 파일말고 다 지움`
-1. `npm init -y && npm add express path`
-1. `node index.js` 실행
+1. `node deploy.cjs`
+1. root에 생성된 /deploy 폴더에 index.js 를 실행하면 됩니다. `node index`
+1. deploy/dist에 config.json을 변경할 수 있습니다.
 
 # 개발자 가이드
 
@@ -22,7 +20,6 @@ const ComponentName = (props: ComponentNameProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return <div {...props}>ComponentName Component</div>;
 };
 

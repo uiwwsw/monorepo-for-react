@@ -13,18 +13,21 @@ const logger = createLogger('components/ModalWithBtn');
 const ModalWithBtn = ({ button = <Button>팝업</Button>, onClose, ...props }: ModalWithBtnProps) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
-  const handleEval = async (e?: ModalResult) => {
+  const handleClose = async (e: ModalResult) => {
     onClose && (await onClose(e));
     setOpen(false);
+    logger('handleClose');
   };
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    logger('handleOpen');
+  };
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <div onClick={handleOpen}>{button}</div>
-      <ModalWithPortal {...props} open={open} onClose={handleEval} />
+      <ModalWithPortal {...props} open={open} onClose={handleClose} />
     </>
   );
 };

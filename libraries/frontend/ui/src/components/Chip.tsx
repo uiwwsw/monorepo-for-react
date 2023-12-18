@@ -25,9 +25,9 @@ const Chip = ({ labels, className, defaultValue = [], multiChoice = true, themeS
       ? setActive((prev) => (prev.includes(index) ? prev.filter((x) => x !== index) : [...prev, index]))
       : setActive([index]);
     onChange && onChange(index);
+    logger('handleClick');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className={chipClassName}>
       {labels.map((x, index) => (

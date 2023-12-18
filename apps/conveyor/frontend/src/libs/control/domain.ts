@@ -1,53 +1,72 @@
-export enum UpdateStatus {
-  Idle = 'idle',
-  Updating = 'updating',
-  Completed = 'completed',
-  Error = 'error',
+import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
+import { EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
+import { FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
+export const SERVERS = ['DCM', 'HIM'] as const;
+export type SERVER_TYPE = (typeof SERVERS)[number];
+export enum ALIVE {
+  OFFLINE,
+  CONNECTED,
+}
+export const COMMUNICATION_KEYS = ['MCS1', 'MCS2'] as const;
+export type COMMUNICATION_TYPE = (typeof COMMUNICATION_KEYS)[number];
+export class CommunicationList {
+  type: COMMUNICATION_TYPE;
+  commState: string;
+  controlState: string;
+  processingState: string;
+  constructor({ type, CommState, ControlState, ProcessingState }: EquipmentStateObject & { type: string }) {
+    this.type = type as COMMUNICATION_TYPE;
+    this.commState = CommState;
+    this.controlState = ControlState;
+    this.processingState = ProcessingState;
+  }
+}
+export class ServerList {
+  status: keyof typeof ALIVE;
+  stateType: SERVER_TYPE;
+  id?: number;
+  alive: number;
+  constructor({ StateType, ID, Alive }: ModuleState) {
+    this.stateType = StateType as SERVER_TYPE;
+    this.id = Number(ID);
+    this.alive = Alive;
+    this.status = ALIVE[Alive] as keyof typeof ALIVE;
+  }
+}
+export class TcmList {
+  alive: number;
+  status: keyof typeof ALIVE;
+  tcmId: number;
+  buildDate: string;
+  buildNum: string;
+  ipAddress: string;
+  constructor({ IPAddress, TCMID, BuildNum, BuildDate, alive }: TCMInfo & { alive: number }) {
+    this.alive = alive;
+    this.tcmId = Number(TCMID);
+    this.ipAddress = IPAddress;
+    this.buildNum = BuildNum;
+    this.buildDate = newDate(BuildDate).format(FORMAT_WITHOUT_TIME);
+    this.status = ALIVE[alive] as keyof typeof ALIVE;
+  }
 }
 
-export enum Status {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE',
+export class Alarm {
+  eventCode: TITAN_INTERNAL_EVENT_ID;
+  carrierId: string;
+  commandId: string;
+  location?: unknown;
+  reason: string;
+  serialNo: number;
+  taskId: string;
+  time: string;
+  constructor({ SerialNo, EventCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: WarningInfo) {
+    this.eventCode = EventCode as TITAN_INTERNAL_EVENT_ID;
+    this.carrierId = CarrierID;
+    this.commandId = CommandID;
+    this.location = Location;
+    this.reason = Reason;
+    this.serialNo = SerialNo;
+    this.taskId = TaskID;
+    this.time = Time;
+  }
 }
-
-export enum ConnectionStatus {
-  ON = 'on',
-  OFF = 'off',
-}
-
-export interface firmwareStatus {
-  status: UpdateStatus;
-}
-
-export interface deviceStatus {
-  tid: number;
-  status: Status;
-}
-
-export interface ClientStatus {
-  tid: number;
-  cstatus: ConnectionStatus;
-}
-
-export interface ServerInfo {
-  sid: number;
-  name: string;
-  status: Status;
-  version: string;
-}
-
-export interface TCMInfo {
-  tid: number;
-  status: Status;
-  version: string;
-  AdjTCMConnection: ClientStatus[] | string;
-  Process: string[];
-}
-
-export interface UploadFile {
-  name: string;
-  size: number;
-  type: string;
-}
-
-export type CTRL_SOCKET_NAME = 'tcmUpdate' | 'serverUpdate';

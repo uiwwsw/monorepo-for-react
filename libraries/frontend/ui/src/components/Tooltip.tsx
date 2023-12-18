@@ -31,23 +31,21 @@ const Tooltip = ({ children, themeSize = 'sm', themeColor = 'tertiary', ...props
   const wrapRef = useRef<HTMLDivElement>(null);
   const { trigger, position } = usePosition({ targetRef: wrapRef });
 
-  const textClassName = `z-40 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`;
   /* ======   function    ====== */
   const showTooltip = () => {
     logger('Show Tooltip');
     setVisible(true);
     trigger();
+    logger('showTooltip');
   };
 
   const hideTooltip = () => {
     logger('Hide Tooltip');
     setVisible(false);
+    logger('hideTooltip');
   };
 
   /* ======   useEffect   ====== */
-  // No useEffect in this example, but you can add it if needed.
-
-  logger('render');
 
   return (
     <div
@@ -65,7 +63,11 @@ const Tooltip = ({ children, themeSize = 'sm', themeColor = 'tertiary', ...props
         ❓
       </span>
       <Portal>
-        <Smooth value={visible} className={textClassName} style={position}>
+        <Smooth
+          value={visible}
+          className={`z-40 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`}
+          style={position}
+        >
           {children}
         </Smooth>
       </Portal>

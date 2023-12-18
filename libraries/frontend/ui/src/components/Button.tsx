@@ -79,7 +79,6 @@ const Button = ({
     [loading, disabled, smoothLoading, setLoading, onClick],
   );
   /* ======   useEffect   ====== */
-  logger('render');
   useSmooth({ value: loading, delay: 500, ref: elRef });
   return (
     <button

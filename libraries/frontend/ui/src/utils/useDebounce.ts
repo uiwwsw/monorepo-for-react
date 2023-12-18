@@ -9,8 +9,8 @@ const useDebounce = <T>(fn?: (e: T) => unknown, delay: number = 300) => {
     if (sto.current) clearTimeout(sto.current);
 
     sto.current = setTimeout(async () => {
-      logger('이벤트 실행', e);
-      await fn(e);
+      logger('handleRun', e);
+      return await fn(e);
     }, delay);
   };
 

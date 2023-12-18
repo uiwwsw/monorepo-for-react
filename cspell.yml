@@ -1,0 +1,44 @@
+words:
+  # 테이블 id의 복수형
+  - tids
+  # tanstack plugin 개발자
+  - tanstack
+  # nivo 그래프
+  - nivo
+  # pretendard 폰트
+  - pretendard
+  # noto 폰트
+  - noto
+  # ViteFaviconsPlugin 플러그인명
+  - ViteFaviconsPlugin
+  # commitlint 플러그인명
+  - commitlint
+  # ymtc 회사명
+  - ymtc
+  # i18next-browser-languagedetector 플러그인명
+  - i18next-browser-languagedetector
+  # tailwindcss 플러그인명
+  - tailwindcss
+
+  # convayor 데이터 maint
+  - maint
+  # convayor 데이터 initializedataSend
+  - initializedataSend
+  # convayor 데이터 initialmodulestate
+  - initialmodulestate
+  # convayor 데이터 resetdata
+  - resetdata
+  # convayor 데이터 resouceInfo
+  - resouceInfo
+  # convayor 데이터 RFID
+  - RFID
+  # convayor client api url
+  - checktcmclient
+  # convayor data
+  - TCMID
+  # convayor interface name
+  - IAlarminfoRow
+ignoreWords:
+  - noopener
+ignorePaths:
+  - '**/node_modules/**'

@@ -1,93 +1,108 @@
-import { useTcmInfo } from 'src/libs/control/application/get-tcm-info';
-import { createLogger } from '@package-frontend/utils';
+// import { useTcmInfo } from '!/control/application/get-tcm-info';
 import Table from '@/Table';
-import { useServerInfo } from 'src/libs/control/application/get-server-info';
+// import { useServerInfo } from '!/control/application/get-server-info';
 import TcmSub from './TcmSub';
 import TcmSelect from './TcmSelect';
 import ServerSelect from './ServerSelect';
 import ServerSub from './ServerSub';
-import { useCallback, useState } from 'react';
-import { Button } from '@library-frontend/ui';
-import { ConnectionStatus, TCMInfo } from 'src/libs/control/domain';
+import { useMemo } from 'react';
+import { Button, Loading } from '@library-frontend/ui';
+import { useResume } from '!/control/application/post-resume';
+import { usePause } from '!/control/application/post-pause';
+import H2 from '@/Typography/H2';
+import useToastsForControl from '#/useToastsForControl';
+import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
+import { useTranslation } from 'react-i18next';
+import Test from '@/Test';
+// import { useDataContext } from '@/DataContext';
+// import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
 
-const logger = createLogger('pages/Control');
+// const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
-  const { data: tcmData } = useTcmInfo();
-  const { data: serverData } = useServerInfo();
-  const [selectedRowsMapping, setSelectedRowsMapping] = useState<number[]>([]);
+  const { t } = useTranslation();
+
+  const { tcmList, serverList, status } = useSocketDataContext();
+  // if (status !== WS_STATUS.OPEN) return <Loading show />;
+  // const { data: tcmData } = useTcmInfo();
+  // const { data: serverData } = useServerInfo();
+  const { trigger: resumeTrigger, isMutating: resumeIsMutating } = useResume();
+  const { trigger: pauseTrigger, isMutating: pauseIsMutating } = usePause();
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [0] });
+  const disabled = useMemo(() => resumeIsMutating || pauseIsMutating, [resumeIsMutating, pauseIsMutating]);
 
   /* ======   function    ====== */
-
-  const handleRowSelection = useCallback(
-    (selectedRows: { [key: string]: boolean }) => {
-      if (!tcmData) {
-        console.warn('tcmData is undefined');
-        return;
-      }
-
-      const selectedTids = Object.keys(selectedRows)
-        .filter((key) => selectedRows[key])
-        .map((key) => tcmData[parseInt(key)]?.tid)
-        .filter((tid) => tid !== undefined);
-
-      setSelectedRowsMapping(selectedTids);
-    },
-    [tcmData],
-  );
-
-  const convertAdjTCMConnection = (data: TCMInfo[] | undefined): TCMInfo[] | undefined => {
-    if (data === undefined) return undefined;
-    return data.map((item) => {
-      const totalConnections = item.AdjTCMConnection.length;
-      const onConnections =
-        item.AdjTCMConnection instanceof Array
-          ? item.AdjTCMConnection.filter((conn) => conn.cstatus === ConnectionStatus.ON).length
-          : '';
-
-      return {
-        ...item,
-        AdjTCMConnection: `${onConnections} / ${totalConnections}`,
-      };
+  const handleResumeClick = () =>
+    adapterEvent({
+      startMsg: t('컨베이어 시스템 RESUME 중입니다.'),
+      successMsg: t('컨베이어 시스템 RESUME 완료'),
+      failMsg(fails) {
+        return '컨베이어 시스템 RESUME 실패:' + fails[0].message;
+      },
+      event() {
+        return resumeTrigger();
+      },
     });
-  };
+  const handlePauseClick = () =>
+    adapterEvent({
+      startMsg: t('컨베이어 시스템 PAUSE 중입니다.'),
+      successMsg: t('컨베이어 시스템 PAUSE 완료'),
+      failMsg(fails) {
+        return '컨베이어 시스템 PAUSE 실패:' + fails[0].message;
+      },
+      event() {
+        return pauseTrigger();
+      },
+    });
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
-      <div className="bg-white p-4 rounded-lg border border-gray-200">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">TCM Control</h2>
-          <div className="space-x-2">
-            <Button themeColor="secondary">Resume</Button>
-            <Button themeColor="secondary">Pause</Button>
-          </div>
+      {Toasts}
+      <Loading show={status !== WS_STATUS.OPEN} />
+      <div className="flex gap-5 flex-col">
+        <div className="flex ml-auto gap-2">
+          <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
+            <Test className="left-0 top-0">Resume</Test>
+          </Button>
+          <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="quaternary" onClick={handlePauseClick}>
+            <Test className="left-0 top-0">Pause</Test>
+          </Button>
+        </div>
+        {/* <div>
+          <H2>Communication Control</H2>
+          <Table
+            thead={['type', 'commState', 'controlState', 'processingState']}
+            data={communicationList}
+            makePagination={false}
+          ></Table>
+        </div> */}
+        <div>
+          <H2>Server Control</H2>
+          <Table
+            fixHead={{ status: 'alive' }}
+            thead={['status', 'stateType']}
+            data={serverList}
+            makePagination={false}
+            renderSelectComponent={<ServerSelect />}
+            renderSubComponent={<ServerSub />}
+          ></Table>
         </div>
 
-        <Table
-          thead={['tid', 'status', 'version', 'AdjTCMConnection', 'Process']}
-          data={convertAdjTCMConnection(tcmData)}
-          makePagination={false}
-          makeColumnSelect={false}
-          renderSelectComponent={<TcmSelect selectedRows={selectedRowsMapping} />}
-          rowSelectionChange={handleRowSelection}
-          renderSubComponent={<TcmSub />}
-        ></Table>
-      </div>
-      <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Server Control</h2>
-        <Table
-          thead={['sid', 'name', 'status', 'version']}
-          data={serverData}
-          makePagination={false}
-          makeColumnSelect={false}
-          renderSelectComponent={<ServerSelect />}
-          renderSubComponent={<ServerSub />}
-        ></Table>
+        <div>
+          <H2>TCM Control</H2>
+          <Table
+            fixHead={{ status: 'alive' }}
+            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
+            data={tcmList}
+            makePagination={false}
+            renderSelectComponent={<TcmSelect />}
+            renderSubComponent={<TcmSub />}
+          ></Table>
+        </div>
       </div>
     </>
   );

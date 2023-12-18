@@ -1,47 +1,32 @@
-import { lazy, Fragment } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrivateLayout from 'src/layouts/PrivateLayout';
-import PublicLayout from 'src/layouts/PublicLayout';
-import { authRoutes, commonRoutes } from 'src/routes';
-const Main = lazy(() => import('./pages/Main'));
-const NotFound = lazy(() => import('src/pages/NotFound'));
-const Loading = lazy(() => import('src/pages/Loading'));
-const Error = lazy(() => import('src/pages/Error'));
-const SignOut = lazy(() => import('src/pages/SignOut'));
+import { convertAlarmToMessage } from '!/alarm/domain';
+import useSocket from '#/useSocket';
+import SocketDataContext from '@/SocketDataContext';
+import { useEffect } from 'react';
+import Pages from 'src/Pages';
 // import { createLogger } from '@package-frontend/utils';
+import useToastsForAlarm from '#/useToastsForAlarm';
+import { SOCKET_NAME } from '!/socket/domain';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 // const logger = createLogger('App');
 
 const App = () => {
   /* ======   variables   ====== */
+  const { tcmList, serverList, alarm, status } = useSocket(SOCKET_NAME.ZONE_GET_INFO);
+  const { Toasts, showToast } = useToastsForAlarm();
   // const t = import.meta.env.VITE_APP
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    alarm.forEach((x) => showToast({ message: convertAlarmToMessage(x), serialNo: x.serialNo }));
+  }, [alarm]);
   return (
-    <Router>
-      <Routes>
-        <Route element={<PrivateLayout />}>
-          {authRoutes.map((x, i) => (
-            <Fragment key={x.name + i}>
-              <Route path={x.path} element={<x.node />} />
-              {x.group && x.group.map((y) => <Route key={x.name + y.name} path={y.path} element={<y.node />} />)}
-            </Fragment>
-          ))}
-        </Route>
-
-        <Route element={<PublicLayout />}>
-          {commonRoutes.map((x) => (
-            <Route key={x.name} path={x.path} element={<x.node />} />
-          ))}
-          <Route path="/" element={<Main />} />
-          <Route path="/loading" element={<Loading />} />
-          <Route path="/error" element={<Error />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-        <Route path="/sign-out" element={<SignOut />} />
-      </Routes>
-    </Router>
+    <>
+      {Toasts}
+      <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status }}>
+        <Pages />
+      </SocketDataContext.Provider>
+    </>
   );
 };
 

@@ -12,69 +12,77 @@ import {
   Table,
   Row,
   Column,
+  VisibilityState,
 } from '@tanstack/react-table';
-import {
-  ReactNode,
-  useMemo,
-  useState,
-  Fragment,
-  useEffect,
-  ReactElement,
-  ChangeEvent,
-  KeyboardEvent,
-  cloneElement,
-} from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Select } from '@library-frontend/ui';
+import { Button, Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
+import Empty from '@/Empty';
+import { pageSizeOptions } from '#/constants';
+import useSetting from '#/useSetting';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
   thead: string[];
+  placeholder?: string;
+  fixHead?: Record<string, string>;
   data?: T[];
+  allRowSelectTick?: number;
+  cacheColumnVisibility?: VisibilityState;
+  setCacheColumnVisibility?: (value: VisibilityState) => unknown;
+  textAlignCenter?: boolean;
   makePagination?: boolean;
-  makeColumnSelect?: boolean;
-  renderSelectComponent?: ReactNode;
+  renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
+  renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
-  rowSelectionChange?: (selectedRows: { [key: string]: boolean }) => void;
   onSearch?: (keyword: string) => Promise<unknown>;
 }
+
 /* ======    global     ====== */
-const logger = createLogger('Component/Table');
+const logger = createLogger('components/Table');
 
 const Table = <T,>({
   thead,
   onSearch,
+  fixHead,
   data,
+  placeholder,
+  allRowSelectTick,
+  textAlignCenter = true,
+  cacheColumnVisibility,
+  setCacheColumnVisibility,
   makePagination = false,
-  makeColumnSelect = false,
   renderSubComponent,
   renderSelectComponent,
-  rowSelectionChange,
+  renderSelectComponentAtTop,
 }: TableProps<T>) => {
-  if (!data) return <>data가 없습니다.</>;
+  if (!data)
+    return (
+      <Skeleton>
+        <div className="w-full h-10"></div>
+        <div className="w-full h-10"></div>
+        <div className="w-full h-64"></div>
+      </Skeleton>
+    );
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const pageSizeOptions = [
-    { value: '10', label: t('10개씩 보기') },
-    { value: '20', label: t('20개씩 보기') },
-    { value: '30', label: t('30개씩 보기') },
-    { value: '40', label: t('40개씩 보기') },
-    { value: '50', label: t('50개씩 보기') },
-  ];
+  const { defaultPageSize } = useSetting();
+
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
-      ...(renderSelectComponent
+      ...(renderSelectComponent || renderSelectComponentAtTop
         ? [
             {
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
                 <div className="text-left">
                   <Checkbox
-                    checked={table.getIsAllRowsSelected()}
-                    indeterminate={table.getIsSomeRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
+                    checked={table.getIsAllPageRowsSelected()}
+                    indeterminate={table.getIsSomePageRowsSelected()}
+                    onChange={table.getToggleAllPageRowsSelectedHandler()}
                   />
                 </div>
               ),
@@ -94,10 +102,12 @@ const Table = <T,>({
 
       ...thead.map((key) => ({
         accessorKey: key,
-        header: key
-          .replace(/([A-Z])/g, ' $1')
-          .trim()
-          .toLowerCase(),
+        header:
+          fixHead?.[key] ??
+          key
+            .replace(/([A-Z])/g, ' $1')
+            .trim()
+            .toLowerCase(),
         footer: ({ column }: { column: Column<T> }) => column.id,
       })),
       ...(renderSubComponent
@@ -109,7 +119,7 @@ const Table = <T,>({
                 return row.getCanExpand() ? (
                   <Button
                     themeColor={null}
-                    themeSize={null}
+                    themeSize="xl"
                     onClick={row.getToggleExpandedHandler()}
                     style={{ cursor: 'pointer' }}
                   >
@@ -123,14 +133,14 @@ const Table = <T,>({
           ]
         : []),
     ],
-    [thead, renderSelectComponent, renderSubComponent],
+    [thead, renderSelectComponent, renderSubComponent, renderSelectComponentAtTop],
   );
 
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = useState({});
+  const [rowSelection, setRowSelection] = useState<{ [key: string]: boolean }>({});
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(cacheColumnVisibility ?? {});
 
   const table = useReactTable({
     data,
@@ -141,7 +151,11 @@ const Table = <T,>({
       rowSelection,
       globalFilter,
     },
-    renderFallbackValue: 'EMPTY',
+    initialState: {
+      pagination: {
+        pageSize: defaultPageSize,
+      },
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
@@ -156,31 +170,44 @@ const Table = <T,>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: makePagination ? getPaginationRowModel() : undefined,
-    onColumnVisibilityChange: makeColumnSelect ? setColumnVisibility : undefined,
+    onColumnVisibilityChange: cacheColumnVisibility ? setColumnVisibility : undefined,
     debugTable: true,
     getRowCanExpand: () => true,
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const selectedRows = useMemo(
+    () => table.getRowModel().rows.filter((row) => rowSelection[row.id]),
+    [table, rowSelection],
+  );
   /* ======   function    ====== */
+  const getNumericMsg = (newValue: number, limit: number) =>
+    t('페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.', { newValue, limit });
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     if (onSearch) onSearch(keyword);
     else setGlobalFilter(keyword);
   };
-  const handleSearchKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (onSearch && e.code === 'Enter') onSearch(e.currentTarget.value);
-  };
+  const handleChangePage = (index: number) => table.setPageIndex(index);
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (rowSelectionChange) {
-      rowSelectionChange(rowSelection);
-    }
-  }, [rowSelection, rowSelectionChange]);
-  logger('render');
+    logger('useEffect: columnVisibility', columnVisibility);
+
+    setCacheColumnVisibility && setCacheColumnVisibility(columnVisibility);
+  }, [columnVisibility]);
+  useEffect(() => {
+    logger(
+      'useEffect: allRowSelectTick, table.getState().pagination.pageIndex',
+      table.getRowModel().rows,
+      table.getState().pagination.pageSize,
+      allRowSelectTick,
+    );
+    if (allRowSelectTick) setRowSelection(table.getRowModel().rows.reduce((a, v) => ({ ...a, [v.id]: true }), {}));
+  }, [allRowSelectTick, table.getState().pagination.pageSize, table.getState().pagination.pageIndex, globalFilter]);
   return (
     <div className="p-4 bg-white shadow rounded-lg space-y-3">
-      {makeColumnSelect && (
+      {renderSelectComponentAtTop && cloneElement(renderSelectComponentAtTop, { selectedRows })}
+      {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
             <label className="flex items-center space-x-2">
@@ -188,16 +215,21 @@ const Table = <T,>({
                 checked={table.getIsAllColumnsVisible()}
                 onChange={table.getToggleAllColumnsVisibilityHandler()}
               />
-
               <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
           </div>
-          <div className="px-2 py-1 flex flex-wrap">
+          <div className="py-1 flex flex-wrap">
             {table.getAllLeafColumns().map((column) => {
               return (
-                <label key={column.id} className="flex items-center space-x-2 mr-4">
-                  <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()} />
-                  <span className="text-gray-700 font-medium">{column.id}</span>
+                <label key={column.id} className="m-2">
+                  <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
+                    <span className="uppercase">
+                      {column.id
+                        .replace(/([A-Z])/g, ' $1')
+                        .trim()
+                        .toLowerCase()}
+                    </span>
+                  </Checkbox>
                 </label>
               );
             })}
@@ -206,20 +238,25 @@ const Table = <T,>({
       )}
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
+          {onSearch && <Test />}
+
           <Input
+            type="search"
+            autoComplete="table-search"
             defaultValue={globalFilter}
             debounceTime={300}
+            // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            onKeyUp={handleSearchKeyUp}
-            placeholder="검색어를 입력하세요"
+            placeholder={placeholder ?? onSearch ? t('검색어를 입력하세요.') : t('필터링할 키워드를 입력하세요.')}
           />
-          {onSearch && <Button themeSize={'sm'}>{t('검색')}</Button>}
         </div>
-        {Object.values(rowSelection).some(Boolean) && renderSelectComponent && (
-          <div className="flex items-center">{renderSelectComponent}</div>
+        {renderSelectComponent && (
+          <div className="flex items-center">
+            {cloneElement(renderSelectComponent, { selectedRows, isAllSelected: table.getIsAllPageRowsSelected() })}
+          </div>
         )}
       </div>
-      <div className="mb-4 overflow-visible max-md:overflow-y-hidden">
+      <div className="mb-4 overflow-y-hidden lg:overflow-visible">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -249,23 +286,42 @@ const Table = <T,>({
               </tr>
             ))}
           </thead>
+
           <tbody className="bg-white divide-y divide-gray-200">
-            {table.getRowModel().rows.map((row) => {
-              return (
-                <Fragment key={row.id}>
-                  <tr>
-                    {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} cell={cell} />
-                    ))}
-                  </tr>
-                  {row.getIsExpanded() && renderSubComponent && (
-                    <tr>
-                      <td colSpan={row.getVisibleCells().length}>{cloneElement(renderSubComponent, { row })}</td>
-                    </tr>
-                  )}
-                </Fragment>
-              );
-            })}
+            {data.length > 0 ? (
+              table.getFilteredRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => {
+                  return (
+                    <Fragment key={row.id}>
+                      <tr>
+                        {row.getVisibleCells().map((cell) => (
+                          <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
+                        ))}
+                      </tr>
+                      {row.getIsExpanded() && renderSubComponent && (
+                        <tr className="!border-t-0 !border-b-gray-400 !border-b-2">
+                          <td className="bg-slate-100" colSpan={row.getVisibleCells().length}>
+                            {cloneElement(renderSubComponent, { row })}
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={99} className="text-center py-8">
+                    <Empty>{onSearch ? t('검색 결과가 없습니다.') : t('필터링 결과가 없습니다.')}</Empty>
+                  </td>
+                </tr>
+              )
+            ) : (
+              <tr>
+                <td colSpan={99} className="text-center py-8">
+                  <Empty />
+                </td>
+              </tr>
+            )}
           </tbody>
           <tfoot className="bg-gray-50">
             {renderSelectComponent && (
@@ -279,69 +335,16 @@ const Table = <T,>({
         </table>
       </div>
       {makePagination && (
-        <div>
-          <div className="w-fit m-auto flex items-center gap-2">
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              ❮❮
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              ❮
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              ❯
-            </Button>
-            <Button
-              themeColor="secondary"
-              themeSize="sm"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              ❯❯
-            </Button>
-            <div className="flex items-center gap-1">
-              <span>{t('페이지')}</span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-              </strong>
-            </div>
-            <div className="flex items-center gap-1 max-md:!hidden">
-              | {t('페이지 이동')}:
-              <Input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="border rounded w-24"
-                placeholder="page"
-              />
-            </div>
-            <Select
-              className="max-md:!hidden"
-              defaultValue={String(table.getState().pagination.pageSize)}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              options={pageSizeOptions}
-            />
-          </div>
-        </div>
+        <Pagination
+          index={table.getState().pagination.pageIndex}
+          onChange={handleChangePage}
+          onChangePer={(index) => table.setPageSize(index)}
+          max={table.getPageCount()}
+          per={defaultPageSize}
+          sizeOptions={pageSizeOptions}
+          maxMessage={getNumericMsg}
+          minMessage={getNumericMsg}
+        />
       )}
       <hr />
     </div>

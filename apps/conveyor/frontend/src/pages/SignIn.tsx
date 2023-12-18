@@ -1,11 +1,14 @@
 import { useSignIn } from '!/auth/application/post-sign-in';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal, ToastWithPortal } from '@library-frontend/ui';
-import { createLogger, wait } from '@package-frontend/utils';
+import { Button, Input, ModalWithPortal, ToastWithPortal, useCounter } from '@library-frontend/ui';
+import { createLogger } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
+import WarningMessage from '@/Typography/WarningMessage';
+import { ModalResult } from '@library-frontend/ui/dist/src/components/Modal/Base';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -13,57 +16,76 @@ interface FormState {
   pw: string;
 }
 /* ======    global     ====== */
+
 const logger = createLogger('pages/SignIn');
 const SignIn = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const queryParamToastMsgs = {
+    [SIGN_IN_QUERY_PARAM_TOAST['invalid-session']]: t('로그인 정보가 없어요. 로그인 완료 후 이전 페이지로 이동합니다.'),
+    [SIGN_IN_QUERY_PARAM_TOAST['session-expired']]: t('세선이 만료됐습니다.'),
+    [SIGN_IN_QUERY_PARAM_TOAST['success-update-password']]: t(
+      '비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.',
+    ),
+    [SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
+  };
   const {
     register,
     handleSubmit: handleAdapterSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
-  const [lostAuthToast, setLostAuthToast] = useState(false);
-  const [signUpAfterToast, setSignupAfterToast] = useState(false);
+  const [toast, setToast] = useState<string>();
   const [success, setSuccess] = useState(false);
+  const { onStart, decrease, done } = useCounter(3);
   const navigate = useNavigate();
   const location = useLocation();
   const url = useMemo(() => new URLSearchParams(location.search), [location]);
-  const from = useMemo(() => url.get('from'), [location]);
-  const toUrl = useMemo(() => (from?.startsWith('/sign') || !from ? '/control' : from), [location]);
+  const urlFrom = useMemo(() => url.get('from'), [location]);
+  const urlToast = useMemo(() => url.get('toast') as SIGN_IN_QUERY_PARAM_TOAST_KEY, [location]);
+  const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
   /* ======   function    ====== */
-  const handleModalClose = async () => {
-    await wait(500);
-    navigate(toUrl);
+  const handleGoPage = async (e: ModalResult) => {
+    setSuccess(false);
+    if (e === '닫기') return;
+    navigate(urlNextUrl);
+    logger('handleGoPage');
   };
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    onStart();
+    logger('handleSubmit', arg);
   };
-  const handleGoSignup = () => navigate('/sign-up');
+  const handleGoSignUp = () => navigate('/sign-up');
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (url.get('from') === '/sign-up') setSignupAfterToast(true);
-    if (url.get('update-profile') === 'true') setLostAuthToast(true);
+    logger('useEffect');
+
+    if (urlToast) setToast(queryParamToastMsgs[urlToast]);
   }, [location]);
-  logger('render');
+  useEffect(() => {
+    if (!done) return;
+    handleGoPage(success ? 'timeOut' : '닫기');
+  }, [done]);
   return (
     <>
-      <ToastWithPortal open={lostAuthToast}>
-        {t('비밀번호가 변경됐어요. 변경된 비밀번호로 로그인해보세요.')}
+      <ToastWithPortal notClose open={!!toast}>
+        {toast}
       </ToastWithPortal>
-      <ToastWithPortal open={signUpAfterToast}>{t('방금 가입한 아이디로 로그인 해보세요~')}</ToastWithPortal>
       <ModalWithPortal
-        onClose={handleModalClose}
+        onClose={handleGoPage}
         open={success}
         smoothLoading
-        hasButton={[t('{{url}} 페이지로 이동하기', { url: toUrl })]}
         persist
+        hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기'), t('닫기')]}
       >
-        {t(`로그인이 완료됐어요.`)}
+        <p className="whitespace-pre-line">
+          {t('로그인이 완료됐어요.\n{{seconds}}초 뒤 자동으로 이동합니다.', { seconds: decrease })}
+        </p>
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
-        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
 
         <form className="flex flex-col gap-3">
           <label>
@@ -72,11 +94,12 @@ const SignIn = () => {
               {...register('id', {
                 required: t('아이디를 입력해주세요.'),
               })}
+              autoComplete="id"
               placeholder={t('아이디를 입력해주세요.')}
               error={!!errors?.id?.message}
               className="w-full"
             />
-            {errors?.id?.message && <p className="text-red-500">💥 {errors?.id?.message}</p>}
+            <WarningMessage>{errors?.id?.message}</WarningMessage>
           </label>
           <label>
             <p className="font-medium">{t('비밀번호')}</p>
@@ -84,18 +107,19 @@ const SignIn = () => {
               {...register('pw', {
                 required: t('비밀번호를 입력해주세요.'),
               })}
+              autoComplete="pw"
               placeholder={t('비밀번호를 입력해주세요.')}
               error={!!errors?.pw?.message}
               type="password"
               className="w-full"
             />
-            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+            <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
           <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
             {t('로그인')}
           </Button>
         </form>
-        <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignup}>
+        <Button smoothLoading themeColor={'secondary'} onClick={handleGoSignUp}>
           {t('회원가입 하러가기')}
         </Button>
       </PageCenter>

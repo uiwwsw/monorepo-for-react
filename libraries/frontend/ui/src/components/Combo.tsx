@@ -2,7 +2,7 @@ import { ChangeEvent, MouseEvent, useMemo, useRef, useState } from 'react';
 import Caret from '$/Caret';
 import { createLogger } from '@package-frontend/utils';
 import Input from './Input';
-import Menu from './Menu';
+import Menu, { MenuProps } from './Menu';
 import Button from './Button';
 import Underbar from '$/Underbar';
 /* ======   interface   ====== */
@@ -19,6 +19,7 @@ export interface ComboProps {
     disabled?: boolean;
     hidden?: boolean;
   }[];
+  width?: MenuProps['width'];
   defaultValue?: string;
 }
 /* ======    global     ====== */
@@ -31,6 +32,7 @@ const Combo = ({
   searchPlaceholder = '검색어를 입력하세요.',
   defaultValue = '',
   options = [],
+  width = '200px',
   error,
 }: ComboProps) => {
   /* ======   variables   ====== */
@@ -45,24 +47,27 @@ const Combo = ({
   const handleClick = (value: string) => {
     setValue(value);
     onChange && onChange(value);
+    logger('handleClick');
   };
-  const handleFinished = (val: any) => {
-    logger(val);
+  const handleFinished = () => {
     ref.current!.value = '';
     setSearch('');
+    logger('handleFinished');
   };
   const handleInputClick = (e: MouseEvent) => {
     e.stopPropagation();
+    logger('handleInputClick');
   };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <Menu
+      width={width}
       onFinished={handleFinished}
       zIndex={50}
       button={
         <Input
           value={label}
+          className="!flex"
           readOnly
           placeholder={placeholder}
           slots={
@@ -74,7 +79,7 @@ const Combo = ({
         />
       }
     >
-      <div className="bg-white shadow-sm">
+      <div className="bg-white shadow-2xl">
         <Input
           type="search"
           ref={ref}
@@ -91,8 +96,9 @@ const Combo = ({
         >
           {memoSearchOptions.map((x) => (
             <Button
+              className="truncate"
               key={x.label}
-              themeSize={'xs'}
+              themeSize="sm"
               disabled={x.disabled}
               themeColor={x.value === value ? 'primary' : 'secondary'}
               onClick={() => handleClick(x.value)}

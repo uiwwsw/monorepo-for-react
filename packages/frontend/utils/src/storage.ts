@@ -1,9 +1,9 @@
-export class Storage {
+export class Storage<K extends string> {
   storage?: globalThis.Storage;
   constructor(storage?: globalThis.Storage) {
     this.storage = storage;
   }
-  get<T>(key: string): T | undefined {
+  get<T>(key: K): T | undefined {
     const value = this.storage?.getItem(key);
     if (!value) return undefined;
 
@@ -14,7 +14,7 @@ export class Storage {
     }
   }
 
-  set(key: string, value?: unknown): void {
+  set(key: K, value?: unknown): void {
     if (
       (value instanceof Array && value.length === 0) ||
       (value instanceof Object && Object.keys(value).length === 0) ||
@@ -33,13 +33,10 @@ export class Storage {
     this.storage?.clear();
   }
 
-  startWithClear(key: string) {
+  startWithClear(key: K) {
     if (!this.storage) return [];
     return Object.keys(this.storage)
       .filter((x) => x.startsWith(key))
-      .map((x) => this.set(x, null));
+      .map((x) => this.set(x as K, null));
   }
 }
-
-export const LocalStorage = new Storage(typeof window === 'undefined' ? undefined : localStorage);
-export const SessionStorage = new Storage(typeof window === 'undefined' ? undefined : sessionStorage);

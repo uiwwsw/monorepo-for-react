@@ -1,7 +1,7 @@
 {
   "name": "@package-frontend/noto-emoji",
   "version": "0.0.1",
-  "main": "notoemojivariable.css",
+  "main": "noto-emoji-variable.css",
   "dependencies": {
     "@package-backend/types": "workspace:^"
   }

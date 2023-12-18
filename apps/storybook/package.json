@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@library-frontend/ui": "workspace:^",
-    "@package-frontend/noto-emoji": "workspace:^",
-    "@package-frontend/pretendard": "workspace:^",
     "@package-frontend/utils": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -20,6 +18,8 @@
     "swr": "^2.2.2"
   },
   "devDependencies": {
+    "@package-frontend/noto-emoji": "workspace:^",
+    "@package-frontend/pretendard": "workspace:^",
     "@storybook/addon-controls": "^7.5.0",
     "@storybook/addon-essentials": "7.4.0",
     "@storybook/addon-interactions": "7.4.0",

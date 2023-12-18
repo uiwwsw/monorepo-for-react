@@ -1,6 +1,8 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger, http } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
+import { http, toJson } from '#/http';
+import { UserEditGradeRequest, UserGrade } from '@package-backend/types';
 
 const logger = createLogger('auth/useUpdateGrade');
 
@@ -11,11 +13,11 @@ async function fetcher(
   }: {
     arg: {
       id: string;
-      grade: number;
+      grade: UserGrade;
     };
   },
 ) {
-  const res = await http({
+  const res = await http<UserEditGradeRequest>({
     url,
     method: 'PUT',
     arg: {
@@ -24,8 +26,8 @@ async function fetcher(
     },
   });
   logger(res);
-
-  return res;
+  await toJson(res);
+  return true;
 }
 
 export function useUpdateGrade() {

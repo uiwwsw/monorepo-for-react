@@ -1,40 +1,69 @@
-import { Button, ModalWithBtn } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
+import { Button } from '@library-frontend/ui';
+// import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import { TCMInfo } from '!/control/domain';
-import ModalContentFirmware from './ModalContentFirmware';
+import ModalFirmware from './Modals/Firmware';
+import ModalDetail from './Modals/Detail';
+import ModalLogsTcm from './Modals/LogsTcm';
+import useToastsForControl from '#/useToastsForControl';
+import { TcmList } from '!/control/domain';
+import { useProcessId } from '!/control/application/get-process';
+import { useTcmNetwork } from '!/redis/application/get-tcm-network';
+import { useTcmKill } from '!/control/application/post-tcm-kill';
+import Test from '@/Test';
+// import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
 export interface TcmSubProps {
-  row?: Row<TCMInfo>;
+  row?: Row<TcmList>;
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/TcmSub');
-const TcmSub = (_: TcmSubProps) => {
+// const logger = createLogger('pages/Control/TcmSub');
+const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
+  // const [toastMessages, setToastMessages] = useState<string[]>([]);
+
+  const { trigger: killTrigger } = useTcmKill();
+  const { trigger: processTrigger } = useProcessId();
+  const { trigger: networkTrigger } = useTcmNetwork();
+
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [row?.original.tcmId] });
 
   /* ======   function    ====== */
 
-  logger('render');
+  // const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
+  const handleKillClick = () =>
+    adapterEvent({
+      startMsg: 'TCM 프로세스 Kill 중입니다.',
+      failMsg() {
+        return `TCM 프로세스 Kill 실패 하였습니다.`;
+      },
+      successMsg: 'TCM 프로세스 Kill 성공 하였습니다.',
+      async event(tcmId) {
+        if (!tcmId) return;
+        const address = row?.original.ipAddress;
+        if (!address) return;
+        const port = await networkTrigger({ tcm_id: tcmId });
+        const procId = await processTrigger({ address, port });
+        if (!procId) return;
+        return killTrigger({ address, procId, port: 5000 });
+      },
+    });
+
   /* ======   useEffect   ====== */
   return (
-    <div className="flex justify-end space-x-2 items-center p-2">
-      <ModalWithBtn
-        button={
-          <Button themeSize={'sm'} themeColor={'tertiary'}>
-            Firmware
-          </Button>
-        }
-        hasButton={['CANCEL']}
-      >
-        {/* <ModalContentFirmware tid={row?.original.tid} /> */}
-        <ModalContentFirmware />
-      </ModalWithBtn>
-      {/* <div>{row?.original.tid}</div> */}
+    <>
+      {Toasts}
+      <div className="flex justify-end space-x-2 items-center p-2">
+        <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
+          <Test className="left-0 top-0">Process Kill</Test>
+        </Button>
 
-      <Button themeSize={'sm'}>Process Kill</Button>
-      <Button themeSize={'sm'}>Detail</Button>
-      <Button themeSize={'sm'}>Logs</Button>
-    </div>
+        <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
+
+        <ModalDetail tid={row?.original.tcmId} />
+
+        <ModalLogsTcm tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
+      </div>
+    </>
   );
 };
 

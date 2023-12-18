@@ -1,10 +1,11 @@
 import Close from '$/Close';
 import Button from '@/Button';
+import { ModalBaseProps } from './Base';
 
 /* ======   interface   ====== */
 export interface ModalCloseProps {
   disabled: boolean;
-  onClose: () => void;
+  onClose: ModalBaseProps['onClose'];
 }
 /* ======    global     ====== */
 const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
@@ -19,6 +20,7 @@ const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
       onClick={() => onClose && onClose()}
       disabled={disabled}
       className={`!absolute right-0 top-0 !-m-3 w-auto !p-0`}
+      style={{ zIndex: 51 }}
     >
       <Close />
     </Button>

@@ -23,10 +23,10 @@ const Accordion = ({ className, children, title }: AccordionProps) => {
       contentRef?.current && (contentRef.current.dataset.active = 'false');
       setHeight(0);
     }
+    logger('onToggle');
   };
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <div className={className}>
       <div className="flex relative" onClick={onToggle}>

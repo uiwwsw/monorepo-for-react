@@ -6,10 +6,10 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useUpdatePassword } from '!/auth/application/put-update-password';
 import { useState } from 'react';
+import WarningMessage from '@/Typography/WarningMessage';
 
 /* ======   interface   ====== */
 interface FormState {
-  id: string;
   pw: string;
 }
 /* ======    global     ====== */
@@ -30,10 +30,13 @@ const UpdatePassword = () => {
   const handleSubmit = async (arg: FormState) => {
     await trigger(arg);
     setSuccess(true);
+    logger('handleSubmit', arg);
   };
-  const handleModalClose = () => navigate('/sign-in?update-profile=true');
+  const handleModalClose = () => {
+    navigate('/sign-in?update-profile=true');
+    logger('handleModalClose');
+  };
   /* ======   useEffect   ====== */
-  logger('render');
   return (
     <>
       <ModalWithPortal onClose={handleModalClose} open={success} hasButton={[t('로그인 페이지로 이동')]} persist>
@@ -49,12 +52,13 @@ const UpdatePassword = () => {
               {...register('pw', {
                 required: t('비밀번호를 입력해주세요.'),
               })}
+              autoComplete="new-password"
               placeholder={t('비밀번호를 입력해주세요.')}
               error={!!errors?.pw?.message}
               type="password"
               className="w-full"
             />
-            {errors?.pw?.message && <p className="text-red-500">💥 {errors?.pw?.message}</p>}
+            <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
           <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
             {t('비밀번호 변경')}

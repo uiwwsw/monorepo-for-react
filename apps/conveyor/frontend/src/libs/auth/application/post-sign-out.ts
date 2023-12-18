@@ -1,18 +1,23 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
-import { createLogger, http } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
+import { http } from '#/http';
 import { usePostAuth } from './post-auth';
+import { Auth } from '../domain';
 const logger = createLogger('auth/useSignOut');
 
-async function fetcher(url: string) {
+async function fetcher(url: string, trigger: (arg: Auth | undefined) => Promise<Auth | undefined>) {
   logger(url);
-  const trigger = usePostAuth();
-  await trigger(undefined);
   const res = await http({ url, method: 'POST' });
-  return res;
+  await trigger(undefined);
+  logger(res.ok);
+  if (res.ok) return true;
+  return false;
   //   return await http({ url });
 }
 
 export function useSignOut() {
-  return useSWR('/api/users/sign-out', fetcher);
+  const { trigger } = usePostAuth();
+
+  return useSWR('/api/users/sign-out', (url) => fetcher(url, trigger));
 }

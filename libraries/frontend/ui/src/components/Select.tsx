@@ -14,7 +14,6 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Select');
-
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
     { defaultValue = '', placeholder = 'Select box', disabled, onChange, className, error, options = [], ...props },
@@ -32,6 +31,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       // if (ref && 'current' in ref) (ref.current as HTMLSelectElement).blur();
       onChange && onChange(e);
       !init && setInit(true);
+      logger('adapterChange');
     };
     const getOptionClassName = useCallback(
       (x: { disabled?: boolean }) => (x.disabled ? 'text-gray-400' : 'text-gray-800'),
@@ -39,16 +39,15 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     );
 
     /* ======   useEffect   ====== */
-    logger('render');
     return (
-      <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
+      <label className={`inline-flex items-center overflow-hidden relative${className ? ` ${className}` : ''}`}>
         <select
           {...props}
           defaultValue={defaultValue}
           disabled={disabled}
           onChange={adapterChange}
           ref={ref}
-          className={`flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
+          className={`w-full whitespace-nowrap text-ellipsis flex-1 pl-3 py-3 pr-8 bg-transparent rounded appearance-none outline-none${
             !defaultValue && !init ? ' text-gray-400' : ''
           }`}
         >

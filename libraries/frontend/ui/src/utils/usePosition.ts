@@ -1,25 +1,14 @@
 import { RefObject, useState } from 'react';
+import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 /* ======   interface   ====== */
+
 export interface UsePositionProps {
   targetRef: RefObject<HTMLElement>;
   withSize?: boolean;
 }
 /* ======    global     ====== */
-const getScrollbarWidth = () => {
-  const outer = document.createElement('div');
-  outer.style.visibility = 'hidden';
-  outer.style.overflow = 'scroll';
-  document.body.appendChild(outer);
+const logger = createLogger('utils/useDebounce');
 
-  const inner = document.createElement('div');
-  outer.appendChild(inner);
-
-  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
-
-  outer.parentNode?.removeChild(outer);
-
-  return scrollbarWidth;
-};
 const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
   /* ======   variables   ====== */
   const [size, setSize] = useState<{
@@ -38,7 +27,7 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     const { scrollX, scrollY } = window;
-    const scrollbarWidth = document.body.scrollHeight > window.innerHeight ? getScrollbarWidth() : 0;
+    const scrollbarWidth = getScrollbarWidth();
 
     let top, left, bottom, right;
 
@@ -67,6 +56,7 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
       bottom: bottom !== undefined ? `${bottom}px` : 'initial',
       right: right !== undefined ? `${right}px` : 'initial',
     });
+    logger('trigger', top, left, bottom, right, targetRefRect);
   };
   /* ======   useEffect   ====== */
 

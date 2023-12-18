@@ -4,8 +4,9 @@ import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
 import ModalFooter from './Footer';
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 import { ButtonProps } from '@/Button';
+import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';
 
 /* ======   interface   ====== */
@@ -14,13 +15,14 @@ export interface ModalError {
   open: boolean;
 }
 export type ModalErrors = Record<string, ModalError>;
-export type ModalResult = string | 'NONE';
+export type ModalResult = string | undefined;
 export interface ModalBaseProps {
   hasToast?: boolean;
   children?: ReactNode;
   className?: string;
   persist?: boolean;
   hasCloseBtn?: boolean;
+  defaultLoading?: boolean;
   open?: boolean;
   errorToastMsg?: (value: ModalResult) => string;
   hasButton?: ModalResult[];
@@ -38,8 +40,10 @@ const ModalBase = ({
   children,
   className,
   hasToast = true,
+  defaultLoading = false,
   onClosed,
-  hasButton = ['OK', 'CANCEL', 'NONE'],
+  hasCloseBtn,
+  hasButton = ['OK', 'CANCEL'],
   smoothLoading = true,
 }: ModalBaseProps) => {
   /* ======   variables   ====== */
@@ -47,33 +51,37 @@ const ModalBase = ({
   const [errors, setErrors] = useState<ModalErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const { animate, setAnimate } = useAnimate();
-  const hasClose = useMemo(() => hasButton.includes('NONE'), [hasButton]);
-  const hasFooterButton = useMemo(() => hasButton.filter((x) => x !== 'NONE'), [hasButton]);
-  const hasFooter = useMemo(() => hasFooterButton.length > 0, [hasButton]);
+  const hasFooter = useMemo(() => hasButton.length > 0, [hasButton]);
   const memoErrors: [string, ModalError][] = useMemo(() => {
     const arr = Object.entries(errors);
     if (open) return arr;
     return arr.map(([key, value]) => [key, { ...value, open: false }]);
   }, [errors, open]);
-  const modalClassName = `relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
-    className ? ` ${className}` : ''
-  }`;
-  const modalContentClassName = `flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modalOpen [[data-smooth="HIDING"]>&]:animate-modalClose${
-    animate ? ' animate-shake' : ''
-  }`;
   /* ======   function    ====== */
+  const init = (open: boolean) => {
+    const scrollbarWidth = getScrollbarWidth();
+    const { body } = document;
+    body.style.paddingRight = open ? scrollbarWidth + 'px' : '';
+    body.style.overflow = open ? 'hidden' : '';
+  };
   const adapterClose: () => void = useCallback(
-    () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose('NONE')),
+    () => (persist ? !(elRef.current?.dataset.smooth === 'SHOWING') && setAnimate(true) : onClose && onClose()),
     [setAnimate, hasToast, persist, onClose, setErrors],
   );
   const handleClosed = (value: boolean) => {
     if (value) return;
     onClosed && onClosed();
+    logger('handleClosed');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
     open && setTimeout(() => elRef.current?.focus(), 0);
-    document.body.style.overflow = open ? 'hidden' : '';
+    init(!!open);
+    logger('useEffect');
+
+    return () => {
+      init(false);
+    };
   }, [open]);
   useSmooth({
     value: open,
@@ -81,18 +89,30 @@ const ModalBase = ({
     ref: elRef,
     onFinished: handleClosed,
   });
-  logger('render');
   return (
     <>
-      <div className={modalClassName} role="dialog" ref={elRef} tabIndex={0} autoFocus>
+      <div
+        className={`relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
+          className ? ` ${className}` : ''
+        }`}
+        role="dialog"
+        ref={elRef}
+        tabIndex={0}
+        autoFocus
+      >
         <ModalOverlay onClose={adapterClose} />
-        <div className={modalContentClassName}>
-          {hasClose && <ModalClose onClose={adapterClose} disabled={loading} />}
-          <div>{children}</div>
+        <div
+          className={`flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
+            animate ? ' animate-shake' : ''
+          }`}
+        >
+          <Loading show={defaultLoading} className="absolute" />
+          {hasCloseBtn && <ModalClose onClose={onClose} disabled={loading} />}
+          <div className="max-h-[80vh] overflow-auto">{children}</div>
           {hasFooter && (
             <ModalFooter
               errorToastMsg={errorToastMsg}
-              hasButton={hasFooterButton}
+              hasButton={hasButton}
               hasToast={hasToast}
               smoothLoading={smoothLoading}
               disabled={loading || !open}

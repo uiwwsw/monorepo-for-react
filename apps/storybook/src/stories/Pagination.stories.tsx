@@ -11,24 +11,18 @@ const meta = {
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
   argTypes: {
-    totalPageNum: {
+    max: {
       table: { type: { summary: 'number' } },
     },
-    currentPageIndex: {
+    index: {
       table: { type: { summary: 'number' } },
     },
-    maxPageNum: {
-      table: { type: { summary: 'number' } },
-    },
-    hasDoubleArrow: {
-      table: { type: { summary: 'boolean' } },
-    },
-    startPage: {
+    per: {
       table: { type: { summary: 'number' } },
     },
   },
   args: {
-    totalPageNum: 200,
+    max: 200,
   },
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } satisfies Meta<typeof Pagination>;
@@ -36,7 +30,9 @@ const meta = {
 export default meta;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-
+const toast = document.createElement('div');
+toast.id = 'toast';
+document.body.appendChild(toast);
 export const normal = (props: PaginationProps) => {
   return <Pagination {...props} />;
 };

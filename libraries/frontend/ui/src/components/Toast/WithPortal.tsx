@@ -13,23 +13,29 @@ const ToastWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...pr
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
+  const handleOpen = () => {
+    setOpen(true);
+    setVisible(true);
+    logger('handleOpen');
+  };
   const handleClose = () => {
     setOpen(false);
     onClose && onClose();
+    logger('handleClose');
   };
   const handleClosed = () => {
     onClosed && onClosed();
     setVisible(false);
+    logger('handleClosed');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!defaultOpen) return;
+    if (!defaultOpen) return handleClose();
+    logger('useEffect');
 
-    setOpen(true);
-    setVisible(true);
+    handleOpen();
   }, [defaultOpen]);
 
-  logger('render');
   return visible ? (
     <Portal root="toast">
       <ToastBase {...props} open={open} onClose={handleClose} onClosed={handleClosed}>

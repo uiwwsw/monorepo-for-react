@@ -1,18 +1,27 @@
-import { createLogger } from '@package-frontend/utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const logger = createLogger('utils/useCounter');
 const useCounter = (limit: number, step: number = 1) => {
-  const [tick, setTick] = useState(0);
+  const sti = useRef<NodeJS.Timeout>();
+  const [tick, setTick] = useState<number>(0);
+  const [start, setStart] = useState(false);
   useEffect(() => {
-    const sti = setInterval(() => {
-      if (limit <= tick) return () => clearInterval(sti);
-      setTick(tick + step);
-      logger(`${tick}/${limit}`);
+    if (!start || tick !== 0) return;
+    sti.current = setInterval(() => {
+      if (limit <= tick) return () => clearInterval(sti.current);
+      setTick((prev) => prev + step);
     }, 1000);
-    return () => clearInterval(sti);
+  }, [start, tick]);
+  useEffect(() => {
+    if (limit - 1 <= tick) return () => clearInterval(sti.current);
   }, [tick]);
+  useEffect(() => {
+    return () => clearInterval(sti.current);
+  }, []);
   return {
+    onStart: () => {
+      setTick(0);
+      setStart(true);
+    },
     increase: tick,
     decrease: limit - tick,
     done: limit <= tick,

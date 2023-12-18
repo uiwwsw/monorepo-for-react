@@ -21,6 +21,9 @@ export * from './components/Combo';
 export { default as Input } from './components/Input';
 export * from './components/Input';
 
+export { default as Numeric } from './components/Input/Numeric';
+export * from './components/Input/Numeric';
+
 export { default as Image } from './components/Image';
 export * from './components/Image';
 
@@ -30,6 +33,7 @@ export * from './components/Loading';
 export { default as Menu } from './components/Menu';
 export * from './components/Menu';
 
+export * from './components/Modal/Base';
 export { default as ModalWithBtn } from './components/Modal/WithBtn';
 export * from './components/Modal/WithBtn';
 
@@ -38,9 +42,6 @@ export * from './components/Modal/WithPortal';
 
 export { default as Pagination } from './components/Pagination';
 export * from './components/Pagination';
-
-export { default as PaginationWithSearch } from './components/Pagination/WithSearch';
-export * from './components/Pagination/WithSearch';
 
 export { default as RadioGroup } from './components/Radio/Group';
 export * from './components/Radio/Group';
@@ -79,9 +80,11 @@ export * from './components/Color';
 export * from './components/Size';
 
 export { default as useAnimate } from './utils/useAnimate';
-export { default as useDebouce } from './utils/useDebounce';
+export { default as useDebounce } from './utils/useDebounce';
 export { default as useCounter } from './utils/useCounter';
 export { default as usePosition } from './utils/usePosition';
 export { default as useSmooth } from './utils/useSmooth';
 export { default as useThrottle } from './utils/useThrottle';
+export { default as useToasts } from './utils/useToasts';
+export * from './utils/useToasts';
 export { default as useInfiniteScroll } from './utils/useInfiniteScroll';

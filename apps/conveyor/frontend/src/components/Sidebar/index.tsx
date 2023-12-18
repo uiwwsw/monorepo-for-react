@@ -1,12 +1,12 @@
-import { LocalStorage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
-import { Link, useLocation } from 'react-router-dom';
 import GroupLink from './GroupLink';
-import { Button, Image } from '@library-frontend/ui';
+import Link from './Link';
+import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
-import { Tutorial } from '@library-frontend/ui';
+import Test from '@/Test';
 /* ======   interface   ====== */
 export interface NavProps {}
 
@@ -18,9 +18,6 @@ const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
   const langRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
-  const location = useLocation();
-  const url = new URLSearchParams(location.search);
-  const isInIframe = url.get('side-nav') === 'disabled';
   const guide = [
     // {
     //   text: '메인으로 이동합니다.',
@@ -47,7 +44,7 @@ const Nav = (_: NavProps) => {
     {
       text: '조작페이지는 TCM장비를 조작하는 페이지입니다.',
       position: {
-        top: '70px',
+        top: '82px',
         left: '0',
       },
       size: {
@@ -58,12 +55,12 @@ const Nav = (_: NavProps) => {
     {
       text: '통계페이지는 존, 알람, 케리어 페이지로\n 통계 데이터를 확인할 수 있습니다.',
       position: {
-        top: '120px',
+        top: '130px',
         left: '0',
       },
       size: {
         width: '208px',
-        height: '134px',
+        height: '110px',
       },
     },
     // {
@@ -99,36 +96,37 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '144px',
+        height: '170px',
       },
     },
   ];
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
-    const id = LocalStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
+    logger('useEffect');
+
+    const id = tutorialStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
     setOpen(!id);
   }, []);
-  logger('render');
   return (
     <>
       <div
-        className={`transition-transform md:sticky md:translate-x-0 max-md:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
-          isInIframe ? ' cursor-not-allowed' : ''
-        }${open ? ' !translate-x-0' : ''}`}
+        className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
+          open ? ' !translate-x-0' : ''
+        }`}
         onClick={() => open && setOpen(false)}
       >
         <Button
           onClick={() => setOpen(true)}
-          className={`!fixed w-10 h-10 bg-gray-700 left-full md:invisible`}
+          className={`!fixed w-10 h-10 bg-gray-700 left-full lg:invisible`}
           themeColor={null}
           themeSize={null}
         >
           {open ? '🗞️' : '📰'}
         </Button>
-        <nav className={`flex flex-col flex-auto${isInIframe ? ' pointer-events-none' : ''}`}>
-          <div className="flex-auto">
-            <Link to="/" className="block p-4">
+        <nav className="flex flex-col flex-auto">
+          <div className="flex-auto" onClick={() => logger('1')}>
+            <Link to="/" className="flex p-4 h-20 justify-center" onClick={() => logger('2')}>
               <Image block src={logo} alt="logo" height={37} />
             </Link>
             <hr />
@@ -138,8 +136,10 @@ const Nav = (_: NavProps) => {
           <GroupLink routes={commonRoutes} />
         </nav>
         <hr className="border-dashed" />
-        <span ref={langRef} className="flex ">
-          <Language />
+        <span ref={langRef} className="flex">
+          <Test>
+            <Language />
+          </Test>
         </span>
 
         <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>

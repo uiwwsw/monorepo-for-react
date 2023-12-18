@@ -1,10 +1,10 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
-import { createLogger } from '@package-frontend/utils';
+import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
+// import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
 
 /* ======   interface   ====== */
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement>, WithTheme {
-  children?: string;
+  children?: ReactNode;
   indeterminate?: boolean;
 }
 /* ======    global     ====== */
@@ -47,13 +47,12 @@ const colorClassName = `
 [[data-color="primary"]>&]:bg-blue-500
 [[data-color="secondary"]>&]:bg-slate-500
 `;
-const logger = createLogger('components/Checkbox');
+// const logger = createLogger('components/Checkbox');
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ indeterminate, children, themeColor = 'primary', themeSize = 'md', ...props }, ref) => {
     /* ======   variables   ====== */
     /* ======   function    ====== */
     /* ======   useEffect   ====== */
-    logger('render');
 
     return (
       <label

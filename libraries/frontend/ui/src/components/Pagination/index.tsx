@@ -1,104 +1,109 @@
 import { createLogger } from '@package-frontend/utils';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import PaginationArrow from './Arrow';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import Arrow from './Arrow';
+import Numeric, { InputNumericProps } from '@/Input/Numeric';
+import Select, { SelectProps } from '@/Select';
+
 /* ======   interface   ====== */
 export interface PaginationProps {
-  totalPageNum: number;
-  currentPageIndex?: number;
-  maxPageNum?: number;
-  onChange?: (page: number) => void;
-  hasDoubleArrow?: boolean; //doubleArrow 사용할지 결정
-  startPage?: number;
+  sizeOptions?: SelectProps['options'];
+  max: number;
+  index?: number;
+  per?: number;
+  onChange?: (page: number) => unknown;
+  onChangePer?: (per: number) => unknown;
+  maxMessage?: InputNumericProps['maxMessage'];
+  minMessage?: InputNumericProps['minMessage'];
 }
 
 /* ======    global     ====== */
+const pageSizeOptions = [
+  { value: '10', label: '10개씩 보기' },
+  { value: '20', label: '20개씩 보기' },
+  { value: '30', label: '30개씩 보기' },
+  { value: '40', label: '40개씩 보기' },
+  { value: '50', label: '50개씩 보기' },
+];
 const logger = createLogger('components/Pagination');
 export default function Pagination({
+  per = 10,
   onChange,
-  totalPageNum,
-  maxPageNum = 5,
-  currentPageIndex = 0,
-  hasDoubleArrow,
-  startPage: propsStartPage,
+  sizeOptions = pageSizeOptions,
+  max,
+  index = 0,
+  maxMessage,
+  minMessage,
+  onChangePer,
 }: PaginationProps) {
   /* ======   variables   ====== */
-
-  const [currentPage, setCurrentPage] = useState<number>(currentPageIndex);
-  const startPage = useMemo(
-    () => Math.floor((propsStartPage ?? currentPage) / maxPageNum) * maxPageNum + 1,
-    [maxPageNum, currentPage, propsStartPage],
-  );
-
-  const displayPages = useMemo(
-    () =>
-      Array.from(
-        { length: Math.min(startPage + maxPageNum - 1, totalPageNum) - startPage + 1 },
-        (_, i) => startPage + i,
-      ),
-    [totalPageNum, maxPageNum, startPage],
-  );
-  const disabledRightArrow = useMemo(
-    () => startPage + maxPageNum > totalPageNum,
-    [startPage, maxPageNum, totalPageNum],
-  );
-  const disabledLeftArrow = useMemo(() => startPage - maxPageNum <= 0, [startPage, maxPageNum]);
-  const disabledRightDbArrow = useMemo(() => currentPage === totalPageNum - 1, [currentPage]);
-  const disabledLeftDbArrow = useMemo(() => currentPage === 0, [currentPage]);
+  const [currentPage, setCurrentPage] = useState(index + 1);
+  const inputPage = useMemo(() => (currentPage > max || currentPage < 1 ? 0 : currentPage), [currentPage, max]);
+  const disabledRightArrow = useMemo(() => currentPage >= max, [currentPage, max]);
+  const disabledLeftArrow = useMemo(() => currentPage <= 1, [currentPage]);
+  const disabled = max === 0;
   /* ======   function    ====== */
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleClick(+e.target.value);
+    logger('handleChange');
+  };
+  const handleChangePer = (e: ChangeEvent<HTMLSelectElement>) => {
+    onChangePer && onChangePer(+e.target.value);
+    logger('handleChangePer');
+  };
   const handleClick = useCallback(
     (newPage: number) => {
-      if (newPage < 0 || newPage > totalPageNum) return;
       setCurrentPage(newPage);
-      onChange && onChange(newPage);
+      onChange && onChange(newPage - 1);
+      logger('handleClick');
     },
-    [totalPageNum, setCurrentPage, onChange],
+    [max, setCurrentPage, onChange],
   );
-  const handleLeftArrowClick = useCallback(() => handleClick(startPage - 2), [handleClick, startPage]);
-  const handleRightArrowClick = useCallback(
-    () => handleClick(startPage + maxPageNum - 1),
-    [handleClick, startPage, maxPageNum],
-  );
-  const handleLeftDbArrowClick = useCallback(() => handleClick(0), [handleClick]);
-  const handleRightDbArrowClick = useCallback(() => handleClick(totalPageNum - 1), [handleClick, totalPageNum]);
+  const handleLeftArrowClick = useCallback(() => handleClick(currentPage - 1), [handleClick, currentPage]);
+  const handleRightArrowClick = useCallback(() => handleClick(currentPage + 1), [handleClick, currentPage]);
+  const handleLeftDbArrowClick = useCallback(() => handleClick(1), [handleClick]);
+  const handleRightDbArrowClick = useCallback(() => handleClick(max), [handleClick, max]);
 
   /* ======   useEffect   ====== */
-  useEffect(() => setCurrentPage(currentPageIndex), [currentPageIndex]);
-  logger('render');
+  useEffect(() => {
+    const newValue = index + 1;
+    logger('useEffect');
+    if (newValue !== currentPage) setCurrentPage(index + 1);
+  }, [index]);
   return (
-    <div className="inline-flex justify-center relative w-fit">
-      {hasDoubleArrow && (
-        <PaginationArrow disabled={disabledLeftDbArrow} onClick={handleLeftDbArrowClick}>
-          ❮❮
-        </PaginationArrow>
-      )}
-      <PaginationArrow disabled={disabledLeftArrow} onClick={handleLeftArrowClick}>
+    <div className="w-fit m-auto flex items-center gap-2">
+      <Arrow onClick={handleLeftDbArrowClick} disabled={disabledLeftArrow}>
+        ❮❮
+      </Arrow>
+      <Arrow onClick={handleLeftArrowClick} disabled={disabledLeftArrow}>
         ❮
-      </PaginationArrow>
-      <div className="flex justify-center items-center mx-2">
-        {displayPages.length ? (
-          displayPages.map((pageNumber) => (
-            <div
-              role="button"
-              key={pageNumber}
-              onClick={() => handleClick(pageNumber - 1)}
-              className={`text-center px-3.5 py-2 border ${
-                pageNumber === currentPage + 1 ? 'bg-indigo-500 text-white' : 'hover:bg-gray-300 cursor-pointer'
-              }`}
-            >
-              {pageNumber}
-            </div>
-          ))
-        ) : (
-          <span>페이지가 존재하지 않습니다.</span>
-        )}
-      </div>
-      <PaginationArrow disabled={disabledRightArrow} onClick={handleRightArrowClick}>
+      </Arrow>
+      <Arrow onClick={handleRightArrowClick} disabled={disabledRightArrow}>
         ❯
-      </PaginationArrow>
-      {hasDoubleArrow && (
-        <PaginationArrow disabled={disabledRightDbArrow} onClick={handleRightDbArrowClick}>
-          ❯❯
-        </PaginationArrow>
+      </Arrow>
+      <Arrow onClick={handleRightDbArrowClick} disabled={disabledRightArrow}>
+        ❯❯
+      </Arrow>
+
+      <div className="flex items-center gap-2">
+        <span className="w-20 [&>*]:w-full">
+          <Numeric
+            value={inputPage}
+            disabled={disabled}
+            onChange={handleChange}
+            max={max}
+            min={1}
+            maxMessage={maxMessage}
+            minMessage={minMessage}
+            className="border rounded w-24"
+            placeholder="page"
+          />
+        </span>
+        <span>/</span>
+        <span>{max}</span>
+      </div>
+
+      {onChangePer && (
+        <Select className="max-lg:!hidden" onChange={handleChangePer} defaultValue={per} options={sizeOptions} />
       )}
     </div>
   );

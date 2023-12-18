@@ -1,144 +1,86 @@
-import { Button, ModalWithBtn } from '@library-frontend/ui';
-import { createLogger } from '@package-frontend/utils';
-import ModalContentUpdate from './ModalContentUpdate';
-import { useTcmStart } from 'src/libs/control/application/useTcmStart';
-import { Status } from 'src/libs/control/domain';
-import { useTcmStop } from 'src/libs/control/application/useTcmStop';
-import { useTcmRestart } from 'src/libs/control/application/useTcmRestart';
-import { useTcmReload } from 'src/libs/control/application/useTcmReload';
+import { Button } from '@library-frontend/ui';
+// import { createLogger } from '@package-frontend/utils';
+import ModalUpdate from './Modals/Update';
+import { useTcmStart } from '!/control/application/post-tcm-start';
+import { useTcmStop } from '!/control/application/post-tcm-stop';
+import { useTcmReStart } from '!/control/application/post-tcm-restart';
+import { useMemo } from 'react';
+import { Row } from '@tanstack/react-table';
+import useToastsForControl from '#/useToastsForControl';
+import { TcmList } from '!/control/domain';
+import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 export interface TcmSelectProps {
-  selectedRows?: number[];
+  selectedRows?: Row<TcmList>[];
+  isAllSelected?: boolean;
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/TcmSelect');
-const TcmSelect = ({ selectedRows }: TcmSelectProps) => {
-  const { trigger: startTrigger } = useTcmStart();
-  const { trigger: stopTrigger } = useTcmStop();
-  const { trigger: restartTrigger } = useTcmRestart();
-  const { trigger: reloadTrigger } = useTcmReload();
+// const logger = createLogger('pages/Control/TcmSelect');
+const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
+  const { trigger: startTrigger, isMutating: startIsMutating } = useTcmStart();
+  const { trigger: stopTrigger, isMutating: stopIsMutating } = useTcmStop();
+  const { trigger: restartTrigger, isMutating: restartIsMutating } = useTcmReStart();
+
+  const selectedTids = useMemo(() => selectedRows?.map((row) => row.original.tcmId) || [], [selectedRows]);
+  const selectedAdds = useMemo(() => selectedRows?.map((row) => row.original.ipAddress) || [], [selectedRows]);
+  const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: selectedTids });
+
+  const disabled = useMemo(
+    () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating,
+    [selectedRows, startIsMutating, stopIsMutating, restartIsMutating],
+  );
+  const chooseName = selectedTids.join(', ');
+  const displayName = isAllSelected
+    ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전송', { order })
+    : chooseName.length > 20
+    ? (order: string) => t('{{length}}개의 TCM로 {{order}} 명령어 전송', { order, length: selectedTids.length })
+    : (order: string) => t('TCM {{chooseName}}로 {{order}} 명령어 전송', { order, chooseName });
   /* ======   function    ====== */
-  const handleStartClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-
-    const offlineTids = [];
-
-    for (const tid of selectedRows) {
-      try {
-        const status = await startTrigger({ tid });
-        if (status !== Status.ONLINE) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCMs with tids ${offlineTids.join(', ')} are not ONLINE.`);
-    }
-  };
-
-  const handleStopClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-
-    const onlineTids = [];
-
-    for (const tid of selectedRows) {
-      try {
-        const status = await stopTrigger({ tid });
-        if (status !== Status.OFFLINE) {
-          onlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        onlineTids.push(tid);
-      }
-    }
-
-    if (onlineTids.length > 0) {
-      logger(`TCMs with tids ${onlineTids.join(', ')} are not OFFLINE.`);
-    }
-  };
-
-  const handleRestartClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-
-    const offlineTids = [];
-
-    for (const tid of selectedRows) {
-      try {
-        const status = await restartTrigger({ tid });
-        if (status !== Status.ONLINE) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCMs with tids ${offlineTids.join(', ')} are not ONLINE.`);
-    }
-  };
-
-  const handleReloadClick = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
-      logger('No rows selected');
-      return;
-    }
-
-    const offlineTids = [];
-
-    for (const tid of selectedRows) {
-      try {
-        const status = await reloadTrigger({ tid });
-        if (status !== Status.ONLINE) {
-          offlineTids.push(tid);
-        }
-      } catch (error) {
-        logger(`Error starting TCM with tid ${tid}:`, error);
-        offlineTids.push(tid);
-      }
-    }
-
-    if (offlineTids.length > 0) {
-      logger(`TCMs with tids ${offlineTids.join(', ')} are not ONLINE.`);
-    }
-  };
+  const handleStartClick = () =>
+    adapterEvent({
+      startMsg: displayName('START'),
+      duration: 3000,
+      event(TCM_ID) {
+        return startTrigger({ TCM_ID });
+      },
+    });
+  const handleStopClick = () =>
+    adapterEvent({
+      startMsg: displayName('STOP'),
+      duration: 10000,
+      event(TCM_ID) {
+        return stopTrigger({ TCM_ID });
+      },
+    });
+  const handleRestartClick = () =>
+    adapterEvent({
+      startMsg: displayName('RESTART'),
+      duration: 15000,
+      event(TCM_ID) {
+        return restartTrigger({ TCM_ID });
+      },
+    });
 
   /* ======   useEffect   ====== */
-  logger('render');
   return (
-    <div className="flex justify-end space-x-2 items-center">
-      <Button themeSize={'sm'} onClick={handleStartClick}>
-        Start
-      </Button>
-      <Button themeSize={'sm'} onClick={handleStopClick}>
-        Stop
-      </Button>
-      <Button themeSize={'sm'} onClick={handleRestartClick}>
-        Restart
-      </Button>
-      <Button themeSize={'sm'} onClick={handleReloadClick}>
-        Reload
-      </Button>
-      <ModalWithBtn persist button={<Button themeSize={'sm'}>Update</Button>} hasButton={['CANCEL']}>
-        <ModalContentUpdate selectedRows={selectedRows} />
-      </ModalWithBtn>
-    </div>
+    <>
+      {Toasts}
+      <div className="flex justify-end space-x-2 items-center">
+        <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
+          Start
+        </Button>
+        <Button disabled={disabled} themeColor="quaternary" smoothLoading onClick={handleStopClick}>
+          Stop
+        </Button>
+        <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
+          Restart
+        </Button>
+        <ModalUpdate disabled={disabled} selectedRows={selectedTids} selectedAdds={selectedAdds} />
+      </div>
+    </>
   );
 };
 
