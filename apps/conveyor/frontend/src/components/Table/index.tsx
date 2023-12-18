@@ -36,6 +36,7 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
+  totalLength?: number;
   pagination?: ReactNode;
   renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
@@ -58,6 +59,7 @@ const Table = <T,>({
   setCacheColumnVisibility,
   makePagination = false,
   pagination,
+  totalLength,
   renderSubComponent,
   renderSelectComponent,
   renderSelectComponentAtTop,
@@ -315,13 +317,12 @@ const Table = <T,>({
             )}
           </tbody>
           <tfoot className="bg-gray-50">
-            {renderSelectComponent && (
-              <tr>
-                <td colSpan={table.getAllFlatColumns().length} className="px-6 py-3 text-sm font-medium text-gray-500">
-                  {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} 행이 선택되었습니다
-                </td>
-              </tr>
-            )}
+            <tr>
+              <td colSpan={table.getAllFlatColumns().length} className="px-6 py-3 text-sm font-medium text-gray-500">
+                {hasCheckbox ? `${Object.keys(rowSelection).length} / ` : ''}
+                {totalLength ?? table.getPreFilteredRowModel().rows.length}
+              </td>
+            </tr>
           </tfoot>
         </table>
       </div>

@@ -116,6 +116,7 @@ const StatsCarrier = () => {
           'zoneIdTo',
           'zoneIdToName',
         ]}
+        totalLength={data?.totalCount}
         cacheColumnVisibility={columnVisibility}
         setCacheColumnVisibility={handleVisibility}
         data={data?.rows}
