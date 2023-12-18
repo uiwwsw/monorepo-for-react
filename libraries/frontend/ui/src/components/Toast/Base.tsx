@@ -2,11 +2,11 @@ import Button from '@/Button';
 import useSmooth from '#/useSmooth';
 import Close from '$/Close';
 import { createLogger } from '@package-frontend/utils';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 /* ======   interface   ====== */
 export interface ToastBaseProps {
+  type?: 'success' | 'fail' | 'info';
   open?: boolean;
-  errorMsg?: string;
   children?: ReactNode;
   notClose?: boolean;
   duration?: number;
@@ -18,8 +18,13 @@ export interface ToastBaseProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ToastBase');
+const theme: Record<Exclude<ToastBaseProps['type'], undefined>, string> = {
+  info: 'bg-white border-gray-400',
+  fail: 'bg-rose-200 border-rose-400',
+  success: 'bg-sky-200 border-sky-400',
+};
 const ToastBase = ({
-  errorMsg,
+  type = 'info',
   hasClose,
   hasGauge,
   notClose = false,
@@ -34,9 +39,9 @@ const ToastBase = ({
   if (hasClose === undefined) hasClose = !!notClose;
   if (hasGauge === undefined) hasGauge = !notClose;
   const isImportant = notClose && hasGauge;
+
   const elRef = useRef<HTMLDivElement>(null);
   const delay = (4 / 5) * duration;
-  const [error, setError] = useState<string>();
   /* ======   function    ====== */
   const handleClosed = (value: boolean) => {
     if (value) return;
@@ -52,49 +57,38 @@ const ToastBase = ({
     const timer = setTimeout(() => onClose && onClose(), duration);
     return () => clearTimeout(timer);
   }, [open]);
-  useEffect(() => {
-    if (!isImportant) return;
-    const timer = setTimeout(() => setError(errorMsg), duration + 30000);
-    return () => clearTimeout(timer);
-  }, []);
+
   return (
     <div
-      className={`relative flex items-center border border-gray-400 px-5 py-2 rounded-sm bg-white overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close${
-        className ? ` ${className}` : ''
-      }`}
+      className={`relative flex items-center border px-5 py-2 rounded-sm overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close ${
+        theme[type]
+      }${className ? ` ${className}` : ''}`}
       role="alert"
       ref={elRef}
     >
-      {!error && (
+      <i
+        className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
+          open && hasGauge ? ' w-full animate-count-down-bg' : ''
+        }`}
+        style={{
+          animationDelay: delay + 'ms',
+        }}
+      >
         <i
-          className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
-            open && hasGauge ? ' w-full animate-count-down-bg' : ''
-          }`}
+          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' basis-1/12 animate-count-down-fake' : ''}`}
           style={{
-            animationDelay: delay + 'ms',
+            animationDelay: duration + 'ms',
           }}
-        >
-          <i
-            className={`flex-auto${hasGauge ? '' : ' flex-0'}${
-              isImportant ? ' basis-1/12 animate-count-down-fake' : ''
-            }`}
-            style={{
-              animationDelay: duration + 'ms',
-            }}
-          />
-          <i
-            className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
-            style={{
-              animationDuration: duration + 'ms',
-            }}
-          />
-        </i>
-      )}
-      <span className="flex-1">
-        {error}
-        {children}
-      </span>
-      {(hasClose || !!error) && (
+        />
+        <i
+          className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
+          style={{
+            animationDuration: duration + 'ms',
+          }}
+        />
+      </i>
+      <span className="flex-1">{children}</span>
+      {hasClose && (
         <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
           <Close />
         </Button>

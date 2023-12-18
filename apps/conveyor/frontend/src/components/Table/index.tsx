@@ -14,15 +14,16 @@ import {
   Column,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect, ReactNode } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
+import { Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
 import { pageSizeOptions } from '#/constants';
 import useSetting from '#/useSetting';
 import Test from '@/Test';
+import Extender from './Expander';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
@@ -35,6 +36,7 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
+  pagination?: ReactNode;
   renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
@@ -55,6 +57,7 @@ const Table = <T,>({
   cacheColumnVisibility,
   setCacheColumnVisibility,
   makePagination = false,
+  pagination,
   renderSubComponent,
   renderSelectComponent,
   renderSelectComponentAtTop,
@@ -70,10 +73,11 @@ const Table = <T,>({
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { defaultPageSize } = useSetting();
+  const hasCheckbox = renderSelectComponent || renderSelectComponentAtTop;
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
-      ...(renderSelectComponent || renderSelectComponentAtTop
+      ...(hasCheckbox
         ? [
             {
               id: 'select',
@@ -115,20 +119,7 @@ const Table = <T,>({
             {
               id: 'expander',
               header: () => null,
-              cell: ({ row }: { row: Row<T> }) => {
-                return row.getCanExpand() ? (
-                  <Button
-                    themeColor={null}
-                    themeSize="xl"
-                    onClick={row.getToggleExpandedHandler()}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {row.getIsExpanded() ? '🗁' : '🗀'}
-                  </Button>
-                ) : (
-                  '🔵'
-                );
-              },
+              cell: Extender,
             },
           ]
         : []),
@@ -287,13 +278,13 @@ const Table = <T,>({
             ))}
           </thead>
 
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 border-b border-b-gray-200">
             {data.length > 0 ? (
               table.getFilteredRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => {
                   return (
                     <Fragment key={row.id}>
-                      <tr>
+                      <tr className="relative">
                         {row.getVisibleCells().map((cell) => (
                           <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
                         ))}
@@ -346,7 +337,7 @@ const Table = <T,>({
           minMessage={getNumericMsg}
         />
       )}
-      <hr />
+      {pagination}
     </div>
   );
 };

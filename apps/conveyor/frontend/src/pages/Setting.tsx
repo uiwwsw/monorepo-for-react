@@ -22,17 +22,17 @@ const Setting = () => {
   /* ======   function    ====== */
   const handleChangePageSize = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/default-page-size'], e.target.value);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangePageSize', e);
   };
   const handleChangeDuration = (e: ChangeEvent<HTMLSelectElement>) => {
     storage.set(STORAGE['setting/default-duration'], +e.target.value);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeDuration', e);
   };
   const handleChangeBrowser = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/default-view-browser'], e.target.checked);
-    showToast({ message: t('변경에 성공했습니다.') });
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeBrowser', e);
   };
   /* ======   useEffect   ====== */
@@ -58,19 +58,19 @@ const Setting = () => {
               options={[
                 {
                   value: '7',
-                  label: '7일',
+                  label: t('7일'),
                 },
                 {
                   value: '14',
-                  label: '14일',
+                  label: t('14일'),
                 },
                 {
                   value: '21',
-                  label: '21일',
+                  label: t('21일'),
                 },
                 {
                   value: '28',
-                  label: '28일',
+                  label: t('28일'),
                 },
               ]}
               onChange={handleChangeDuration}

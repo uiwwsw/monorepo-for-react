@@ -122,17 +122,17 @@ const StatsAlarm = () => {
         cacheColumnVisibility={columnVisibility}
         setCacheColumnVisibility={handleVisibility}
         onSearch={handleSearchKeyword}
+        pagination={
+          <Pagination
+            per={currentPer}
+            sizeOptions={pageSizeOptions}
+            onChangePer={handleChangePer}
+            onChange={handleChangePage}
+            max={currentTotalPage}
+            index={currentPage}
+          />
+        }
       />
-      <div className="text-center mt-3">
-        <Pagination
-          per={currentPer}
-          sizeOptions={pageSizeOptions}
-          onChangePer={handleChangePer}
-          onChange={handleChangePage}
-          max={currentTotalPage}
-          index={currentPage}
-        />
-      </div>
     </>
   );
 };

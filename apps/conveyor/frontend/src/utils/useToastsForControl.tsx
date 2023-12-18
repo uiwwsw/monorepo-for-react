@@ -41,7 +41,6 @@ const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
         hasClose: false,
         notClose: true,
         hasGauge: true,
-        errorMsg: t('해당 토스트는 오류가 발생하였습니다.') + ':',
       });
 
     const fails: { id: T; message?: string }[] = [];
@@ -65,9 +64,11 @@ const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
     if (fails.length > 0) {
       showToast({
         message: failMsg(fails),
+        type: 'fail',
       });
     } else {
       showToast({
+        type: 'success',
         message: successMsg,
       });
     }

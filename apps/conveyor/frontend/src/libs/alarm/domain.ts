@@ -1,5 +1,5 @@
 import { Alarm } from '!/control/domain';
-
+import { t } from 'src/i18n';
 export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }: Alarm) => {
   switch (eventCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
@@ -73,20 +73,20 @@ export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }
       return `Air-shower is not available. Please check. Reason[${reason}]`;
 
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_TCM:
-      return `TCM ${location}이 시작되었습니다.`;
+      return t(`TCM ${location}이 시작되었습니다.`);
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM:
-      return `TCM ${location}이 멈췄습니다.`;
+      return t(`TCM ${location}이 멈췄습니다.`);
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
-      return `DCM이 시작되었습니다.`;
+      return t(`DCM이 시작되었습니다.`);
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
-      return `DCM이 멈췄습니다.`;
+      return t(`DCM이 멈췄습니다.`);
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
-      return `HIM이 시작되었습니다.`;
+      return t(`HIM이 시작되었습니다.`);
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
-      return `HIM이 멈췄습니다.`;
+      return t(`HIM이 멈췄습니다.`);
 
     default:
-      return `정의되지 않은 알람코드입니다 ${eventCode}`;
+      return `${location}에 정의되지 않은 알람코드입니다. ${eventCode}`;
   }
 };
 
