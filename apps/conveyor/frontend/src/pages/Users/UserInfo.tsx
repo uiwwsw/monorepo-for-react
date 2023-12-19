@@ -1,4 +1,3 @@
-import { useGetAuth } from '!/auth/application/get-auth';
 import { useResetPassword } from '!/auth/application/put-reset-password';
 import { useUpdateGrade } from '!/auth/application/put-update-grade';
 import { User } from '!/auth/domain';
@@ -25,7 +24,6 @@ const logger = createLogger('pages/UserInfo');
 const UserInfo = ({ row }: UserInfoProps) => {
   /* ======   variables   ====== */
   const selectRef = useRef<HTMLSelectElement>(null);
-  const { data: auth } = useGetAuth();
   const { t } = useTranslation();
   const {
     register,
@@ -100,28 +98,26 @@ const UserInfo = ({ row }: UserInfoProps) => {
           </div>
           <WarningMessage>{gradeError?.message}</WarningMessage>
         </div>
-        {auth?.grade === UserGrade.ADMIN && (
-          <form>
-            <div className="flex gap-4 items-center">
-              <label>
-                <span className="mr-4">{t('{{userName}}님 비번 변경', { userName: row?.original.userName })}:</span>
-                <Input
-                  {...register('pw', {
-                    required: t('재설정할 암호를 입력하십시오.'),
-                  })}
-                  autoComplete="pw"
-                  placeholder={t('재설정할 암호를 입력하십시오.')}
-                  error={!!errors?.pw?.message}
-                  type="password"
-                />
-              </label>
-              <Button smoothLoading onClick={handleAdapterSubmit(handleResetPassword)}>
-                {t('비밀번호 리셋')}
-              </Button>
-            </div>
-            <WarningMessage>{errors?.pw?.message ?? passwordError?.message}</WarningMessage>
-          </form>
-        )}
+        <form>
+          <div className="flex gap-4 items-center">
+            <label>
+              <span className="mr-4">{t('{{userName}}님 비번 변경', { userName: row?.original.userName })}:</span>
+              <Input
+                {...register('pw', {
+                  required: t('재설정할 암호를 입력하십시오.'),
+                })}
+                autoComplete="pw"
+                placeholder={t('재설정할 암호를 입력하십시오.')}
+                error={!!errors?.pw?.message}
+                type="password"
+              />
+            </label>
+            <Button smoothLoading onClick={handleAdapterSubmit(handleResetPassword)}>
+              {t('비밀번호 리셋')}
+            </Button>
+          </div>
+          <WarningMessage>{errors?.pw?.message ?? passwordError?.message}</WarningMessage>
+        </form>
       </div>
     </>
   );
