@@ -1,4 +1,4 @@
-import { Button, ModalWithBtn } from '@library-frontend/ui';
+import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
 import { useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import Upload from '../Upload';
@@ -6,6 +6,8 @@ import { useUploadFirm } from '!/control/application/put-upload-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import Test from '@/Test';
+import { useFirmList } from '!/control/application/get-backup-firmware';
+import { useDeleteBackup } from '!/control/application/delete-backup-firmware';
 
 /* ======   interface   ====== */
 export interface ModalUpdateProps {
@@ -24,7 +26,12 @@ const logger = createLogger('pages/Control/Modals/Update');
 
 const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps) => {
   /* ======   variables   ====== */
+  const newFile = '새 파일 업로드';
+  const [selectedFile, setSelectedFile] = useState('');
+  const { trigger: deleteTrigger } = useDeleteBackup();
+  const [fileList, setFileList] = useState([]);
   const { trigger: updateTrigger } = useUpdateFirm();
+  const { trigger: firmListTrigger, isMutating } = useFirmList();
   const { trigger: uploadTrigger, process } = useUploadFirm();
   const { trigger: networkTrigger } = useTcmNetwork();
 
@@ -32,6 +39,33 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   const continueUpdatingRef = useRef(true);
 
   /* ======   function    ====== */
+  const handleFileDelete = () => {
+    if (!selectedRows || !selectedAdds) return;
+    setFileList([]);
+    selectedRows.forEach(async (tcmId, index) => {
+      const address = selectedAdds[index];
+      const port = await networkTrigger({ tcm_id: tcmId });
+      await deleteTrigger({
+        fileName: selectedFile,
+        address,
+        port,
+      });
+    });
+
+    setSelectedFile('');
+    handleFirmList();
+  };
+  const handleFirmList = () => {
+    if (!selectedRows || !selectedAdds) return;
+    setFileList([]);
+    selectedRows.forEach(async (tcmId, index) => {
+      const address = selectedAdds[index];
+      const port = await networkTrigger({ tcm_id: tcmId });
+      const data = await firmListTrigger({ port, address });
+      setFileList((prev) => [...prev.filter((x) => data?.includes(x))]);
+    });
+  };
+  const handleFileSelect = (selectedFileName: string) => setSelectedFile(selectedFileName);
 
   const handleUpdateStop = () => {
     continueUpdatingRef.current = false;
@@ -85,9 +119,10 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
     <>
       <ModalWithBtn
         hasCloseBtn
+        defaultLoading={isMutating}
         button={
           <Test>
-            <Button disabled={disabled} themeColor="tertiary">
+            <Button onClick={handleFirmList} disabled={disabled} themeColor="tertiary">
               Update
             </Button>
           </Test>
@@ -96,8 +131,29 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       >
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 펌웨어 업데이트</h2>
-          <div className="flex justify-between items-center gap-2">
-            <Upload onSubmit={handleUpload} onCancel={handleUpdateStop} />
+          <div className="flex items-center gap-2 w-[400px]">
+            <Combo
+              width="100%"
+              onChange={handleFileSelect}
+              placeholder="펌웨어"
+              options={[newFile].concat(fileList).map((x) => ({ value: x, label: x }))}
+            ></Combo>
+            <ModalWithBtn
+              hasButton={['OK', 'CANCEL']}
+              button={
+                <Button disabled={!selectedFile || selectedFile === newFile} themeColor="secondary" themeSize="sm">
+                  <span className="whitespace-nowrap">삭제</span>
+                </Button>
+              }
+              onClose={(value) => value === 'OK' && handleFileDelete()}
+            >
+              파일을 삭제하시겠습니까?
+            </ModalWithBtn>
+          </div>
+          <div>
+            <div className="w-[400px]">
+              <Upload disabled={selectedFile !== newFile} onSubmit={handleUpload} onCancel={handleUpdateStop} />
+            </div>
           </div>
           <div className="h-6 bg-slate-100 mt-3">
             <i

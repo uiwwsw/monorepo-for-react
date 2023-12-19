@@ -21,7 +21,7 @@ const UpdatePassword = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useUpdatePassword();
@@ -60,7 +60,7 @@ const UpdatePassword = () => {
             />
             <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
-          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+          <Button smoothLoading onClick={formSubmit(handleSubmit)}>
             {t('비밀번호 변경')}
           </Button>
         </form>

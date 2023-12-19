@@ -1,7 +1,7 @@
 import { Button } from '@library-frontend/ui';
 // import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import ModalFirmware from './Modals/Firmware';
+// import ModalFirmware from './Modals/Firmware';
 import ModalDetail from './Modals/Detail';
 import ModalLogsTcm from './Modals/LogsTcm';
 import useToastsForControl from '#/useToastsForControl';
@@ -57,7 +57,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
           <Test className="left-0 top-0">Process Kill</Test>
         </Button>
 
-        <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
+        {/* <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} /> */}
 
         <ModalDetail tid={row?.original.tcmId} />
 

@@ -82,6 +82,7 @@ const Combo = ({
       <div className="bg-white shadow-2xl">
         <Input
           type="search"
+          className="w-full"
           ref={ref}
           error={error}
           placeholder={searchPlaceholder}

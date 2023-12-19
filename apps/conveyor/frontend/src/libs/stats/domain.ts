@@ -1,3 +1,4 @@
+import { TITAN_INTERNAL_EVENT_ID, convertAlarmToMessage } from '!/alarm/domain';
 import {
   AlarmStatsResponse,
   CarrierStatsResponse,
@@ -35,6 +36,7 @@ export class StatsAlarmDataRow {
   no?: number;
   serialNo?: number;
   alarmCode?: number;
+  alarmDescription?: string;
   taskId?: number;
   location?: number;
   reason?: number;
@@ -59,6 +61,12 @@ export class StatsAlarmDataRow {
     this.no = No;
     this.serialNo = SerialNo;
     this.alarmCode = AlarmCode;
+    this.alarmDescription = convertAlarmToMessage({
+      eventCode: `${AlarmCode}` as TITAN_INTERNAL_EVENT_ID,
+      carrierId: CarrierID,
+      reason: `${Reason}`,
+      location: Location,
+    });
     this.taskId = TaskID;
     this.location = Location;
     this.reason = Reason;

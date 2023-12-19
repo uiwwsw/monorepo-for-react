@@ -39,7 +39,7 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName });
 
-    onView(blob, storage.get(STORAGE['setting/default-view-browser']) ? '' : 'log-view');
+    onView(blob, storage.get(STORAGE['setting/view-browser']) ? '' : 'log-view');
     logger('handleView');
   };
   /* ======   useEffect   ====== */

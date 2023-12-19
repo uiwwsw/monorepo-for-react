@@ -37,7 +37,7 @@ const Menu = ({
   const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const { trigger, position } = usePosition({ targetRef: wrapRef });
+  const { trigger, position, size } = usePosition({ targetRef: wrapRef, withSize: true });
 
   /* ======   function    ====== */
   const handleOpen = (e: MouseEvent) => {
@@ -63,7 +63,7 @@ const Menu = ({
           onFinished={onFinished}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
-          style={{ ...position, width: widthStyle, zIndex }}
+          style={{ ...position, width: size?.width, zIndex }}
         >
           {children}
         </Smooth>

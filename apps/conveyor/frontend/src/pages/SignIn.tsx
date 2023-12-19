@@ -34,7 +34,7 @@ const SignIn = () => {
   const isLoggedIn = !!auth;
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
@@ -124,7 +124,7 @@ const SignIn = () => {
             />
             <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
-          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+          <Button smoothLoading onClick={formSubmit(handleSubmit)}>
             {t('로그인')}
           </Button>
         </form>

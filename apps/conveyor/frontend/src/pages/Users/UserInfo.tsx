@@ -1,6 +1,7 @@
 import { useResetPassword } from '!/auth/application/put-reset-password';
 import { useUpdateGrade } from '!/auth/application/put-update-grade';
 import { User } from '!/auth/domain';
+import Test from '@/Test';
 import WarningMessage from '@/Typography/WarningMessage';
 import { Button, Input, Select, useToasts } from '@library-frontend/ui';
 import { UserGrade } from '@package-backend/types';
@@ -27,7 +28,7 @@ const UserInfo = ({ row }: UserInfoProps) => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { Toasts, showToast } = useToasts();
@@ -112,8 +113,8 @@ const UserInfo = ({ row }: UserInfoProps) => {
                 type="password"
               />
             </label>
-            <Button smoothLoading onClick={handleAdapterSubmit(handleResetPassword)}>
-              {t('비밀번호 리셋')}
+            <Button smoothLoading onClick={formSubmit(handleResetPassword)}>
+              <Test className="left-0 top-0">{t('비밀번호 리셋')}</Test>
             </Button>
           </div>
           <WarningMessage>{errors?.pw?.message ?? passwordError?.message}</WarningMessage>

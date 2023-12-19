@@ -23,7 +23,7 @@ const SignUp = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
     watch,
   } = useForm<FormState>();
@@ -115,7 +115,7 @@ const SignUp = () => {
             />
             <WarningMessage>{errors?.rpw?.message}</WarningMessage>
           </label>
-          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+          <Button smoothLoading onClick={formSubmit(handleSubmit)}>
             {t('회원가입')}
           </Button>
         </form>
