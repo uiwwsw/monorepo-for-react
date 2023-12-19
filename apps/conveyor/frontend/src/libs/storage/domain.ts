@@ -7,6 +7,7 @@ export const enum STORAGE {
   'setting/duration' = 'setting/duration',
   'setting/view-browser' = 'setting/view-browser',
   'setting/control-pagination' = 'setting/control-pagination',
+  'setting/alarm-sound' = 'setting/alarm-sound',
   'i18nextLng' = 'i18nextLng',
 }
 export type STORAGE_KEY = keyof typeof STORAGE;

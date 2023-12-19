@@ -15,7 +15,7 @@ const Extender = <T,>({ row }: ExtenderProps<T>) => {
   return (
     row.getCanExpand() && (
       <Button themeColor={null} themeSize="xl" onClick={handler}>
-        {isExpanded ? '🗁' : '🗀'}
+        {isExpanded ? '📂' : '📁'}
       </Button>
     )
   );

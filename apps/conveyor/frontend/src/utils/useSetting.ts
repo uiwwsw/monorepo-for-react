@@ -13,6 +13,7 @@ const useSetting = (_?: useSettingProps) => {
   const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
   const viewBrowser = storage.get<boolean>(STORAGE['setting/view-browser']) ?? false;
   const controlPagination = storage.get<boolean>(STORAGE['setting/control-pagination']) ?? false;
+  const alarmSound = storage.get<boolean>(STORAGE['setting/alarm-sound']) ?? true;
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -21,6 +22,7 @@ const useSetting = (_?: useSettingProps) => {
     pageSize,
     duration,
     controlPagination,
+    alarmSound,
   };
 };
 

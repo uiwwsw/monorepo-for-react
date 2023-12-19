@@ -22,7 +22,6 @@ import Td from './Td';
 import Empty from '@/Empty';
 import { pageSizeOptions } from '#/constants';
 import useSetting from '#/useSetting';
-import Test from '@/Test';
 import Extender from './Expander';
 
 /* ======   interface   ====== */

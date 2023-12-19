@@ -16,7 +16,7 @@ const logger = createLogger('pages/Setting');
 const Setting = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { pageSize, duration, viewBrowser, controlPagination } = useSetting();
+  const { pageSize, duration, viewBrowser, controlPagination, alarmSound } = useSetting();
 
   const { Toasts, showToast } = useToasts();
   /* ======   function    ====== */
@@ -37,6 +37,11 @@ const Setting = () => {
   };
   const handleChangeControlPagination = (e: ChangeEvent<HTMLInputElement>) => {
     storage.set(STORAGE['setting/control-pagination'], e.target.checked);
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
+    logger('handleChangeControlPagination', e);
+  };
+  const handleChangeAlarmSound = (e: ChangeEvent<HTMLInputElement>) => {
+    storage.set(STORAGE['setting/alarm-sound'], e.target.checked);
     showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeControlPagination', e);
   };
@@ -112,6 +117,12 @@ const Setting = () => {
           <span className="text-lg">{t('조작 테이블 페이지네이션 적용')}</span>:
           <div className="ml-3">
             <Checkbox onChange={handleChangeControlPagination} checked={controlPagination} />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <span className="text-lg">{t('알람 소리')}</span>:
+          <div className="ml-3">
+            <Checkbox onChange={handleChangeAlarmSound} checked={alarmSound} />
           </div>
         </div>
       </PageCenter>
