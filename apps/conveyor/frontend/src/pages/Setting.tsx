@@ -16,24 +16,29 @@ const logger = createLogger('pages/Setting');
 const Setting = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize, defaultDuration, defaultViewBrowser } = useSetting();
+  const { pageSize, duration, viewBrowser, controlPagination } = useSetting();
 
   const { Toasts, showToast } = useToasts();
   /* ======   function    ====== */
   const handleChangePageSize = (e: ChangeEvent<HTMLInputElement>) => {
-    storage.set(STORAGE['setting/default-page-size'], e.target.value);
+    storage.set(STORAGE['setting/page-size'], e.target.value);
     showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangePageSize', e);
   };
   const handleChangeDuration = (e: ChangeEvent<HTMLSelectElement>) => {
-    storage.set(STORAGE['setting/default-duration'], +e.target.value);
+    storage.set(STORAGE['setting/duration'], +e.target.value);
     showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeDuration', e);
   };
   const handleChangeBrowser = (e: ChangeEvent<HTMLInputElement>) => {
-    storage.set(STORAGE['setting/default-view-browser'], e.target.checked);
+    storage.set(STORAGE['setting/view-browser'], e.target.checked);
     showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
     logger('handleChangeBrowser', e);
+  };
+  const handleChangeControlPagination = (e: ChangeEvent<HTMLInputElement>) => {
+    storage.set(STORAGE['setting/control-pagination'], e.target.checked);
+    showToast({ message: t('변경에 성공했습니다.'), type: 'success' });
+    logger('handleChangeControlPagination', e);
   };
   /* ======   useEffect   ====== */
   return (
@@ -44,7 +49,7 @@ const Setting = () => {
           <span className="text-lg">{t('기본 테이블 갯수')}</span>:
           <div className="ml-3">
             <RadioGroup
-              defaultValue={`${defaultPageSize}`}
+              defaultValue={`${pageSize}`}
               onChange={handleChangePageSize}
               labels={pageSizeOptions.map((x) => x.value)}
             />
@@ -54,7 +59,7 @@ const Setting = () => {
           <span className="text-lg">{t('기본 달력 기간')}</span>:
           <div className="ml-3">
             <Select
-              defaultValue={`${defaultDuration}`}
+              defaultValue={`${duration}`}
               options={[
                 {
                   value: '7',
@@ -100,7 +105,13 @@ const Setting = () => {
         <div className="flex items-center">
           <span className="text-lg">{t('로그 뷰어 새창')}</span>:
           <div className="ml-3">
-            <Checkbox onChange={handleChangeBrowser} checked={defaultViewBrowser} />
+            <Checkbox onChange={handleChangeBrowser} checked={viewBrowser} />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <span className="text-lg">{t('조작 테이블 페이지네이션 적용')}</span>:
+          <div className="ml-3">
+            <Checkbox onChange={handleChangeControlPagination} checked={controlPagination} />
           </div>
         </div>
       </PageCenter>

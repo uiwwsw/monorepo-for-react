@@ -44,11 +44,11 @@ const StatsSummary = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
-  const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
+  const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-duration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
   });
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);

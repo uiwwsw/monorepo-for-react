@@ -30,6 +30,7 @@ export interface TableProps<T> {
   thead: string[];
   placeholder?: string;
   fixHead?: Record<string, string>;
+  mustHaveColumn?: string[];
   data?: T[];
   allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
@@ -41,7 +42,6 @@ export interface TableProps<T> {
   renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
-  onSearch?: (keyword: string) => Promise<unknown>;
 }
 
 /* ======    global     ====== */
@@ -49,8 +49,8 @@ const logger = createLogger('components/Table');
 
 const Table = <T,>({
   thead,
-  onSearch,
   fixHead,
+  mustHaveColumn,
   data,
   placeholder,
   allRowSelectTick,
@@ -74,7 +74,7 @@ const Table = <T,>({
     );
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize } = useSetting();
+  const { pageSize } = useSetting();
   const hasCheckbox = renderSelectComponent || renderSelectComponentAtTop;
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
@@ -146,11 +146,11 @@ const Table = <T,>({
     },
     initialState: {
       pagination: {
-        pageSize: defaultPageSize,
+        pageSize: pageSize,
       },
     },
     onSortingChange: setSorting,
-    onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
+    onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
       const itemRank = rankItem(row.getValue(columnId), value);
       addMeta({
@@ -178,8 +178,7 @@ const Table = <T,>({
     t('페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.', { newValue, limit });
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
-    if (onSearch) onSearch(keyword);
-    else setGlobalFilter(keyword);
+    setGlobalFilter(keyword);
   };
   const handleChangePage = (index: number) => table.setPageIndex(index);
   /* ======   useEffect   ====== */
@@ -202,7 +201,7 @@ const Table = <T,>({
       {renderSelectComponentAtTop && cloneElement(renderSelectComponentAtTop, { selectedRows })}
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
-          <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
+          {/* <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
             <label className="flex items-center space-x-2">
               <Checkbox
                 checked={table.getIsAllColumnsVisible()}
@@ -210,12 +209,16 @@ const Table = <T,>({
               />
               <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
-          </div>
+          </div> */}
           <div className="py-1 flex flex-wrap">
             {table.getAllLeafColumns().map((column) => {
               return (
-                <label key={column.id} className="m-2">
-                  <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
+                <span key={column.id} className="m-2">
+                  <Checkbox
+                    disabled={mustHaveColumn?.includes(column.id)}
+                    checked={column.getIsVisible()}
+                    onChange={column.getToggleVisibilityHandler()}
+                  >
                     <span className="uppercase">
                       {column.id
                         .replace(/([A-Z])/g, ' $1')
@@ -223,7 +226,7 @@ const Table = <T,>({
                         .toLowerCase()}
                     </span>
                   </Checkbox>
-                </label>
+                </span>
               );
             })}
           </div>
@@ -231,8 +234,6 @@ const Table = <T,>({
       )}
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
-          {onSearch && <Test />}
-
           <Input
             type="search"
             autoComplete="table-search"
@@ -240,7 +241,7 @@ const Table = <T,>({
             debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            placeholder={placeholder ?? onSearch ? t('검색어를 입력하세요.') : t('필터링할 키워드를 입력하세요.')}
+            placeholder={placeholder ?? t('필터링할 키워드를 입력하세요.')}
           />
         </div>
         {renderSelectComponent && (
@@ -304,7 +305,7 @@ const Table = <T,>({
               ) : (
                 <tr>
                   <td colSpan={99} className="text-center py-8">
-                    <Empty>{onSearch ? t('검색 결과가 없습니다.') : t('필터링 결과가 없습니다.')}</Empty>
+                    <Empty>{t('필터링 결과가 없습니다.')}</Empty>
                   </td>
                 </tr>
               )
@@ -332,7 +333,7 @@ const Table = <T,>({
           onChange={handleChangePage}
           onChangePer={(index) => table.setPageSize(index)}
           max={table.getPageCount()}
-          per={defaultPageSize}
+          per={pageSize}
           sizeOptions={pageSizeOptions}
           maxMessage={getNumericMsg}
           minMessage={getNumericMsg}

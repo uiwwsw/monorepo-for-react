@@ -1,6 +1,6 @@
 import { Alarm } from '!/control/domain';
 import { t } from 'src/i18n';
-export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }: Alarm) => {
+export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }: Partial<Alarm>) => {
   switch (eventCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
       return `Invalid mater configuration zone[${location}] reason[${reason}]`;
@@ -86,7 +86,9 @@ export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }
       return t(`HIM이 멈췄습니다.`);
 
     default:
-      return `${location}에 정의되지 않은 알람코드입니다. ${eventCode}`;
+      return '';
+    // default:
+    //   return `${location}에 정의되지 않은 알람코드입니다. ${eventCode}`;
   }
 };
 

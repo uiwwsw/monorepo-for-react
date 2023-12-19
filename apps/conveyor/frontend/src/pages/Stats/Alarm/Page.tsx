@@ -1,8 +1,8 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Pagination, ToastWithPortal } from '@library-frontend/ui';
+import { Input, Pagination, ToastWithPortal, useDebounce } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Arg, useAlarmStats } from '!/stats/application/get-alarm-stats';
 import Table from '@/Table';
 import { STORAGE } from '!/storage/domain';
@@ -14,6 +14,7 @@ import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -21,16 +22,16 @@ const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize, defaultDuration } = useSetting();
+  const { pageSize, duration } = useSetting();
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = storage.get<VisibilityState>(STORAGE['alarm/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-duration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
-    page_size: defaultPageSize,
+    page_size: pageSize,
     find_key: '',
   });
   const currentPer = useMemo(() => arg.page_size ?? 10, [arg]);
@@ -53,9 +54,9 @@ const StatsAlarm = () => {
     logger('handleCalenderChange', duration);
   };
 
-  const handleSearchKeyword = async (character: string) => {
+  const handleSearchKeyword = useDebounce(async (e: ChangeEvent<HTMLInputElement>) => {
+    const character = e.target.value;
     if (character === arg.find_key && arg.page === 1) return;
-
     await Promise.all([
       setArg((prev) => ({
         ...prev,
@@ -65,7 +66,7 @@ const StatsAlarm = () => {
     ]);
     mutate();
     logger('handleSearchKeyword', character);
-  };
+  });
   const handleChangePer = async (value: number) => {
     await Promise.all([
       setArg((prev) => ({
@@ -93,7 +94,16 @@ const StatsAlarm = () => {
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
+    setChildren(
+      <div className="flex flex-col gap-2">
+        <StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />
+        <div>
+          <Test>
+            <Input placeholder="검색어를 입력하세요." onChange={handleSearchKeyword} />
+          </Test>
+        </div>
+      </div>,
+    );
 
     logger('useEffect');
     return () => setChildren(undefined);
@@ -104,15 +114,16 @@ const StatsAlarm = () => {
       <H1>{t('알람')}</H1>
 
       <Table
+        mustHaveColumn={['no']}
         thead={[
           'no',
           'serialNo',
           'alarmCode',
+          'alarmDescription',
           'taskId',
           'location',
           'reason',
           'tcmId',
-          'commandId',
           'carrierId',
           'setTime',
           'clearTime',
@@ -122,7 +133,6 @@ const StatsAlarm = () => {
         makePagination={false}
         cacheColumnVisibility={columnVisibility}
         setCacheColumnVisibility={handleVisibility}
-        onSearch={handleSearchKeyword}
         pagination={
           <Pagination
             per={currentPer}

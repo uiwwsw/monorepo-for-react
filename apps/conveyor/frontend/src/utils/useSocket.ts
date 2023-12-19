@@ -7,7 +7,7 @@ import { useDebounce } from '@library-frontend/ui';
 import { Alarm, ServerList, TcmList } from '!/control/domain';
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
-import { HttpError } from './http';
+import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
 import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
 

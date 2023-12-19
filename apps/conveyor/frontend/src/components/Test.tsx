@@ -18,7 +18,10 @@ const Test = ({ children, className }: TestProps) => {
   return (
     <>
       <span
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         className={`flex rounded-sm overflow-hidden absolute z-[2] bg-red-600 px-1 text-xs transition-all hover:pr-10 hover:text-xl${
           className ? ` ${className}` : ''
         }`}

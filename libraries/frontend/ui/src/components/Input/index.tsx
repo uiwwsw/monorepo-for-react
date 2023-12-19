@@ -39,7 +39,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           type={type}
           ref={ref}
           placeholder={placeholder}
-          className={`w-full focus:outline-none p-3 bg-transparent outline-none text-ellipsis`}
+          className={`w-full focus:outline-none p-3 bg-transparent outline-none text-ellipsis [&[type="file"]]:leading-[1.125]`}
           onChange={handleChange}
         />
         {slots}

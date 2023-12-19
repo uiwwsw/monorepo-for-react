@@ -18,7 +18,12 @@ const App = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(
-    () => alarm.forEach((x) => showToast({ message: convertAlarmToMessage(x), serialNo: x.serialNo })),
+    () =>
+      alarm.forEach((x) => {
+        const message = convertAlarmToMessage(x);
+        if (!message) return;
+        showToast({ message, serialNo: x.serialNo });
+      }),
     [alarm],
   );
   return (

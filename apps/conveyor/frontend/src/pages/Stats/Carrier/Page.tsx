@@ -1,8 +1,8 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Pagination, ToastWithPortal } from '@library-frontend/ui';
+import { Input, Pagination, ToastWithPortal, useDebounce } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useCarrierStats, Arg } from '!/stats/application/get-carrier-stats';
 import Table from '@/Table';
 import { VisibilityColumn, VisibilityState } from '@tanstack/react-table';
@@ -14,6 +14,7 @@ import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import Test from '@/Test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -21,19 +22,19 @@ const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize, defaultDuration } = useSetting();
+  const { pageSize, duration } = useSetting();
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const columnVisibility = storage.get<VisibilityColumn>(STORAGE['carrier/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-duration, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
-    page_size: defaultPageSize,
+    page_size: pageSize,
     find_key: '',
   });
-  const currentPer = useMemo(() => arg.page_size ?? defaultPageSize, [arg]);
+  const currentPer = useMemo(() => arg.page_size ?? pageSize, [arg]);
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
   const currentPage = useMemo(() => arg.page - 1, [arg]);
 
@@ -53,7 +54,8 @@ const StatsCarrier = () => {
     logger('handleCalenderChange', duration);
   };
 
-  const handleSearchKeyword = async (character: string) => {
+  const handleSearchKeyword = useDebounce(async (e: ChangeEvent<HTMLInputElement>) => {
+    const character = e.target.value;
     if (character === arg.find_key && arg.page === 1) return;
     await Promise.all([
       setArg((prev) => ({
@@ -64,7 +66,7 @@ const StatsCarrier = () => {
     ]);
     mutate();
     logger('handleSearchKeyword', character);
-  };
+  });
   const handleChangePer = async (value: number) => {
     await Promise.all([
       setArg((prev) => ({
@@ -94,7 +96,16 @@ const StatsCarrier = () => {
   /* ======   useEffect   ====== */
 
   useEffect(() => {
-    setChildren(<StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />);
+    setChildren(
+      <div className="flex flex-col gap-2">
+        <StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />
+        <div>
+          <Test>
+            <Input placeholder="검색어를 입력하세요." onChange={handleSearchKeyword} />
+          </Test>
+        </div>
+      </div>,
+    );
 
     logger('useEffect');
     return () => setChildren(undefined);
@@ -106,6 +117,7 @@ const StatsCarrier = () => {
       <H1>{t('케리어')}</H1>
 
       <Table
+        mustHaveColumn={['carrierId']}
         thead={[
           'carrierId',
           'endTime',
@@ -121,7 +133,6 @@ const StatsCarrier = () => {
         setCacheColumnVisibility={handleVisibility}
         data={data?.rows}
         makePagination={false}
-        onSearch={handleSearchKeyword}
         pagination={
           <Pagination
             per={currentPer}

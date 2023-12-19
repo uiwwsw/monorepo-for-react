@@ -9,16 +9,18 @@ export interface useSettingProps {}
 // const logger = createLogger('utils/useSetting');
 const useSetting = (_?: useSettingProps) => {
   /* ======   variables   ====== */
-  const defaultPageSize = storage.get<number>(STORAGE['setting/default-page-size']) ?? 10;
-  const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
-  const defaultViewBrowser = storage.get<boolean>(STORAGE['setting/default-view-browser']) ?? false;
+  const pageSize = storage.get<number>(STORAGE['setting/page-size']) ?? 10;
+  const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
+  const viewBrowser = storage.get<boolean>(STORAGE['setting/view-browser']) ?? false;
+  const controlPagination = storage.get<boolean>(STORAGE['setting/control-pagination']) ?? false;
 
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {
-    defaultViewBrowser,
-    defaultPageSize,
-    defaultDuration,
+    viewBrowser,
+    pageSize,
+    duration,
+    controlPagination,
   };
 };
 
