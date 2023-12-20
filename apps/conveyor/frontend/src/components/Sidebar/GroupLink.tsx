@@ -44,7 +44,7 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
                       className={({ isActive }) => `${isActive ? '!text-white' : ''}`}
                       to={x.path}
                     >
-                      {t(x.name)}
+                      - {t(x.name)}
                     </Link>
                   ))}
               </div>

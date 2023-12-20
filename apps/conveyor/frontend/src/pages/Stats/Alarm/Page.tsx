@@ -111,7 +111,6 @@ const StatsAlarm = () => {
       <H1>{t('알람')}</H1>
 
       <Table
-        mustHaveColumn={['no']}
         thead={[
           'no',
           'serialNo',
@@ -125,6 +124,20 @@ const StatsAlarm = () => {
           'setTime',
           'clearTime',
         ]}
+        mustHaveColumn={['no']}
+        fixHead={{
+          no: t('번호'),
+          serialNo: t('시리얼번호'),
+          alarmCode: t('알람코드'),
+          alarmDescription: t('알람설명'),
+          taskId: t('작업 아이디'),
+          location: t('위치'),
+          reason: t('이유'),
+          tcmId: t('TCM 아이디'),
+          carrierId: t('캐리어 아이디'),
+          setTime: t('설정 시간'),
+          clearTime: t('해제 시간'),
+        }}
         totalLength={data?.totalCount}
         data={data?.rows}
         makePagination={false}

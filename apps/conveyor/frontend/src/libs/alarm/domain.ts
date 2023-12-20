@@ -3,87 +3,96 @@ import { t } from 'src/i18n';
 export const convertAlarmToMessage = ({ eventCode, carrierId, reason, location }: Partial<Alarm>) => {
   switch (eventCode) {
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MASTER_CONF_INVALID:
-      return `Invalid mater configuration zone[${location}] reason[${reason}]`;
+      return t('잘못된 마스터 구성 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_SLAVE_CONF_INVALID:
-      return `Invalid slave configuration zone[${location}] reason[${reason}]`;
+      return t('잘못된 슬레이브 구성 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_SLAVE_CONNECTION_ERROR:
-      return `Slave connection error zone[${location}] reason[${reason}]`;
+      return t('슬레이브 연결 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_MOTOR_ERROR: {
       if (reason === TITAN_INTERNAL_EVENT_ID.ERROR_EX_SAFE_LOCK_SUB_01) {
-        return `Motor Error Safe lock activated zone[${location}] reason[${reason}]`;
+        return t('모터 오류 안전 잠금 활성화 영역[{{location}}] 이유[{{reason}}]', { location, reason });
       } else {
-        return `Motor Error zone[${location}] reason[${reason}]`;
+        return t('모터 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
       }
     }
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_COMMUNICATION_ERROR:
-      return `Communication Error zone[${location}] reason[${reason}]`;
+      return t('통신 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_TURN_HOME_FAILED:
-      return `Turn home failed in zone[${location}] reason[${reason}]`;
+      return t('홈 복귀 실패 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_TURN_FAILED:
-      return `Turn failed in zone[${location}] reason[${reason}]`;
+      return t('턴 실패 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_LIFT_HOME_FAILED:
-      return `Lift home failed in zone[${location}] reason[${reason}]`;
+      return t('리프트 홈 실패 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_LIFT_FAILED:
-      return `Lift failed in zone[${location}] reason[${reason}]`;
+      return t('리프트 실패 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_MOTION_CARRIER_STUCK:
-      return `Carrier ${carrierId} stuck in zone[${location}] reason[${reason}]`;
+      return t('캐리어 {{carrierId}} 영역[{{location}}]에 멈춤 이유[{{reason}}]', { carrierId, location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_FOUND:
-      return `Carrier found in a not allowed zone[${location}] reason[${reason}]`;
+      return t('허용되지 않은 영역[{{location}}]에서 캐리어 발견 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_IO_FAILED:
-      return `Carrier handoff E84 Failed in zone[${location}] reason[${reason}]`;
+      return t('캐리어 핸드오프 E84 실패 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP1_TIMEOUT:
-      return `Carrier handoff E84 TP1 timeout, TR_REQ did not turn ON in zone[${location}] reason[${reason}]`;
+      return t('캐리어 핸드오프 E84 TP1 시간 초과, TR_REQ가 켜지지 않음 영역[{{location}}] 이유[{{reason}}]', {
+        location,
+        reason,
+      });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP2_TIMEOUT:
-      return `Carrier handoff E84 TP2 timeout, BUSY did not turn ON in zone[${location}] reason[${reason}]`;
+      return t('캐리어 핸드오프 E84 TP2 시간 초과, BUSY가 켜지지 않음 영역[{{location}}] 이유[{{reason}}]', {
+        location,
+        reason,
+      });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP3_TIMEOUT:
-      return `Carrier handoff E84 TP3 timeout, Carrier was not installed/removed inside E84 in zone[${location}] reason[${reason}]`;
+      return t(
+        '캐리어 핸드오프 E84 TP3 시간 초과, E84 내부에 캐리어가 설치/제거되지 않음 영역[{{location}}] 이유[{{reason}}]',
+        { location, reason },
+      );
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP4_TIMEOUT:
-      return `Carrier handoff E84 TP4 timeout in zone[${location}] reason[${reason}]`;
+      return t('캐리어 핸드오프 E84 TP4 시간 초과 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_E84_TP5_TIMEOUT:
-      return `Carrier handoff E84 TP5 timeout in zone[${location}] reason[${reason}]`;
+      return t('캐리어 핸드오프 E84 TP5 시간 초과 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_MANUAL_PORT_SENSOR_ERROR:
-      return `Manual port sensor error in zone[${location}] reason[${reason}]`;
+      return t('수동 포트 센서 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_LOST:
-      return `Carrier lost in zone[${location}] reason[${reason}]`;
+      return t('캐리어 분실 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_EXIT_ZONE_FAILED:
-      return `Carrier exit error in zone[${location}] reason[${reason}]`;
+      return t('캐리어 출구 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_CARRIER_ENTER_ZONE_FAILED:
-      return `Carrier enter error in zone[${location}] reason[${reason}]`;
+      return t('캐리어 입구 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_SYNC_LIFT_LEAD_FAILED:
-      return `Sync lifting lead error in zone[${location}] reason[${reason}]`;
+      return t('동기 리프팅 리드 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_SYNC_LIFT_FOLLOW_FAILED:
-      return `Sync lifting follow error in zone[${location}] reason[${reason}]`;
+      return t('동기 리프팅 팔로우 오류 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_EMERGENCY: {
       if (reason === '1') {
-        return `ALARM TCM EMERGENCY zone[${location}] reason[${reason}] ALARM_REASON_FIREWALL_SIGNAL_ACTIVATED`;
+        return t('알람 TCM 비상 영역[{{location}}] 이유[{{reason}}] 방화벽 신호 활성화', { location, reason });
       } else {
-        return `ALARM TCM EMERGENCY zone[${location}] reason[${reason}]`;
+        return t('알람 TCM 비상 영역[{{location}}] 이유[{{reason}}]', { location, reason });
       }
     }
     case TITAN_INTERNAL_EVENT_ID.ALARM_TCM_INIT_FAILED:
-      return `Initialize failed(check h/w, e84, etc, ...) in zone[${location}] reason[${reason}]`;
+      return t('초기화 실패(하드웨어, E84 등 확인) 영역[{{location}}] 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_SYSTEM_FAIL_OVERED:
-      return `System Fail-overed reason[${reason}]`;
+      return t('시스템 장애 이동 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_ABNORMAL_TCM_DISCONNECTED:
-      return `terminate abnormally in tcm ${location}  reason[${reason}]`;
+      return t('TCM {{location}}에서 비정상 종료 이유[{{reason}}]', { location, reason });
 
     case TITAN_INTERNAL_EVENT_ID.ALARM_TSC_NO_ROUTE:
-      return `Can not find path in zone[${location}] reason[${reason}]`;
+      return t('영역[{{location}}]에서 경로를 찾을 수 없음 이유[{{reason}}]', { location, reason });
     case TITAN_INTERNAL_EVENT_ID.ALARM_TSC_AIR_SHOWER_NOT_AVAILABLE:
-      return `Air-shower is not available. Please check. Reason[${reason}]`;
+      return t('에어샤워 사용 불가. 확인 바람. 이유[{{reason}}]', { location, reason });
 
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_TCM:
-      return t(`TCM ${location}이 시작되었습니다.`);
+      return t('TCM {{location}}이 시작되었습니다.', { location });
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM:
-      return t(`TCM ${location}이 멈췄습니다.`);
+      return t('TCM {{location}}이 멈췄습니다.', { location });
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
-      return t(`DCM이 시작되었습니다.`);
+      return t('DCM이 시작되었습니다.');
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
-      return t(`DCM이 멈췄습니다.`);
+      return t('DCM이 멈췄습니다.');
     case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
-      return t(`HIM이 시작되었습니다.`);
+      return t('HIM이 시작되었습니다.');
     case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
-      return t(`HIM이 멈췄습니다.`);
+      return t('HIM이 멈췄습니다.');
 
     default:
       return '';

@@ -113,6 +113,16 @@ const StatsSummary = () => {
         allRowSelectTick={allRowSelectTick}
         // initialRowSelection={}
         thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
+        fixHead={{
+          level: t('레벨'),
+          zoneId: t('지역 아이디'),
+          displayName: t('표시 이름'),
+          physicalType: t('물리적 유형'),
+          date: t('날짜'),
+          alarmNum: t('알람 번호'),
+          carrierNum: t('캐리어 번호'),
+          warningNum: t('경고 번호'),
+        }}
         // cacheColumnVisibility={columnVisibility}
         // setCacheColumnVisibility={handleVisibility}
         data={renderZone}

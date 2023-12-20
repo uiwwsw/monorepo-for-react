@@ -1,8 +1,8 @@
 import Button from '@/Button';
-import useSmooth from '#/useSmooth';
 import Close from '$/Close';
 import { createLogger } from '@package-frontend/utils';
 import { ReactNode, useEffect, useRef } from 'react';
+import Smooth from '@/Smooth';
 /* ======   interface   ====== */
 export interface ToastBaseProps {
   type?: 'success' | 'fail' | 'info';
@@ -49,7 +49,6 @@ const ToastBase = ({
     logger('handleClosed');
   };
   /* ======   useEffect   ====== */
-  useSmooth({ value: open, delay: 500, ref: elRef, onFinished: handleClosed });
   useEffect(() => {
     if (notClose) return;
     logger(`useEffect: open = ${open}`);
@@ -59,41 +58,46 @@ const ToastBase = ({
   }, [open]);
 
   return (
-    <div
-      className={`relative flex items-center border px-5 py-2 rounded-sm overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close ${
-        theme[type]
-      }${className ? ` ${className}` : ''}`}
-      role="alert"
-      ref={elRef}
-    >
-      <i
-        className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
-          open && hasGauge ? ' w-full animate-count-down-bg' : ''
-        }`}
-        style={{
-          animationDelay: delay + 'ms',
-        }}
+    <>
+      <Smooth value={open} delay={500} itemRef={elRef} onFinished={handleClosed} />
+      <div
+        className={`relative shadow-2xl flex items-center border px-5 py-2 rounded-sm overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close ${
+          theme[type]
+        }${className ? ` ${className}` : ''}`}
+        role="alert"
+        ref={elRef}
       >
         <i
-          className={`flex-auto${hasGauge ? '' : ' flex-0'}${isImportant ? ' basis-1/12 animate-count-down-fake' : ''}`}
+          className={`absolute bg-black flex left-0 bottom-0 h-1 origin-left${
+            open && hasGauge ? ' w-full animate-count-down-bg' : ''
+          }`}
           style={{
-            animationDelay: duration + 'ms',
+            animationDelay: delay + 'ms',
           }}
-        />
-        <i
-          className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
-          style={{
-            animationDuration: duration + 'ms',
-          }}
-        />
-      </i>
-      <span className="flex-1">{children}</span>
-      {hasClose && (
-        <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
-          <Close />
-        </Button>
-      )}
-    </div>
+        >
+          <i
+            className={`flex-auto${hasGauge ? '' : ' flex-0'}${
+              isImportant ? ' basis-1/12 animate-count-down-fake' : ''
+            }`}
+            style={{
+              animationDelay: duration + 'ms',
+            }}
+          />
+          <i
+            className={`bg-white${open && hasGauge ? ' animate-count-down-x' : ''}`}
+            style={{
+              animationDuration: duration + 'ms',
+            }}
+          />
+        </i>
+        <span className="flex-1">{children}</span>
+        {hasClose && (
+          <Button onClick={onClose} className="-mr-4 ml-1" themeColor={null} themeSize={null}>
+            <Close />
+          </Button>
+        )}
+      </div>
+    </>
   );
 };
 

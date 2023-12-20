@@ -23,7 +23,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
   const [keyword, setKeyword] = useState('');
   const { t } = useTranslation();
   const fixedCalendar = useRef(storage.get<string[]>(STORAGE['stats/calendar']));
-  const fixedKeyword = useRef(storage.get<string>(STORAGE['stats/keyword']) ?? '');
+  const fixedKeyword = useRef(storage.get<string | undefined>(STORAGE['stats/keyword']));
   const checkboxRef = useRef<HTMLInputElement>(null);
   const guides = [
     {
@@ -50,12 +50,12 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
     onChange && onChange(duration);
     logger('handleChangeCalendar', duration);
   };
-  const setCacheKeyword = (value: string) => {
+  const setCacheKeyword = (value?: string) => {
     storage.set(STORAGE['stats/keyword'], value);
     fixedKeyword.current = value;
   };
   const handleFixedKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    let value: string = '';
+    let value: string | undefined;
     if (e.target.checked) value = keyword;
     setCacheKeyword(value);
     logger('handleFixedKeyword', value, keyword);
@@ -64,14 +64,14 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
   const handleChangeKeyword = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     setKeyword(keyword);
-    if (fixedKeyword.current) setCacheKeyword(keyword);
-    logger('handleChangeKeyword', keyword);
+    if (fixedKeyword.current !== undefined) setCacheKeyword(keyword);
+    logger('handleChangeKeyword', `fixedKeyword.current: ${fixedKeyword.current}`, `keyword:${keyword}`);
     debounceChangeKeyword(e);
   };
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    setKeyword(fixedKeyword.current);
+    setKeyword(fixedKeyword.current ?? '');
   }, [pathname]);
   return (
     <>

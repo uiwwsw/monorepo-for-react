@@ -43,6 +43,45 @@ const resources = {
       유저관리: 'User Management',
       비밀번호변경: 'Change Password',
       '비밀번호 리셋': 'Reset Password',
+      번호: 'no',
+      시리얼번호: 'serialNo',
+      알람코드: 'alarmCode',
+      알람설명: 'alarmDescription',
+      작업ID: 'taskId',
+      위치: 'location',
+      이유: 'reason',
+      'TCM 아이디': 'tcmId',
+      '캐리어 아이디': 'carrierId',
+      '설정 시간': 'setTime',
+      '해제 시간': 'clearTime',
+      '종료 시간': 'endTime',
+      '시작 시간': 'startTime',
+      '작업 아이디': 'taskId',
+      '출발 지역 아이디': 'zoneIdFrom',
+      '출발 지역 이름': 'zoneIdFromName',
+      '도착 지역 아이디': 'zoneIdTo',
+      '도착 지역 이름': 'zoneIdToName',
+      레벨: 'level',
+      '지역 아이디': 'zoneId',
+      '표시 이름': 'displayName',
+      '물리적 유형': 'physicalType',
+      날짜: 'date',
+      '알람 번호': 'alarmNum',
+      '캐리어 번호': 'carrierNum',
+      '경고 번호': 'warningNum',
+      얼라이브: 'status',
+      '빌드 데이트': 'buildDate',
+      빌드넘버: 'buildNum',
+      아이피: 'ipAddress',
+      '유니크 아이디': 'uid',
+      '유저 아이디': 'userId',
+      '유저 이름': 'userName',
+      등급: 'gradeName',
+      생성일: 'createdDate',
+      '최근 접속일': 'lastAccess',
+      '서버 타입': 'server type',
+      '서버 조작': 'Server Control',
+      'TCM 조작': 'TCM Control',
       '5개씩 보기': 'View 5 per page',
       '10개씩 보기': 'View 10 per page',
       '20개씩 보기': 'View 20 per page',
@@ -105,6 +144,65 @@ const resources = {
       '변경에 성공했습니다.': 'Change successful.',
       '페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.':
         'Cannot enter a number {{newValue}} that exceeds page {{limit}}.',
+      '잘못된 마스터 구성 영역[{{location}}] 이유[{{reason}}]':
+        'Invalid mater configuration zone[{{location}}] reason[{{reason}}]',
+      '잘못된 슬레이브 구성 영역[{{location}}] 이유[{{reason}}]':
+        'Invalid slave configuration zone[{{location}}] reason[{{reason}}]',
+      '슬레이브 연결 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Slave connection error zone[{{location}}] reason[{{reason}}]',
+      '모터 오류 안전 잠금 활성화 영역[{{location}}] 이유[{{reason}}]':
+        'Motor Error Safe lock activated zone[{{location}}] reason[{{reason}}]',
+      '모터 오류 영역[{{location}}] 이유[{{reason}}]': 'Motor Error zone[{{location}}] reason[{{reason}}]',
+      '통신 오류 영역[{{location}}] 이유[{{reason}}]': 'Communication Error zone[{{location}}] reason[{{reason}}]',
+      '홈 복귀 실패 영역[{{location}}] 이유[{{reason}}]': 'Turn home failed in zone[{{location}}] reason[{{reason}}]',
+      '턴 실패 영역[{{location}}] 이유[{{reason}}]': 'Turn failed in zone[{{location}}] reason[{{reason}}]',
+      '리프트 홈 실패 영역[{{location}}] 이유[{{reason}}]': 'Lift home failed in zone[{{location}}] reason[{{reason}}]',
+      '리프트 실패 영역[{{location}}] 이유[{{reason}}]': 'Lift failed in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 {{carrierId}} 영역[{{location}}]에 멈춤 이유[{{reason}}]':
+        'Carrier {{carrierId}} stuck in zone[{{location}}] reason[{{reason}}]',
+      '허용되지 않은 영역[{{location}}]에서 캐리어 발견 이유[{{reason}}]':
+        'Carrier found in a not allowed zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 실패 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 Failed in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 TP1 시간 초과, TR_REQ가 켜지지 않음 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 TP1 timeout, TR_REQ did not turn ON in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 TP2 시간 초과, BUSY가 켜지지 않음 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 TP2 timeout, BUSY did not turn ON in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 TP3 시간 초과, E84 내부에 캐리어가 설치/제거되지 않음 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 TP3 timeout, Carrier was not installed/removed inside E84 in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 TP4 시간 초과 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 TP4 timeout in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 핸드오프 E84 TP5 시간 초과 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier handoff E84 TP5 timeout in zone[{{location}}] reason[{{reason}}]',
+      '수동 포트 센서 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Manual port sensor error in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 분실 영역[{{location}}] 이유[{{reason}}]': 'Carrier lost in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 출구 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier exit error in zone[{{location}}] reason[{{reason}}]',
+      '캐리어 입구 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Carrier enter error in zone[{{location}}] reason[{{reason}}]',
+      '동기 리프팅 리드 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Sync lifting lead error in zone[{{location}}] reason[{{reason}}]',
+      '동기 리프팅 팔로우 오류 영역[{{location}}] 이유[{{reason}}]':
+        'Sync lifting follow error in zone[{{location}}] reason[{{reason}}]',
+      '알람 TCM 비상 영역[{{location}}] 이유[{{reason}}] 방화벽 신호 활성화':
+        'ALARM TCM EMERGENCY zone[{{location}}] reason[{{reason}}] ALARM_REASON_FIREWALL_SIGNAL_ACTIVATED',
+      '알람 TCM 비상 영역[{{location}}] 이유[{{reason}}]': 'ALARM TCM EMERGENCY zone[{{location}}] reason[{{reason}}]',
+      '초기화 실패(하드웨어, E84 등 확인) 영역[{{location}}] 이유[{{reason}}]':
+        'Initialize failed(check h/w, e84, etc, ...) in zone[{{location}}] reason[{{reason}}]',
+      '시스템 장애 이동 이유[{{reason}}]': 'System Fail-overed reason[{{reason}}]',
+      'TCM {{location}}에서 비정상 종료 이유[{{reason}}]':
+        'terminate abnormally in tcm {{location}}  reason[{{reason}}]',
+      '영역[{{location}}]에서 경로를 찾을 수 없음 이유[{{reason}}]':
+        'Can not find path in zone[{{location}}] reason[{{reason}}]',
+      '에어샤워 사용 불가. 확인 바람. 이유[{{reason}}]':
+        'Air-shower is not available. Please check. Reason[{{reason}}]',
+      'TCM {{location}}이 시작되었습니다.': 'TCM {{location}} has started.',
+      'TCM {{location}}이 멈췄습니다.': 'TCM {{location}} has stopped.',
+      'DCM이 시작되었습니다.': 'DCM has started.',
+      'DCM이 멈췄습니다.': 'DCM has stopped.',
+      'HIM이 시작되었습니다.': 'HIM has started.',
+      'HIM이 멈췄습니다.': 'HIM has stopped.',
     },
   },
   'zh-CN': {

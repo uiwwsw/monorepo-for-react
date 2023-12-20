@@ -24,6 +24,14 @@ const Users = () => {
       <Table
         renderSubComponent={<UserInfo />}
         thead={['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess']}
+        fixHead={{
+          uid: t('유니크 아이디'),
+          userId: t('유저 아이디'),
+          userName: t('유저 이름'),
+          gradeName: t('등급'),
+          createdDate: t('생성일'),
+          lastAccess: t('최근 접속일'),
+        }}
         data={data}
         makePagination
       />

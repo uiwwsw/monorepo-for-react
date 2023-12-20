@@ -1,9 +1,9 @@
 import { Storage, createLogger } from '@package-frontend/utils';
 import { ReactNode, RefObject, createRef, useEffect, useMemo, useState } from 'react';
-import Portal from './Portal';
+import Portal from '@/Portal';
 import usePosition from '#/usePosition';
-import Button from './Button';
-import Smooth from './Smooth';
+import Button from '@/Button';
+import SmoothWrap from './Smooth/Wrap';
 /* ======   interface   ====== */
 export interface TutorialProps {
   btnName?: string;
@@ -71,7 +71,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
   return !didSee ? (
     <Portal>
       {!finish && (
-        <Smooth value={!done} onFinished={(value) => setFinish(!value)} className="tutorial">
+        <SmoothWrap value={!done} onFinished={(value) => setFinish(!value)} className="tutorial">
           <div
             className="fixed inset-0 overflow-hidden cursor-not-allowed"
             style={{
@@ -99,7 +99,7 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
               </div>
             </div>
           </div>
-        </Smooth>
+        </SmoothWrap>
       )}
     </Portal>
   ) : null;

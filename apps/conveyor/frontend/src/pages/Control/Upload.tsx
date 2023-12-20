@@ -74,7 +74,7 @@ const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
             파일을 업데이트 하시겠습니까?
           </ModalWithBtn>
         </form>
-        <Button themeSize={'sm'} onClick={onCancel} disabled={disabled || !loading}>
+        <Button themeSize={'sm'} themeColor={'secondary'} onClick={onCancel} disabled={disabled || !loading}>
           Stop
         </Button>
       </div>
