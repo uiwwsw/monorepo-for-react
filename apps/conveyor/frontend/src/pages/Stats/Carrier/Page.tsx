@@ -1,5 +1,5 @@
 import { useHeaderContext } from '@/HeaderContext';
-import { Input, Pagination, ToastWithPortal, useDebounce } from '@library-frontend/ui';
+import { Pagination, ToastWithPortal, useDebounce } from '@library-frontend/ui';
 import { createLogger, newDate } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
@@ -14,7 +14,6 @@ import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
-import Test from '@/Test';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -24,6 +23,7 @@ const StatsCarrier = () => {
   const { t } = useTranslation();
   const { pageSize, duration } = useSetting();
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
+  const fixedKeyword = storage.get<string>(STORAGE['stats/keyword']);
   const columnVisibility = storage.get<VisibilityColumn>(STORAGE['carrier/table']) ?? {};
 
   const { setChildren } = useHeaderContext();
@@ -32,7 +32,7 @@ const StatsCarrier = () => {
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
     page_size: pageSize,
-    find_key: '',
+    find_key: fixedKeyword ?? '',
   });
   const currentPer = useMemo(() => arg.page_size ?? pageSize, [arg]);
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
@@ -97,17 +97,14 @@ const StatsCarrier = () => {
 
   useEffect(() => {
     setChildren(
-      <div className="flex flex-col gap-2">
-        <StatsCalendar currentDuration={currentDuration} onChange={handleCalenderChange} />
-        <div>
-          <Test>
-            <Input placeholder="검색어를 입력하세요." onChange={handleSearchKeyword} />
-          </Test>
-        </div>
-      </div>,
+      <StatsCalendar
+        currentDuration={currentDuration}
+        onChange={handleCalenderChange}
+        onChangeKeyword={handleSearchKeyword}
+      />,
     );
 
-    logger('useEffect');
+    logger('useEffect', currentDuration);
     return () => setChildren(undefined);
   }, [currentDuration]);
   logger('render', storage.get<VisibilityState>(STORAGE['carrier/table']));

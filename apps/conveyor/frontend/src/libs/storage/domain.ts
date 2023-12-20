@@ -3,6 +3,7 @@ export const enum STORAGE {
   'carrier/table' = 'carrier/table',
   'alarm/table' = 'alarm/table',
   'stats/calendar' = 'stats/calendar',
+  'stats/keyword' = 'stats/keyword',
   'setting/page-size' = 'setting/page-size',
   'setting/duration' = 'setting/duration',
   'setting/view-browser' = 'setting/view-browser',

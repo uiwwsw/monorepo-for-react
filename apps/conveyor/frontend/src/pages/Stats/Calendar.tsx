@@ -1,23 +1,29 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
-import { Button, Calendar, Checkbox, Tutorial } from '@library-frontend/ui';
+import Test from '@/Test';
+import { Button, Calendar, Checkbox, Input, Tutorial, useDebounce } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
-import { ChangeEvent, useRef } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 /* ======   interface   ====== */
 export interface StatsCalendarProps {
   currentDuration: string[];
   onChange: (duration: Dayjs[]) => Promise<unknown>;
+  onChangeKeyword?: (e: ChangeEvent<HTMLInputElement>) => unknown;
 }
 /* ======    global     ====== */
 
 const logger = createLogger('pages/Stats/Calendar');
-const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
+const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCalendarProps) => {
   /* ======   variables   ====== */
+  const { pathname } = useLocation();
+  const [keyword, setKeyword] = useState('');
   const { t } = useTranslation();
   const fixedCalendar = useRef(storage.get<string[]>(STORAGE['stats/calendar']));
+  const fixedKeyword = useRef(storage.get<string>(STORAGE['stats/keyword']) ?? '');
   const checkboxRef = useRef<HTMLInputElement>(null);
   const guides = [
     {
@@ -36,34 +42,80 @@ const StatsCalendar = ({ currentDuration, onChange }: StatsCalendarProps) => {
     fixedCalendar.current = value;
     logger('handleFixedCalendar', value);
   };
-  const handleChange = (duration: Dayjs | Dayjs[]) => {
+  const handleChangeCalendar = (duration: Dayjs | Dayjs[]) => {
     if (!(duration instanceof Array)) return;
     const arg = [duration[0].toISOString(), duration[1].toISOString()];
     logger(fixedCalendar.current, arg);
     fixedCalendar.current?.length && storage.set(STORAGE['stats/calendar'], arg);
     onChange && onChange(duration);
-    logger('handleChange', duration);
+    logger('handleChangeCalendar', duration);
+  };
+  const setCacheKeyword = (value: string) => {
+    storage.set(STORAGE['stats/keyword'], value);
+    fixedKeyword.current = value;
+  };
+  const handleFixedKeyword = (e: ChangeEvent<HTMLInputElement>) => {
+    let value: string = '';
+    if (e.target.checked) value = keyword;
+    setCacheKeyword(value);
+    logger('handleFixedKeyword', value, keyword);
+  };
+  const debounceChangeKeyword = useDebounce(onChangeKeyword ? onChangeKeyword : () => {}, 500);
+  const handleChangeKeyword = (e: ChangeEvent<HTMLInputElement>) => {
+    const keyword = e.target.value;
+    setKeyword(keyword);
+    if (fixedKeyword.current) setCacheKeyword(keyword);
+    logger('handleChangeKeyword', keyword);
+    debounceChangeKeyword(e);
   };
 
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    setKeyword(fixedKeyword.current);
+  }, [pathname]);
   return (
     <>
       <Tutorial guide={guides} />
-      <div className="flex items-center gap-2">
-        <span ref={checkboxRef}>
-          <Checkbox defaultChecked={!!fixedCalendar.current?.length} onChange={handleFixedCalendar}>
-            {t('달력 동기화')}
-          </Checkbox>
-        </span>
-        <Calendar
-          defaultValue={currentDuration}
-          placeholder={t('날짜를 선택해 주세요.')}
-          selectRangeHolder={t('기간을 선택해 주세요.')}
-          tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
-          selectRange
-          onChange={handleChange}
-          button={<Button themeColor={'secondary'} themeSize="sm" />}
-        />
+      <div className="table">
+        <div className="table-row">
+          <span ref={checkboxRef} className="table-cell pr-8">
+            <Checkbox defaultChecked={!!fixedCalendar.current?.length} onChange={handleFixedCalendar}>
+              <span className="max-lg:hidden">{t('달력 동기화')}</span>
+              <span className="lg:hidden">🗓️</span>
+            </Checkbox>
+          </span>
+          <span className="table-cell">
+            <Calendar
+              defaultValue={currentDuration}
+              placeholder={t('날짜를 선택해 주세요.')}
+              selectRangeHolder={t('기간을 선택해 주세요.')}
+              tooltipMsg={t('시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.')}
+              selectRange
+              onChange={handleChangeCalendar}
+              button={<Button themeColor={'secondary'} themeSize="sm" />}
+            />
+          </span>
+        </div>
+        {onChangeKeyword && (
+          <div className="table-row">
+            <span className="table-cell">
+              <Checkbox defaultChecked={!!fixedKeyword.current} onChange={handleFixedKeyword}>
+                <span className="max-lg:hidden">{t('검색어 동기화')}</span>
+                <span className="lg:hidden">🔍</span>
+              </Checkbox>
+            </span>
+            <span className="table-cell">
+              <Test className="left-32">
+                <Input
+                  className="max-lg:w-32"
+                  value={keyword}
+                  placeholder="검색어를 입력하세요."
+                  onChange={handleChangeKeyword}
+                />
+              </Test>
+            </span>
+          </div>
+        )}
       </div>
     </>
   );
