@@ -114,7 +114,6 @@ const StatsCarrier = () => {
       <H1>{t('케리어')}</H1>
 
       <Table
-        mustHaveColumn={['carrierId']}
         thead={[
           'carrierId',
           'endTime',
@@ -125,6 +124,17 @@ const StatsCarrier = () => {
           'zoneIdTo',
           'zoneIdToName',
         ]}
+        mustHaveColumn={['carrierId']}
+        fixHead={{
+          carrierId: t('캐리어 아이디'),
+          endTime: t('종료 시간'),
+          startTime: t('시작 시간'),
+          taskId: t('작업 아이디'),
+          zoneIdFrom: t('출발 지역 아이디'),
+          zoneIdFromName: t('출발 지역 이름'),
+          zoneIdTo: t('도착 지역 아이디'),
+          zoneIdToName: t('도착 지역 이름'),
+        }}
         totalLength={data?.totalCount}
         cacheColumnVisibility={columnVisibility}
         setCacheColumnVisibility={handleVisibility}

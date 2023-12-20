@@ -9,6 +9,7 @@ import { Loading } from '@library-frontend/ui';
 import H2 from '@/Typography/H2';
 import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 import useSetting from '#/useSetting';
+import { useTranslation } from 'react-i18next';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -18,6 +19,8 @@ import useSetting from '#/useSetting';
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const { tcmList, serverList, status } = useSocketDataContext();
   const { controlPagination } = useSetting();
   // if (status !== WS_STATUS.OPEN) return <Loading show />;
@@ -73,10 +76,13 @@ const Control = () => {
           ></Table>
         </div> */}
         <div>
-          <H2>Server Control</H2>
+          <H2>{t('서버 조작')}</H2>
           <Table
-            fixHead={{ status: 'alive' }}
             thead={['status', 'stateType']}
+            fixHead={{
+              status: t('얼라이브'),
+              stateType: t('서버 타입'),
+            }}
             data={serverList}
             makePagination={controlPagination}
             renderSelectComponent={<ServerSelect />}
@@ -85,10 +91,16 @@ const Control = () => {
         </div>
 
         <div>
-          <H2>TCM Control</H2>
+          <H2>{t('TCM 조작')}</H2>
           <Table
-            fixHead={{ status: 'alive' }}
             thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
+            fixHead={{
+              tcmId: t('TCM 아이디'),
+              status: t('얼라이브'),
+              buildDate: t('빌드 데이트'),
+              buildNum: t('빌드넘버'),
+              ipAddress: t('아이피'),
+            }}
             data={tcmList}
             makePagination={controlPagination}
             renderSelectComponent={<TcmSelect />}

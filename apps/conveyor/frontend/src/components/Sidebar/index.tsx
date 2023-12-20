@@ -143,7 +143,7 @@ const Nav = (_: NavProps) => {
           </Test>
         </span>
 
-        <footer className="text-white text-[10px] p-2 text-center">© 2023 semi-ts, Inc. all rights reserved.</footer>
+        <footer className="text-white text-[10px] p-2 text-center">© 2023 SEMI-TS, Inc. all rights reserved.</footer>
       </div>
       <Tutorial guide={guide} />
     </>
