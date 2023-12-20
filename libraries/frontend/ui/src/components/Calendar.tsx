@@ -19,9 +19,9 @@ export interface CalendarProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Calendar');
-const convertFromValueToDate = (value: CalendarProps['defaultValue']) => {
+const convertFromValueToDate = (value?: CalendarProps['defaultValue']) => {
   logger('convertFromValueToDate');
-  return value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`);
+  return value ? (value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`)) : undefined;
 };
 const Calendar = ({
   button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
@@ -34,9 +34,8 @@ const Calendar = ({
 }: CalendarProps) => {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
-  const [value, setValue] = useState<undefined | Dayjs | Dayjs[]>(
-    defaultValue ? convertFromValueToDate(defaultValue) : undefined,
-  );
+  const [refresh, setRefresh] = useState(false);
+  const [value, setValue] = useState<undefined | Dayjs | Dayjs[]>(convertFromValueToDate(defaultValue));
   const memoValueForDisplay = useMemo(() => {
     if (selectRange)
       return value instanceof Array
@@ -56,7 +55,7 @@ const Calendar = ({
     const value = convertFromValueToDate(e as CalendarProps['defaultValue']);
     setValue(value);
     fakeRef.current?.click();
-    onChange && onChange(value);
+    onChange && onChange(value!);
     logger('handleChange');
   };
   const handleTooltipClick = (e: MouseEvent) => {
@@ -66,7 +65,9 @@ const Calendar = ({
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    setValue(defaultValue ? convertFromValueToDate(defaultValue) : undefined);
+    setRefresh(false);
+    setValue(convertFromValueToDate(defaultValue));
+    setTimeout(() => setRefresh(true), 0);
     logger('useEffect');
   }, [defaultValue]);
   return (
@@ -89,12 +90,14 @@ const Calendar = ({
     >
       <i ref={fakeRef} />
       <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-sm:!w-full">
-        <ReactCalendar
-          value={value as unknown as LooseValue}
-          defaultValue={defaultValue as unknown as LooseValue}
-          selectRange={selectRange}
-          onChange={handleChange}
-        />
+        {refresh ? (
+          <ReactCalendar
+            value={value as unknown as LooseValue}
+            defaultValue={defaultValue as unknown as LooseValue}
+            selectRange={selectRange}
+            onChange={handleChange}
+          />
+        ) : null}
       </div>
     </Menu>
   );

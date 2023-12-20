@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext } from 'react';
 
 export interface ContextProps {
   children?: ReactNode;
-  setChildren: (children: ReactNode) => void;
+  setChildren: (children?: ReactNode) => void;
 }
 const HeaderContext = createContext<ContextProps>({
   children: undefined,
