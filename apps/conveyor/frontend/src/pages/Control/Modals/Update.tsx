@@ -23,7 +23,6 @@ export enum UPLOAD_STATUS {
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Update');
-
 const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps) => {
   /* ======   variables   ====== */
   const newFile = '새 파일 업로드';
@@ -119,7 +118,6 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
           });
         throw new Error('문제발생');
       } catch (error) {
-        console.error('ERROR updating row:', tid, error);
         setStatus((prev) => {
           prev[index] = UPLOAD_STATUS.FAILED;
           return [...prev];
