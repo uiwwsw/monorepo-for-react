@@ -1,5 +1,5 @@
 import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import Upload from '../Upload';
 import { useUploadFirm } from '!/control/application/put-upload-firmware';
@@ -29,7 +29,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   const newFile = '새 파일 업로드';
   const [selectedFile, setSelectedFile] = useState('');
   const { trigger: deleteTrigger } = useDeleteBackup();
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState<string[]>([]);
   const { trigger: updateTrigger } = useUpdateFirm();
   const { trigger: firmListTrigger, isMutating } = useFirmList();
   const { trigger: uploadTrigger, process } = useUploadFirm();
@@ -37,7 +37,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
 
   const [status, setStatus] = useState<UPLOAD_STATUS[]>([]);
   const continueUpdatingRef = useRef(true);
-
+  const hasBackup = useMemo(() => !(selectedFile !== newFile && !!selectedFile), [selectedFile]);
   /* ======   function    ====== */
   const handleFileDelete = () => {
     if (!selectedRows || !selectedAdds) return;
@@ -55,6 +55,18 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
     setSelectedFile('');
     handleFirmList();
   };
+  const handleApply = () => {
+    if (!selectedRows || !selectedAdds) return;
+    setFileList([]);
+    selectedRows.forEach(async (tcmId, index) => {
+      const address = selectedAdds[index];
+      const port = await networkTrigger({ tcm_id: tcmId });
+      await updateTrigger({ fileName: selectedFile, address, port });
+    });
+
+    setSelectedFile('');
+    handleFirmList();
+  };
   const handleFirmList = () => {
     if (!selectedRows || !selectedAdds) return;
     setFileList([]);
@@ -62,7 +74,8 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       const address = selectedAdds[index];
       const port = await networkTrigger({ tcm_id: tcmId });
       const data = await firmListTrigger({ port, address });
-      setFileList((prev) => [...prev.filter((x) => data?.includes(x))]);
+      if (!data) return;
+      setFileList((prev) => (prev.length ? prev.filter((x) => data.includes(x)) : data));
     });
   };
   const handleFileSelect = (selectedFileName: string) => setSelectedFile(selectedFileName);
@@ -79,7 +92,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
     logger('handleUpload');
 
     const fileName = await uploadTrigger({ file });
-    logger(process, 1234);
+    logger(process);
     if (fileName === undefined) return;
 
     if (!selectedRows || !selectedAdds) return;
@@ -141,7 +154,18 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
             <ModalWithBtn
               hasButton={['OK', 'CANCEL']}
               button={
-                <Button disabled={!selectedFile || selectedFile === newFile} themeColor="secondary" themeSize="sm">
+                <Button disabled={hasBackup} themeColor="primary" themeSize="sm">
+                  <span className="whitespace-nowrap">적용</span>
+                </Button>
+              }
+              onClose={(value) => value === 'OK' && handleApply()}
+            >
+              파일을 적용 하시겠습니까?
+            </ModalWithBtn>
+            <ModalWithBtn
+              hasButton={['OK', 'CANCEL']}
+              button={
+                <Button disabled={hasBackup} themeColor="secondary" themeSize="sm">
                   <span className="whitespace-nowrap">삭제</span>
                 </Button>
               }

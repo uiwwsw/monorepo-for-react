@@ -18,6 +18,7 @@ async function fetcher(
 
   const res = await http({ url, arg, contentType: 'application/x-www-form-urlencoded' });
   const json = await toJson<{ upload: string[]; backup: string[] }>(res);
+  logger(url, json);
   return json?.backup;
 }
 
