@@ -1,5 +1,5 @@
-import Smooth from '@/Smooth';
 import Spinner from '$/Spinner';
+import SmoothWrap from './Smooth/Wrap';
 // import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 export interface LoadingProps {
@@ -13,7 +13,7 @@ export const Loading = ({ show = false, className }: LoadingProps) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
-    <Smooth value={show}>
+    <SmoothWrap value={show}>
       <div
         className={`fixed z-50 top-0 left-0 w-full h-full bg-white bg-opacity-50 flex items-center${
           className ? ` ${className}` : ''
@@ -23,7 +23,7 @@ export const Loading = ({ show = false, className }: LoadingProps) => {
           <Spinner />
         </span>
       </div>
-    </Smooth>
+    </SmoothWrap>
   );
 };
 export default Loading;

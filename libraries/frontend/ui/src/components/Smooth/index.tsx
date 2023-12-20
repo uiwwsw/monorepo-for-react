@@ -8,33 +8,35 @@ export enum Effect {
   Hiding = 'HIDING',
   Hide = 'HIDE',
 }
-export interface UseSmoothProps {
+export interface SmoothProps {
   value?: boolean;
   delay: number;
   onFinished?: (value: boolean) => unknown;
-  ref: RefObject<HTMLElement>;
+  itemRef?: RefObject<HTMLElement>;
 }
 /* ======    global     ====== */
-const logger = createLogger('utils/useSmooth');
-const useSmooth = ({ value, delay, onFinished, ref }: UseSmoothProps) => {
+const logger = createLogger('components/Smooth');
+const Smooth = ({ value, delay, onFinished, itemRef }: SmoothProps) => {
   /* ======   variables   ====== */
   let effect: Effect;
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!ref.current?.dataset.smooth && !value) return;
+    if (!itemRef) return;
+    if (!itemRef.current?.dataset.smooth && !value) return;
     effect = value ? Effect.Showing : Effect.Hiding;
-    ref.current && (ref.current.dataset.smooth = effect);
+    itemRef.current && (itemRef.current.dataset.smooth = effect);
     logger('useEffect', effect);
     const timer = setTimeout(() => {
       effect = value ? Effect.Show : Effect.Hide;
       logger('useEffect', effect);
-      ref.current && (ref.current.dataset.smooth = effect);
+      itemRef.current && (itemRef.current.dataset.smooth = effect);
       onFinished && onFinished(value!);
     }, delay);
 
     return () => clearTimeout(timer);
   }, [value]);
+  return null;
 };
 
-export default useSmooth;
+export default Smooth;

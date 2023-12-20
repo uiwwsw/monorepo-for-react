@@ -1,10 +1,10 @@
 import { useState, useRef, ReactNode, HTMLAttributes } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import Portal from './Portal';
-import Smooth from './Smooth';
 import usePosition from '#/usePosition';
 import { Size } from './Size';
 import { Color } from './Color';
+import SmoothWrap from './Smooth/Wrap';
 
 /* ======   interface   ====== */
 export interface TooltipProps extends HTMLAttributes<HTMLElement> {
@@ -63,13 +63,13 @@ const Tooltip = ({ children, themeSize = 'sm', themeColor = 'tertiary', ...props
         ❓
       </span>
       <Portal>
-        <Smooth
+        <SmoothWrap
           value={visible}
           className={`z-40 absolute bg-white p-5 border-2 rounded-md${visible ? '' : ' pointer-events-none'}`}
           style={position}
         >
           {children}
-        </Smooth>
+        </SmoothWrap>
       </Portal>
     </div>
   );

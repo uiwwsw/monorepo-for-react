@@ -1,7 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import { ImgHTMLAttributes, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import Skeleton from './Skeleton';
-import Smooth from './Smooth';
+import Skeleton from '@/Skeleton';
+import SmoothWrap from '@/Smooth/Wrap';
 
 /* ======   interface   ====== */
 export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -40,14 +40,14 @@ const Image = ({ width, height, block, ...props }: ImageProps) => {
         className={`inline-flex relative${full ? ' !w-full' : ''}`}
         style={{ width: !complete ? width : 'initial', height: !complete ? height : 'initial' }}
       >
-        <Smooth value={load === false} className="absolute w-full h-full">
+        <SmoothWrap value={load === false} className="absolute w-full h-full">
           <Skeleton className="w-full h-full">
             <i className="w-full h-full" />
           </Skeleton>
-        </Smooth>
-        <Smooth value={error} className="absolute w-full h-full bg-red-200 items-center flex justify-evenly">
+        </SmoothWrap>
+        <SmoothWrap value={error} className="absolute w-full h-full bg-red-200 items-center flex justify-evenly">
           not found
-        </Smooth>
+        </SmoothWrap>
         <img
           {...props}
           width={width}

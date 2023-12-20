@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useSmooth from '#/useSmooth';
 import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
@@ -8,6 +7,7 @@ import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 import { ButtonProps } from '@/Button';
 import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';
+import Smooth from '@/Smooth';
 
 /* ======   interface   ====== */
 export interface ModalError {
@@ -83,14 +83,9 @@ const ModalBase = ({
       init(false);
     };
   }, [open]);
-  useSmooth({
-    value: open,
-    delay: 500,
-    ref: elRef,
-    onFinished: handleClosed,
-  });
   return (
     <>
+      <Smooth value={open} delay={500} itemRef={elRef} onFinished={handleClosed} />
       <div
         className={`relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
           className ? ` ${className}` : ''

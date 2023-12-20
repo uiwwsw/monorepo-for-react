@@ -1,4 +1,3 @@
-// import { useSmooth } from '#/useSmooth';
 import { ReactNode, Suspense } from 'react';
 import { SWRConfig } from 'swr';
 import ErrorBoundary, { ErrorBoundaryProps } from './ErrorBoundary';
