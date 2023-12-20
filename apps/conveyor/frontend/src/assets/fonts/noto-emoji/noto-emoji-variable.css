@@ -100,5 +100,5 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   font-weight: 45 920;
   font-style: normal;
   font-display: swap;
-  src: url('./ttf/NotoEmoji-VariableFont_wght.ttf') format('truetype');
+  src: url('./woff/NotoEmoji-VariableFont_wght.woff') format('woff');
 }
