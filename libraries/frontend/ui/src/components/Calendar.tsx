@@ -72,7 +72,7 @@ const Calendar = ({
   }, [defaultValue]);
   return (
     <Menu
-      className="max-sm:!left-0 max-sm:!right-0"
+      className="max-lg:!left-0 max-lg:!right-0 max-lg:!w-auto"
       width="auto"
       button={cloneElement(button, {
         children: (
@@ -89,7 +89,7 @@ const Calendar = ({
       })}
     >
       <i ref={fakeRef} />
-      <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-sm:!w-full">
+      <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-lg:!w-full">
         {refresh ? (
           <ReactCalendar
             value={value as unknown as LooseValue}

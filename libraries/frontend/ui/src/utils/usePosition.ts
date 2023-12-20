@@ -14,6 +14,7 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
   const [size, setSize] = useState<{
     width?: string;
     height?: string;
+    maxHeight: number;
   }>();
   const [position, setPosition] = useState<{
     top?: string;
@@ -45,10 +46,13 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
         bottom = windowHeight - targetRefRect.bottom - scrollY; // 툴팁을 요소의 위쪽에 위치시킴
       }
     }
+
+    const maxHeight = windowHeight - (top ?? bottom)!;
     withSize &&
       setSize({
         width: targetRefRect?.width ? `${targetRefRect?.width}px` : 'initial',
         height: targetRefRect?.height ? `${targetRefRect?.height}px` : 'initial',
+        maxHeight: maxHeight - (targetRefRect?.height ?? 0) - 40,
       });
     setPosition({
       top: top !== undefined ? `${top}px` : 'initial',

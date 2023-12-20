@@ -63,7 +63,7 @@ const Menu = ({
           onFinished={onFinished}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
-          style={{ ...position, width: size?.width, zIndex }}
+          style={{ ...position, width: size?.width, maxHeight: size?.maxHeight, zIndex }}
         >
           {children}
         </Smooth>
