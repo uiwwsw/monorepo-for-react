@@ -112,6 +112,7 @@ const StatsAlarm = () => {
 
       <Table
         mustHaveColumn={['no']}
+        // fixHead={{ serialNo: '아가나' }}
         thead={[
           'no',
           'serialNo',
