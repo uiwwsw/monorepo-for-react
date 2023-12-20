@@ -27,6 +27,8 @@ const Language = (_: LanguageProps) => {
   logger('render', value);
   return (
     <Select
+      pl={40}
+      prefix={<span className="absolute pl-3 pointer-events-none">🌐</span>}
       className="w-full"
       options={options}
       onChange={handleChange}
