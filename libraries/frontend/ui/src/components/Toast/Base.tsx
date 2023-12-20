@@ -60,7 +60,7 @@ const ToastBase = ({
 
   return (
     <div
-      className={`relative flex items-center border px-5 py-2 rounded-sm overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close ${
+      className={`relative shadow-2xl flex items-center border px-5 py-2 rounded-sm overflow-hidden [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="SHOWING"]]:animate-toast-open [&[data-smooth="HIDING"]]:animate-toast-close ${
         theme[type]
       }${className ? ` ${className}` : ''}`}
       role="alert"

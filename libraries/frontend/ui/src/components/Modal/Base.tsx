@@ -102,7 +102,7 @@ const ModalBase = ({
       >
         <ModalOverlay onClose={adapterClose} />
         <div
-          className={`flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
+          className={`flex flex-col shadow-2xl relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
             animate ? ' animate-shake' : ''
           }`}
         >
