@@ -219,10 +219,11 @@ const Table = <T,>({
                     onChange={column.getToggleVisibilityHandler()}
                   >
                     <span className="uppercase">
-                      {column.id
-                        .replace(/([A-Z])/g, ' $1')
-                        .trim()
-                        .toLowerCase()}
+                      {fixHead?.[column.id] ??
+                        column.id
+                          .replace(/([A-Z])/g, ' $1')
+                          .trim()
+                          .toLowerCase()}
                     </span>
                   </Checkbox>
                 </span>
