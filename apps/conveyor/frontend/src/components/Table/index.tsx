@@ -238,7 +238,6 @@ const Table = <T,>({
             type="search"
             autoComplete="table-search"
             defaultValue={globalFilter}
-            debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
             placeholder={placeholder ?? t('필터링할 키워드를 입력하세요.')}

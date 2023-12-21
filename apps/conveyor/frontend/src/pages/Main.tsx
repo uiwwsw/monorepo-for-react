@@ -70,6 +70,12 @@ const Main = () => {
         }
         정보성 메세지
       </ToastWithPortal>
+      <ToastWithPortal notClose open={!toastTutorial}>
+        {
+          //튜토리얼용 토스트
+        }
+        🔔시스템에서 보내는 메시지(설정에서 알람음 제거 시 🔕)
+      </ToastWithPortal>
       {Toasts}
       <Tutorial
         guide={[
@@ -81,8 +87,8 @@ const Main = () => {
               right: '30px',
             },
             size: {
-              width: '170px',
-              height: '190px',
+              width: '450px',
+              height: '250px',
             },
           },
         ]}
