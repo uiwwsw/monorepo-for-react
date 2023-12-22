@@ -12,43 +12,43 @@ import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import useSetting from '#/useSetting';
 
 /* ======   interface   ====== */
-// enum TOT_AVR {
-//   carrierTot = 0,
-//   carrierAvr,
-//   alarmTot,
-//   alarmAvr,
-// }
+export type Thead = (typeof thead)[number];
 
-// enum SORT_VALUE {
-//   zoneID = 0,
-//   alarm,
-//   carrier,
-// }
-
-// interface ZoneData {
-//   zoneId: number;
-//   displayName: string;
-//   alarmNum: number;
-//   carrierNum: number;
-//   warningNum: number;
-// }
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Summary');
-// const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-md';
-// const colClassName = 'flex-auto justify-center';
-// const pagePerCount = 30;
-
+export const thead = [
+  'level',
+  'zoneId',
+  'displayName',
+  'physicalType',
+  'date',
+  'alarmNum',
+  'carrierNum',
+  'warningNum',
+] as const;
 const StatsSummary = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
-  const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
+  const fixHead: Record<Thead, string> = {
+    level: t('레벨'),
+    zoneId: t('지역 아이디'),
+    displayName: t('표시 이름'),
+    physicalType: t('물리적 유형'),
+    date: t('날짜'),
+    alarmNum: t('알람 번호'),
+    carrierNum: t('캐리어 번호'),
+    warningNum: t('경고 번호'),
+  };
+  const { pageSizeForSummary, durationForSummary } = useSetting();
+
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-duration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-durationForSummary, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
   });
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
@@ -111,18 +111,9 @@ const StatsSummary = () => {
       {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
       <Table
         allRowSelectTick={allRowSelectTick}
-        // initialRowSelection={}
-        thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
-        fixHead={{
-          level: t('레벨'),
-          zoneId: t('지역 아이디'),
-          displayName: t('표시 이름'),
-          physicalType: t('물리적 유형'),
-          date: t('날짜'),
-          alarmNum: t('알람 번호'),
-          carrierNum: t('캐리어 번호'),
-          warningNum: t('경고 번호'),
-        }}
+        pageSize={pageSizeForSummary}
+        thead={[...thead]}
+        fixHead={fixHead}
         // cacheColumnVisibility={columnVisibility}
         // setCacheColumnVisibility={handleVisibility}
         data={renderZone}

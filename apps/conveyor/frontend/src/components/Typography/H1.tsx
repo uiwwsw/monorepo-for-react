@@ -11,7 +11,7 @@ const H1 = ({ children }: H1Props) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return <h1 className="text-2xl font-bold first-letter:uppercase">{children}</h1>;
+  return <h1 className="text-6xl font-bold first-letter:uppercase">{children}</h1>;
 };
 
 export default H1;

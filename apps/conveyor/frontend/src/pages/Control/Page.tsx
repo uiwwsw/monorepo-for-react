@@ -14,12 +14,28 @@ import { useTranslation } from 'react-i18next';
 // import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
+export type ServerThead = (typeof serverThead)[number];
+export type TcmThead = (typeof tcmThead)[number];
 /* ======    global     ====== */
+export const serverThead = ['status', 'stateType'] as const;
+export const tcmThead = ['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress'] as const;
 
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const serverFixHead: Record<ServerThead, string> = {
+    status: t('얼라이브'),
+    stateType: t('서버 타입'),
+  };
+  const tcmFixHead: Record<TcmThead, string> = {
+    tcmId: t('TCM 아이디'),
+    status: t('얼라이브'),
+    buildDate: t('빌드 데이트'),
+    buildNum: t('빌드넘버'),
+    ipAddress: t('아이피'),
+  };
+  const { pageSizeForTcm } = useSetting();
 
   const { tcmList, serverList, status } = useSocketDataContext();
   const { controlPagination } = useSetting();
@@ -78,13 +94,9 @@ const Control = () => {
         <div>
           <H2>{t('서버 조작')}</H2>
           <Table
-            thead={['status', 'stateType']}
-            fixHead={{
-              status: t('얼라이브'),
-              stateType: t('서버 타입'),
-            }}
+            thead={[...serverThead]}
+            fixHead={serverFixHead}
             data={serverList}
-            makePagination={controlPagination}
             renderSelectComponent={<ServerSelect />}
             renderSubComponent={<ServerSub />}
           ></Table>
@@ -93,15 +105,10 @@ const Control = () => {
         <div>
           <H2>{t('TCM 조작')}</H2>
           <Table
-            thead={['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress']}
-            fixHead={{
-              tcmId: t('TCM 아이디'),
-              status: t('얼라이브'),
-              buildDate: t('빌드 데이트'),
-              buildNum: t('빌드넘버'),
-              ipAddress: t('아이피'),
-            }}
+            thead={[...tcmThead]}
+            fixHead={tcmFixHead}
             data={tcmList}
+            pageSize={pageSizeForTcm}
             makePagination={controlPagination}
             renderSelectComponent={<TcmSelect />}
             renderSubComponent={<TcmSub />}

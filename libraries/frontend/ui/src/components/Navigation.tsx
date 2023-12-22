@@ -1,19 +1,20 @@
 import { createLogger } from '@package-frontend/utils';
 import { useMemo } from 'react';
 import Button from '@/Button';
-import { WithEval } from '#/componentTypes';
 
 /* ======   interface   ====== */
-export interface NavigationProps extends WithEval<string> {}
+export interface NavigationProps {
+  onClick?: (route: string) => unknown;
+}
 /* ======    global     ====== */
 const logger = createLogger('components/Navigation');
-const Navigation = ({ onEval }: NavigationProps) => {
+const Navigation = ({ onClick }: NavigationProps) => {
   /* ======   variables   ====== */
   const { pathname } = location;
   const paths = useMemo(() => pathname.split('/').filter((x) => x), [pathname]);
   /* ======   function    ====== */
   const handleClick = (i: number) => {
-    onEval && onEval('/' + paths.slice(0, i + 1).join('/'));
+    onClick && onClick('/' + paths.slice(0, i + 1).join('/'));
     logger('handleClick');
   };
   /* ======   useEffect   ====== */

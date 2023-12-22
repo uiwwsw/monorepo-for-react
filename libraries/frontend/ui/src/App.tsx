@@ -1,6 +1,7 @@
 /* ======   interface   ====== */
 
-import Select from '@/Select';
+import Checkbox from '@/Checkbox';
+import CheckboxGroup from '@/Checkbox/Group';
 
 /* ======    global     ====== */
 const App = () => {
@@ -9,7 +10,8 @@ const App = () => {
   /* ======   useEffect   ====== */
   return (
     <>
-      <Select pl={40} prefix={<span className="absolute pl-3">🌐</span>} options={[{ value: '1', label: 'adw' }]} />
+      <Checkbox></Checkbox>
+      <CheckboxGroup defaultChecks={{ '1': true }} labels={['1', '2', '3']} onChange={(e) => console.log(e)} />
     </>
   );
 };
