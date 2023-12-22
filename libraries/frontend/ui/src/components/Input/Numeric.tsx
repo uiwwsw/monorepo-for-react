@@ -47,8 +47,8 @@ const InputNumeric = ({
         newValue = max;
       } else if (strValue !== '') {
         showToast({ message: minMessage(newValue, min) });
-        newValue = min;
       } else {
+        newValue = min;
         return;
       }
     }
