@@ -4,7 +4,7 @@
 import { STORAGE } from '!/storage/domain';
 import { VisibilityState } from '@tanstack/react-table';
 import { storage } from '#/storage';
-import { theadAlarm, theadCarrier } from '#/constants';
+import { theadAlarm, theadCarrier, theadSummary } from '#/constants';
 
 export interface useSettingProps {}
 /* ======    global     ====== */
@@ -27,6 +27,9 @@ const useSetting = (_?: useSettingProps) => {
   const durationForAlarm = storage.get<number>(STORAGE['setting/stats/alarm/duration']) ?? undefined;
   const durationForCarrier = storage.get<number>(STORAGE['setting/stats/carrier/duration']) ?? undefined;
 
+  const columnForSummary =
+    storage.get<VisibilityState>(STORAGE['setting/stats/summary/column']) ??
+    theadSummary.reduce((a, v) => ({ ...a, [v]: true }), {});
   const columnForAlarm =
     storage.get<VisibilityState>(STORAGE['setting/stats/alarm/column']) ??
     theadAlarm.reduce((a, v) => ({ ...a, [v]: true }), {});
@@ -57,6 +60,7 @@ const useSetting = (_?: useSettingProps) => {
     durationForAlarmSetting: durationForAlarm,
     durationForCarrier: durationForCarrier ?? duration,
     durationForCarrierSetting: durationForCarrier,
+    columnForSummary,
     columnForAlarm,
     columnForCarrier,
   };

@@ -3,6 +3,7 @@ export const enum STORAGE {
   'stats/calendar' = 'stats/calendar',
   'stats/keyword' = 'stats/keyword',
 
+  'stats/summary/column' = 'stats/summary/column',
   'stats/carrier/column' = 'stats/carrier/column',
   'stats/alarm/column' = 'stats/alarm/column',
   'i18nextLng' = 'i18nextLng',
@@ -23,6 +24,7 @@ export const enum STORAGE {
   'setting/stats/alarm/duration' = 'setting/stats/alarm/duration',
   'setting/stats/carrier/duration' = 'setting/stats/carrier/duration',
 
+  'setting/stats/summary/column' = 'setting/stats/summary/column',
   'setting/stats/alarm/column' = 'setting/stats/alarm/column',
   'setting/stats/carrier/column' = 'setting/stats/carrier/column',
 }

@@ -13,7 +13,16 @@ import SettingPagination from './Pagination';
 import SettingDuration from './Duration';
 import SettingCheckbox from './Checkbox';
 import SettingCheckGroup from './CheckboxGroup';
-import { mustHaveColumnAlarm, mustHaveColumnCarrier, theadAlarm, theadCarrier } from '#/constants';
+import {
+  columnAlarmDisabled,
+  columnCarrierDisabled,
+  fixHeadAlarm,
+  fixHeadCarrier,
+  fixHeadSummary,
+  theadAlarm,
+  theadCarrier,
+  theadSummary,
+} from '#/constants';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -35,6 +44,7 @@ const Setting = () => {
     durationForAlarmSetting,
     durationForCarrierSetting,
     durationForSummarySetting,
+    columnForSummary,
     columnForAlarm,
     columnForCarrier,
   } = useSetting();
@@ -125,7 +135,13 @@ const Setting = () => {
             onChange={(e) => handleChange(STORAGE['setting/stats/summary/duration'], e.target.value)}
           />
         )}
-
+        <SettingCheckGroup
+          label={t('요약 테이블 헤더')}
+          labels={[...theadSummary]}
+          fixHead={fixHeadSummary}
+          defaultChecks={columnForSummary}
+          onChange={(e) => handleChange(STORAGE['setting/stats/summary/column'], e)}
+        />
         <H3>{t('알람')}</H3>
         <SettingCheckbox
           label={t('알람 페이지당 리스트 수 커스텀')}
@@ -158,8 +174,9 @@ const Setting = () => {
         <SettingCheckGroup
           label={t('알람 테이블 헤더')}
           labels={[...theadAlarm]}
+          fixHead={fixHeadAlarm}
           defaultChecks={columnForAlarm}
-          disabled={mustHaveColumnAlarm.reduce((a, v) => ({ ...a, [v]: true }), {})}
+          disabled={columnAlarmDisabled}
           onChange={(e) => handleChange(STORAGE['setting/stats/alarm/column'], e)}
         />
         <H3>{t('케리어')}</H3>
@@ -194,8 +211,9 @@ const Setting = () => {
         <SettingCheckGroup
           label={t('케리어 테이블 헤더')}
           labels={[...theadCarrier]}
+          fixHead={fixHeadCarrier}
           defaultChecks={columnForCarrier}
-          disabled={mustHaveColumnCarrier.reduce((a, v) => ({ ...a, [v]: true }), {})}
+          disabled={columnCarrierDisabled}
           onChange={(e) => handleChange(STORAGE['setting/stats/carrier/column'], e)}
         />
         <H2>{t('유저관리')}</H2>

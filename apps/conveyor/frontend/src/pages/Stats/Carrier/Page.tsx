@@ -13,7 +13,7 @@ import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import { VisibilityState } from '@tanstack/react-table';
-import { TheadCarrier, mustHaveColumnCarrier } from '#/constants';
+import { fixHeadCarrier, mustHaveColumnCarrier } from '#/constants';
 
 /* ======   interface   ====== */
 
@@ -22,17 +22,6 @@ const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-
-  const fixHead: Record<TheadCarrier, string> = {
-    carrierId: t('캐리어 아이디'),
-    endTime: t('종료 시간'),
-    startTime: t('시작 시간'),
-    taskId: t('작업 아이디'),
-    zoneIdFrom: t('출발 지역 아이디'),
-    zoneIdFromName: t('출발 지역 이름'),
-    zoneIdTo: t('도착 지역 아이디'),
-    zoneIdToName: t('도착 지역 이름'),
-  };
 
   const { pageSizeForCarrier, durationForCarrier, columnForCarrier } = useSetting();
   const thead = Object.entries(columnForCarrier)
@@ -132,7 +121,7 @@ const StatsCarrier = () => {
       <Table
         thead={thead}
         mustHaveColumn={mustHaveColumnCarrier}
-        fixHead={fixHead}
+        fixHead={fixHeadCarrier}
         totalLength={data?.totalCount}
         cacheColumnVisibility={fixedColumn}
         setCacheColumnVisibility={handleVisibility}

@@ -13,39 +13,24 @@ import { storage } from '#/storage';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import useSetting from '#/useSetting';
+import { VisibilityState } from '@tanstack/react-table';
+import { fixHeadSummary, mustHaveColumnSummary, theadSummary } from '#/constants';
 
 /* ======   interface   ====== */
-export type Thead = (typeof thead)[number];
 
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Summary');
-export const thead = [
-  'level',
-  'zoneId',
-  'displayName',
-  'physicalType',
-  'date',
-  'alarmNum',
-  'carrierNum',
-  'warningNum',
-] as const;
+
 const StatsSummary = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-
-  const fixHead: Record<Thead, string> = {
-    level: t('레벨'),
-    zoneId: t('지역 아이디'),
-    displayName: t('표시 이름'),
-    physicalType: t('물리적 유형'),
-    date: t('날짜'),
-    alarmNum: t('알람 번호'),
-    carrierNum: t('캐리어 번호'),
-    warningNum: t('경고 번호'),
-  };
-  const { pageSizeForSummary, durationForSummary } = useSetting();
+  const { pageSizeForSummary, durationForSummary, columnForSummary } = useSetting();
 
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
+  const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/summary/column']) ?? {};
+  const thead = Object.entries(columnForSummary)
+    .filter(([_, val]) => val)
+    .map(([key]) => key);
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
     start_time: fixedCalendar?.[0] ?? newDate([-durationForSummary, 'day']).second(0).millisecond(0).toISOString(),
@@ -81,6 +66,10 @@ const StatsSummary = () => {
   );
 
   /* ======   function    ====== */
+  const handleVisibility = async (value: VisibilityState) => {
+    storage.set(STORAGE['stats/summary/column'], value);
+    logger('handleVisibility', value);
+  };
   const handleCalenderChange = async (duration: Dayjs[]) => {
     if (!(duration instanceof Array)) return;
 
@@ -110,12 +99,13 @@ const StatsSummary = () => {
       <H1>{t('요약')}</H1>
       {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
       <Table
+        mustHaveColumn={mustHaveColumnSummary}
         allRowSelectTick={allRowSelectTick}
         pageSize={pageSizeForSummary}
-        thead={[...thead]}
-        fixHead={fixHead}
-        // cacheColumnVisibility={columnVisibility}
-        // setCacheColumnVisibility={handleVisibility}
+        thead={thead}
+        fixHead={fixHeadSummary}
+        cacheColumnVisibility={fixedColumn}
+        setCacheColumnVisibility={handleVisibility}
         data={renderZone}
         makePagination={true}
         renderSelectComponentAtTop={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}
