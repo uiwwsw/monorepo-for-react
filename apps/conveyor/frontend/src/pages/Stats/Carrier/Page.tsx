@@ -5,36 +5,41 @@ import { Dayjs } from 'dayjs';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useCarrierStats, Arg } from '!/stats/application/get-carrier-stats';
 import Table from '@/Table';
-import { VisibilityColumn, VisibilityState } from '@tanstack/react-table';
 import { STORAGE } from '!/storage/domain';
 import StatsCalendar from '../Calendar';
 // import { useTranslation } from 'react-i18next';
-import { pageSizeOptions } from '#/constants';
 import { storage } from '#/storage';
 import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import { VisibilityState } from '@tanstack/react-table';
+import { fixHeadCarrier, mustHaveColumnCarrier } from '#/constants';
 
 /* ======   interface   ====== */
+
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { pageSize, duration } = useSetting();
+
+  const { pageSizeForCarrier, durationForCarrier, columnForCarrier } = useSetting();
+  const thead = Object.entries(columnForCarrier)
+    .filter(([_, val]) => val)
+    .map(([key]) => key);
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const fixedKeyword = storage.get<string>(STORAGE['stats/keyword']);
-  const columnVisibility = storage.get<VisibilityColumn>(STORAGE['carrier/table']) ?? {};
+  const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/carrier/column']) ?? {};
 
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-duration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-durationForCarrier, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
     page: 1,
-    page_size: pageSize,
+    page_size: pageSizeForCarrier,
     find_key: fixedKeyword ?? '',
   });
-  const currentPer = useMemo(() => arg.page_size ?? pageSize, [arg]);
+  const currentPer = useMemo(() => arg.page_size ?? pageSizeForCarrier, [arg]);
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
   const currentPage = useMemo(() => arg.page - 1, [arg]);
 
@@ -43,7 +48,7 @@ const StatsCarrier = () => {
 
   /* ======   function    ====== */
   const handleVisibility = async (value: VisibilityState) => {
-    storage.set(STORAGE['carrier/table'], value);
+    storage.set(STORAGE['stats/carrier/column'], value);
     logger('handleVisibility', value);
   };
   const handleCalenderChange = async (duration: Dayjs[]) => {
@@ -107,43 +112,24 @@ const StatsCarrier = () => {
     logger('useEffect', currentDuration);
     return () => setChildren(undefined);
   }, [currentDuration]);
-  logger('render', storage.get<VisibilityState>(STORAGE['carrier/table']));
+  // logger('render', storage.get<VisibilityState>(STORAGE['carrier/table']));
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <H1>{t('케리어')}</H1>
 
       <Table
-        thead={[
-          'carrierId',
-          'endTime',
-          'startTime',
-          'taskId',
-          'zoneIdFrom',
-          'zoneIdFromName',
-          'zoneIdTo',
-          'zoneIdToName',
-        ]}
-        mustHaveColumn={['carrierId']}
-        fixHead={{
-          carrierId: t('캐리어 아이디'),
-          endTime: t('종료 시간'),
-          startTime: t('시작 시간'),
-          taskId: t('작업 아이디'),
-          zoneIdFrom: t('출발 지역 아이디'),
-          zoneIdFromName: t('출발 지역 이름'),
-          zoneIdTo: t('도착 지역 아이디'),
-          zoneIdToName: t('도착 지역 이름'),
-        }}
+        thead={thead}
+        mustHaveColumn={mustHaveColumnCarrier}
+        fixHead={fixHeadCarrier}
         totalLength={data?.totalCount}
-        cacheColumnVisibility={columnVisibility}
+        cacheColumnVisibility={fixedColumn}
         setCacheColumnVisibility={handleVisibility}
         data={data?.rows}
         makePagination={false}
         pagination={
           <Pagination
             per={currentPer}
-            sizeOptions={pageSizeOptions}
             onChangePer={handleChangePer}
             onChange={handleChangePage}
             max={currentTotalPage}

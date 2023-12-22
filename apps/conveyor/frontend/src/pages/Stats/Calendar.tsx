@@ -107,6 +107,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
             <span className="table-cell">
               <Test className="left-32">
                 <Input
+                  type="search"
                   className="max-lg:w-32"
                   value={keyword}
                   placeholder="검색어를 입력하세요."

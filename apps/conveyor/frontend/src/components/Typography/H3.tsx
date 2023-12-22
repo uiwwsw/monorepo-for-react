@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
 /* ======   interface   ====== */
-export interface H2Props {
+export interface H3Props {
   children: ReactNode;
 }
 
 /* ======    global     ====== */
-const H2 = ({ children }: H2Props) => {
+const H3 = ({ children }: H3Props) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return <h2 className="text-4xl font-bold first-letter:uppercase">{children}</h2>;
+  return <h3 className="text-2xl font-bold first-letter:uppercase">{children}</h3>;
 };
 
-export default H2;
+export default H3;

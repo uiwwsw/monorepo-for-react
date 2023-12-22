@@ -20,8 +20,6 @@ import { Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
-import { pageSizeOptions } from '#/constants';
-import useSetting from '#/useSetting';
 import Extender from './Expander';
 
 /* ======   interface   ====== */
@@ -31,6 +29,7 @@ export interface TableProps<T> {
   fixHead?: Record<string, string>;
   mustHaveColumn?: string[];
   data?: T[];
+  pageSize?: number;
   allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
@@ -51,6 +50,7 @@ const Table = <T,>({
   fixHead,
   mustHaveColumn,
   data,
+  pageSize,
   placeholder,
   allRowSelectTick,
   textAlignCenter = true,
@@ -73,7 +73,6 @@ const Table = <T,>({
     );
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { pageSize } = useSetting();
   const hasCheckbox = renderSelectComponent || renderSelectComponentAtTop;
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
@@ -200,35 +199,42 @@ const Table = <T,>({
       {renderSelectComponentAtTop && cloneElement(renderSelectComponentAtTop, { selectedRows })}
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
-          {/* <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
+          <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
             <label className="flex items-center space-x-2">
               <Checkbox
                 checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
+                onChange={() =>
+                  table.getIsAllColumnsVisible()
+                    ? table.setColumnVisibility(
+                        thead.filter((x) => !mustHaveColumn?.includes(x)).reduce((a, v) => ({ ...a, [v]: false }), {}),
+                      )
+                    : table.setColumnVisibility(
+                        thead.filter((x) => !mustHaveColumn?.includes(x)).reduce((a, v) => ({ ...a, [v]: true }), {}),
+                      )
+                }
               />
               <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
-          </div> */}
+          </div>
           <div className="py-1 flex flex-wrap">
-            {table.getAllLeafColumns().map((column) => {
-              return (
-                <span key={column.id} className="m-2">
-                  <Checkbox
-                    disabled={mustHaveColumn?.includes(column.id)}
-                    checked={column.getIsVisible()}
-                    onChange={column.getToggleVisibilityHandler()}
-                  >
-                    <span className="uppercase">
-                      {fixHead?.[column.id] ??
-                        column.id
-                          .replace(/([A-Z])/g, ' $1')
-                          .trim()
-                          .toLowerCase()}
-                    </span>
-                  </Checkbox>
-                </span>
-              );
-            })}
+            {table
+              .getAllLeafColumns()
+              .filter((column) => !mustHaveColumn?.includes(column.id))
+              .map((column) => {
+                return (
+                  <span key={column.id} className="m-2">
+                    <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
+                      <span className="uppercase">
+                        {fixHead?.[column.id] ??
+                          column.id
+                            .replace(/([A-Z])/g, ' $1')
+                            .trim()
+                            .toLowerCase()}
+                      </span>
+                    </Checkbox>
+                  </span>
+                );
+              })}
           </div>
         </div>
       )}
@@ -238,7 +244,6 @@ const Table = <T,>({
             type="search"
             autoComplete="table-search"
             defaultValue={globalFilter}
-            debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
             placeholder={placeholder ?? t('필터링할 키워드를 입력하세요.')}
@@ -334,7 +339,6 @@ const Table = <T,>({
           onChangePer={(index) => table.setPageSize(index)}
           max={table.getPageCount()}
           per={pageSize}
-          sizeOptions={pageSizeOptions}
           maxMessage={getNumericMsg}
           minMessage={getNumericMsg}
         />

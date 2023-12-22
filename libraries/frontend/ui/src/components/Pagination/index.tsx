@@ -2,11 +2,9 @@ import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Arrow from './Arrow';
 import Numeric, { InputNumericProps } from '@/Input/Numeric';
-import Select, { SelectProps } from '@/Select';
 
 /* ======   interface   ====== */
 export interface PaginationProps {
-  sizeOptions?: SelectProps['options'];
   max: number;
   index?: number;
   per?: number;
@@ -14,26 +12,21 @@ export interface PaginationProps {
   onChangePer?: (per: number) => unknown;
   maxMessage?: InputNumericProps['maxMessage'];
   minMessage?: InputNumericProps['minMessage'];
+  placeholder?: string;
 }
 
 /* ======    global     ====== */
-const pageSizeOptions = [
-  { value: '10', label: '10개씩 보기' },
-  { value: '20', label: '20개씩 보기' },
-  { value: '30', label: '30개씩 보기' },
-  { value: '40', label: '40개씩 보기' },
-  { value: '50', label: '50개씩 보기' },
-];
+
 const logger = createLogger('components/Pagination');
 export default function Pagination({
   per = 10,
   onChange,
-  sizeOptions = pageSizeOptions,
   max,
   index = 0,
   maxMessage,
   minMessage,
   onChangePer,
+  placeholder,
 }: PaginationProps) {
   /* ======   variables   ====== */
   const [currentPage, setCurrentPage] = useState(index + 1);
@@ -46,7 +39,7 @@ export default function Pagination({
     handleClick(+e.target.value);
     logger('handleChange');
   };
-  const handleChangePer = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleChangePer = (e: ChangeEvent<HTMLInputElement>) => {
     onChangePer && onChangePer(+e.target.value);
     logger('handleChangePer');
   };
@@ -103,7 +96,15 @@ export default function Pagination({
       </div>
 
       {onChangePer && (
-        <Select className="max-lg:!hidden" onChange={handleChangePer} defaultValue={per} options={sizeOptions} />
+        <Numeric
+          debounceTime={1000}
+          max={100}
+          min={1}
+          placeholder={placeholder}
+          className="max-lg:!hidden"
+          onChange={handleChangePer}
+          defaultValue={per}
+        />
       )}
     </div>
   );

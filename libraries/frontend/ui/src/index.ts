@@ -9,11 +9,11 @@ export * from './components/Button';
 export { default as Calendar } from './components/Calendar';
 export * from './components/Calendar';
 
-export { default as Chip } from './components/Chip';
-export * from './components/Chip';
-
 export { default as Checkbox } from './components/Checkbox';
 export * from './components/Checkbox';
+
+export { default as CheckboxGroup } from './components/Checkbox/Group';
+export * from './components/Checkbox/Group';
 
 export { default as Combo } from './components/Combo';
 export * from './components/Combo';

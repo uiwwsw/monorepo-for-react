@@ -12,7 +12,7 @@ const StatsSummary = lazy(() => import('src/pages/Stats/Summary/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
-const Setting = lazy(() => import('src/pages/Setting'));
+const Setting = lazy(() => import('src/pages/Setting/Page'));
 const Users = lazy(() => import('src/pages/Users/Page'));
 const UpdatePassword = lazy(() => import('src/pages/UpdatePassword'));
 export interface Group {
