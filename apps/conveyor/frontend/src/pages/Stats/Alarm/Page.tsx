@@ -13,7 +13,7 @@ import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import { VisibilityState } from '@tanstack/react-table';
-import { TheadAlarm, fixHeadAlarm, mustHaveColumnAlarm } from '#/constants';
+import { fixHeadAlarm, mustHaveColumnAlarm } from '#/constants';
 
 /* ======   interface   ====== */
 
