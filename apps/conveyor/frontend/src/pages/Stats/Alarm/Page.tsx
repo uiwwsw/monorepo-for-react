@@ -13,25 +13,11 @@ import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import { VisibilityState } from '@tanstack/react-table';
+import { TheadAlarm, mustHaveColumnAlarm } from '#/constants';
 
 /* ======   interface   ====== */
-export type TheadAlarm = (typeof theadAlarm)[number];
 
 /* ======    global     ====== */
-export const theadAlarm = [
-  'no',
-  'serialNo',
-  'alarmCode',
-  'alarmDescription',
-  'taskId',
-  'location',
-  'reason',
-  'tcmId',
-  'carrierId',
-  'setTime',
-  'clearTime',
-] as const;
-export const mustHaveColumnAlarm: TheadAlarm[] = ['no'];
 
 const logger = createLogger('pages/Stats/Alarm');
 const StatsAlarm = () => {

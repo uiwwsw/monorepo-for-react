@@ -12,9 +12,8 @@ import H3 from '@/Typography/H3';
 import SettingPagination from './Pagination';
 import SettingDuration from './Duration';
 import SettingCheckbox from './Checkbox';
-import { theadAlarm, mustHaveColumnAlarm } from '../Stats/Alarm/Page';
-import { theadCarrier, mustHaveColumnCarrier } from '../Stats/Carrier/Page';
 import SettingCheckGroup from './CheckboxGroup';
+import { mustHaveColumnAlarm, mustHaveColumnCarrier, theadAlarm, theadCarrier } from '#/constants';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */

@@ -13,22 +13,11 @@ import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import { VisibilityState } from '@tanstack/react-table';
+import { TheadCarrier, mustHaveColumnCarrier } from '#/constants';
 
 /* ======   interface   ====== */
-export type TheadCarrier = (typeof theadCarrier)[number];
 
 /* ======    global     ====== */
-export const theadCarrier = [
-  'carrierId',
-  'endTime',
-  'startTime',
-  'taskId',
-  'zoneIdFrom',
-  'zoneIdFromName',
-  'zoneIdTo',
-  'zoneIdToName',
-] as const;
-export const mustHaveColumnCarrier: TheadCarrier[] = ['carrierId'];
 const logger = createLogger('pages/Stats/Carrier');
 const StatsCarrier = () => {
   /* ======   variables   ====== */

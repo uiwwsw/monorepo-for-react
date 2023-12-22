@@ -3,9 +3,8 @@
 
 import { STORAGE } from '!/storage/domain';
 import { VisibilityState } from '@tanstack/react-table';
-import { storage } from './storage';
-import { theadAlarm } from 'src/pages/Stats/Alarm/Page';
-import { theadCarrier } from 'src/pages/Stats/Carrier/Page';
+import { storage } from '#/storage';
+import { theadAlarm, theadCarrier } from '#/constants';
 
 export interface useSettingProps {}
 /* ======    global     ====== */
