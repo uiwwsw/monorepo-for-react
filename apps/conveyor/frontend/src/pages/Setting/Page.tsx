@@ -137,7 +137,7 @@ const Setting = () => {
         )}
         <SettingCheckGroup
           label={t('요약 테이블 헤더')}
-          labels={[...theadSummary]}
+          labels={theadSummary}
           fixHead={fixHeadSummary}
           defaultChecks={columnForSummary}
           onChange={(e) => handleChange(STORAGE['setting/stats/summary/column'], e)}
@@ -173,7 +173,7 @@ const Setting = () => {
         )}
         <SettingCheckGroup
           label={t('알람 테이블 헤더')}
-          labels={[...theadAlarm]}
+          labels={theadAlarm}
           fixHead={fixHeadAlarm}
           defaultChecks={columnForAlarm}
           disabled={columnAlarmDisabled}
@@ -210,7 +210,7 @@ const Setting = () => {
         )}
         <SettingCheckGroup
           label={t('케리어 테이블 헤더')}
-          labels={[...theadCarrier]}
+          labels={theadCarrier}
           fixHead={fixHeadCarrier}
           defaultChecks={columnForCarrier}
           disabled={columnCarrierDisabled}

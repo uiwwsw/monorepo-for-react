@@ -40,11 +40,12 @@ const useToasts = (debounce: number = 300) => {
 
     setToastMessages((prev) => prev.filter((x) => x.id !== id));
   };
-  const adapterShowToast = debounce ? useThrottle(showToast, debounce) : showToast;
+  const throttleShowToast = debounce ? useThrottle(showToast, debounce) : showToast;
 
   /* ======   useEffect   ====== */
   return {
-    showToast: adapterShowToast,
+    throttleShowToast,
+    showToast,
     hideToast,
     Toasts: toastMessages.map((x) => (
       <ToastWithPortal {...x} open={!x.close} key={x.id} onClosed={() => deleteToast(x.id)}>

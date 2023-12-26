@@ -10,25 +10,29 @@ import H2 from '@/Typography/H2';
 import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 import useSetting from '#/useSetting';
 import { useTranslation } from 'react-i18next';
+import { ServerList, TcmList } from '!/control/domain';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
-export type ServerThead = (typeof serverThead)[number];
-export type TcmThead = (typeof tcmThead)[number];
+type TcmHead = keyof TcmList;
+type ServerThead = keyof ServerList;
+
 /* ======    global     ====== */
-export const serverThead = ['status', 'stateType'] as const;
-export const tcmThead = ['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress'] as const;
 
 // const logger = createLogger('pages/Control');
 const Control = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const serverFixHead: Record<ServerThead, string> = {
+  //   TcmList
+  // ServerList
+  const tcmThead: TcmHead[] = ['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress'];
+  const serverThead: ServerThead[] = ['status', 'stateType'];
+  const serverFixHead: Partial<Record<ServerThead, string>> = {
     status: t('얼라이브'),
     stateType: t('서버 타입'),
   };
-  const tcmFixHead: Record<TcmThead, string> = {
+  const tcmFixHead: Partial<Record<TcmHead, string>> = {
     tcmId: t('TCM 아이디'),
     status: t('얼라이브'),
     buildDate: t('빌드 데이트'),
@@ -94,7 +98,7 @@ const Control = () => {
         <div>
           <H2>{t('서버 조작')}</H2>
           <Table
-            thead={[...serverThead]}
+            thead={serverThead}
             fixHead={serverFixHead}
             data={serverList}
             renderSelectComponent={<ServerSelect />}
@@ -105,7 +109,7 @@ const Control = () => {
         <div>
           <H2>{t('TCM 조작')}</H2>
           <Table
-            thead={[...tcmThead]}
+            thead={tcmThead}
             fixHead={tcmFixHead}
             data={tcmList}
             pageSize={pageSizeForTcm}

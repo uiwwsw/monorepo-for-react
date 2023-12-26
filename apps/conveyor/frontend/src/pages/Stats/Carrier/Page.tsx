@@ -13,7 +13,7 @@ import useSetting from '#/useSetting';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import { VisibilityState } from '@tanstack/react-table';
-import { fixHeadCarrier, mustHaveColumnCarrier } from '#/constants';
+import { TheadCarrier, fixHeadCarrier, mustHaveColumnCarrier } from '#/constants';
 
 /* ======   interface   ====== */
 
@@ -26,7 +26,7 @@ const StatsCarrier = () => {
   const { pageSizeForCarrier, durationForCarrier, columnForCarrier } = useSetting();
   const thead = Object.entries(columnForCarrier)
     .filter(([_, val]) => val)
-    .map(([key]) => key);
+    .map(([key]) => key) as TheadCarrier[];
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
   const fixedKeyword = storage.get<string>(STORAGE['stats/keyword']);
   const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/carrier/column']) ?? {};

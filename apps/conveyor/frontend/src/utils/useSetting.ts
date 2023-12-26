@@ -2,9 +2,8 @@
 /* ======   interface   ====== */
 
 import { STORAGE } from '!/storage/domain';
-import { VisibilityState } from '@tanstack/react-table';
 import { storage } from '#/storage';
-import { theadAlarm, theadCarrier, theadSummary } from '#/constants';
+import { TheadAlarm, TheadCarrier, TheadSummary, theadAlarm, theadCarrier, theadSummary } from '#/constants';
 
 export interface useSettingProps {}
 /* ======    global     ====== */
@@ -28,14 +27,14 @@ const useSetting = (_?: useSettingProps) => {
   const durationForCarrier = storage.get<number>(STORAGE['setting/stats/carrier/duration']) ?? undefined;
 
   const columnForSummary =
-    storage.get<VisibilityState>(STORAGE['setting/stats/summary/column']) ??
-    theadSummary.reduce((a, v) => ({ ...a, [v]: true }), {});
+    storage.get<Record<TheadSummary, boolean>>(STORAGE['setting/stats/summary/column']) ??
+    theadSummary.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadSummary, boolean>);
   const columnForAlarm =
-    storage.get<VisibilityState>(STORAGE['setting/stats/alarm/column']) ??
-    theadAlarm.reduce((a, v) => ({ ...a, [v]: true }), {});
+    storage.get<Record<TheadAlarm, boolean>>(STORAGE['setting/stats/alarm/column']) ??
+    theadAlarm.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadAlarm, boolean>);
   const columnForCarrier =
-    storage.get<VisibilityState>(STORAGE['setting/stats/carrier/column']) ??
-    theadCarrier.reduce((a, v) => ({ ...a, [v]: true }), {});
+    storage.get<Record<TheadCarrier, boolean>>(STORAGE['setting/stats/carrier/column']) ??
+    theadCarrier.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadCarrier, boolean>);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {

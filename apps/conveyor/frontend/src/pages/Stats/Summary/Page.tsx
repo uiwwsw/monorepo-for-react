@@ -14,7 +14,7 @@ import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import useSetting from '#/useSetting';
 import { VisibilityState } from '@tanstack/react-table';
-import { fixHeadSummary, mustHaveColumnSummary } from '#/constants';
+import { TheadSummary, fixHeadSummary, mustHaveColumnSummary } from '#/constants';
 
 /* ======   interface   ====== */
 
@@ -30,7 +30,7 @@ const StatsSummary = () => {
   const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/summary/column']) ?? {};
   const thead = Object.entries(columnForSummary)
     .filter(([_, val]) => val)
-    .map(([key]) => key);
+    .map(([key]) => key) as TheadSummary[];
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
     start_time: fixedCalendar?.[0] ?? newDate([-durationForSummary, 'day']).second(0).millisecond(0).toISOString(),
