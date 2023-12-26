@@ -6,7 +6,7 @@ export enum CHANGE_VERSION {
   'MINOR',
   'MAJOR',
 }
-export const changeVersion = (): CHANGE_VERSION => {
+export const getChangeVersion = (): CHANGE_VERSION => {
   const localVersion = storage.get<string>(STORAGE.version);
   const newVersion = import.meta.env.PACKAGE_VERSION;
   if (!localVersion) return CHANGE_VERSION.MAJOR;
