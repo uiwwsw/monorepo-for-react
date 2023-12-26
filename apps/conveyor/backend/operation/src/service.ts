@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 import { Redis } from 'ioredis';
 
 import logger from './libs/logger';
-import { Prop } from './cfg/prop';
+import { Prop } from './libs/prop';
 import { Zone } from './packages/backend/types/src/zone/zone';
 import { ZoneRepo } from './zone/zoneRepo';
 import { Clients } from './websocket/clients'
@@ -26,7 +26,6 @@ export class Service {
 
     // 환경 설정 파일 정보 조회
     public get Prop(): Prop {
-        //import prop from './cfg/prop.json';
         if (this.prop === undefined) {
             this.prop = {
                 PortNum : process.env.PORT_NUM || 7080,

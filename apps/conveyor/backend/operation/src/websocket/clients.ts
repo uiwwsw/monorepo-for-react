@@ -96,7 +96,22 @@ export class Clients {
                     this.tcmTransferInfo.push(msg.MessageData);
                     break;
                 case 'himEquipmentStateInfo':
-                    this.broadcast('himEquipmentStateInfo', msg.MessageData.Object, true);
+                    logger.debug(`onRecvMessage. himEquipmentStateInfo: ${JSON.stringify(msg.MessageData)}`);
+                    {
+                        const equmentInfo = msg.MessageData.Object;
+                        const data = {
+                            MCS1 : {
+                                CommState: equmentInfo.CommState,
+                                ControlState: equmentInfo.ControlState,
+                            },
+                            MCS2 :{
+                                CommState: equmentInfo.CommState2 || 0,
+                                ControlState: equmentInfo.ControlState2 || 0,
+                            },
+                            ProcessingState: equmentInfo.ProcessingState
+                        };
+                        this.broadcast('himEquipmentStateInfo', data, true);
+                    }
                     break;
                 case 'tcmTransferComplete':
                     logger.info('tcmTransferComplete');
