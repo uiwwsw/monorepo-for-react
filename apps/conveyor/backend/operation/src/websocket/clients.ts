@@ -4,6 +4,7 @@ import { Redis } from 'ioredis';
 import { getSessionFromToken } from '../routes/session';
 import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
+import { INTERNAL_EVENT_ID } from '../models/tcmEventId';
 import { Client } from './client';
 import logger from '../libs/logger';
 
@@ -19,7 +20,6 @@ export class Clients {
     public constructor(redis:Redis) {
         this.subs = redis;
 
-        this.subs.subscribe('AlarmEventCh');
         this.subs.subscribe('AlarmEventCh');
         this.subs.subscribe('TransferInfoCh');
         this.subs.subscribe('UIMCh');
@@ -48,11 +48,13 @@ export class Clients {
                     this.tcmZoneOccupiedAttributes.push(msg.MessageData);
                     break;
                 case 'tcmAlarmSet':
-                    this.broadcast('tcmAlarmSet', [msg.MessageData]);
+                    this.broadcast('tcmAlarmSet', [{ Object : msg.MessageData }], true);
+                    logger.debug(`onRecvMessage. tcmAlarmSet: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcsAlarmClear':
                 case 'tcmAlarmCleared':
-                    this.broadcast('tcsAlarmClear', msg.MessageData);
+                    this.broadcast('tcsAlarmClear', [{ Object : msg.MessageData }], true);
+                    logger.debug(`onRecvMessage. tcsAlarmClear: ${JSON.stringify(msg.MessageData)}`);
                     break;
                 case 'tcmZoneStateChangeCompleted':
                     {
@@ -78,22 +80,30 @@ export class Clients {
                     break;
                 case 'tcsEventSet':
                     this.tcsEventSet.push(msg.MessageData as ITcsEventSet);
+                    this.onRecvEvent(msg.MessageData as ITcsEventSet);
                     break;
                 case 'tcsWarningSet':
-                    this.broadcast('tcsWarningSet', msg.MessageData);
+                    this.broadcast('tcsWarningSet', msg.MessageData, true);
                     break;
                 case 'tcmTransferInfo':
+                    if (msg.MessageData.Object && msg.MessageData.Object.Junctions && Array.isArray(msg.MessageData.Object.Junctions) == false) {
+                        const junctions = msg.MessageData.Object.Junctions;
+                        msg.MessageData.Object.Junctions = [];
+                        if (junctions) {
+                            msg.MessageData.Object.Junctions.push(junctions);
+                        }
+                    }
                     this.tcmTransferInfo.push(msg.MessageData);
                     break;
                 case 'himEquipmentStateInfo':
-                    this.broadcast('himEquipmentStateInfo', msg.MessageData.Object);
+                    this.broadcast('himEquipmentStateInfo', msg.MessageData.Object, true);
                     break;
                 case 'tcmTransferComplete':
                     logger.info('tcmTransferComplete');
                     break;
             }
         } catch (ex) {
-            logger.warn(`Received the following message from ${channel}: ${message}, ex: ${ex}`);
+            logger.warn(`Received the following message from ${channel}: ${message}, ex: ${ex}\n${(ex as Error).stack}}`);
         }
     }
 
@@ -150,5 +160,41 @@ export class Clients {
         } finally {
             setTimeout(this.sendRunner, 200);
         }
+    }
+
+    private onRecvEvent(evt:ITcsEventSet) {
+        let stateType = '';
+        let id = 0;
+        let isAlive = true;
+
+        switch(evt.EventCode){
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_TCM:
+                stateType = 'TCM';
+                id = evt.Location;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_TCM:
+                stateType = 'TCM';
+                id = evt.Location;
+                isAlive = false;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
+                isAlive = false;
+                break;
+            case INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
+                break;
+            case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
+                isAlive = false;
+                break;
+        }
+
+        const data = {
+            StateType : stateType,
+            ID : id,
+            Alive : isAlive ? 1 : 0,
+        }
+
+        this.broadcast('initialmodulestate', data, true);
     }
 }

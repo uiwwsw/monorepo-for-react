@@ -158,8 +158,24 @@ export function onChangeEveryParameterSelectedZone(msg: ChangeParamReq, client:C
     redisClient.hset(key, `${field  }Acc`, msg.payload.acceleration);
     redisClient.hset(key, `${field  }Dcc`, msg.payload.deceleration);
     redisClient.hset(key, `${field  }Jerk`, msg.payload.jerk);
-    redisClient.hset(`${key  }Ex`, 'OverrideDelay', msg.payload.overrideDelay);
-    redisClient.hset(`${key  }Ex`, 'DccRatio', msg.payload.dccRatio);
+    redisClient.hmset(`${key  }Ex`, 'OverrideDelay', msg.payload.overrideDelay);
+    redisClient.hmset(`${key  }Ex`, 'DccRatio', msg.payload.dccRatio);
+    redisClient.hmset(`${key  }Ex`, 'RunCurrent', msg.payload.runCurrent);
+    redisClient.hmset(`${key  }Ex`, 'StandbyCurrent', msg.payload.standbyCurrent);
+    redisClient.hmset(`${key  }Ex`, 'PosPlusHtoP', msg.payload.posPlusHtoP);
+    redisClient.hmset(`${key  }Ex`, 'PosMinusPtoH', msg.payload.posMinusPtoH);
+    redisClient.hmset(`${key  }Ex`, 'PosPlusHtoN', msg.payload.posPlusHtoN);
+    redisClient.hmset(`${key  }Ex`, 'PosMinusNtoH', msg.payload.posMinusNtoH);
+    redisClient.hmset(`${key  }Ex`, 'PosPlusPtoN', msg.payload.posPlusPtoN);
+    redisClient.hmset(`${key  }Ex`, 'PosMinusNtoP', msg.payload.posMinusNtoP);
+    redisClient.hmset(`${key  }Ex`, 'PosPlusOffset', msg.payload.posPlusOffset);
+    redisClient.hmset(`${key  }Ex`, 'PosMinusOffset', msg.payload.posMinusOffset);
+    redisClient.hmset(`${key  }Ex`, 'QsVel', msg.payload.qsVel);
+    redisClient.hmset(`${key  }Ex`, 'QsAcc', msg.payload.qsAcc);
+    redisClient.hmset(`${key  }Ex`, 'QsDcc', msg.payload.qsDcc);
+    redisClient.hmset(`${key  }Ex`, 'OffsetVel', msg.payload.offsetVel);
+    redisClient.hmset(`${key  }Ex`, 'OffsetAcc', msg.payload.offsetAcc);
+    redisClient.hmset(`${key  }Ex`, 'ffsetDcc', msg.payload.ffsetDcc);
 
     logger.info(`Send Command Change Every Parameter Selected. UID:${client.Session.uid} Zone: ${msg.payload.zoneID}`);
 }
@@ -218,6 +234,22 @@ export function onChangeEveryParameterSameTypeZone(msg: ChangeParamReq, client:C
             redisClient.hmset(key, `${field  }Jerk`, msg.payload.jerk);
             redisClient.hmset(`${key  }Ex`, 'OverrideDelay', msg.payload.overrideDelay);
             redisClient.hmset(`${key  }Ex`, 'DccRatio', msg.payload.dccRatio);
+            redisClient.hmset(`${key  }Ex`, 'RunCurrent', msg.payload.runCurrent);
+            redisClient.hmset(`${key  }Ex`, 'StandbyCurrent', msg.payload.standbyCurrent);
+            redisClient.hmset(`${key  }Ex`, 'PosPlusHtoP', msg.payload.posPlusHtoP);
+            redisClient.hmset(`${key  }Ex`, 'PosMinusPtoH', msg.payload.posMinusPtoH);
+            redisClient.hmset(`${key  }Ex`, 'PosPlusHtoN', msg.payload.posPlusHtoN);
+            redisClient.hmset(`${key  }Ex`, 'PosMinusNtoH', msg.payload.posMinusNtoH);
+            redisClient.hmset(`${key  }Ex`, 'PosPlusPtoN', msg.payload.posPlusPtoN);
+            redisClient.hmset(`${key  }Ex`, 'PosMinusNtoP', msg.payload.posMinusNtoP);
+            redisClient.hmset(`${key  }Ex`, 'PosPlusOffset', msg.payload.posPlusOffset);
+            redisClient.hmset(`${key  }Ex`, 'PosMinusOffset', msg.payload.posMinusOffset);
+            redisClient.hmset(`${key  }Ex`, 'QsVel', msg.payload.qsVel);
+            redisClient.hmset(`${key  }Ex`, 'QsAcc', msg.payload.qsAcc);
+            redisClient.hmset(`${key  }Ex`, 'QsDcc', msg.payload.qsDcc);
+            redisClient.hmset(`${key  }Ex`, 'OffsetVel', msg.payload.offsetVel);
+            redisClient.hmset(`${key  }Ex`, 'OffsetAcc', msg.payload.offsetAcc);
+            redisClient.hmset(`${key  }Ex`, 'ffsetDcc', msg.payload.ffsetDcc);
 
             logger.info(`Send Command Change Every Parameter All Zone: ${client.Session.uid}, zoneType:${zoneType}`);
         }
@@ -269,8 +301,27 @@ export function onChangeEveryParameterAllZone(msg: ChangeParamReq, client:Client
         redisClient.hmset(key, `${field  }Acc`, msg.payload.acceleration);
         redisClient.hmset(key, `${field  }Dcc`, msg.payload.dccRatio);
         redisClient.hmset(key, `${field  }Jerk`, msg.payload.jerk);
+
         redisClient.hmset(`${key  }Ex`, `${field  }OverrideDelay`, msg.payload.overrideDelay);
         redisClient.hmset(`${key  }Ex`, `${field  }DccRatio`, msg.payload.dccRatio);
+        redisClient.hmset(`${key  }Ex`, 'OverrideDelay', msg.payload.overrideDelay);
+        redisClient.hmset(`${key  }Ex`, 'DccRatio', msg.payload.dccRatio);
+        redisClient.hmset(`${key  }Ex`, 'RunCurrent', msg.payload.runCurrent);
+        redisClient.hmset(`${key  }Ex`, 'StandbyCurrent', msg.payload.standbyCurrent);
+        redisClient.hmset(`${key  }Ex`, 'PosPlusHtoP', msg.payload.posPlusHtoP);
+        redisClient.hmset(`${key  }Ex`, 'PosMinusPtoH', msg.payload.posMinusPtoH);
+        redisClient.hmset(`${key  }Ex`, 'PosPlusHtoN', msg.payload.posPlusHtoN);
+        redisClient.hmset(`${key  }Ex`, 'PosMinusNtoH', msg.payload.posMinusNtoH);
+        redisClient.hmset(`${key  }Ex`, 'PosPlusPtoN', msg.payload.posPlusPtoN);
+        redisClient.hmset(`${key  }Ex`, 'PosMinusNtoP', msg.payload.posMinusNtoP);
+        redisClient.hmset(`${key  }Ex`, 'PosPlusOffset', msg.payload.posPlusOffset);
+        redisClient.hmset(`${key  }Ex`, 'PosMinusOffset', msg.payload.posMinusOffset);
+        redisClient.hmset(`${key  }Ex`, 'QsVel', msg.payload.qsVel);
+        redisClient.hmset(`${key  }Ex`, 'QsAcc', msg.payload.qsAcc);
+        redisClient.hmset(`${key  }Ex`, 'QsDcc', msg.payload.qsDcc);
+        redisClient.hmset(`${key  }Ex`, 'OffsetVel', msg.payload.offsetVel);
+        redisClient.hmset(`${key  }Ex`, 'OffsetAcc', msg.payload.offsetAcc);
+        redisClient.hmset(`${key  }Ex`, 'ffsetDcc', msg.payload.ffsetDcc);
 
         logger.info(`Send Command Change Every Parameter All Zone: ${client.Session.uid}`);
     });
