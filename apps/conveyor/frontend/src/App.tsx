@@ -11,7 +11,7 @@ import { storage } from '#/storage';
 import { STORAGE } from '!/storage/domain';
 import { ModalWithPortal } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
-import { CHANGE_VERSION, changeVersion } from '!/version/domain';
+import { CHANGE_VERSION, getChangeVersion } from '!/version/domain';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 // const logger = createLogger('App');
@@ -21,7 +21,8 @@ const App = () => {
   const { t } = useTranslation();
   const closeBtn = t('닫기');
   const resetBtn = t('리셋');
-  const [version, setVersion] = useState(CHANGE_VERSION.SAME);
+  const exVersion = storage.get(STORAGE.version);
+  const [changeVersion, setChangeVersion] = useState(CHANGE_VERSION.SAME);
   const { alarmSound } = useSetting();
   const { tcmList, serverList, alarm, status } = useSocket(SOCKET_NAME.ZONE_GET_INFO);
   const { Toasts, showToast } = useToastsForAlarm();
@@ -31,20 +32,23 @@ const App = () => {
     switch (e) {
       case t('리셋'):
         storage.clear();
+        storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
         location.reload();
         break;
       default:
       case t('닫기'):
+        storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
         break;
     }
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    const version = changeVersion();
+    if (!exVersion) return storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
+
+    const version = getChangeVersion();
     if (version === CHANGE_VERSION.SAME) return;
 
-    storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
-    setVersion(version);
+    setChangeVersion(version);
     // storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
     // storage.clear();
     // if ()
@@ -62,9 +66,10 @@ const App = () => {
   return (
     <>
       {Toasts}
-      <ModalWithPortal persist hasButton={[closeBtn]} onClose={handleClose} open={version === CHANGE_VERSION.ETC}>
+      <ModalWithPortal persist hasButton={[closeBtn]} onClose={handleClose} open={changeVersion === CHANGE_VERSION.ETC}>
         <p className="whitespace-pre-line">
-          {t('{{version}} 버전으로 업데이트가 완료됐습니다.', {
+          {t('{{exVersion}}에서 {{version}} 버전으로 업데이트가 완료됐습니다.', {
+            exVersion,
             version: import.meta.env.PACKAGE_VERSION,
           })}
         </p>
@@ -73,19 +78,29 @@ const App = () => {
         persist
         hasButton={[resetBtn, closeBtn]}
         onClose={handleClose}
-        open={version === CHANGE_VERSION.MINOR}
+        open={changeVersion === CHANGE_VERSION.MINOR}
       >
         <p className="whitespace-pre-line">
-          {t('{{version}} 버전으로 업데이트가 완료됐습니다.\n리셋을 권장합니다.', {
+          {t('{{exVersion}}에서 {{version}} 버전으로 업데이트가 완료됐습니다.\n리셋을 권장합니다.', {
+            exVersion,
             version: import.meta.env.PACKAGE_VERSION,
           })}
         </p>
       </ModalWithPortal>
-      <ModalWithPortal persist hasButton={[resetBtn]} onClose={handleClose} open={version === CHANGE_VERSION.MAJOR}>
+      <ModalWithPortal
+        persist
+        hasButton={[resetBtn]}
+        onClose={handleClose}
+        open={changeVersion === CHANGE_VERSION.MAJOR}
+      >
         <p className="whitespace-pre-line">
-          {t('{{version}} 버전으로 업데이트가 완료됐습니다.\n많은 부분이 변경되어 리셋이 꼭 필요합니다.', {
-            version: import.meta.env.PACKAGE_VERSION,
-          })}
+          {t(
+            '{{exVersion}}에서 {{version}} 버전으로 업데이트가 완료됐습니다.\n많은 부분이 변경되어 리셋이 꼭 필요합니다.',
+            {
+              exVersion,
+              version: import.meta.env.PACKAGE_VERSION,
+            },
+          )}
         </p>
       </ModalWithPortal>
       <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status }}>
