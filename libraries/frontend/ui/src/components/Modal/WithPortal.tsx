@@ -1,19 +1,25 @@
 import { createLogger } from '@package-frontend/utils';
-import ModalBase, { ModalBaseProps, ModalResult } from './Base';
+import ModalBase, { ModalBaseProps } from './Base';
 import Portal from '@/Portal';
 import { useEffect, useState } from 'react';
 
 /* ======   interface   ====== */
-export interface ModalWithPortalProps extends ModalBaseProps {}
+export interface ModalWithPortalProps<T extends string> extends ModalBaseProps<T> {}
 /* ======    global     ====== */
 const logger = createLogger('components/ModalWithPortal');
-const ModalWithPortal = ({ onClose, open: defaultOpen, children, onClosed, ...props }: ModalWithPortalProps) => {
+const ModalWithPortal = <T extends string>({
+  onClose,
+  open: defaultOpen,
+  children,
+  onClosed,
+  ...props
+}: ModalWithPortalProps<T>) => {
   /* ======   variables   ====== */
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
   /* ======   function    ====== */
-  const handleClose = async (e?: ModalResult) => {
+  const handleClose = async (e?: T) => {
     if (!e) onClose && onClose(e);
     else onClose && (await onClose(e));
     setOpen(false);

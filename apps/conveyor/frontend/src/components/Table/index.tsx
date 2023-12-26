@@ -27,7 +27,7 @@ export interface TableProps<T> {
   thead: (keyof T)[];
   placeholder?: string;
   fixHead?: Partial<Record<keyof T, string>>;
-  mustHaveColumn?: Partial<keyof T | 'select'>[];
+  mustHaveColumn?: Partial<keyof T | 'select' | 'expander'>[];
   data?: T[];
   pageSize?: number;
   allRowSelectTick?: number;
@@ -201,7 +201,7 @@ const Table = <T,>({
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
-            <label className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 w-fit cursor-pointer">
               <Checkbox
                 checked={table.getIsAllColumnsVisible()}
                 onChange={() =>

@@ -61,6 +61,7 @@ const InputNumeric = ({
     const strValue = e.target.value;
     const newValue = getValue(strValue);
     if (!newValue) return;
+    if (+strValue < min) return;
     if (newValue !== value?.toString()) {
       // cache.current = newValue;
       setValue(newValue);

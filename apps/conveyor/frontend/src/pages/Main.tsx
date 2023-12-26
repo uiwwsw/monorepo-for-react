@@ -94,7 +94,8 @@ const Main = () => {
         ]}
       />
       <PageCenter icon="🖥️" title={t('컨베이어 for YMTC')}>
-        {t('컨베이어 웹 서비스에 오신걸 환영합니다.')}
+        <img src="/conveyor.png" alt="conveyor" />
+        {t('컨베이어 웹 서비스 v{{version}}에 오신걸 환영합니다.', { version: import.meta.env.PACKAGE_VERSION })}
       </PageCenter>
     </>
   );

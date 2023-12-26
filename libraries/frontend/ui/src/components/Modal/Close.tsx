@@ -3,12 +3,12 @@ import Button from '@/Button';
 import { ModalBaseProps } from './Base';
 
 /* ======   interface   ====== */
-export interface ModalCloseProps {
+export interface ModalCloseProps<T extends string> {
   disabled: boolean;
-  onClose: ModalBaseProps['onClose'];
+  onClose: ModalBaseProps<T>['onClose'];
 }
 /* ======    global     ====== */
-const ModalClose = ({ onClose, disabled }: ModalCloseProps) => {
+const ModalClose = <T extends string>({ onClose, disabled }: ModalCloseProps<T>) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */

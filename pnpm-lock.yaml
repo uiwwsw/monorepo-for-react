@@ -300,6 +300,9 @@ importers:
       vite-plugin-favicon2:
         specifier: ^1.1.5
         version: 1.1.5(vite@4.4.5)
+      vite-plugin-package-version:
+        specifier: ^1.1.0
+        version: 1.1.0(vite@4.4.5)
 
   apps/storybook:
     dependencies:
@@ -14965,6 +14968,14 @@ packages:
       find-root: 1.1.0
       parse-author: 2.0.0
       parse5: 6.0.1
+      vite: 4.4.5(@types/node@20.5.9)(less@4.2.0)
+    dev: true
+
+  /vite-plugin-package-version@1.1.0(vite@4.4.5):
+    resolution: {integrity: sha512-TPoFZXNanzcaKCIrC3e2L/TVRkkRLB6l4RPN/S7KbG7rWfyLcCEGsnXvxn6qR7fyZwXalnnSN/I9d6pSFjHpEA==}
+    peerDependencies:
+      vite: '>=2.0.0-beta.69'
+    dependencies:
       vite: 4.4.5(@types/node@20.5.9)(less@4.2.0)
     dev: true
 

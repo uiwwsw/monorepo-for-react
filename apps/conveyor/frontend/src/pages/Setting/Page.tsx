@@ -16,13 +16,15 @@ import SettingCheckGroup from './CheckboxGroup';
 import {
   columnAlarmDisabled,
   columnCarrierDisabled,
+  columnSummaryDisabled,
   fixHeadAlarm,
   fixHeadCarrier,
   fixHeadSummary,
   theadAlarm,
   theadCarrier,
   theadSummary,
-} from '#/constants';
+} from '!/stats/domain';
+import { columnUsersDisabled, fixHeadUsers, theadUsers } from '!/auth/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -47,6 +49,7 @@ const Setting = () => {
     columnForSummary,
     columnForAlarm,
     columnForCarrier,
+    columnForUsers,
   } = useSetting();
 
   const { Toasts, showToast } = useToasts();
@@ -139,6 +142,7 @@ const Setting = () => {
           label={t('요약 테이블 헤더')}
           labels={theadSummary}
           fixHead={fixHeadSummary}
+          disabled={columnSummaryDisabled}
           defaultChecks={columnForSummary}
           onChange={(e) => handleChange(STORAGE['setting/stats/summary/column'], e)}
         />
@@ -229,6 +233,14 @@ const Setting = () => {
             onChange={(e) => handleChange(STORAGE['setting/users/page-size'], e.target.value)}
           />
         )}
+        <SettingCheckGroup
+          label={t('유저관리 테이블 헤더')}
+          labels={theadUsers}
+          fixHead={fixHeadUsers}
+          defaultChecks={columnForUsers}
+          disabled={columnUsersDisabled}
+          onChange={(e) => handleChange(STORAGE['setting/users/column'], e)}
+        />
       </PageCenter>
     </>
   );

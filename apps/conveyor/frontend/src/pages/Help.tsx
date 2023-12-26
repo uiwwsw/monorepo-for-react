@@ -27,7 +27,7 @@ const Help = () => {
       <Tutorial guide={[{ ref: helpRef, text: '도움말 페이지입니다. 미리 작성된 질문과 답변을 볼 수 있습니다.' }]} />
       <PageCenter title={t('도움말')}>
         <div className="relative">
-          <i ref={helpRef} className="absolute -inset-14" />
+          <i ref={helpRef} className="absolute -inset-14 -top-24" />
           <Accordion title={t('리셋 / 언어 설정 테스트')}>
             <p>
               {t('초기 언어 설정을 위해서는 초기화가 필요합니다. 브라우저의 언어를 변경 후 초기화 버튼을 눌러주세요.')}
