@@ -27,7 +27,7 @@ const Control = () => {
   //   TcmList
   // ServerList
   const tcmThead: TcmHead[] = ['status', 'tcmId', 'buildDate', 'buildNum', 'ipAddress'];
-  const serverThead: ServerThead[] = ['status', 'stateType'] as const;
+  const serverThead: ServerThead[] = ['status', 'stateType'];
   const serverFixHead: Partial<Record<ServerThead, string>> = {
     status: t('얼라이브'),
     stateType: t('서버 타입'),
@@ -98,7 +98,7 @@ const Control = () => {
         <div>
           <H2>{t('서버 조작')}</H2>
           <Table
-            thead={[...serverThead]}
+            thead={serverThead}
             fixHead={serverFixHead}
             data={serverList}
             renderSelectComponent={<ServerSelect />}
@@ -109,7 +109,7 @@ const Control = () => {
         <div>
           <H2>{t('TCM 조작')}</H2>
           <Table
-            thead={[...tcmThead]}
+            thead={tcmThead}
             fixHead={tcmFixHead}
             data={tcmList}
             pageSize={pageSizeForTcm}

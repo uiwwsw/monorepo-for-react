@@ -24,10 +24,10 @@ import Extender from './Expander';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
-  thead: string[];
+  thead: (keyof T)[];
   placeholder?: string;
-  fixHead?: Record<string, string>;
-  mustHaveColumn?: string[];
+  fixHead?: Partial<Record<keyof T, string>>;
+  mustHaveColumn?: Partial<keyof T | 'select'>[];
   data?: T[];
   pageSize?: number;
   allRowSelectTick?: number;
@@ -109,6 +109,7 @@ const Table = <T,>({
         header:
           fixHead?.[key] ??
           key
+            .toString()
             .replace(/([A-Z])/g, ' $1')
             .trim()
             .toLowerCase(),
@@ -219,13 +220,13 @@ const Table = <T,>({
           <div className="py-1 flex flex-wrap">
             {table
               .getAllLeafColumns()
-              .filter((column) => !mustHaveColumn?.includes(column.id))
+              .filter((column) => !mustHaveColumn?.includes(column.id as keyof T))
               .map((column) => {
                 return (
                   <span key={column.id} className="m-2">
                     <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
                       <span className="uppercase">
-                        {fixHead?.[column.id] ??
+                        {fixHead?.[column.id as keyof T] ??
                           column.id
                             .replace(/([A-Z])/g, ' $1')
                             .trim()
