@@ -1,10 +1,8 @@
 import mysql from 'mysql2/promise';
 import { Redis } from 'ioredis';
 
-import prop from './cfg/prop.json';
 import logger from './libs/logger';
 import { Prop } from './cfg/prop';
-import { DBM } from './dbm/dbm';
 import { Zone } from './packages/backend/types/src/zone/zone';
 import { ZoneRepo } from './zone/zoneRepo';
 import { Clients } from './websocket/clients'
@@ -28,13 +26,34 @@ export class Service {
 
     // 환경 설정 파일 정보 조회
     public get Prop(): Prop {
-        return prop;
+        //import prop from './cfg/prop.json';
+        if (this.prop === undefined) {
+            this.prop = {
+                PortNum : process.env.PORT_NUM || 7080,
+                MySQL : {
+                    Host : process.env.MYSQL_HOST || '192.168.101.14',
+                    Port : Number(process.env.MYSQL_PORT) || 3306,
+                    User : process.env.MYSQL_USER || 'root',
+                    Password : process.env.MYSQL_PASSWORD || 'paSSw0rd',
+                    Database : process.env.MYSQL_DATABASE || 'R301'
+                },
+                Redis : {
+                    Host : process.env.REDIS_HOST || '192.168.0.220',
+                    Port : Number(process.env.REDIS_PORT) || 30010
+                },
+                JWT : {
+                    Secret : process.env.JWT_KEY || 'EAF606C87569B2F97E230E792049833E',
+                    ExpiresIn : process.env.JWT_EXPIRE || '1d'
+                }
+            } as Prop;
+        }
+        return this.prop;
     }
 
+    private prop!: Prop;
     private pool!: mysql.Pool;
     private redis!: Redis;
     private subs!: Redis;
-    private dbm!: DBM;
     private clients! : Clients;
 
     private zoneRepo!: ZoneRepo;
@@ -66,9 +85,6 @@ export class Service {
         this.zoneRepo = new ZoneRepo();
         this.zones = await this.zoneRepo.getZoneRepo();
 
-        // DBM 객체 생성
-        //this.dbm = new DBM(this.subs);
-
         // Zone 데이터 저장
         const jobs = [];
         for (const [key, value] of this.zones) {
@@ -95,11 +111,6 @@ export class Service {
     // MySQL 연결 풀 반환
     public get MySQL(): mysql.Pool {
         return this.pool;
-    }
-
-    // DBM 객체 반환
-    public get DBM(): DBM {
-        return this.dbm;
     }
 
     public get Redis(): Redis {

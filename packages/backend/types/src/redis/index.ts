@@ -39,6 +39,20 @@ export interface IEquipmentExInfoResp {
     DccRatio : string;
     RunCurrent : string;
     StandbyCurrent : string;
+    PosPlusHtoP : string;
+    PosMinusPtoH : string;
+    PosPlusHtoN : string;
+    PosMinusNtoH : string;
+    PosPlusPtoN : string;
+    PosMinusNtoP : string;
+    PosPlusOffset : string;
+    PosMinusOffset : string;
+    QsVel : string;
+    QsAcc : string;
+    QsDcc : string;
+    OffsetVel : string;
+    OffsetAcc : string;
+    ffsetDcc : string;
 }
 
 
@@ -52,8 +66,12 @@ export interface IOffsetInfoResp extends AttributeQS {
 export interface ICheckTcmClientReq {
     tcm_id : number;
 }
+export interface TcmClientAlive {
+    tcm_id : number;
+    alive : number;
+}
 export interface ICheckTcmClientResp {
-    state : number;
+    state? : TcmClientAlive[];
     write_log : number;
 }
 

@@ -14,6 +14,7 @@ import zoneRouter from './routes/zoneRoutes';
 import statsRouter from './routes/statsRoutes';
 import redisRouter from './routes/redisRoutes';
 import tcmRouter from './routes/tcmRoutes';
+import serverModuleRouter from './routes/serverModuleRoutes';
 import { errorHandler } from './routes/error';
 
 async function main() {
@@ -53,12 +54,12 @@ async function main() {
 
     app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    // 라우터를 사용하여 '/api/users' 엔드포인트 설정
     app.use('/users', userRouter);
     app.use('/zone', zoneRouter);
     app.use('/stats', statsRouter);
     app.use('/redis', redisRouter);
     app.use('/', tcmRouter);
+    app.use('/', serverModuleRouter);
 
     app.use(errorHandler);
 

@@ -61,7 +61,7 @@ const initializeTaskInfos = async (client:Client) => {
                         CarrierID: taskInfo[2],
                         ZoneIDFrom: taskInfo[1],
                         ZoneIDTo: taskInfo[5],
-                        ZoneIDJunctions: taskInfo[6],
+                        ZoneIDJunctions: taskInfo[6] ? [taskInfo[6]] : [],
                         State: taskInfo[3],
                         ZoneIDCurrent: taskInfo[0],
                         InstalledTime: taskInfo[7],
@@ -245,13 +245,12 @@ const initializeEquipmentState = async (client : Client) => {
             MCS1 : {
                 CommState: equmentInfo.CommState,
                 ControlState: equmentInfo.ControlState,
-                ProcessingState: equmentInfo.ProcessingState,
             },
             MCS2 :{
-                CommState: equmentInfo.CommState2,
-                ControlState: equmentInfo.ControlState2,
-                ProcessingState: equmentInfo.ProcessingState2,
-            }
+                CommState: equmentInfo.CommState2 || 0,
+                ControlState: equmentInfo.ControlState2 || 0,
+            },
+            ProcessingState: equmentInfo.ProcessingState
         };
         client.send('himEquipmentStateInfo', data);
     }

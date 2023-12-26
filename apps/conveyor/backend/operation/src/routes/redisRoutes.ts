@@ -11,7 +11,7 @@ import {
     IMotionParamInfoReq, IMotionParamInfoResp,
     IEquipmentExInfoReq, IEquipmentExInfoResp,
     IOffsetInfoReq, IOffsetInfoResp,
-    ICheckTcmClientReq, ICheckTcmClientResp,
+    ICheckTcmClientReq, ICheckTcmClientResp, TcmClientAlive,
     IAttributeLifterPosReq, IAttributeLifterPosResp,
     IZoneInfoReq, IZoneInfoResp,
     IGetUseSmmEmulReq, IGetUseSmmEmulResp,
@@ -331,7 +331,21 @@ router.get('/motion-parameter-ex-info', verifyToken, asyncWrapper<IEquipmentExIn
             OverrideDelay: reply.OverrideDelay,
             DccRatio: reply.DccRatio,
             RunCurrent: reply.RunCurrent,
-            StandbyCurrent: reply.StandbyCurrent
+            StandbyCurrent: reply.StandbyCurrent,
+            PosPlusHtoP : reply.PosPlusHtoP,
+            PosMinusPtoH : reply.PosMinusPtoH,
+            PosPlusHtoN : reply.PosPlusHtoN,
+            PosMinusNtoH : reply.PosMinusNtoH,
+            PosPlusPtoN : reply.PosPlusPtoN,
+            PosMinusNtoP : reply.PosMinusNtoP,
+            PosPlusOffset : reply.PosPlusOffset,
+            PosMinusOffset : reply.PosMinusOffset,
+            QsVel : reply.QsVel,
+            QsAcc : reply.QsAcc,
+            QsDcc : reply.QsDcc,
+            OffsetVel : reply.OffsetVel,
+            OffsetAcc : reply.OffsetAcc,
+            ffsetDcc : reply.ffsetDcc,
         }
     });
 }));
@@ -502,13 +516,22 @@ router.get('/offset-info', verifyToken, asyncWrapper<IOffsetInfoReq, IOffsetInfo
  */
 router.get('/check-tcm-client', verifyToken, asyncWrapper<ICheckTcmClientReq, ICheckTcmClientResp>(async (req, res) => {
     const { tcm_id } = req.query;
-    const values = await Service.Inst.Redis.hmget(`TCMInfo:${tcm_id}:Alive`, 'TCMClientStatus', 'FileLogging');
-
-    res.json({
+    const obj = await Service.Inst.Redis.hgetall(`TCMInfo:${tcm_id}:Alive`);
+    console.dir(obj);
+    const state:TcmClientAlive[] = [];
+    Object.keys(obj).forEach((key) => {
+        if (key.indexOf('TCMClientStatus') === 0) {
+            state.push({
+                tcm_id : +(key.split('_')[1]),
+                alive : +(obj[key] || 0)
+            });
+        }
+    });
+    return res.status(200).send({
         message: "OK",
         data: {
-            state : values[0] ? +values[0] : 0,
-            write_log : values[1] ? +values[1] : 0
+            state : state,
+            write_log : +(obj.FileLogging || 0)
         }
     });
 }));
