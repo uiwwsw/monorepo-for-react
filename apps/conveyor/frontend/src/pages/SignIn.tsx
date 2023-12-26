@@ -64,16 +64,15 @@ const SignIn = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     logger('useEffect');
-
-    if (urlToast)
-      showToast({
-        notClose: true,
-        message: queryParamToastMsgs[urlToast],
-      });
     if (isLoggedIn)
       showToast({
         notClose: true,
         message: t('로그인 정보가 있습니다.'),
+      });
+    else if (urlToast)
+      showToast({
+        notClose: true,
+        message: queryParamToastMsgs[urlToast],
       });
   }, [location]);
   useEffect(() => {

@@ -97,7 +97,7 @@ export default function Pagination({
 
       {onChangePer && (
         <Numeric
-          debounceTime={1000}
+          debounceTime={300}
           max={100}
           min={1}
           placeholder={placeholder}
