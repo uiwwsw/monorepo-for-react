@@ -34,7 +34,7 @@ const CheckboxGroup = <T,>({
   };
   /* ======   useEffect   ====== */
   return (
-    <div className={`[&>*+*]:ml-2 ${className ? ` ${className}` : ''}`}>
+    <div className={`-mx-2 -my-1 [&>*]:mx-2 [&>*]:my-1 ${className ? ` ${className}` : ''}`}>
       {labels.map((x, index) => (
         <Checkbox
           key={`${x}_${index}`}

@@ -3,7 +3,8 @@
 
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
-import { TheadAlarm, TheadCarrier, TheadSummary, theadAlarm, theadCarrier, theadSummary } from '#/constants';
+import { TheadAlarm, TheadCarrier, TheadSummary, theadAlarm, theadCarrier, theadSummary } from '!/stats/domain';
+import { TheadUsers, theadUsers } from '!/auth/domain';
 
 export interface useSettingProps {}
 /* ======    global     ====== */
@@ -35,6 +36,10 @@ const useSetting = (_?: useSettingProps) => {
   const columnForCarrier =
     storage.get<Record<TheadCarrier, boolean>>(STORAGE['setting/stats/carrier/column']) ??
     theadCarrier.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadCarrier, boolean>);
+
+  const columnForUsers =
+    storage.get<Record<TheadUsers, boolean>>(STORAGE['setting/users/column']) ??
+    theadUsers.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadUsers, boolean>);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {
@@ -62,6 +67,7 @@ const useSetting = (_?: useSettingProps) => {
     columnForSummary,
     columnForAlarm,
     columnForCarrier,
+    columnForUsers,
   };
 };
 

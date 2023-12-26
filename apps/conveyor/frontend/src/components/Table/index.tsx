@@ -27,7 +27,7 @@ export interface TableProps<T> {
   thead: (keyof T)[];
   placeholder?: string;
   fixHead?: Partial<Record<keyof T, string>>;
-  mustHaveColumn?: Partial<keyof T | 'select'>[];
+  mustHaveColumn?: Partial<keyof T | 'select' | 'expander'>[];
   data?: T[];
   pageSize?: number;
   allRowSelectTick?: number;

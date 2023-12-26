@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import version from 'vite-plugin-package-version';
 import { fileURLToPath, URL } from 'node:url';
 import { ViteFaviconsPlugin } from 'vite-plugin-favicon2';
 import { API } from './public/config.json';
 export default defineConfig({
   plugins: [
     react(),
+    version(),
     ViteFaviconsPlugin({
       logo: 'src/assets/logo.png',
     }),

@@ -1,11 +1,13 @@
 export const enum STORAGE {
   'auth' = 'auth',
+  'version' = 'version',
   'stats/calendar' = 'stats/calendar',
   'stats/keyword' = 'stats/keyword',
 
   'stats/summary/column' = 'stats/summary/column',
   'stats/carrier/column' = 'stats/carrier/column',
   'stats/alarm/column' = 'stats/alarm/column',
+  'stats/users/column' = 'stats/users/column',
   'i18nextLng' = 'i18nextLng',
 
   'setting/page-size' = 'setting/page-size',
@@ -27,5 +29,7 @@ export const enum STORAGE {
   'setting/stats/summary/column' = 'setting/stats/summary/column',
   'setting/stats/alarm/column' = 'setting/stats/alarm/column',
   'setting/stats/carrier/column' = 'setting/stats/carrier/column',
+
+  'setting/users/column' = 'setting/users/column',
 }
 export type STORAGE_KEY = keyof typeof STORAGE;

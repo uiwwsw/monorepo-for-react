@@ -93,7 +93,7 @@ const resources = {
       '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.':
         'The time 00:00:00 for the start date and 23:59:59 for the end date will be omitted.',
       '컨베이어 for YMTC': 'Conveyor for YMTC',
-      '컨베이어 웹 서비스에 오신걸 환영합니다.': 'Welcome to the Conveyor Web Service.',
+      '컨베이어 웹 서비스 v{{version}}에 오신걸 환영합니다.': 'Welcome to the Conveyor Web Service v{{version}}.',
       '회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.':
         'Registration complete.\nPress confirm to proceed to the login page.',
       '이름을 입력해주세요.': 'Please enter your name.',
@@ -243,7 +243,7 @@ const resources = {
       '시작날짜의 시간 00시 00분 00초, 끝날짜의 시간 23시 59분 59초는 생략됩니다.':
         '开始日期的时间00:00:00和结束日期的时间23:59:59将被省略。',
       '컨베이어 for YMTC': '传送带为YMTC',
-      '컨베이어 웹 서비스에 오신걸 환영합니다.': '欢迎来到传送带网络服务。',
+      '컨베이어 웹 서비스 v{{version}}에 오신걸 환영합니다.': '欢迎来到传送带网络服务 v{{version}}。',
       '회원가입이 완료됐어요.\n확인을 누르면 로그인 페이지로 이동합니다.': '注册已完成。\n点击确认后将转到登录页面。',
       '이름을 입력해주세요.': '请输入您的姓名。',
       '아이디를 입력해주세요.': '请输入您的ID。',

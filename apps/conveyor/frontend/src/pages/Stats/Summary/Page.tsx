@@ -14,7 +14,7 @@ import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
 import useSetting from '#/useSetting';
 import { VisibilityState } from '@tanstack/react-table';
-import { TheadSummary, fixHeadSummary, mustHaveColumnSummary } from '#/constants';
+import { TheadSummary, fixHeadSummary, mustHaveColumnSummary } from '!/stats/domain';
 
 /* ======   interface   ====== */
 

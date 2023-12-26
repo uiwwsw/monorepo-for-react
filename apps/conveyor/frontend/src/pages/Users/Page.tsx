@@ -5,26 +5,23 @@ import UserInfo from './UserInfo';
 import { useTranslation } from 'react-i18next';
 import H1 from '@/Typography/H1';
 import useSetting from '#/useSetting';
-import { User } from '!/auth/domain';
+import { TheadUsers, fixHeadUsers, mustHaveColumnUsers } from '!/auth/domain';
+import { storage } from '#/storage';
+import { VisibilityState } from '@tanstack/react-table';
+import { STORAGE } from '!/storage/domain';
 
 /* ======   interface   ====== */
-type UserHead = keyof User;
 /* ======    global     ====== */
 // const logger = createLogger('pages/Users');
 const Users = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const thead: UserHead[] = ['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess'];
-  const fixHead: Partial<Record<UserHead, string>> = {
-    uid: t('유니크 아이디'),
-    userId: t('유저 아이디'),
-    userName: t('유저 이름'),
-    gradeName: t('등급'),
-    createdDate: t('생성일'),
-    lastAccess: t('최근 접속일'),
-  };
-  const { pageSizeForUsers } = useSetting();
+  const { pageSizeForUsers, columnForUsers } = useSetting();
 
+  const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/users/column']) ?? {};
+  const thead = Object.entries(columnForUsers)
+    .filter(([_, val]) => val)
+    .map(([key]) => key) as TheadUsers[];
   const { data } = useUserList();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
@@ -38,7 +35,9 @@ const Users = () => {
         pageSize={pageSizeForUsers}
         renderSubComponent={<UserInfo />}
         thead={thead}
-        fixHead={fixHead}
+        mustHaveColumn={mustHaveColumnUsers}
+        fixHead={fixHeadUsers}
+        cacheColumnVisibility={fixedColumn}
         data={data}
         makePagination
       />

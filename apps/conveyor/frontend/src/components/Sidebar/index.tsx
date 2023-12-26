@@ -2,7 +2,7 @@ import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';
-import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
+import { Button, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
@@ -57,7 +57,7 @@ const Nav = (_: NavProps) => {
     {
       text: t('통계페이지는 존, 알람, 케리어 페이지로\n 통계 데이터를 확인할 수 있습니다.'),
       position: {
-        top: '130px',
+        top: '124px',
         left: '0',
       },
       size: {
@@ -98,7 +98,7 @@ const Nav = (_: NavProps) => {
       },
       size: {
         width: '208px',
-        height: '170px',
+        height: '166px',
       },
     },
   ];
@@ -128,7 +128,7 @@ const Nav = (_: NavProps) => {
         <nav className="flex flex-col flex-auto" onClick={() => setOpen(false)}>
           <div className="flex-auto">
             <Link to="/" className="flex p-4 h-20 justify-center">
-              <Image block src={logo} alt="logo" height={37} />
+              <img src={logo} alt="logo" />
             </Link>
             <hr />
             <GroupLink routes={authRoutes} />

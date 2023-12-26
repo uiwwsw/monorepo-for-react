@@ -1,22 +1,22 @@
 import { MouseEvent, SetStateAction, useCallback } from 'react';
 import Button, { ButtonProps } from '@/Button';
-import { ModalBaseProps, ModalErrors, ModalResult } from './Base';
+import { ModalBaseProps, ModalErrors } from './Base';
 import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
-export interface ModalFooterProps {
+export interface ModalFooterProps<T extends string> {
   open?: boolean;
   hasToast?: boolean;
-  errorToastMsg: (value: ModalResult) => string;
+  errorToastMsg: (value: T) => string;
   onLoading: (value: SetStateAction<boolean>) => void;
   setErrors: (value: SetStateAction<ModalErrors>) => void;
   disabled: boolean;
-  onClose: ModalBaseProps['onClose'];
+  onClose: ModalBaseProps<T>['onClose'];
   smoothLoading: ButtonProps['smoothLoading'];
-  hasButton: ModalBaseProps['hasButton'];
+  hasButton: ModalBaseProps<T>['hasButton'];
 }
 /* ======    global     ====== */
 const logger = createLogger('component/ModalFooter');
-const ModalFooter = ({
+const ModalFooter = <T extends string>({
   errorToastMsg,
   hasButton,
   hasToast,
@@ -25,7 +25,7 @@ const ModalFooter = ({
   onLoading,
   disabled,
   smoothLoading,
-}: ModalFooterProps) => {
+}: ModalFooterProps<T>) => {
   /* ======   variables   ====== */
   // const hasOkBtn = useMemo(() => hasButton?.includes('OK'), [hasButton]);
   // const hasCancelBtn = useMemo(() => hasButton?.includes('CANCEL'), [hasButton]);
@@ -35,7 +35,7 @@ const ModalFooter = ({
     async (e: MouseEvent) => {
       logger('click');
       onLoading(true);
-      const value = e.currentTarget.textContent as ModalResult;
+      const value = e.currentTarget.textContent as T;
       try {
         onClose && (await onClose(value));
       } catch {
