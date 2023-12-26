@@ -5,17 +5,17 @@ import UserInfo from './UserInfo';
 import { useTranslation } from 'react-i18next';
 import H1 from '@/Typography/H1';
 import useSetting from '#/useSetting';
+import { User } from '!/auth/domain';
 
 /* ======   interface   ====== */
-export type Thead = (typeof thead)[number];
-
+type UserHead = keyof User;
 /* ======    global     ====== */
-export const thead = ['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess'] as const;
 // const logger = createLogger('pages/Users');
 const Users = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const fixHead: Record<Thead, string> = {
+  const thead: UserHead[] = ['uid', 'userId', 'userName', 'gradeName', 'createdDate', 'lastAccess'];
+  const fixHead: Partial<Record<UserHead, string>> = {
     uid: t('유니크 아이디'),
     userId: t('유저 아이디'),
     userName: t('유저 이름'),
@@ -37,7 +37,7 @@ const Users = () => {
       <Table
         pageSize={pageSizeForUsers}
         renderSubComponent={<UserInfo />}
-        thead={[...thead]}
+        thead={thead}
         fixHead={fixHead}
         data={data}
         makePagination

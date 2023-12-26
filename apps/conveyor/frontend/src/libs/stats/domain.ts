@@ -41,7 +41,7 @@ export class StatsAlarmDataRow {
   location?: number;
   reason?: number;
   tcmId?: number;
-  commandId?: string;
+  // commandId?: string;
   carrierId?: string;
   setTime: string;
   clearTime: string;
@@ -52,7 +52,7 @@ export class StatsAlarmDataRow {
     TaskID,
     Location,
     Reason,
-    CommandID,
+    // CommandID,
     TCMID,
     CarrierID,
     SetTime,
@@ -71,7 +71,7 @@ export class StatsAlarmDataRow {
     this.location = Location;
     this.reason = Reason;
     this.tcmId = TCMID;
-    this.commandId = CommandID;
+    // this.commandId = CommandID;
     this.carrierId = CarrierID;
     this.setTime = SetTime ? newDate(SetTime).format(FORMAT) : '';
     this.clearTime = ClearTime ? newDate(ClearTime).format(FORMAT) : '';
@@ -88,11 +88,10 @@ export class StatsAlarmData {
 }
 
 export class StatsCarrierDataRow {
-  commandId?: string;
+  // commandId?: string;
   carrierId?: string;
   endTime: string;
   startTime: string;
-  test?: Date;
   taskId?: number;
   zoneIdFrom?: number;
   zoneIdFromName?: string;
@@ -101,7 +100,7 @@ export class StatsCarrierDataRow {
   constructor({
     TaskID,
     ZoneIDTo,
-    CommandID,
+    // CommandID,
     CarrierID,
     ZoneIDFrom,
     StartTime,
@@ -109,11 +108,10 @@ export class StatsCarrierDataRow {
     ZoneIDToName,
     ZoneIDFromName,
   }: CarrierStatsRow) {
-    this.commandId = CommandID;
+    // this.commandId = CommandID;
     this.carrierId = CarrierID;
     this.endTime = EndTime ? newDate(EndTime).format(FORMAT) : '';
     this.startTime = StartTime ? newDate(StartTime).format(FORMAT) : '';
-    this.test = StartTime;
     this.taskId = TaskID;
     this.zoneIdFrom = ZoneIDFrom;
     this.zoneIdFromName = ZoneIDFromName;
