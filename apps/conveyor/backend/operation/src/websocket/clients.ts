@@ -105,8 +105,8 @@ export class Clients {
                                 ControlState: equmentInfo.ControlState,
                             },
                             MCS2 :{
-                                CommState: equmentInfo.CommState2 || 0,
-                                ControlState: equmentInfo.ControlState2 || 0,
+                                CommState: equmentInfo.CommState2,
+                                ControlState: equmentInfo.ControlState2,
                             },
                             ProcessingState: equmentInfo.ProcessingState
                         };

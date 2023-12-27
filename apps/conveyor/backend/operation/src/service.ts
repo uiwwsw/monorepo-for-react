@@ -37,8 +37,8 @@ export class Service {
                     Database : process.env.MYSQL_DATABASE || 'R301'
                 },
                 Redis : {
-                    Host : process.env.REDIS_HOST || '192.168.0.220',
-                    Port : Number(process.env.REDIS_PORT) || 30010
+                    Host : process.env.REDIS_HOST || '192.168.101.14',
+                    Port : Number(process.env.REDIS_PORT) || 6380
                 },
                 JWT : {
                     Secret : process.env.JWT_KEY || 'EAF606C87569B2F97E230E792049833E',

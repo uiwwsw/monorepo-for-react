@@ -130,9 +130,9 @@ const initializeZoneDynamicAttributes = async (client:Client) => {
             zoneDynamicattr.push({
                 Object: {
                     ZoneID: dynamicattr.substring(5, dynamicattr.indexOf(':DynamicAttributes')),
-                    State: dynamicattrState[0],
+                    State: Number(dynamicattrState[0]) || 0,
                     PrevState: -1,
-                    MotorState: dynamicattrState[1],
+                    MotorState: Number(dynamicattrState[1]) || 0,
                     E84State: dynamicattrState[2],
                     E84Sequence: dynamicattrState[3],
                     E84BitState: dynamicattrState[4],
@@ -247,8 +247,8 @@ const initializeEquipmentState = async (client : Client) => {
                 ControlState: equmentInfo.ControlState,
             },
             MCS2 :{
-                CommState: equmentInfo.CommState2 || 0,
-                ControlState: equmentInfo.ControlState2 || 0,
+                CommState: equmentInfo.CommState2,
+                ControlState: equmentInfo.ControlState2,
             },
             ProcessingState: equmentInfo.ProcessingState
         };
