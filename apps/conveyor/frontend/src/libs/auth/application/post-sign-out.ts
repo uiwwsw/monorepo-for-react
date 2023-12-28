@@ -6,7 +6,7 @@ import { usePostAuth } from './post-auth';
 import { Auth } from '../domain';
 const logger = createLogger('auth/useSignOut');
 
-async function fetcher(url: string, trigger: (arg: Auth | undefined) => Promise<Auth | undefined>) {
+async function fetcher(url: string, trigger: (arg?: Auth) => Promise<Auth | undefined>) {
   logger(url);
   const res = await http({ url, method: 'POST' });
   await trigger(undefined);
