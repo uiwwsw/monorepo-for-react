@@ -10,7 +10,7 @@ const NotFound = () => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
-    <PageCenter icon="😜" title={t('페이지를 찾을 수 없어요.')}>
+    <PageCenter icon="🤔" title={t('페이지를 찾을 수 없어요.')}>
       <p>{t('주소를 확인해주세요.')}</p>
     </PageCenter>
   );
