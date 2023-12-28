@@ -20,11 +20,11 @@ const useUpload = () => {
     const promise = new Promise<boolean>((res) => (resolve = res));
     const formData = new FormData();
     formData.append('file', file);
-    logger(1);
+    logger(1, file);
     const xhr = new XMLHttpRequest();
 
     xhr.open('PUT', url);
-    logger(2);
+    logger(2, url);
 
     xhr.upload.addEventListener('progress', (e) => {
       if (e.lengthComputable) {
@@ -46,10 +46,10 @@ const useUpload = () => {
       setProcess(0);
     });
 
-    xhr.upload.addEventListener('error', () => logger('ERROR'));
-    xhr.upload.addEventListener('timeout', () => logger('TIMEOUT'));
-    xhr.upload.addEventListener('load', () => logger('LOAD'));
-    xhr.upload.addEventListener('loadend', () => logger('LOADEND'));
+    // xhr.upload.addEventListener('error', () => logger('ERROR'));
+    // xhr.upload.addEventListener('timeout', () => logger('TIMEOUT'));
+    // xhr.upload.addEventListener('load', () => logger('LOAD'));
+    // xhr.upload.addEventListener('loadend', () => logger('LOADEND'));
 
     logger(4);
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
