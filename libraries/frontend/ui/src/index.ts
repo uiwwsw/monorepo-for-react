@@ -18,6 +18,9 @@ export * from './components/Checkbox/Group';
 export { default as Combo } from './components/Combo';
 export * from './components/Combo';
 
+export { default as Emoji } from './components/Emoji';
+export * from './components/Emoji';
+
 export { default as Input } from './components/Input';
 export * from './components/Input';
 

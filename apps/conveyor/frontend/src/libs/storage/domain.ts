@@ -4,10 +4,10 @@ export const enum STORAGE {
   'stats/calendar' = 'stats/calendar',
   'stats/keyword' = 'stats/keyword',
 
+  'users/column' = 'users/column',
   'stats/summary/column' = 'stats/summary/column',
   'stats/carrier/column' = 'stats/carrier/column',
   'stats/alarm/column' = 'stats/alarm/column',
-  'stats/users/column' = 'stats/users/column',
   'i18nextLng' = 'i18nextLng',
 
   'setting/page-size' = 'setting/page-size',

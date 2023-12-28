@@ -1,7 +1,7 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import Test from '@/Test';
-import { Button, Calendar, Checkbox, Input, Tutorial, useDebounce } from '@library-frontend/ui';
+import { Button, Calendar, Checkbox, Emoji, Input, Tutorial, useDebounce } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
@@ -81,7 +81,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
           <span ref={checkboxRef} className="table-cell pr-8">
             <Checkbox defaultChecked={!!fixedCalendar.current?.length} onChange={handleFixedCalendar}>
               <span className="max-lg:hidden">{t('달력 동기화')}</span>
-              <span className="lg:hidden">🗓️</span>
+              <Emoji className="lg:hidden">🗓️</Emoji>
             </Checkbox>
           </span>
           <span className="table-cell">
@@ -101,7 +101,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
             <span className="table-cell">
               <Checkbox defaultChecked={!!fixedKeyword.current} onChange={handleFixedKeyword}>
                 <span className="max-lg:hidden">{t('검색어 동기화')}</span>
-                <span className="lg:hidden">🔍</span>
+                <Emoji className="lg:hidden">🔎</Emoji>
               </Checkbox>
             </span>
             <span className="table-cell">

@@ -8,6 +8,7 @@ import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
 import Test from '@/Test';
 import { useTranslation } from 'react-i18next';
+import { Emoji } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface NavProps {}
 
@@ -123,7 +124,7 @@ const Nav = (_: NavProps) => {
           themeColor={null}
           themeSize={null}
         >
-          {open ? '🗞️' : '📰'}
+          <Emoji>{open ? '🗞️' : '📰'}</Emoji>
         </Button>
         <nav className="flex flex-col flex-auto" onClick={() => setOpen(false)}>
           <div className="flex-auto">

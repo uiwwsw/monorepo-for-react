@@ -9,21 +9,26 @@ import { TheadUsers, fixHeadUsers, mustHaveColumnUsers } from '!/auth/domain';
 import { storage } from '#/storage';
 import { VisibilityState } from '@tanstack/react-table';
 import { STORAGE } from '!/storage/domain';
+import { createLogger } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('pages/Users');
+const logger = createLogger('pages/Users');
 const Users = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { pageSizeForUsers, columnForUsers } = useSetting();
 
-  const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/users/column']) ?? {};
+  const fixedColumn = storage.get<VisibilityState>(STORAGE['users/column']) ?? {};
   const thead = Object.entries(columnForUsers)
     .filter(([_, val]) => val)
     .map(([key]) => key) as TheadUsers[];
   const { data } = useUserList();
   /* ======   function    ====== */
+  const handleVisibility = async (value: VisibilityState) => {
+    storage.set(STORAGE['users/column'], value);
+    logger('handleVisibility', value);
+  };
   /* ======   useEffect   ====== */
   // useEffect(() => {
   //   trigger();
@@ -37,6 +42,7 @@ const Users = () => {
         thead={thead}
         mustHaveColumn={mustHaveColumnUsers}
         fixHead={fixHeadUsers}
+        setCacheColumnVisibility={handleVisibility}
         cacheColumnVisibility={fixedColumn}
         data={data}
         makePagination

@@ -1,4 +1,4 @@
-import { Button } from '@library-frontend/ui';
+import { Button, Emoji } from '@library-frontend/ui';
 import { Row } from '@tanstack/react-table';
 /* ======   interface   ====== */
 export interface ExtenderProps<T> {
@@ -15,7 +15,7 @@ const Extender = <T,>({ row }: ExtenderProps<T>) => {
   return (
     row.getCanExpand() && (
       <Button themeColor={null} themeSize="xl" onClick={handler}>
-        {isExpanded ? '📂' : '📁'}
+        <Emoji>{isExpanded ? '📂' : '📁'}</Emoji>
       </Button>
     )
   );
