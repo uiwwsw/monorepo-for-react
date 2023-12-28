@@ -6,6 +6,7 @@ import { ITaskTransferInfoMessage } from '../models/taskTransferInfo';
 import { ITcsEventSet } from '../models/tcsEventSet';
 import { INTERNAL_EVENT_ID } from '../models/tcmEventId';
 import { Client } from './client';
+import { Service } from '../service';
 import logger from '../libs/logger';
 
 export class Clients {
@@ -98,6 +99,7 @@ export class Clients {
                 case 'himEquipmentStateInfo':
                     logger.debug(`onRecvMessage. himEquipmentStateInfo: ${JSON.stringify(msg.MessageData)}`);
                     {
+                        const processingState2 = await Service.Inst.Redis.hget('System:EquipmentState', 'ProcessingState2');
                         const equmentInfo = msg.MessageData.Object;
                         const data = {
                             MCS1 : {
@@ -108,7 +110,7 @@ export class Clients {
                                 CommState: equmentInfo.CommState2,
                                 ControlState: equmentInfo.ControlState2,
                             },
-                            ProcessingState: equmentInfo.ProcessingState
+                            ProcessingState: processingState2 || '0'
                         };
                         this.broadcast('himEquipmentStateInfo', data, true);
                     }

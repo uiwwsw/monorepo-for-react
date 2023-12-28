@@ -14,6 +14,7 @@ import zoneRouter from './routes/zoneRoutes';
 import statsRouter from './routes/statsRoutes';
 import redisRouter from './routes/redisRoutes';
 import tcmRouter from './routes/tcmRoutes';
+import controlRouter from './routes/controlRoutes';
 import serverModuleRouter from './routes/serverModuleRoutes';
 import { errorHandler } from './routes/error';
 
@@ -58,6 +59,7 @@ async function main() {
     app.use('/zone', zoneRouter);
     app.use('/stats', statsRouter);
     app.use('/redis', redisRouter);
+    app.use('/control', controlRouter);
     app.use('/', tcmRouter);
     app.use('/', serverModuleRouter);
 

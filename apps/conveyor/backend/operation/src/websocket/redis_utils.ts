@@ -250,7 +250,7 @@ const initializeEquipmentState = async (client : Client) => {
                 CommState: equmentInfo.CommState2,
                 ControlState: equmentInfo.ControlState2,
             },
-            ProcessingState: equmentInfo.ProcessingState
+            ProcessingState: equmentInfo.ProcessingState2 || '0'
         };
         client.send('himEquipmentStateInfo', data);
     }
