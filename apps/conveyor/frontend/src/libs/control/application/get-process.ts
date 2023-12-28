@@ -17,7 +17,7 @@ async function fetcher(
 ) {
   logger(arg, url);
 
-  const res = await http({ url, arg });
+  const res = await http({ url, param: arg });
   const json = await toJson<{ ProcList: { ProcId: number; ProcName: 'tcm' }[] }>(res);
   logger(json);
   return json?.ProcList[0].ProcId;

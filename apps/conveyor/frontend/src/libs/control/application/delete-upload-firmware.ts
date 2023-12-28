@@ -18,16 +18,15 @@ async function fetcher(
 ) {
   logger(arg, url);
 
-  const res = await http({
+  await http({
     url,
-    arg: {
+    param: {
       ...arg,
       upload: 1,
     },
     method: 'POST',
   });
-  if (res.ok) return true;
-  throw new Error('성공하지 못함');
+  return true;
 }
 
 export function useDeleteFirm() {

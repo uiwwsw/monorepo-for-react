@@ -32,6 +32,10 @@ const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
     () => !selectedRows?.length || startIsMutating || stopIsMutating || restartIsMutating,
     [selectedRows, startIsMutating, stopIsMutating, restartIsMutating],
   );
+  const disabledForUpdate = useMemo(
+    () => disabled || !selectedRows?.every((x) => x.original.status === 'OFFLINE'),
+    [disabled, selectedRows],
+  );
   const chooseName = selectedTids.join(', ');
   const displayName = isAllSelected
     ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전송', { order })
@@ -78,7 +82,7 @@ const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
         <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
           Restart
         </Button>
-        <ModalUpdate disabled={disabled} selectedRows={selectedTids} selectedAdds={selectedAdds} />
+        <ModalUpdate disabled={disabledForUpdate} selectedRows={selectedTids} selectedAdds={selectedAdds} />
       </div>
     </>
   );

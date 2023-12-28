@@ -19,6 +19,7 @@
     "@package-frontend/utils": "workspace:^",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.10.7",
+    "axios": "^1.6.3",
     "crypto-js": "^4.2.0",
     "i18next": "^23.6.0",
     "i18next-browser-languagedetector": "^7.1.0",

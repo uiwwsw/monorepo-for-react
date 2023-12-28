@@ -20,9 +20,10 @@ async function fetcher(
 
   const res = await http({
     url,
-    arg,
+    param: arg,
     method: 'POST',
   });
+  logger(res);
   if (res.ok) return true;
   throw new Error('성공하지 못함');
 }

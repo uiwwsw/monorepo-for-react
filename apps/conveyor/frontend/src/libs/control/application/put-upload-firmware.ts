@@ -5,6 +5,8 @@ import useSWR from 'swr/mutation';
 const logger = createLogger('control/useUploadFirm');
 export interface Arg {
   file: File;
+  address: string;
+  port: number;
 }
 async function fetcher(
   url: string,
@@ -13,10 +15,16 @@ async function fetcher(
   }: {
     arg: Arg;
   },
-  onUpload: (file: File) => Promise<boolean>,
+  onUpload: (url: string, file: File) => Promise<boolean>,
 ) {
   logger(arg, url);
-  const res = await onUpload(arg.file);
+  const urlObj = new URLSearchParams({
+    fileName: arg.file.name,
+    address: arg.address,
+    port: '',
+  }).toString();
+  url += '?' + urlObj;
+  const res = await onUpload(url, arg.file);
   logger(res, arg.file.name, 1234);
   if (res) return arg.file.name;
   logger(res, 1234);
@@ -25,9 +33,8 @@ async function fetcher(
 }
 
 export function useUploadFirm() {
-  const url = '/api/api/tcm/file/upload';
-  const { process, onUpload } = useUpload(url);
-  const swr = useSWR(url, (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, onUpload));
+  const { process, onUpload } = useUpload();
+  const swr = useSWR('/api/api/tcm/file/upload', (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, onUpload));
   return {
     ...swr,
     process,

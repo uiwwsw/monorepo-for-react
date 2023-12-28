@@ -21,7 +21,6 @@ const logger = createLogger('pages/Control/TcmSub');
 const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
-
   const { trigger: killTrigger } = useTcmKill();
   const { trigger: processTrigger } = useProcessId();
   const { trigger: networkTrigger } = useTcmNetwork();

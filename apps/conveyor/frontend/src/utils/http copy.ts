@@ -10,20 +10,22 @@ export const enum HTTP_ERROR_TYPE {
   AUTH = 4,
   SERVER,
 }
-export const http = async <T = unknown>({
+export const http = async <T>({
   url,
   arg,
-  param,
   method = 'GET',
   contentType = 'application/json',
+  file,
+  params,
   timeout = 60000,
 }: {
   timeout?: number;
   url: string;
   contentType?: string;
   arg?: T;
-  param?: T;
+  params?: T;
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  file?: File; // TODO 파일 넘어오면 바디 스트링기파이 제거하고  폼데이터로 변경, 헤더 제거등등 처리
 }) => {
   const auth = storage.get<Auth>(STORAGE['auth']);
   const headers: Record<string, string> = {
@@ -33,11 +35,19 @@ export const http = async <T = unknown>({
   let body: FormData | string | null = arg ? JSON.stringify(arg) : null;
 
   // GET 메소드에 대한 처리
-  if (method === 'GET') body = null; // GET 요청에는 보통 body가 없습니다.
-  if (param) {
-    const urlObj = new URLSearchParams(param as Record<string, string>).toString();
+  if (params) {
+    const urlObj = new URLSearchParams(arg as Record<string, string>).toString();
     url += '?' + urlObj.toString();
   }
+
+  if (method === 'GET') body = null;
+
+  // 나머지 메소드에 대한 처리 (TODO: 파일 처리, 다른 컨텐트 타입 등)
+  if (file) {
+    body = new FormData();
+    body.append('file', file);
+  }
+
   logger({
     headers,
     body,
