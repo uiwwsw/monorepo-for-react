@@ -74,7 +74,7 @@ const Main = () => {
         {
           //튜토리얼용 토스트
         }
-        <Emoji>🔔</Emoji>시스템에서 보내는 메시지(설정에서 알람음 제거 시 <Emoji>🔕</Emoji>)
+        <Emoji>🔔</Emoji>시스템 메시지
       </ToastWithPortal>
       {Toasts}
       <Tutorial
@@ -87,7 +87,7 @@ const Main = () => {
               right: '30px',
             },
             size: {
-              width: '450px',
+              width: '190px',
               height: '250px',
             },
           },
