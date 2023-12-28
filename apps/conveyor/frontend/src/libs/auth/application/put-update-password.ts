@@ -1,11 +1,11 @@
 // import { http } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 import { createLogger } from '@package-frontend/utils';
-import { usePostAuth } from './post-auth';
+// import { usePostAuth } from './post-auth';
 import { MD5 } from 'crypto-js';
 import { http } from '#/http';
 import { UserPasswordRequest } from '@package-backend/types';
-import { Auth } from '../domain';
+// import { Auth } from '../domain';
 
 const logger = createLogger('auth/useUpdatePassword');
 export interface Arg {
