@@ -18,7 +18,7 @@ async function fetcher(
   }: {
     arg: Arg;
   },
-  trigger: (arg: Auth | undefined) => Promise<Auth | undefined>,
+  trigger: (arg?: Auth) => Promise<Auth | undefined>,
 ) {
   const res = await http<UserPasswordRequest>({
     url,

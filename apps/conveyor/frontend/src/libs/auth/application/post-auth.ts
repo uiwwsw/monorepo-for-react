@@ -5,7 +5,7 @@ import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 const logger = createLogger('auth/usePostAuth');
 
-async function fetcher(url: STORAGE, { arg }: { arg: Auth | undefined }) {
+async function fetcher(url: STORAGE, { arg }: { arg?: Auth | undefined }) {
   storage.set(url, arg);
   logger(arg);
   return arg;

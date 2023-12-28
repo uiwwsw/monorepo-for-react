@@ -82,23 +82,19 @@ const Table = <T,>({
             {
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
-                <div className="text-left">
-                  <Checkbox
-                    checked={table.getIsAllPageRowsSelected()}
-                    indeterminate={table.getIsSomePageRowsSelected()}
-                    onChange={table.getToggleAllPageRowsSelectedHandler()}
-                  />
-                </div>
+                <Checkbox
+                  checked={table.getIsAllPageRowsSelected()}
+                  indeterminate={table.getIsSomePageRowsSelected()}
+                  onChange={table.getToggleAllPageRowsSelectedHandler()}
+                />
               ),
               cell: ({ row }: { row: Row<T> }) => (
-                <div className="text-left">
-                  <Checkbox
-                    checked={row.getIsSelected()}
-                    disabled={!row.getCanSelect()}
-                    indeterminate={row.getIsSomeSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                  />
-                </div>
+                <Checkbox
+                  checked={row.getIsSelected()}
+                  disabled={!row.getCanSelect()}
+                  indeterminate={row.getIsSomeSelected()}
+                  onChange={row.getToggleSelectedHandler()}
+                />
               ),
             },
           ]
@@ -266,7 +262,9 @@ const Table = <T,>({
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider${
+                        header.id === 'select' ? ' w-0' : ''
+                      }`}
                     >
                       {header.isPlaceholder ? null : (
                         <div
