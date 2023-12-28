@@ -1,6 +1,6 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
-export enum CHANGE_VERSION {
+export const enum CHANGE_VERSION {
   'SAME',
   'ETC',
   'MINOR',
