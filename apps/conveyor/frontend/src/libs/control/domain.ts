@@ -45,7 +45,7 @@ export class TcmList {
     this.tcmId = Number(TCMID);
     this.ipAddress = IPAddress;
     this.buildNum = BuildNum;
-    this.buildDate = newDate(BuildDate).format(FORMAT_WITHOUT_TIME);
+    this.buildDate = BuildDate ? newDate(BuildDate).format(FORMAT_WITHOUT_TIME) : '';
     this.status = ALIVE[alive] as keyof typeof ALIVE;
   }
 }
