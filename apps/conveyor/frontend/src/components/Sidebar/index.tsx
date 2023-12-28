@@ -2,7 +2,7 @@ import { createLogger } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';
-import { Button, Tutorial, tutorialStorage } from '@library-frontend/ui';
+import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
 import { useEffect, useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
@@ -128,7 +128,7 @@ const Nav = (_: NavProps) => {
         <nav className="flex flex-col flex-auto" onClick={() => setOpen(false)}>
           <div className="flex-auto">
             <Link to="/" className="flex p-4 h-20 justify-center">
-              <img src={logo} alt="logo" />
+              <Image src={logo} alt="SEMI-TS" height={48} />
             </Link>
             <hr />
             <GroupLink routes={authRoutes} />
