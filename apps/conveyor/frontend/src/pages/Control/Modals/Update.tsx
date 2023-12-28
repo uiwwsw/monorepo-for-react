@@ -7,7 +7,7 @@ import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import Test from '@/Test';
 import { useFirmList } from '!/control/application/get-backup-firmware';
-import { useDeleteBackup } from '!/control/application/delete-backup-firmware';
+import { useDeleteFirm } from '!/control/application/delete-upload-firmware';
 
 /* ======   interface   ====== */
 export interface ModalUpdateProps {
@@ -27,7 +27,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   /* ======   variables   ====== */
   const newFile = '새 파일 업로드';
   const [selectedFile, setSelectedFile] = useState('');
-  const { trigger: deleteTrigger } = useDeleteBackup();
+  const { trigger: deleteTrigger } = useDeleteFirm();
   const [fileList, setFileList] = useState<string[]>([]);
   const { trigger: updateTrigger } = useUpdateFirm();
   const { trigger: firmListTrigger, isMutating } = useFirmList();
@@ -38,7 +38,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   const continueUpdatingRef = useRef(true);
   const hasBackup = useMemo(() => !(selectedFile !== newFile && !!selectedFile), [selectedFile]);
   /* ======   function    ====== */
-  const handleFileDelete = () => {
+  const handleFileDelete = async () => {
     if (!selectedRows || !selectedAdds) return;
     setFileList([]);
     selectedRows.forEach(async (tcmId, index) => {
@@ -51,10 +51,10 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       });
     });
 
-    setSelectedFile('');
-    handleFirmList();
+    await setSelectedFile('');
+    await handleFirmList();
   };
-  const handleApply = () => {
+  const handleApply = async () => {
     if (!selectedRows || !selectedAdds) return;
     setFileList([]);
     selectedRows.forEach(async (tcmId, index) => {
@@ -62,9 +62,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       const port = await networkTrigger({ tcm_id: tcmId });
       await updateTrigger({ fileName: selectedFile, address, port });
     });
-
-    setSelectedFile('');
-    handleFirmList();
+    await Promise.all([setSelectedFile(''), handleFirmList()]);
   };
   const handleFirmList = () => {
     if (!selectedRows || !selectedAdds) return;
@@ -74,7 +72,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       const port = await networkTrigger({ tcm_id: tcmId });
       const data = await firmListTrigger({ port, address });
       if (!data) return;
-      setFileList((prev) => (prev.length ? prev.filter((x) => data.includes(x)) : data));
+      await setFileList((prev) => (prev.length ? prev.filter((x) => data.includes(x)) : data));
     });
   };
   const handleFileSelect = (selectedFileName: string) => setSelectedFile(selectedFileName);
@@ -90,9 +88,8 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
     continueUpdatingRef.current = true;
     logger('handleUpload');
 
-    const fileName = await uploadTrigger({ file });
-    logger(process);
-    if (fileName === undefined) return;
+    // logger(process);
+    // if (fileName === undefined) return;
 
     if (!selectedRows || !selectedAdds) return;
     setStatus(Array(selectedRows.length).fill(UPLOAD_STATUS.IDLE));
@@ -103,6 +100,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
       const tid = selectedRows[index];
       const port = await networkTrigger({ tcm_id: tid });
       const address = selectedAdds[index];
+      const fileName = await uploadTrigger({ file, address, port });
       setStatus((prev) => {
         prev[index] = UPLOAD_STATUS.UPDATING;
         return [...prev];

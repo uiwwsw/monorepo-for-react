@@ -20,7 +20,7 @@ async function fetcher(
 
   const res = await http({
     url,
-    arg,
+    param: arg,
     method: 'POST',
   });
   if (res.ok) return true;
