@@ -69,13 +69,13 @@ const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
       {Toasts}
       <div className="flex justify-end space-x-2 items-center">
         <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
-          Start
+          {t('시작')}
         </Button>
         <Button disabled={disabled} themeColor="quaternary" smoothLoading onClick={handleStopClick}>
-          Stop
+          {t('중지')}
         </Button>
         <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
-          Restart
+          {t('재시작')}
         </Button>
       </div>
     </>

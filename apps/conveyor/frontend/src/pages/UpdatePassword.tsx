@@ -1,5 +1,5 @@
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
+import { Button, Emoji, Input, ModalWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -43,7 +43,11 @@ const UpdatePassword = () => {
         {t('비밀번호가 변경됐어요. 세션이 만료되어 다시 로그인해야 합니다.')}
       </ModalWithPortal>
       <PageCenter title={t('비밀번호 변경')} icon="🔏">
-        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+        {!isMutating && error?.message && (
+          <p className="text-red-500">
+            <Emoji>💥</Emoji> {error?.message}
+          </p>
+        )}
 
         <form className="flex flex-col gap-3">
           <label>

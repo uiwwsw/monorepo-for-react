@@ -4,10 +4,10 @@ import { createLogger } from '@package-frontend/utils';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import WarningMessage from '@/Typography/WarningMessage';
-const logger = createLogger('pages/Control/Upload');
+const logger = createLogger('pages/Control/FileUpload');
 
 /* ======   interface   ====== */
-interface UploadProps {
+interface FileUploadProps {
   disabled?: boolean;
   onSubmit: (file: File) => Promise<unknown>;
   onCancel?: () => unknown;
@@ -17,9 +17,11 @@ interface FormState {
 }
 /* ======    global     ====== */
 
-const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
+const FileUpload = ({ onSubmit, onCancel, disabled }: FileUploadProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const cancelBtn = t('닫기');
+  const okBtn = t('확인');
   const {
     register,
     handleSubmit: formSubmit,
@@ -58,7 +60,7 @@ const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
             disabled={disabled}
           />
           <ModalWithBtn
-            hasButton={['OK', 'CANCEL']}
+            hasButton={[okBtn, cancelBtn]}
             button={
               <Button
                 type="button"
@@ -66,16 +68,16 @@ const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
                 disabled={!isValid || disabled || loading}
                 onClick={(e) => e.preventDefault()}
               >
-                {loading ? 'Updating...' : 'Update'}
+                {loading ? t('업로드중') : t('업로드')}
               </Button>
             }
-            onClose={(value) => value === 'OK' && handleSubmit()}
+            onClose={(value) => value === okBtn && handleSubmit()}
           >
-            파일을 업데이트 하시겠습니까?
+            {t('파일을 업데이트 하시겠습니까?')}
           </ModalWithBtn>
         </form>
         <Button themeSize={'sm'} themeColor={'secondary'} onClick={onCancel} disabled={disabled || !loading}>
-          Stop
+          {t('중지')}
         </Button>
       </div>
       <WarningMessage>{errors?.fileList?.message}</WarningMessage>
@@ -83,4 +85,4 @@ const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
   );
 };
 
-export default Upload;
+export default FileUpload;
