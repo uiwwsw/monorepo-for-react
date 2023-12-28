@@ -30,13 +30,13 @@ const App = () => {
   /* ======   function    ====== */
   const handleClose = (e?: typeof closeBtn | typeof resetBtn) => {
     switch (e) {
-      case t('리셋'):
+      case resetBtn:
         storage.clear();
         storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
         location.reload();
         break;
       default:
-      case t('닫기'):
+      case closeBtn:
         storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
         break;
     }
