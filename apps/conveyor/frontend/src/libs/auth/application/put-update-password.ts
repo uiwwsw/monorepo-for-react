@@ -18,7 +18,6 @@ async function fetcher(
   }: {
     arg: Arg;
   },
-  trigger: (arg?: Auth) => Promise<Auth | undefined>,
 ) {
   const res = await http<UserPasswordRequest>({
     url,
@@ -28,15 +27,13 @@ async function fetcher(
     },
   });
   logger(res);
-  if (res.ok) {
-    await trigger(undefined);
-    return true;
-  }
-  return false;
+  return res.ok;
 }
 
 export function useUpdatePassword() {
-  const { trigger } = usePostAuth();
+  // const { trigger } = usePostAuth();
 
-  return useSWR('/api/users/user-password', (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, trigger));
+  // return useSWR('/api/users/user-password', (url, { arg }: { arg: Arg }) => fetcher(url, { arg }, trigger));
+
+  return useSWR('/api/users/user-password', fetcher);
 }

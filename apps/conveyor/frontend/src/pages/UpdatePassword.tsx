@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useUpdatePassword } from '!/auth/application/put-update-password';
 import { useState } from 'react';
 import WarningMessage from '@/Typography/WarningMessage';
+import { usePostAuth } from '!/auth/application/post-auth';
+import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -19,6 +21,7 @@ const UpdatePassword = () => {
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
   const { t } = useTranslation();
+  const { trigger: signOutTrigger } = usePostAuth();
   const {
     register,
     handleSubmit: formSubmit,
@@ -33,7 +36,8 @@ const UpdatePassword = () => {
     logger('handleSubmit', arg);
   };
   const handleModalClose = () => {
-    navigate('/sign-in?update-profile=true');
+    signOutTrigger(undefined);
+    navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-update-password']}`);
     logger('handleModalClose');
   };
   /* ======   useEffect   ====== */
