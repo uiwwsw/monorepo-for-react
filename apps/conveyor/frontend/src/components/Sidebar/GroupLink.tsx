@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Tab, filterGradeRoute } from 'src/routes';
 import Link from './Link';
 import { useGetAuth } from '!/auth/application/get-auth';
+import { Emoji } from '@library-frontend/ui';
 
 /* ======   interface   ====== */
 export interface GroupLinkProps {
@@ -29,7 +30,7 @@ const GroupLink = ({ routes }: GroupLinkProps) => {
               className={({ isActive }) => (isActive ? ' !text-white' : '')}
             >
               <div className="text-xl">
-                <span className="mr-2 text-lg">{tab.icon}</span>
+                <Emoji className="mr-2 text-lg">{tab.icon}</Emoji>
                 {t(tab.name)}
               </div>
             </Link>

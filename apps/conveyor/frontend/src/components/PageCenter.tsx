@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import H1 from './Typography/H1';
+import { Emoji } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface PageCenterProps {
   children?: ReactNode;
@@ -16,7 +17,7 @@ const PageCenter = ({ title, children, icon }: PageCenterProps) => {
   return (
     <div className="lg:min-w-[500px] p-3 m-auto flex flex-row items-center">
       <div className="flex items-top gap-4 w-full max-lg:flex-col">
-        <span className="text-9xl max-lg:text-center">{icon}</span>
+        <Emoji className="text-9xl max-lg:text-center">{icon}</Emoji>
         <div className="w-full text-left gap-4 flex flex-col">
           <H1>{title}</H1>
           {children}

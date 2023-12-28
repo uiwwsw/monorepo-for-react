@@ -1,7 +1,7 @@
 import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
 import { createLogger } from '@package-frontend/utils';
-import { ToastWithPortal, Tutorial, tutorialStorage, useToasts } from '@library-frontend/ui';
+import { Emoji, ToastWithPortal, Tutorial, tutorialStorage, useToasts } from '@library-frontend/ui';
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MAIN_QUERY_PARAM_TOAST } from '!/routes/domain';
@@ -74,7 +74,7 @@ const Main = () => {
         {
           //튜토리얼용 토스트
         }
-        🔔시스템에서 보내는 메시지(설정에서 알람음 제거 시 🔕)
+        <Emoji>🔔</Emoji>시스템에서 보내는 메시지(설정에서 알람음 제거 시 <Emoji>🔕</Emoji>)
       </ToastWithPortal>
       {Toasts}
       <Tutorial

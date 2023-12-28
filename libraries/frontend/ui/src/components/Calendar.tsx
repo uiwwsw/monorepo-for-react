@@ -7,6 +7,7 @@ import Menu from './Menu';
 import Tooltip from './Tooltip';
 import Button from './Button';
 import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
+import Emoji from './Emoji';
 /* ======   interface   ====== */
 export interface CalendarProps {
   placeholder?: string;
@@ -77,7 +78,7 @@ const Calendar = ({
       button={cloneElement(button, {
         children: (
           <span className="flex w-fit m-auto items-center">
-            <span className="whitespace-nowrap lg:hidden">📅</span>
+            <Emoji className="whitespace-nowrap lg:hidden">📅</Emoji>
             <span className="whitespace-nowrap max-lg:hidden">{memoValueForDisplay}</span>
             {selectRange && (
               <span className="ml-3">

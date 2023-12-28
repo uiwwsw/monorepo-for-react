@@ -1,6 +1,6 @@
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
-import { Select } from '@library-frontend/ui';
+import { Emoji, Select } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ const Language = (_: LanguageProps) => {
   return (
     <Select
       pl={40}
-      prefix={<span className="absolute pl-3 pointer-events-none">🌐</span>}
+      prefix={<Emoji className="absolute pl-3 pointer-events-none">🌐</Emoji>}
       className="w-full"
       options={options}
       onChange={handleChange}
