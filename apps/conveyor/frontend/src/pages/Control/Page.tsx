@@ -11,6 +11,7 @@ import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 import useSetting from '#/useSetting';
 import { useTranslation } from 'react-i18next';
 import { ServerList, TcmList } from '!/control/domain';
+import H1 from '@/Typography/H1';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -79,6 +80,8 @@ const Control = () => {
     <>
       <Loading show={status !== WS_STATUS.OPEN} />
       <div className="flex gap-5 flex-col">
+        <H1>{t('조작')}</H1>
+
         {/* <div className="flex ml-auto gap-2">
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
             <Test className="left-0 top-0">Resume</Test>
