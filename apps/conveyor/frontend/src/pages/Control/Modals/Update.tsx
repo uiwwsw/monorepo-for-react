@@ -133,7 +133,7 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
         button={
           <Test>
             <Button onClick={handleFirmList} disabled={disabled} themeColor="tertiary">
-              {t('업로드')}
+              {t('업데이트')}
             </Button>
           </Test>
         }

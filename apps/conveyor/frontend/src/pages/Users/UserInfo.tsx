@@ -17,7 +17,6 @@ export interface UserInfoProps {
   row?: Row<User>;
 }
 interface FormState {
-  id: string;
   pw: string;
 }
 /* ======    global     ====== */
@@ -64,20 +63,20 @@ const UserInfo = ({ row }: UserInfoProps) => {
       });
     }
   };
-  const handleResetPassword = async (arg: FormState) => {
-    logger(arg);
-
+  const handleResetPassword = async ({ pw }: FormState) => {
+    const id = row?.original.userId;
+    if (!id) return showToast({ message: 'id가 없습니다.' });
     try {
-      await passwordTrigger(arg);
+      await passwordTrigger({ id, pw });
       showToast({
         duration: 5000,
         type: 'success',
-        message: t('{{id}}의 비밀번호를 변경했습니다.', { id: arg.id }),
+        message: t('{{id}}의 비밀번호를 변경했습니다.', { id }),
       });
     } catch {
       showToast({
         type: 'fail',
-        message: t('{{id}}의 비밀번호를 변경하는데 문제가 발생했습니다.', { id: arg.id }),
+        message: t('{{id}}의 비밀번호를 변경하는데 문제가 발생했습니다.', { id }),
       });
     }
   };

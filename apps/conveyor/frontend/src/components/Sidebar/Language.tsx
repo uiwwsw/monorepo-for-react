@@ -28,8 +28,8 @@ const Language = (_: LanguageProps) => {
   return (
     <Select
       pl={40}
-      prefix={<Emoji className="absolute pl-3 pointer-events-none">🌐</Emoji>}
-      className="w-full"
+      prefix={<Emoji className="absolute pl-2 pointer-events-none">🌐</Emoji>}
+      className="w-full text-xl"
       options={options}
       onChange={handleChange}
       defaultValue={value}

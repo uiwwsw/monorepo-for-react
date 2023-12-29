@@ -35,7 +35,8 @@ const Setting = () => {
   const {
     pageSize,
     duration,
-    viewBrowser,
+    logBrowser,
+    logBrowserMultiple,
     controlPagination,
     alarmSound,
     pageSizeForTcmSetting,
@@ -106,120 +107,133 @@ const Setting = () => {
         <H2>{t('통계')}</H2>
         <SettingCheckbox
           label={t('로그 뷰어 새창')}
-          checked={viewBrowser}
-          onChange={(e) => handleChange(STORAGE['setting/view-browser'], e.target.checked)}
+          checked={logBrowser}
+          onChange={(e) => handleChange(STORAGE['setting/log-browser'], e.target.checked)}
         />
-        <H3>{t('요약')}</H3>
-        <SettingCheckbox
-          label={t('요약 페이지당 리스트 수 커스텀')}
-          checked={!!pageSizeForSummarySetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/summary/page-size'], pageSizeForSummarySetting ? '' : pageSize)
-          }
-        />
-        {!!pageSizeForSummarySetting && (
-          <SettingPagination
-            label={t('요약 페이지당 리스트 수')}
-            value={pageSizeForSummarySetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/summary/page-size'], e.target.value)}
+        {logBrowser && (
+          <SettingCheckbox
+            label={t('로그 별로 새로운 창 띄움')}
+            checked={logBrowserMultiple}
+            onChange={(e) => handleChange(STORAGE['setting/log-browser-multiple'], e.target.checked)}
           />
         )}
-        <SettingCheckbox
-          label={t('요약 달력 기간 커스텀')}
-          checked={!!durationForSummarySetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/summary/duration'], durationForSummarySetting ? '' : duration)
-          }
-        />
-        {!!durationForSummarySetting && (
-          <SettingDuration
-            label={t('요약 달력 기간')}
-            value={durationForSummarySetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/summary/duration'], e.target.value)}
+        <div className="pl-2">
+          <H3>{t('요약')}</H3>
+          <SettingCheckbox
+            label={t('요약 페이지당 리스트 수 커스텀')}
+            checked={!!pageSizeForSummarySetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/summary/page-size'], pageSizeForSummarySetting ? '' : pageSize)
+            }
           />
-        )}
-        <SettingCheckGroup
-          label={t('요약 테이블 헤더')}
-          labels={theadSummary}
-          fixHead={fixHeadSummary}
-          disabled={columnSummaryDisabled}
-          defaultChecks={columnForSummary}
-          onChange={(e) => handleChange(STORAGE['setting/stats/summary/column'], e)}
-        />
-        <H3>{t('알람')}</H3>
-        <SettingCheckbox
-          label={t('알람 페이지당 리스트 수 커스텀')}
-          checked={!!pageSizeForAlarmSetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/alarm/page-size'], pageSizeForAlarmSetting ? '' : pageSize)
-          }
-        />
-        {!!pageSizeForAlarmSetting && (
-          <SettingPagination
-            label={t('알람 페이지당 리스트 수')}
-            value={pageSizeForAlarmSetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/alarm/page-size'], e.target.value)}
+          {!!pageSizeForSummarySetting && (
+            <SettingPagination
+              label={t('요약 페이지당 리스트 수')}
+              value={pageSizeForSummarySetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/summary/page-size'], e.target.value)}
+            />
+          )}
+          <SettingCheckbox
+            label={t('요약 달력 기간 커스텀')}
+            checked={!!durationForSummarySetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/summary/duration'], durationForSummarySetting ? '' : duration)
+            }
           />
-        )}
-        <SettingCheckbox
-          label={t('알람 달력 기간 커스텀')}
-          checked={!!durationForAlarmSetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/alarm/duration'], durationForAlarmSetting ? '' : duration)
-          }
-        />
-        {!!durationForAlarmSetting && (
-          <SettingDuration
-            label={t('알람 달력 기간')}
-            value={durationForAlarmSetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/alarm/duration'], e.target.value)}
+          {!!durationForSummarySetting && (
+            <SettingDuration
+              label={t('요약 달력 기간')}
+              value={durationForSummarySetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/summary/duration'], e.target.value)}
+            />
+          )}
+          <SettingCheckGroup
+            label={t('요약 테이블 헤더')}
+            labels={theadSummary}
+            fixHead={fixHeadSummary}
+            disabled={columnSummaryDisabled}
+            defaultChecks={columnForSummary}
+            onChange={(e) => handleChange(STORAGE['setting/stats/summary/column'], e)}
           />
-        )}
-        <SettingCheckGroup
-          label={t('알람 테이블 헤더')}
-          labels={theadAlarm}
-          fixHead={fixHeadAlarm}
-          defaultChecks={columnForAlarm}
-          disabled={columnAlarmDisabled}
-          onChange={(e) => handleChange(STORAGE['setting/stats/alarm/column'], e)}
-        />
-        <H3>{t('케리어')}</H3>
-        <SettingCheckbox
-          label={t('케리어 페이지당 리스트 수 커스텀')}
-          checked={!!pageSizeForCarrierSetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/carrier/page-size'], pageSizeForCarrierSetting ? '' : pageSize)
-          }
-        />
-        {!!pageSizeForCarrierSetting && (
-          <SettingPagination
-            label={t('케리어 페이지당 리스트 수')}
-            value={pageSizeForCarrierSetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/carrier/page-size'], e.target.value)}
+        </div>
+        <div className="pl-2">
+          <H3>{t('알람')}</H3>
+          <SettingCheckbox
+            label={t('알람 페이지당 리스트 수 커스텀')}
+            checked={!!pageSizeForAlarmSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/alarm/page-size'], pageSizeForAlarmSetting ? '' : pageSize)
+            }
           />
-        )}
-        <SettingCheckbox
-          label={t('케리어 달력 기간 커스텀')}
-          checked={!!durationForCarrierSetting}
-          onChange={() =>
-            handleChange(STORAGE['setting/stats/carrier/duration'], durationForCarrierSetting ? '' : duration)
-          }
-        />
-        {!!durationForCarrierSetting && (
-          <SettingDuration
-            label={t('케리어 달력 기간')}
-            value={durationForCarrierSetting}
-            onChange={(e) => handleChange(STORAGE['setting/stats/carrier/duration'], e.target.value)}
+          {!!pageSizeForAlarmSetting && (
+            <SettingPagination
+              label={t('알람 페이지당 리스트 수')}
+              value={pageSizeForAlarmSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/alarm/page-size'], e.target.value)}
+            />
+          )}
+          <SettingCheckbox
+            label={t('알람 달력 기간 커스텀')}
+            checked={!!durationForAlarmSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/alarm/duration'], durationForAlarmSetting ? '' : duration)
+            }
           />
-        )}
-        <SettingCheckGroup
-          label={t('케리어 테이블 헤더')}
-          labels={theadCarrier}
-          fixHead={fixHeadCarrier}
-          defaultChecks={columnForCarrier}
-          disabled={columnCarrierDisabled}
-          onChange={(e) => handleChange(STORAGE['setting/stats/carrier/column'], e)}
-        />
+          {!!durationForAlarmSetting && (
+            <SettingDuration
+              label={t('알람 달력 기간')}
+              value={durationForAlarmSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/alarm/duration'], e.target.value)}
+            />
+          )}
+          <SettingCheckGroup
+            label={t('알람 테이블 헤더')}
+            labels={theadAlarm}
+            fixHead={fixHeadAlarm}
+            defaultChecks={columnForAlarm}
+            disabled={columnAlarmDisabled}
+            onChange={(e) => handleChange(STORAGE['setting/stats/alarm/column'], e)}
+          />
+        </div>
+        <div className="pl-2">
+          <H3>{t('케리어')}</H3>
+          <SettingCheckbox
+            label={t('케리어 페이지당 리스트 수 커스텀')}
+            checked={!!pageSizeForCarrierSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/carrier/page-size'], pageSizeForCarrierSetting ? '' : pageSize)
+            }
+          />
+          {!!pageSizeForCarrierSetting && (
+            <SettingPagination
+              label={t('케리어 페이지당 리스트 수')}
+              value={pageSizeForCarrierSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/carrier/page-size'], e.target.value)}
+            />
+          )}
+          <SettingCheckbox
+            label={t('케리어 달력 기간 커스텀')}
+            checked={!!durationForCarrierSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/carrier/duration'], durationForCarrierSetting ? '' : duration)
+            }
+          />
+          {!!durationForCarrierSetting && (
+            <SettingDuration
+              label={t('케리어 달력 기간')}
+              value={durationForCarrierSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/carrier/duration'], e.target.value)}
+            />
+          )}
+          <SettingCheckGroup
+            label={t('케리어 테이블 헤더')}
+            labels={theadCarrier}
+            fixHead={fixHeadCarrier}
+            defaultChecks={columnForCarrier}
+            disabled={columnCarrierDisabled}
+            onChange={(e) => handleChange(STORAGE['setting/stats/carrier/column'], e)}
+          />
+        </div>
         <H2>{t('유저관리')}</H2>
         <SettingCheckbox
           label={t('유저관리 페이지당 리스트 수 커스텀')}

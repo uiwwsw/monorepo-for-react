@@ -7,6 +7,7 @@ import SmoothWrap from './Smooth/Wrap';
 /* ======   interface   ====== */
 export interface TutorialProps {
   btnName?: string;
+  delay?: number;
   guide: {
     ref?: RefObject<HTMLElement>;
     button?: ReactNode;
@@ -27,12 +28,12 @@ export interface TutorialProps {
 /* ======    global     ====== */
 export const tutorialStorage = new Storage<string>(localStorage);
 const logger = createLogger('components/Tutorial');
-const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
+const Tutorial = ({ guide, btnName = '확인', delay = 0 }: TutorialProps) => {
   /* ======   variables   ====== */
   const id = useMemo(() => 'tutorial-' + JSON.stringify(guide.map((x) => x.text).join('/')), [guide]);
   const didSee = typeof tutorialStorage.get(id) === 'string';
   const [finish, setFinish] = useState(false);
-  const [done, setDone] = useState(didSee);
+  const [done, setDone] = useState(true);
   const [step, setStep] = useState(0);
   const text = useMemo(() => guide[step]?.text ?? null, [step, guide]);
   const button = useMemo(() => guide[step]?.button ?? null, [step, guide]);
@@ -63,9 +64,12 @@ const Tutorial = ({ guide, btnName = '확인' }: TutorialProps) => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (didSee) return;
-    setStyle();
-    trigger();
-    logger('useEffect');
+    setTimeout(() => {
+      setDone(false);
+      setStyle();
+      trigger();
+      logger('useEffect');
+    }, delay);
   }, [step]);
 
   return !didSee ? (
