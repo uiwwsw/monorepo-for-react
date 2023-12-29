@@ -7,7 +7,7 @@ export interface Arg {
   tcm_id: number;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http<Arg>({ url, arg });
+  const res = await http<Arg>({ url, param: arg });
   logger(res);
   const json = await toJson<{ port: number }>(res);
   return json?.port || 5000;

@@ -4,13 +4,13 @@ import Test from '@/Test';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 
-interface ModalDetailProps {
+interface ControlModalDetailProps {
   tid?: number;
 }
 
 /* ======    global     ====== */
 
-const ModalDetail = ({ tid }: ModalDetailProps) => {
+const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
   /* ======   variables   ====== */
   const { trigger, data, error } = useCheckTcmClient();
   /* ======   function    ====== */
@@ -34,16 +34,16 @@ const ModalDetail = ({ tid }: ModalDetailProps) => {
         hasCloseBtn
       >
         <H2>TCM {tid} 연결상태</H2>
-        <div className="flex flex-wrap">
+        <div className={data?.state.length ? 'grid grid-cols-2 gap-4 pt-4' : 'grid'}>
           {data?.state.length ? (
             data.state.map((status, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded-lg m-2">
+              <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded-lg">
                 <span className="text-md font-medium">TCM {status.tcmId} :</span>
                 <span className="font-semibold text-md ml-4 text-green-500">{status.alive}</span>
               </div>
             ))
           ) : (
-            <Empty />
+            <Empty className="py-5 m-auto" />
           )}
         </div>
       </ModalWithBtn>
@@ -51,4 +51,4 @@ const ModalDetail = ({ tid }: ModalDetailProps) => {
   );
 };
 
-export default ModalDetail;
+export default ControlModalDetail;

@@ -1,5 +1,5 @@
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal } from '@library-frontend/ui';
+import { Button, Emoji, Input, ModalWithPortal } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useUpdatePassword } from '!/auth/application/put-update-password';
 import { useState } from 'react';
 import WarningMessage from '@/Typography/WarningMessage';
+import { usePostAuth } from '!/auth/application/post-auth';
+import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -19,6 +21,7 @@ const UpdatePassword = () => {
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
   const { t } = useTranslation();
+  const { trigger: signOutTrigger } = usePostAuth();
   const {
     register,
     handleSubmit: formSubmit,
@@ -33,7 +36,8 @@ const UpdatePassword = () => {
     logger('handleSubmit', arg);
   };
   const handleModalClose = () => {
-    navigate('/sign-in?update-profile=true');
+    signOutTrigger(undefined);
+    navigate(`/sign-in?toast=${SIGN_IN_QUERY_PARAM_TOAST['success-update-password']}`);
     logger('handleModalClose');
   };
   /* ======   useEffect   ====== */
@@ -43,7 +47,11 @@ const UpdatePassword = () => {
         {t('비밀번호가 변경됐어요. 세션이 만료되어 다시 로그인해야 합니다.')}
       </ModalWithPortal>
       <PageCenter title={t('비밀번호 변경')} icon="🔏">
-        {!isMutating && error?.message && <p className="text-red-500">💥 {error?.message}</p>}
+        {!isMutating && error?.message && (
+          <p className="text-red-500">
+            <Emoji>💥</Emoji> {error?.message}
+          </p>
+        )}
 
         <form className="flex flex-col gap-3">
           <label>

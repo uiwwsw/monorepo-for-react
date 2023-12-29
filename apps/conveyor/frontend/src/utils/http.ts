@@ -6,10 +6,7 @@ import { createLogger } from '@package-frontend/utils';
 import { t } from 'src/i18n';
 import { storage } from './storage';
 const logger = createLogger('utils/http');
-export const enum HTTP_ERROR_TYPE {
-  AUTH = 4,
-  SERVER,
-}
+
 export const http = async <T = unknown>({
   url,
   arg,
@@ -115,14 +112,17 @@ export class HttpError extends Error implements STResponseFailed {
 
     return `?${url.toString()}`;
   }
+  get isUnAuth() {
+    return [401, 403];
+  }
   constructor(msg: string, res: Partial<Response>) {
     super(msg);
     this.status = res?.status ?? 0;
     this.statusText = res.statusText ?? 'unknown error';
-    if (HTTP_ERROR_TYPE.SERVER === this.type) msg = '서버에 문제가 발생한 것 같아요.🤦‍♂️';
+    if (5 === this.type) msg = '서버에 문제가 발생한 것 같아요.🤦‍♂️';
     this.message = t(msg);
 
-    if (HTTP_ERROR_TYPE.AUTH === this.type) {
+    if (this.isUnAuth.includes(this.status)) {
       storage.set(STORAGE['auth']);
       location.replace(`/sign-in${this.query}`);
     }

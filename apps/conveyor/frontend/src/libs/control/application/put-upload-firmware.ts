@@ -27,9 +27,7 @@ async function fetcher(
   const res = await onUpload(url, arg.file);
   logger(res, arg.file.name, 1234);
   if (res) return arg.file.name;
-  logger(res, 1234);
-
-  return '';
+  throw new Error('오류');
 }
 
 export function useUploadFirm() {

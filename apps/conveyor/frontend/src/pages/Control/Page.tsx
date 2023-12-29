@@ -1,16 +1,17 @@
 // import { useTcmInfo } from '!/control/application/get-tcm-info';
 import Table from '@/Table';
 // import { useServerInfo } from '!/control/application/get-server-info';
-import TcmSub from './TcmSub';
-import TcmSelect from './TcmSelect';
-import ServerSelect from './ServerSelect';
-import ServerSub from './ServerSub';
+import ControlTcmSub from './TcmSub';
+import ControlTcmSelect from './TcmSelect';
+import ControlServerSelect from './ServerSelect';
+import ControlServerSub from './ServerSub';
 import { Loading } from '@library-frontend/ui';
 import H2 from '@/Typography/H2';
 import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
 import useSetting from '#/useSetting';
 import { useTranslation } from 'react-i18next';
 import { ServerList, TcmList } from '!/control/domain';
+import H1 from '@/Typography/H1';
 // import { useDataContext } from '@/DataContext';
 // import { createLogger } from '@package-frontend/utils';
 
@@ -79,6 +80,8 @@ const Control = () => {
     <>
       <Loading show={status !== WS_STATUS.OPEN} />
       <div className="flex gap-5 flex-col">
+        <H1>{t('조작')}</H1>
+
         {/* <div className="flex ml-auto gap-2">
           <Button disabled={disabled} smoothLoading themeSize="xl" themeColor="secondary" onClick={handleResumeClick}>
             <Test className="left-0 top-0">Resume</Test>
@@ -101,8 +104,8 @@ const Control = () => {
             thead={serverThead}
             fixHead={serverFixHead}
             data={serverList}
-            renderSelectComponent={<ServerSelect />}
-            renderSubComponent={<ServerSub />}
+            renderSelectComponent={<ControlServerSelect />}
+            renderSubComponent={<ControlServerSub />}
           ></Table>
         </div>
 
@@ -114,8 +117,8 @@ const Control = () => {
             data={tcmList}
             pageSize={pageSizeForTcm}
             makePagination={controlPagination}
-            renderSelectComponent={<TcmSelect />}
-            renderSubComponent={<TcmSub />}
+            renderSelectComponent={<ControlTcmSelect />}
+            renderSubComponent={<ControlTcmSub />}
           ></Table>
         </div>
       </div>

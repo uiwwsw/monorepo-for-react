@@ -5,6 +5,7 @@ import usePosition from '#/usePosition';
 import { Size } from './Size';
 import { Color } from './Color';
 import SmoothWrap from './Smooth/Wrap';
+import Emoji from './Emoji';
 
 /* ======   interface   ====== */
 export interface TooltipProps extends HTMLAttributes<HTMLElement> {
@@ -60,7 +61,7 @@ const Tooltip = ({ children, themeSize = 'sm', themeColor = 'tertiary', ...props
       <span
         className={`pointer-events-none block box-content font-bold rounded-full text-center border-2${colorClass}${sizeClass}`}
       >
-        ❓
+        <Emoji>❓</Emoji>
       </span>
       <Portal>
         <SmoothWrap

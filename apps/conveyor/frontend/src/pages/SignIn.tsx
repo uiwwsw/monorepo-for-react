@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
 import WarningMessage from '@/Typography/WarningMessage';
-import { useGetAuth } from '!/auth/application/get-auth';
+// import { useGetAuth } from '!/auth/application/get-auth';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -29,8 +29,8 @@ const SignIn = () => {
     ),
     [SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
   };
-  const { data: auth } = useGetAuth();
-  const isLoggedIn = !!auth;
+  // const { data: auth } = useGetAuth();
+  // const isLoggedIn = !!auth;
   const {
     register,
     handleSubmit: formSubmit,
@@ -67,12 +67,13 @@ const SignIn = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     logger('useEffect');
-    if (isLoggedIn)
-      showToast({
-        notClose: true,
-        message: t('로그인 정보가 있습니다.'),
-      });
-    else if (urlToast)
+    // if (isLoggedIn)
+    //   showToast({
+    //     notClose: true,
+    //     message: t('로그인 정보가 있습니다.'),
+    //   });
+    // else
+    if (urlToast)
       showToast({
         notClose: true,
         message: queryParamToastMsgs[urlToast],

@@ -27,7 +27,7 @@ const ableButtonClassName = `
 const disabledButtonClassName = `
 [&[data-color="primary"]]:bg-blue-300
 [&[data-color="secondary"]]:bg-slate-300
-[&[data-color="tertiary"]]:border-gray-100
+[&[data-color="tertiary"]]:border-gray-100 [&[data-color="tertiary"]]:text-opacity-30
 [&[data-color="quaternary"]]:bg-orange-300
 `;
 const styledButtonClassName = `

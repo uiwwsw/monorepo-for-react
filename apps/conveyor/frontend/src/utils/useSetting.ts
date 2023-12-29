@@ -13,7 +13,8 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   variables   ====== */
   const pageSize = storage.get<number>(STORAGE['setting/page-size']) ?? 10;
   const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
-  const viewBrowser = storage.get<boolean>(STORAGE['setting/view-browser']) ?? false;
+  const logBrowser = storage.get<boolean>(STORAGE['setting/log-browser']) ?? true;
+  const logBrowserMultiple = storage.get<boolean>(STORAGE['setting/log-browser-multiple']) ?? true;
   const alarmSound = storage.get<boolean>(STORAGE['setting/alarm-sound']) ?? true;
 
   const controlPagination = storage.get<boolean>(STORAGE['setting/control-pagination']) ?? false;
@@ -43,7 +44,8 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {
-    viewBrowser,
+    logBrowser,
+    logBrowserMultiple,
     pageSize,
     duration,
     controlPagination,

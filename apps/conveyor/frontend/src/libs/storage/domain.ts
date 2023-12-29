@@ -12,7 +12,8 @@ export const enum STORAGE {
 
   'setting/page-size' = 'setting/page-size',
   'setting/duration' = 'setting/duration',
-  'setting/view-browser' = 'setting/view-browser',
+  'setting/log-browser' = 'setting/log-browser',
+  'setting/log-browser-multiple' = 'setting/log-browser-multiple',
   'setting/control-pagination' = 'setting/control-pagination',
   'setting/alarm-sound' = 'setting/alarm-sound',
 

@@ -10,6 +10,7 @@ import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
 import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
+import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
@@ -121,7 +122,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
       clearTimeout(sto);
       // TODO 인증정보 체크하는 api 가 필요한 부분
       // 소켓이라 인증 정보가 유효한지 체크하지 못함
-      if (++tryOut > limit) throw new HttpError('invalid-session', { status: 403 });
+      if (++tryOut > limit) throw new HttpError(SIGN_IN_QUERY_PARAM_TOAST['invalid-session'], { status: 403 });
       ws.current = null;
       setStatus(WS_STATUS.CLOSED);
     };

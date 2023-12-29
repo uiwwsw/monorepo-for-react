@@ -10,7 +10,7 @@ import { createLogger } from '@package-frontend/utils';
 import { useState } from 'react';
 
 /* ======   interface   ====== */
-export interface ModalFirmwareProps {
+export interface ControlModalFirmwareProps {
   tcmId?: number;
   address?: string;
 }
@@ -18,7 +18,7 @@ export interface ModalFirmwareProps {
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Firmware');
 
-const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
+const ControlModalFirmware = ({ tcmId, address }: ControlModalFirmwareProps) => {
   /* ======   variables   ====== */
   const [selectedFile, setSelectedFile] = useState('');
   const { data, error, trigger, isMutating } = useFirmList();
@@ -123,4 +123,4 @@ const ModalFirmware = ({ tcmId, address }: ModalFirmwareProps) => {
   );
 };
 
-export default ModalFirmware;
+export default ControlModalFirmware;

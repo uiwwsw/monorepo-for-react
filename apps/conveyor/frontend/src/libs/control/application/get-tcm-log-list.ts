@@ -16,7 +16,7 @@ async function fetcher(
 ) {
   logger(url, arg);
 
-  const res = await http({ url, arg, contentType: 'application/x-www-form-urlencoded' });
+  const res = await http({ url, param: arg, contentType: 'application/x-www-form-urlencoded' });
   const json = await toJson<{ files: string[] }>(res);
   return json?.files;
 }

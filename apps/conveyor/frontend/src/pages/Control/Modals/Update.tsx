@@ -1,16 +1,17 @@
-import { Button, Combo, ModalWithBtn } from '@library-frontend/ui';
+import { Button, Combo, ModalWithBtn, useToasts } from '@library-frontend/ui';
 import { useMemo, useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
-import Upload from '../Upload';
+import ControlFileUpload from '../FileUpload';
 import { useUploadFirm } from '!/control/application/put-upload-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import Test from '@/Test';
 import { useFirmList } from '!/control/application/get-backup-firmware';
 import { useDeleteFirm } from '!/control/application/delete-upload-firmware';
+import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
-export interface ModalUpdateProps {
+export interface ControlModalUpdateProps {
   selectedRows?: number[];
   selectedAdds?: string[];
   disabled?: boolean;
@@ -23,9 +24,13 @@ export enum UPLOAD_STATUS {
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Update');
-const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps) => {
+const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlModalUpdateProps) => {
   /* ======   variables   ====== */
-  const newFile = '새 파일 업로드';
+  const { t } = useTranslation();
+  const newFile = t('새 파일 업로드');
+  const cancelBtn = t('닫기');
+  const okBtn = t('확인');
+  const { Toasts, showToast } = useToasts();
   const [selectedFile, setSelectedFile] = useState('');
   const { trigger: deleteTrigger } = useDeleteFirm();
   const [fileList, setFileList] = useState<string[]>([]);
@@ -40,7 +45,6 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   /* ======   function    ====== */
   const handleFileDelete = async () => {
     if (!selectedRows || !selectedAdds) return;
-    setFileList([]);
     selectedRows.forEach(async (tcmId, index) => {
       const address = selectedAdds[index];
       const port = await networkTrigger({ tcm_id: tcmId });
@@ -50,19 +54,18 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
         port,
       });
     });
-
-    await setSelectedFile('');
-    await handleFirmList();
+    await Promise.all([setSelectedFile(''), handleFirmList()]);
+    showToast({ message: t('삭제 완료') });
   };
   const handleApply = async () => {
     if (!selectedRows || !selectedAdds) return;
-    setFileList([]);
     selectedRows.forEach(async (tcmId, index) => {
       const address = selectedAdds[index];
       const port = await networkTrigger({ tcm_id: tcmId });
       await updateTrigger({ fileName: selectedFile, address, port });
     });
     await Promise.all([setSelectedFile(''), handleFirmList()]);
+    showToast({ message: t('적용 완료') });
   };
   const handleFirmList = () => {
     if (!selectedRows || !selectedAdds) return;
@@ -93,86 +96,99 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
 
     if (!selectedRows || !selectedAdds) return;
     setStatus(Array(selectedRows.length).fill(UPLOAD_STATUS.IDLE));
-
     for (let index = 0; index < selectedRows.length; index++) {
       if (!continueUpdatingRef.current) throw new Error('강제 종료');
       logger('handleUpload', index);
       const tid = selectedRows[index];
-      const port = await networkTrigger({ tcm_id: tid });
-      const address = selectedAdds[index];
-      const fileName = await uploadTrigger({ file, address, port });
-      setStatus((prev) => {
-        prev[index] = UPLOAD_STATUS.UPDATING;
-        return [...prev];
-      });
-
       try {
-        const status = await updateTrigger({ fileName, address, port });
-
-        if (status)
-          setStatus((prev) => {
-            prev[index] = UPLOAD_STATUS.FINISHED;
-            return [...prev];
-          });
-        throw new Error('문제발생');
-      } catch (error) {
+        setStatus((prev) => {
+          prev[index] = UPLOAD_STATUS.UPDATING;
+          return prev;
+        });
+        const port = await networkTrigger({ tcm_id: tid });
+        const address = selectedAdds[index];
+        await uploadTrigger({ file, address, port });
+        setStatus((prev) => {
+          prev[index] = UPLOAD_STATUS.FINISHED;
+          return prev;
+        });
+      } catch {
         setStatus((prev) => {
           prev[index] = UPLOAD_STATUS.FAILED;
-          return [...prev];
+          return prev;
         });
       }
     }
+
+    await handleFirmList();
+    showToast({ message: t('업로드 완료') });
   };
   /* ======   useEffect   ====== */
   return (
     <>
+      {Toasts}
       <ModalWithBtn
         hasCloseBtn
         defaultLoading={isMutating}
         button={
           <Test>
             <Button onClick={handleFirmList} disabled={disabled} themeColor="tertiary">
-              Update
+              {t('업데이트')}
             </Button>
           </Test>
         }
-        hasButton={['CANCEL']}
+        hasButton={[cancelBtn]}
       >
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">TCM 펌웨어 업데이트</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">{t('TCM 펌웨어 업데이트')}</h2>
           <div className="flex items-center gap-2 w-[400px]">
             <Combo
               width="100%"
               onChange={handleFileSelect}
-              placeholder="펌웨어"
+              placeholder={t('펌웨어')}
               options={[newFile].concat(fileList).map((x) => ({ value: x, label: x }))}
             ></Combo>
             <ModalWithBtn
-              hasButton={['OK', 'CANCEL']}
+              hasButton={[okBtn, cancelBtn]}
               button={
                 <Button disabled={hasBackup} themeColor="primary" themeSize="sm">
-                  <span className="whitespace-nowrap">적용</span>
+                  <span className="whitespace-nowrap">{t('적용')}</span>
                 </Button>
               }
-              onClose={(value) => value === 'OK' && handleApply()}
+              onClose={(value) => value === okBtn && handleApply()}
             >
-              파일을 적용 하시겠습니까?
+              {t('파일을 적용 하시겠습니까?')}
             </ModalWithBtn>
+            {/* <ModalWithBtn
+              hasButton={['OK', cancelBtn]}
+              button={
+                <Button disabled={!applying} themeColor="quaternary" themeSize="sm">
+                  <span className="whitespace-nowrap">중단</span>
+                </Button>
+              }
+              onClose={(value) => value === 'OK' && handleUpdateStop()}
+            >
+              적용을 중단하시겠습니까?
+            </ModalWithBtn> */}
             <ModalWithBtn
-              hasButton={['OK', 'CANCEL']}
+              hasButton={[okBtn, cancelBtn]}
               button={
                 <Button disabled={hasBackup} themeColor="secondary" themeSize="sm">
-                  <span className="whitespace-nowrap">삭제</span>
+                  <span className="whitespace-nowrap">{t('삭제')}</span>
                 </Button>
               }
-              onClose={(value) => value === 'OK' && handleFileDelete()}
+              onClose={(value) => value === okBtn && handleFileDelete()}
             >
-              파일을 삭제하시겠습니까?
+              {t('파일을 삭제하시겠습니까?')}
             </ModalWithBtn>
           </div>
           <div>
             <div className="w-[400px]">
-              <Upload disabled={selectedFile !== newFile} onSubmit={handleUpload} onCancel={handleUpdateStop} />
+              <ControlFileUpload
+                disabled={selectedFile !== newFile}
+                onSubmit={handleUpload}
+                onCancel={handleUpdateStop}
+              />
             </div>
           </div>
           <div className="h-6 bg-slate-100 mt-3">
@@ -197,4 +213,4 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   );
 };
 
-export default ModalUpdate;
+export default ControlModalUpdate;

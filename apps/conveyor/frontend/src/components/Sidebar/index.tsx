@@ -1,4 +1,4 @@
-import { createLogger } from '@package-frontend/utils';
+import { createLogger, getScrollbarHeight } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';
@@ -19,6 +19,7 @@ const logger = createLogger('components/Nav');
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const scrollBarHeight = getScrollbarHeight();
   const langRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
   const guide = [
@@ -114,9 +115,10 @@ const Nav = (_: NavProps) => {
   return (
     <>
       <div
-        className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 h-screen shadow-2xl${
+        className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 shadow-2xl${
           open ? ' !translate-x-0' : ''
         }`}
+        style={{ height: `calc(100vh - ${scrollBarHeight}px)` }}
       >
         <Button
           onClick={() => setOpen(!open)}

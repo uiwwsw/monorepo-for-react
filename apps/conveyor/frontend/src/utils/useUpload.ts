@@ -18,12 +18,18 @@ const useUpload = () => {
     setProcess(0);
     let resolve: (value: boolean) => void;
     const promise = new Promise<boolean>((res) => (resolve = res));
-    const formData = new FormData();
-    formData.append('file', file);
+    // const formData = new FormData();
+    // formData.append('file', file);
+    // formData.append('fileName', 'tcm_231228_01');
+    // formData.append('address', '192.168.5.3');
+    // formData.append('port', '');
+
     logger(1, file);
     const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
     xhr.open('PUT', url);
+    xhr.timeout = 30000;
     logger(2, url);
 
     xhr.upload.addEventListener('progress', (e) => {
@@ -40,8 +46,8 @@ const useUpload = () => {
       logger('timeout');
       resolve(false);
     });
-    xhr.upload.addEventListener('error', (e) => {
-      logger('error', e);
+    xhr.upload.addEventListener('error', () => {
+      logger('error');
       resolve(false);
       setProcess(0);
     });
@@ -51,9 +57,13 @@ const useUpload = () => {
     // xhr.upload.addEventListener('load', () => logger('LOAD'));
     // xhr.upload.addEventListener('loadend', () => logger('LOADEND'));
 
-    logger(4);
+    logger(4, xhr);
     xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-    xhr.send(formData);
+    // xhr.setRequestHeader(
+    //   'X-Access-Token',
+    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEwMDAwMiwidXNlcl9pZCI6Im1hdHRoZXcxIiwiZ3JhZGUiOjEsImNsaWVudF90eXBlIjoxLCJrZXkiOiJlNmFhZjQ1N2YyMmE1ZWQ0NDE5ZDI3MmUxODMwYjM4ZCIsImlhdCI6MTcwMzc0NTQzNCwiZXhwIjoxNzAzODMxODM0fQ.F35-wuLKKYvFj9Ne26R82i5QgqiDp9W4NYfYsC_Q9vA',
+    // );
+    xhr.send([file] as unknown as XMLHttpRequestBodyInit);
 
     return promise;
   };

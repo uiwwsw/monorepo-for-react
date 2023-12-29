@@ -6,7 +6,7 @@ export interface Arg {
   fileName: string;
 }
 async function fetcher(url: string, { arg }: { arg: Arg }) {
-  const res = await http({ url, contentType: 'application/x-www-form-urlencoded', arg });
+  const res = await http({ url, contentType: 'application/x-www-form-urlencoded', param: arg });
   logger(url, res);
   const blob = await toBlob(res);
   return blob;

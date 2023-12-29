@@ -9,13 +9,13 @@ import { useMemo } from 'react';
 import { ServerList } from '!/control/domain';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
-export interface ServerSelectProps {
+export interface ControlServerSelectProps {
   selectedRows?: Row<ServerList>[];
   isAllSelected?: boolean;
 }
 /* ======    global     ====== */
-// const logger = createLogger('pages/Control/ServerSelect');
-const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
+// const logger = createLogger('pages/Control/ControlServerSelect');
+const ControlServerSelect = ({ selectedRows, isAllSelected }: ControlServerSelectProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
@@ -69,17 +69,17 @@ const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
       {Toasts}
       <div className="flex justify-end space-x-2 items-center">
         <Button disabled={disabled} smoothLoading onClick={handleStartClick}>
-          Start
+          {t('시작')}
         </Button>
         <Button disabled={disabled} themeColor="quaternary" smoothLoading onClick={handleStopClick}>
-          Stop
+          {t('중지')}
         </Button>
         <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
-          Restart
+          {t('재시작')}
         </Button>
       </div>
     </>
   );
 };
 
-export default ServerSelect;
+export default ControlServerSelect;

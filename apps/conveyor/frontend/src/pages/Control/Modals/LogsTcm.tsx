@@ -5,20 +5,21 @@ import H2 from '@/Typography/H2';
 import { useTcmLog } from '!/control/application/get-tcm-log';
 import { useTranslation } from 'react-i18next';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
-import { storage } from '#/storage';
-import { STORAGE } from '!/storage/domain';
-import Empty from '@/Empty';
+import useSetting from '#/useSetting';
+import ControlLogs from '../Logs';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
-export interface ModalLogsTcmProps {
+export interface ControlModalLogsTcmProps {
   tcmId?: number;
   address?: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/LogsTcm');
-const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
+const ControlModalLogsTcm = ({ tcmId, address }: ControlModalLogsTcmProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const { logBrowser, logBrowserMultiple } = useSetting();
+
   const { trigger: networkTrigger, data: port } = useTcmNetwork();
   const {
     trigger: logListTrigger,
@@ -42,7 +43,7 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
   };
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
-    onView(blob, storage.get(STORAGE['setting/view-browser']) ? '' : 'log-view');
+    onView(blob, logBrowser ? `log-view${logBrowserMultiple ? `-${fileName}` : ''}` : '');
 
     logger('handleView');
   };
@@ -62,33 +63,10 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
         hasCloseBtn
       >
         <H2>{t('TCM {{tcmId}} 로그', { tcmId })}</H2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {logListData?.length ? (
-            logListData.map((fileName, index) => (
-              <div
-                key={index}
-                className="bg-green-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
-              >
-                <div className="truncate">
-                  <div className="font-medium">{fileName}</div>
-                </div>
-                <div className="flex space-x-2">
-                  <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
-                    {t('보기')}
-                  </Button>
-                  <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
-                    {t('다운로드')}
-                  </Button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <Empty />
-          )}
-        </div>
+        <ControlLogs list={logListData} onDownload={handleDownload} onView={handleView} />
       </ModalWithBtn>
     </>
   );
 };
 
-export default ModalLogsTcm;
+export default ControlModalLogsTcm;
