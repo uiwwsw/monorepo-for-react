@@ -1,7 +1,7 @@
 import { Button, Combo, ModalWithBtn, useToasts } from '@library-frontend/ui';
 import { useMemo, useRef, useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
-import FileUpload from '../FileUpload';
+import ControlFileUpload from '../FileUpload';
 import { useUploadFirm } from '!/control/application/put-upload-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
@@ -11,7 +11,7 @@ import { useDeleteFirm } from '!/control/application/delete-upload-firmware';
 import { useTranslation } from 'react-i18next';
 
 /* ======   interface   ====== */
-export interface ModalUpdateProps {
+export interface ControlModalUpdateProps {
   selectedRows?: number[];
   selectedAdds?: string[];
   disabled?: boolean;
@@ -24,7 +24,7 @@ export enum UPLOAD_STATUS {
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/Update');
-const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps) => {
+const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlModalUpdateProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const newFile = t('새 파일 업로드');
@@ -184,7 +184,11 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
           </div>
           <div>
             <div className="w-[400px]">
-              <FileUpload disabled={selectedFile !== newFile} onSubmit={handleUpload} onCancel={handleUpdateStop} />
+              <ControlFileUpload
+                disabled={selectedFile !== newFile}
+                onSubmit={handleUpload}
+                onCancel={handleUpdateStop}
+              />
             </div>
           </div>
           <div className="h-6 bg-slate-100 mt-3">
@@ -209,4 +213,4 @@ const ModalUpdate = ({ selectedRows, disabled, selectedAdds }: ModalUpdateProps)
   );
 };
 
-export default ModalUpdate;
+export default ControlModalUpdate;

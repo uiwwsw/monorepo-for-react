@@ -2,9 +2,10 @@ import PageCenter from '@/PageCenter';
 import { useTranslation } from 'react-i18next';
 import { createLogger } from '@package-frontend/utils';
 import { Emoji, ToastWithPortal, Tutorial, tutorialStorage, useToasts } from '@library-frontend/ui';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MAIN_QUERY_PARAM_TOAST } from '!/routes/domain';
+import H3 from '@/Typography/H3';
 // import useSocket from '#/useSocket';
 // import { SocketSubscript } from '!/socket/domain';
 // import { CTRL_SOCKET_NAME } from '!/control/domain';
@@ -15,6 +16,7 @@ const logger = createLogger('pages/Main');
 const Main = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const [tutorialVisible, setTutorialVisible] = useState(true);
   const tutorialToastMsg = t('토스트 팝업입니다.\n유저의 이벤트에 피드백을 주어 서비스를 이해하는데 도움이 됩니다.');
   const { Toasts, showToast } = useToasts();
   const location = useLocation();
@@ -28,6 +30,7 @@ const Main = () => {
   //   }),
   // );
   /* ======   function    ====== */
+  const handleHide = () => setTutorialVisible(false);
 
   /* ======   useEffect   ====== */
   useEffect(() => {
@@ -52,32 +55,36 @@ const Main = () => {
   }, [location]);
   return (
     <>
-      <ToastWithPortal type="success" notClose open={!toastTutorial}>
-        {
-          //튜토리얼용 토스트
-        }
-        이벤트 성공
-      </ToastWithPortal>
-      <ToastWithPortal type="fail" notClose open={!toastTutorial}>
-        {
-          //튜토리얼용 토스트
-        }
-        이벤트 실패
-      </ToastWithPortal>
-      <ToastWithPortal notClose open={!toastTutorial}>
-        {
-          //튜토리얼용 토스트
-        }
-        정보성 메세지
-      </ToastWithPortal>
-      <ToastWithPortal notClose open={!toastTutorial}>
-        {
-          //튜토리얼용 토스트
-        }
-        <Emoji>🔔</Emoji>시스템 메시지
-      </ToastWithPortal>
       {Toasts}
+
+      <>
+        <ToastWithPortal type="success" notClose open={!toastTutorial && tutorialVisible}>
+          {
+            //튜토리얼용 토스트
+          }
+          이벤트 성공
+        </ToastWithPortal>
+        <ToastWithPortal type="fail" notClose open={!toastTutorial && tutorialVisible}>
+          {
+            //튜토리얼용 토스트
+          }
+          이벤트 실패
+        </ToastWithPortal>
+        <ToastWithPortal notClose open={!toastTutorial && tutorialVisible}>
+          {
+            //튜토리얼용 토스트
+          }
+          정보성 메세지
+        </ToastWithPortal>
+        <ToastWithPortal notClose open={!toastTutorial && tutorialVisible}>
+          {
+            //튜토리얼용 토스트
+          }
+          <Emoji>🔔</Emoji>시스템 메시지
+        </ToastWithPortal>
+      </>
       <Tutorial
+        onFinish={handleHide}
         guide={[
           {
             text: tutorialToastMsg,
@@ -95,7 +102,10 @@ const Main = () => {
       />
       <PageCenter icon="🖥️" title={t('컨베이어 for YMTC')}>
         <img src="/conveyor.png" alt="conveyor" />
-        {t('컨베이어 웹 서비스 v{{version}}에 오신걸 환영합니다.', { version: import.meta.env.PACKAGE_VERSION })}
+        <div className="flex items-end justify-end">
+          <span className="text-2xl font-bold">v</span>
+          <H3>{import.meta.env.PACKAGE_VERSION}</H3>
+        </div>
       </PageCenter>
     </>
   );

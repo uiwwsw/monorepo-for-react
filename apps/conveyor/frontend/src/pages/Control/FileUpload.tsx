@@ -4,10 +4,10 @@ import { createLogger } from '@package-frontend/utils';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import WarningMessage from '@/Typography/WarningMessage';
-const logger = createLogger('pages/Control/FileUpload');
+const logger = createLogger('pages/Control/ControlFileUpload');
 
 /* ======   interface   ====== */
-interface FileUploadProps {
+interface ControlFileUploadProps {
   disabled?: boolean;
   onSubmit: (file: File) => Promise<unknown>;
   onCancel?: () => unknown;
@@ -17,7 +17,7 @@ interface FormState {
 }
 /* ======    global     ====== */
 
-const FileUpload = ({ onSubmit, onCancel, disabled }: FileUploadProps) => {
+const ControlFileUpload = ({ onSubmit, onCancel, disabled }: ControlFileUploadProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const cancelBtn = t('닫기');
@@ -85,4 +85,4 @@ const FileUpload = ({ onSubmit, onCancel, disabled }: FileUploadProps) => {
   );
 };
 
-export default FileUpload;
+export default ControlFileUpload;

@@ -3,12 +3,12 @@ import { Row } from '@tanstack/react-table';
 import ModalLogsServer from './Modals/LogsServer';
 import { ServerList } from '!/control/domain';
 /* ======   interface   ====== */
-export interface ServerSubProps {
+export interface ControlServerSubProps {
   row?: Row<ServerList>;
 }
 /* ======    global     ====== */
-// const logger = createLogger('pages/Control/ServerSub');
-const ServerSub = ({ row }: ServerSubProps) => {
+// const logger = createLogger('pages/Control/ControlServerSub');
+const ControlServerSub = ({ row }: ControlServerSubProps) => {
   /* ======   variables   ====== */
   const stateType = row?.original.stateType;
   /* ======   function    ====== */
@@ -20,4 +20,4 @@ const ServerSub = ({ row }: ServerSubProps) => {
   );
 };
 
-export default ServerSub;
+export default ControlServerSub;

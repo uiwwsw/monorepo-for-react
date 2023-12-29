@@ -5,18 +5,17 @@ import H2 from '@/Typography/H2';
 import { useTcmLog } from '!/control/application/get-tcm-log';
 import { useTranslation } from 'react-i18next';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
-import Empty from '@/Empty';
 import useSetting from '#/useSetting';
-import Logs from '../Logs';
+import ControlLogs from '../Logs';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
-export interface ModalLogsTcmProps {
+export interface ControlModalLogsTcmProps {
   tcmId?: number;
   address?: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/LogsTcm');
-const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
+const ControlModalLogsTcm = ({ tcmId, address }: ControlModalLogsTcmProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { logBrowser, logBrowserMultiple } = useSetting();
@@ -64,10 +63,10 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
         hasCloseBtn
       >
         <H2>{t('TCM {{tcmId}} 로그', { tcmId })}</H2>
-        <Logs list={logListData} onDownload={handleDownload} onView={handleView} />
+        <ControlLogs list={logListData} onDownload={handleDownload} onView={handleView} />
       </ModalWithBtn>
     </>
   );
 };
 
-export default ModalLogsTcm;
+export default ControlModalLogsTcm;

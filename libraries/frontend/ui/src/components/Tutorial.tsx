@@ -6,6 +6,7 @@ import Button from '@/Button';
 import SmoothWrap from './Smooth/Wrap';
 /* ======   interface   ====== */
 export interface TutorialProps {
+  onFinish?: () => void;
   btnName?: string;
   delay?: number;
   guide: {
@@ -28,11 +29,10 @@ export interface TutorialProps {
 /* ======    global     ====== */
 export const tutorialStorage = new Storage<string>(localStorage);
 const logger = createLogger('components/Tutorial');
-const Tutorial = ({ guide, btnName = '확인', delay = 0 }: TutorialProps) => {
+const Tutorial = ({ guide, btnName = '확인', delay = 0, onFinish }: TutorialProps) => {
   /* ======   variables   ====== */
   const id = useMemo(() => 'tutorial-' + JSON.stringify(guide.map((x) => x.text).join('/')), [guide]);
   const didSee = typeof tutorialStorage.get(id) === 'string';
-  const [finish, setFinish] = useState(false);
   const [done, setDone] = useState(true);
   const [step, setStep] = useState(0);
   const text = useMemo(() => guide[step]?.text ?? null, [step, guide]);
@@ -57,6 +57,7 @@ const Tutorial = ({ guide, btnName = '확인', delay = 0 }: TutorialProps) => {
     if (nextStep < guide.length) setStep(step + 1);
     else {
       setDone(true);
+      onFinish && onFinish();
       tutorialStorage.set(id, new Date().toISOString());
     }
     logger('handleClick');
@@ -74,37 +75,35 @@ const Tutorial = ({ guide, btnName = '확인', delay = 0 }: TutorialProps) => {
 
   return !didSee ? (
     <Portal>
-      {!finish && (
-        <SmoothWrap value={!done} onFinished={(value) => setFinish(!value)} className="tutorial">
+      <SmoothWrap value={!done} className="tutorial">
+        <div
+          className="fixed inset-0 overflow-hidden cursor-not-allowed"
+          style={{
+            zIndex: zIndex ?? 50,
+          }}
+        >
+          <i className="absolute" style={{ ...size, ...position, boxShadow: '0 0 0 10000px rgba(0, 0, 0, 0.7)' }} />
+          <i className="absolute animate-ping border-2 border-purple-100" style={{ ...size, ...position }} />
           <div
-            className="fixed inset-0 overflow-hidden cursor-not-allowed"
+            className="absolute z-50 p-1"
             style={{
-              zIndex: zIndex ?? 50,
+              ...position,
+
+              marginLeft: `${position?.left === 'initial' || position?.left === undefined ? 0 : size?.width}`,
+              marginRight: `${position?.right === 'initial' || position?.right === undefined ? 0 : size?.width}`,
             }}
           >
-            <i className="absolute" style={{ ...size, ...position, boxShadow: '0 0 0 10000px rgba(0, 0, 0, 0.7)' }} />
-            <i className="absolute animate-ping border-2 border-purple-100" style={{ ...size, ...position }} />
-            <div
-              className="absolute z-50 p-1"
-              style={{
-                ...position,
-
-                marginLeft: `${position?.left === 'initial' || position?.left === undefined ? 0 : size?.width}`,
-                marginRight: `${position?.right === 'initial' || position?.right === undefined ? 0 : size?.width}`,
-              }}
-            >
-              <div className="cursor-auto bg-purple-400 p-4 rounded-lg">
-                <p className="whitespace-pre-line">{text}</p>
-                <br />
-                <div className="flex gap-2">
-                  {button}
-                  <Button onClick={handleClick}>{btnName}</Button>
-                </div>
+            <div className="cursor-auto bg-purple-400 p-4 rounded-lg">
+              <p className="whitespace-pre-line">{text}</p>
+              <br />
+              <div className="flex gap-2">
+                {button}
+                <Button onClick={handleClick}>{btnName}</Button>
               </div>
             </div>
           </div>
-        </SmoothWrap>
-      )}
+        </div>
+      </SmoothWrap>
     </Portal>
   ) : null;
 };

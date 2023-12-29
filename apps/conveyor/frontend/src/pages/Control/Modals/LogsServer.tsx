@@ -6,17 +6,16 @@ import { SERVER_TYPE } from '!/control/domain';
 import { useServerLog } from '!/control/application/get-server-log';
 import { useTranslation } from 'react-i18next';
 // import { useEffect } from 'react';
-import Empty from '@/Empty';
 import useSetting from '#/useSetting';
-import Logs from '../Logs';
+import ControlLogs from '../Logs';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
-export interface ModalLogsServerProps {
+export interface ControlModalLogsServerProps {
   stateType?: SERVER_TYPE;
 }
 /* ======    global     ====== */
 const logger = createLogger('pages/Control/Modals/LogsServer');
-const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
+const ControlModalLogsServer = ({ stateType }: ControlModalLogsServerProps) => {
   /* ======   variables   ====== */
   const { logBrowser, logBrowserMultiple } = useSetting();
   const { t } = useTranslation();
@@ -61,10 +60,10 @@ const ModalLogsServer = ({ stateType }: ModalLogsServerProps) => {
         hasCloseBtn
       >
         <H2>{t('{{stateType}} 로그', { stateType })}</H2>
-        <Logs list={logListData} onDownload={handleDownload} onView={handleView} />
+        <ControlLogs list={logListData} onDownload={handleDownload} onView={handleView} />
       </ModalWithBtn>
     </>
   );
 };
 
-export default ModalLogsServer;
+export default ControlModalLogsServer;

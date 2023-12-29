@@ -1,7 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import { useState } from 'react';
 import ToastWithPortal, { ToastWithPortalProps } from '@/Toast/WithPortal';
-import useThrottle from './useThrottle';
+// import useThrottle from './useThrottle';
 /* ======   interface   ====== */
 
 export interface ToastProps extends ToastWithPortalProps {
@@ -16,13 +16,18 @@ const useToasts = (debounce: number = 300) => {
   /* ======   function    ====== */
   const showToast = (toast: ToastProps) => {
     logger('showToast', toast);
-    setToastMessages((prev) => [
-      ...prev,
-      {
-        ...toast,
-        id: new Date().valueOf().toString() + prev.length,
-      },
-    ]);
+    setToastMessages((prev) => {
+      const sameMsg = prev.find(({ message }) => message === toast.message);
+      const timestamp = new Date().valueOf();
+      if (sameMsg && timestamp - +sameMsg.id / 10 < debounce) return prev;
+      return [
+        ...prev,
+        {
+          ...toast,
+          id: `${timestamp}` + prev.length,
+        },
+      ];
+    });
   };
   const hideToast = (message: string) => {
     logger('hideToast', message);
@@ -40,11 +45,11 @@ const useToasts = (debounce: number = 300) => {
 
     setToastMessages((prev) => prev.filter((x) => x.id !== id));
   };
-  const throttleShowToast = debounce ? useThrottle(showToast, debounce) : showToast;
+  // const throttleShowToast = debounce ? useThrottle(showToast, debounce) : showToast;
 
   /* ======   useEffect   ====== */
   return {
-    throttleShowToast,
+    // throttleShowToast,
     showToast,
     hideToast,
     Toasts: toastMessages.map((x) => (

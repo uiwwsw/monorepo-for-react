@@ -84,7 +84,7 @@ const UserInfo = ({ row }: UserInfoProps) => {
   return (
     <>
       {Toasts}
-      <div className="flex p-2 items-center justify-center gap-10">
+      <div className="flex p-2 items-center justify-center gap-7 max-lg:!block max-lg:w-fit max-lg:m-auto sticky left-0 right-0">
         <div>
           <div className="flex gap-4 items-center">
             <span>{t('{{userName}}님 등급 변경', { userName: row?.original.userName })}: </span>
@@ -98,8 +98,9 @@ const UserInfo = ({ row }: UserInfoProps) => {
           </div>
           <WarningMessage>{gradeError?.message}</WarningMessage>
         </div>
+        <i className="h-16 border-dashed border-r-2 border-gray-500 max-lg:!hidden" />
         <form>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center max-lg:!block">
             <label>
               <span className="mr-4">{t('{{userName}}님 비번 변경', { userName: row?.original.userName })}:</span>
               <Input

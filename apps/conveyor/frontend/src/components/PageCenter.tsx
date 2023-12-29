@@ -4,20 +4,21 @@ import { Emoji } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface PageCenterProps {
   children?: ReactNode;
+  className?: string;
   icon?: string;
   title?: string;
 }
 
 /* ======    global     ====== */
 // const logger = createLogger('components/PageCenter');
-const PageCenter = ({ title, children, icon }: PageCenterProps) => {
+const PageCenter = ({ title, children, icon, className }: PageCenterProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
     <div className="lg:min-w-[500px] p-3 m-auto flex flex-row items-center">
       <div className="flex items-top gap-4 w-full max-lg:flex-col">
-        <Emoji className="text-9xl max-lg:text-center">{icon}</Emoji>
+        <Emoji className={`text-9xl max-lg:text-center${className ? ` ${className}` : ''}`}>{icon}</Emoji>
         <div className="w-full text-left gap-4 flex flex-col">
           <H1>{title}</H1>
           {children}

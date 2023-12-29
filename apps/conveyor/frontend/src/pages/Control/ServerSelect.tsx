@@ -9,13 +9,13 @@ import { useMemo } from 'react';
 import { ServerList } from '!/control/domain';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
-export interface ServerSelectProps {
+export interface ControlServerSelectProps {
   selectedRows?: Row<ServerList>[];
   isAllSelected?: boolean;
 }
 /* ======    global     ====== */
-// const logger = createLogger('pages/Control/ServerSelect');
-const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
+// const logger = createLogger('pages/Control/ControlServerSelect');
+const ControlServerSelect = ({ selectedRows, isAllSelected }: ControlServerSelectProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
@@ -82,4 +82,4 @@ const ServerSelect = ({ selectedRows, isAllSelected }: ServerSelectProps) => {
   );
 };
 
-export default ServerSelect;
+export default ControlServerSelect;

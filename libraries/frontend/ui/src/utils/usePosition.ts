@@ -7,7 +7,7 @@ export interface UsePositionProps {
   withSize?: boolean;
 }
 /* ======    global     ====== */
-const logger = createLogger('utils/useDebounce');
+const logger = createLogger('utils/usePosition');
 
 const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
   /* ======   variables   ====== */

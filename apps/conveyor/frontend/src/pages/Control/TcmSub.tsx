@@ -2,8 +2,8 @@ import { Button } from '@library-frontend/ui';
 // import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
 // import ModalFirmware from './Modals/Firmware';
-import ModalDetail from './Modals/Detail';
-import ModalLogsTcm from './Modals/LogsTcm';
+import ControlModalDetail from './Modals/Detail';
+import ControlModalLogsTcm from './Modals/LogsTcm';
 import useToastsForControl from '#/useToastsForControl';
 import { TcmList } from '!/control/domain';
 import { useProcessId } from '!/control/application/get-process';
@@ -13,12 +13,12 @@ import Test from '@/Test';
 import { createLogger } from '@package-frontend/utils';
 // import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
-export interface TcmSubProps {
+export interface ControlTcmSubProps {
   row?: Row<TcmList>;
 }
 /* ======    global     ====== */
-const logger = createLogger('pages/Control/TcmSub');
-const TcmSub = ({ row }: TcmSubProps) => {
+const logger = createLogger('pages/Control/ControlTcmSub');
+const ControlTcmSub = ({ row }: ControlTcmSubProps) => {
   /* ======   variables   ====== */
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
   const { trigger: killTrigger } = useTcmKill();
@@ -60,12 +60,12 @@ const TcmSub = ({ row }: TcmSubProps) => {
 
         {/* <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} /> */}
 
-        <ModalDetail tid={row?.original.tcmId} />
+        <ControlModalDetail tid={row?.original.tcmId} />
 
-        <ModalLogsTcm tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
+        <ControlModalLogsTcm tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
       </div>
     </>
   );
 };
 
-export default TcmSub;
+export default ControlTcmSub;

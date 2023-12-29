@@ -1,6 +1,6 @@
 import { Button } from '@library-frontend/ui';
 // import { createLogger } from '@package-frontend/utils';
-import ModalUpdate from './Modals/Update';
+import ControlModalUpdate from './Modals/Update';
 import { useTcmStart } from '!/control/application/post-tcm-start';
 import { useTcmStop } from '!/control/application/post-tcm-stop';
 import { useTcmReStart } from '!/control/application/post-tcm-restart';
@@ -10,13 +10,13 @@ import useToastsForControl from '#/useToastsForControl';
 import { TcmList } from '!/control/domain';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
-export interface TcmSelectProps {
+export interface ControlTcmSelectProps {
   selectedRows?: Row<TcmList>[];
   isAllSelected?: boolean;
 }
 /* ======    global     ====== */
-// const logger = createLogger('pages/Control/TcmSelect');
-const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
+// const logger = createLogger('pages/Control/ControlTcmSelect');
+const ControlTcmSelect = ({ selectedRows, isAllSelected }: ControlTcmSelectProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
@@ -82,10 +82,10 @@ const TcmSelect = ({ selectedRows, isAllSelected }: TcmSelectProps) => {
         <Button disabled={disabled} smoothLoading onClick={handleRestartClick}>
           {t('재시작')}
         </Button>
-        <ModalUpdate disabled={disabledForUpdate} selectedRows={selectedTids} selectedAdds={selectedAdds} />
+        <ControlModalUpdate disabled={disabledForUpdate} selectedRows={selectedTids} selectedAdds={selectedAdds} />
       </div>
     </>
   );
 };
 
-export default TcmSelect;
+export default ControlTcmSelect;

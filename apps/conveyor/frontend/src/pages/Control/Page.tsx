@@ -1,10 +1,10 @@
 // import { useTcmInfo } from '!/control/application/get-tcm-info';
 import Table from '@/Table';
 // import { useServerInfo } from '!/control/application/get-server-info';
-import TcmSub from './TcmSub';
-import TcmSelect from './TcmSelect';
-import ServerSelect from './ServerSelect';
-import ServerSub from './ServerSub';
+import ControlTcmSub from './TcmSub';
+import ControlTcmSelect from './TcmSelect';
+import ControlServerSelect from './ServerSelect';
+import ControlServerSub from './ServerSub';
 import { Loading } from '@library-frontend/ui';
 import H2 from '@/Typography/H2';
 import { WS_STATUS, useSocketDataContext } from '@/SocketDataContext';
@@ -104,8 +104,8 @@ const Control = () => {
             thead={serverThead}
             fixHead={serverFixHead}
             data={serverList}
-            renderSelectComponent={<ServerSelect />}
-            renderSubComponent={<ServerSub />}
+            renderSelectComponent={<ControlServerSelect />}
+            renderSubComponent={<ControlServerSub />}
           ></Table>
         </div>
 
@@ -117,8 +117,8 @@ const Control = () => {
             data={tcmList}
             pageSize={pageSizeForTcm}
             makePagination={controlPagination}
-            renderSelectComponent={<TcmSelect />}
-            renderSubComponent={<TcmSub />}
+            renderSelectComponent={<ControlTcmSelect />}
+            renderSubComponent={<ControlTcmSub />}
           ></Table>
         </div>
       </div>
