@@ -256,7 +256,6 @@ const initializeEquipmentState = async (client : Client) => {
     }
 };
 
-
 async function initailizeTCMInfo(client:Client) {
     const redis = Service.Inst.Redis;
     try {

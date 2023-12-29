@@ -49,7 +49,7 @@ const router: Router = Router();
  *           description: 사용자 비밀번호 (MD5 해시).
  *         state:
  *           type: string
- *           description: 설정할 처리 상태. (1: Paused, 2: Auto)
+ *           description: 설정할 처리 상태. (1 Paused, 2 Auto)
  *     ProcessingStateResponse:
  *       type: object
  *   securitySchemes:

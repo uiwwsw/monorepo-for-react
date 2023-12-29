@@ -195,15 +195,21 @@ export class Clients {
                 isAlive = false;
                 break;
             case INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
+                stateType = 'DCM';
                 break;
             case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
+                stateType = 'DCM';
                 isAlive = false;
                 break;
             case INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
+                stateType = 'HIM';
                 break;
             case INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
+                stateType = 'HIM';
                 isAlive = false;
                 break;
+            default:
+                return;
         }
 
         const data = {

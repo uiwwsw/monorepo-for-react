@@ -174,6 +174,7 @@ export interface HimForceInstallCarrier {
     BaseTime: string;
     ZoneID: number;
     CarrierID: string;
+    IsAuto: number;
 }
 export function makeHimForceInstallCarrier(zoneID: number, carrierID:string) {
     /** Web Notuse */
@@ -181,6 +182,7 @@ export function makeHimForceInstallCarrier(zoneID: number, carrierID:string) {
         BaseTime: currentTimeInMilliseconds(),
         ZoneID: zoneID,
         CarrierID: carrierID,
+        IsAuto: 0
     };
 
     const msg: msg = {

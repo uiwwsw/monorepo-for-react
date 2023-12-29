@@ -180,6 +180,26 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
 
+  apps/conveyor/backend/operation/src/packages/backend/types: {}
+
+  apps/conveyor/backend/operation/src/packages/frontend/noto-emoji:
+    dependencies:
+      '@package-backend/types':
+        specifier: workspace:^
+        version: link:../../../../../../../../packages/backend/types
+
+  apps/conveyor/backend/operation/src/packages/frontend/pretendard:
+    dependencies:
+      '@package-backend/types':
+        specifier: workspace:^
+        version: link:../../../../../../../../packages/backend/types
+
+  apps/conveyor/backend/operation/src/packages/frontend/utils:
+    dependencies:
+      '@package-backend/types':
+        specifier: workspace:^
+        version: link:../../../../../../../../packages/backend/types
+
   apps/conveyor/frontend:
     dependencies:
       '@library-frontend/ui':

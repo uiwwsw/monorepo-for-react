@@ -23,6 +23,16 @@
                 "<node_internals>/**"
             ],
             "type": "node"
+        },
+        {
+            "name": "stress_test",
+            "program": "${workspaceFolder}/sbin/stress_test.js",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/sbin",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
         }
     ]
 }
