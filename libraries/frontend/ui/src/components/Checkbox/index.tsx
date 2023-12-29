@@ -33,6 +33,8 @@ overflow-hidden
  after:w-2
  after:h-3
  after:origin-center
+[:disabled+&]:!bg-opacity-50
+[:disabled+&]:cursor-not-allowed
  [[data-indeterminate]+&:after]:rotate-90
  [[data-indeterminate]+&:after]:border-b-0
  [[data-indeterminate]+&:after]:-mt-2.5
@@ -70,7 +72,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         />
         <i className={commonClassName + sizeClassName + colorClassName} />
         {children && (
-          <span className="ml-2 text-xs" role="textbox">
+          <span className="ml-2 text-xs [:disabled~&]:opacity-50 [:disabled~&]:cursor-not-allowed" role="textbox">
             {children}
           </span>
         )}

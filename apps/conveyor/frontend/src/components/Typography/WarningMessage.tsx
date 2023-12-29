@@ -2,14 +2,15 @@ import { ReactNode } from 'react';
 /* ======   interface   ====== */
 export interface WarningMessageProps {
   children?: ReactNode;
+  show?: boolean;
 }
 
 /* ======    global     ====== */
-const WarningMessage = ({ children }: WarningMessageProps) => {
+const WarningMessage = ({ children, show = true }: WarningMessageProps) => {
   /* ======   variables   ====== */
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  return <p className={`text-red-500${!children ? ' hidden' : ''}`}>💥 {children}</p>;
+  return show ? <p className={`text-red-500${!children ? ' hidden' : ''}`}>💥 {children}</p> : null;
 };
 
 export default WarningMessage;

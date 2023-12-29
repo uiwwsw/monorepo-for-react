@@ -12,43 +12,28 @@ import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
 import H1 from '@/Typography/H1';
 import { useTranslation } from 'react-i18next';
+import useSetting from '#/useSetting';
+import { VisibilityState } from '@tanstack/react-table';
+import { TheadSummary, fixHeadSummary, mustHaveColumnSummary } from '!/stats/domain';
 
 /* ======   interface   ====== */
-// enum TOT_AVR {
-//   carrierTot = 0,
-//   carrierAvr,
-//   alarmTot,
-//   alarmAvr,
-// }
 
-// enum SORT_VALUE {
-//   zoneID = 0,
-//   alarm,
-//   carrier,
-// }
-
-// interface ZoneData {
-//   zoneId: number;
-//   displayName: string;
-//   alarmNum: number;
-//   carrierNum: number;
-//   warningNum: number;
-// }
 /* ======    global     ====== */
 const logger = createLogger('pages/Stats/Summary');
-// const graphChartClassName = 'bg-slate-300 rounded-md p-1 m-1 my-2 text-md';
-// const colClassName = 'flex-auto justify-center';
-// const pagePerCount = 30;
 
 const StatsSummary = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
+  const { pageSizeForSummary, durationForSummary, columnForSummary } = useSetting();
 
-  const defaultDuration = storage.get<number>(STORAGE['setting/default-duration']) ?? 7;
   const fixedCalendar = storage.get<string[]>(STORAGE['stats/calendar']);
+  const fixedColumn = storage.get<VisibilityState>(STORAGE['stats/summary/column']) ?? {};
+  const thead = Object.entries(columnForSummary)
+    .filter(([_, val]) => val)
+    .map(([key]) => key) as TheadSummary[];
   const { setChildren } = useHeaderContext();
   const [arg, setArg] = useState<Arg>({
-    start_time: fixedCalendar?.[0] ?? newDate([-defaultDuration, 'day']).second(0).millisecond(0).toISOString(),
+    start_time: fixedCalendar?.[0] ?? newDate([-durationForSummary, 'day']).second(0).millisecond(0).toISOString(),
     end_time: fixedCalendar?.[1] ?? newDate().second(0).millisecond(0).toISOString(),
   });
   const currentDuration = useMemo(() => [arg.start_time, arg.end_time], [arg]);
@@ -81,6 +66,10 @@ const StatsSummary = () => {
   );
 
   /* ======   function    ====== */
+  const handleVisibility = async (value: VisibilityState) => {
+    storage.set(STORAGE['stats/summary/column'], value);
+    logger('handleVisibility', value);
+  };
   const handleCalenderChange = async (duration: Dayjs[]) => {
     if (!(duration instanceof Array)) return;
 
@@ -110,11 +99,13 @@ const StatsSummary = () => {
       <H1>{t('요약')}</H1>
       {/* <StatsSummaryGraphic {...statsSummaryGraphicProps} /> */}
       <Table
+        mustHaveColumn={mustHaveColumnSummary}
         allRowSelectTick={allRowSelectTick}
-        // initialRowSelection={}
-        thead={['level', 'zoneId', 'displayName', 'physicalType', 'date', 'alarmNum', 'carrierNum', 'warningNum']}
-        // cacheColumnVisibility={columnVisibility}
-        // setCacheColumnVisibility={handleVisibility}
+        pageSize={pageSizeForSummary}
+        thead={thead}
+        fixHead={fixHeadSummary}
+        cacheColumnVisibility={fixedColumn}
+        setCacheColumnVisibility={handleVisibility}
         data={renderZone}
         makePagination={true}
         renderSelectComponentAtTop={<StatsSummaryGraphic {...statsSummaryGraphicProps} />}

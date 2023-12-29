@@ -1,7 +1,7 @@
 import { Button } from '@library-frontend/ui';
 // import { createLogger } from '@package-frontend/utils';
 import { Row } from '@tanstack/react-table';
-import ModalFirmware from './Modals/Firmware';
+// import ModalFirmware from './Modals/Firmware';
 import ModalDetail from './Modals/Detail';
 import ModalLogsTcm from './Modals/LogsTcm';
 import useToastsForControl from '#/useToastsForControl';
@@ -10,17 +10,17 @@ import { useProcessId } from '!/control/application/get-process';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
 import Test from '@/Test';
+import { createLogger } from '@package-frontend/utils';
 // import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
 export interface TcmSubProps {
   row?: Row<TcmList>;
 }
 /* ======    global     ====== */
-// const logger = createLogger('pages/Control/TcmSub');
+const logger = createLogger('pages/Control/TcmSub');
 const TcmSub = ({ row }: TcmSubProps) => {
   /* ======   variables   ====== */
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
-
   const { trigger: killTrigger } = useTcmKill();
   const { trigger: processTrigger } = useProcessId();
   const { trigger: networkTrigger } = useTcmNetwork();
@@ -43,8 +43,9 @@ const TcmSub = ({ row }: TcmSubProps) => {
         if (!address) return;
         const port = await networkTrigger({ tcm_id: tcmId });
         const procId = await processTrigger({ address, port });
+        logger(procId, address, port);
         if (!procId) return;
-        return killTrigger({ address, procId, port: 5000 });
+        return killTrigger({ address, procId, port });
       },
     });
 
@@ -57,7 +58,7 @@ const TcmSub = ({ row }: TcmSubProps) => {
           <Test className="left-0 top-0">Process Kill</Test>
         </Button>
 
-        <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} />
+        {/* <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} /> */}
 
         <ModalDetail tid={row?.original.tcmId} />
 

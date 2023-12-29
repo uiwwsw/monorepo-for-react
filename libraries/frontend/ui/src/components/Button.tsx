@@ -1,10 +1,10 @@
 import { ButtonHTMLAttributes, MouseEvent, useCallback, useRef, useState } from 'react';
 import { wait } from '@package-frontend/utils';
-import useSmooth from '#/useSmooth';
 import Spinner from '$/Spinner';
 import generateRipple from '#/generateRipple';
 import { createLogger } from '@package-frontend/utils';
 import { WithTheme } from '#/componentTypes';
+import Smooth from './Smooth';
 
 /* ======   interface   ====== */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, WithTheme {
@@ -79,23 +79,25 @@ const Button = ({
     [loading, disabled, smoothLoading, setLoading, onClick],
   );
   /* ======   useEffect   ====== */
-  useSmooth({ value: loading, delay: 500, ref: elRef });
   return (
-    <button
-      ref={elRef}
-      role="button"
-      className={buttonClassName}
-      data-color={themeColor}
-      data-size={themeSize}
-      disabled={loading || disabled}
-      onClick={adapterClick}
-      {...props}
-    >
-      <span className={textClassName}>{children}</span>
-      <span className={spinnerClassName}>
-        <Spinner />
-      </span>
-    </button>
+    <>
+      <Smooth value={loading} delay={500} itemRef={elRef} />
+      <button
+        ref={elRef}
+        role="button"
+        className={buttonClassName}
+        data-color={themeColor}
+        data-size={themeSize}
+        disabled={loading || disabled}
+        onClick={adapterClick}
+        {...props}
+      >
+        <span className={textClassName}>{children}</span>
+        <span className={spinnerClassName}>
+          <Spinner />
+        </span>
+      </button>
+    </>
   );
 };
 export default Button;

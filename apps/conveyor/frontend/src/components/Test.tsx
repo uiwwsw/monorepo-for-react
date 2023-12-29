@@ -18,15 +18,18 @@ const Test = ({ children, className }: TestProps) => {
   return (
     <>
       <span
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
         className={`flex rounded-sm overflow-hidden absolute z-[2] bg-red-600 px-1 text-xs transition-all hover:pr-10 hover:text-xl${
           className ? ` ${className}` : ''
         }`}
       >
         <i className="opacity-0">{frontText}</i>
         <i
-          className="whitespace-nowrap animate-led absolute before:content-[attr(data-small)] after:content-[attr(data-small)] after:absolute hover:after:content-[attr(data-text)] hover:before:content-[attr(data-text)]"
-          data-small="T E S T　"
+          className="whitespace-nowrap animate-led absolute before:mr-[.3em] after:mr-[.3em] before:content-[attr(data-small)] after:content-[attr(data-small)] after:absolute hover:after:content-[attr(data-text)] hover:before:content-[attr(data-text)]"
+          data-small="TEST"
           data-text={text}
         />
       </span>

@@ -97,8 +97,5 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 @font-face {
   font-family: noto-emoji;
-  font-weight: 45 920;
-  font-style: normal;
-  font-display: swap;
-  src: url('./ttf/NotoEmoji-VariableFont_wght.ttf') format('truetype');
+  src: url('./woff2/NotoEmoji-VariableFont_wght.woff2') format('woff2-variations');
 }

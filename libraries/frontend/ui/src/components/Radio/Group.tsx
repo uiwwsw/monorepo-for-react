@@ -6,6 +6,7 @@ import { ChangeEvent, useRef } from 'react';
 export interface RadioGroupProps extends RadioBaseProps, WithTheme {
   labels: (string | number)[];
   className?: string;
+  id: string;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/RadioGroup');
@@ -16,13 +17,13 @@ const RadioGroup = ({
   className,
   defaultValue,
   value,
+  id,
   onChange,
   ...props
 }: RadioGroupProps) => {
   /* ======   variables   ====== */
   const ref = useRef(value ?? defaultValue);
   const groupClassName = `[&>*]:m-2${className ? ` ${className}` : ''}`;
-  const uuid = `${new Date().valueOf()}`;
   /* ======   function    ====== */
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     ref.current = e.target.value;
@@ -37,8 +38,8 @@ const RadioGroup = ({
           {...props}
           onChange={handleChange}
           value={label}
-          key={uuid + label + index}
-          name={uuid}
+          key={id + label + index}
+          name={id}
           checked={value ? ref.current === label : undefined}
           defaultChecked={defaultValue ? ref.current === label : undefined}
         >

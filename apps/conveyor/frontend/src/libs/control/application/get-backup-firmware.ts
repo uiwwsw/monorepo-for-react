@@ -16,9 +16,10 @@ async function fetcher(
 ) {
   logger(url, arg);
 
-  const res = await http({ url, arg, contentType: 'application/x-www-form-urlencoded' });
+  const res = await http({ url, param: arg, contentType: 'application/x-www-form-urlencoded' });
   const json = await toJson<{ upload: string[]; backup: string[] }>(res);
-  return json?.backup;
+  logger(url, json);
+  return json?.upload;
 }
 
 export function useFirmList() {

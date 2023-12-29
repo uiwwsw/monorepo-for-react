@@ -24,7 +24,7 @@ const Header = (_: HeaderProps) => {
   /* ======   useEffect   ====== */
   return (
     <header className="sticky top-0 z-10 bg-slate-300 gap-2">
-      <div className="max-w-5xl flex items-center p-3 h-20 m-auto sticky right-0">
+      <div className="max-w-5xl flex items-center p-3 min-h-[5rem] m-auto sticky right-0">
         <div className="flex-auto">{children}</div>
         <div className="flex gap-2 items-center">
           <div>{data?.userName}</div>

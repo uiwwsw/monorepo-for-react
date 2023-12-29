@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-
+/* ======   interface   ====== */
+/* ======    global     ====== */
 const useCounter = (limit: number, step: number = 1) => {
+  /* ======   variables   ====== */
   const sti = useRef<NodeJS.Timeout>();
   const [tick, setTick] = useState<number>(0);
   const [start, setStart] = useState(false);
+  /* ======   function    ====== */
+  /* ======   useEffect   ====== */
   useEffect(() => {
     if (!start || tick !== 0) return;
     sti.current = setInterval(() => {

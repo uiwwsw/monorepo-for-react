@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import Checkbox from './Checkbox'; // 경로는 실제 경로에 맞게 변경해주세요
+import Checkbox from '.'; // 경로는 실제 경로에 맞게 변경해주세요
 
 describe('Checkbox component', () => {
   it('should render a checkbox', () => {

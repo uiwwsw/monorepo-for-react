@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { storage } from '#/storage';
 import { STORAGE } from '!/storage/domain';
+import Empty from '@/Empty';
 // import { formatFileSize } from '!/control/domain';
 /* ======   interface   ====== */
 export interface ModalLogsTcmProps {
@@ -41,7 +42,7 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
   };
   const handleView = async (fileName: string) => {
     const blob = await logTrigger({ fileName, port: port!, address: address! });
-    onView(blob, storage.get(STORAGE['setting/default-view-browser']) ? '' : 'log-view');
+    onView(blob, storage.get(STORAGE['setting/view-browser']) ? '' : 'log-view');
 
     logger('handleView');
   };
@@ -62,24 +63,28 @@ const ModalLogsTcm = ({ tcmId, address }: ModalLogsTcmProps) => {
       >
         <H2>{t('TCM {{tcmId}} 로그', { tcmId })}</H2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {logListData?.map((fileName, index) => (
-            <div
-              key={index}
-              className="bg-green-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
-            >
-              <div className="truncate">
-                <div className="font-medium">{fileName}</div>
+          {logListData?.length ? (
+            logListData.map((fileName, index) => (
+              <div
+                key={index}
+                className="bg-green-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
+              >
+                <div className="truncate">
+                  <div className="font-medium">{fileName}</div>
+                </div>
+                <div className="flex space-x-2">
+                  <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
+                    {t('보기')}
+                  </Button>
+                  <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
+                    {t('다운로드')}
+                  </Button>
+                </div>
               </div>
-              <div className="flex space-x-2">
-                <Button smoothLoading onClick={() => handleView(fileName)} themeSize="sm" themeColor="secondary">
-                  {t('보기')}
-                </Button>
-                <Button smoothLoading onClick={() => handleDownload(fileName)} themeSize="sm" themeColor="secondary">
-                  {t('다운로드')}
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <Empty />
+          )}
         </div>
       </ModalWithBtn>
     </>

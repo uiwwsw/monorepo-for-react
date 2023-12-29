@@ -23,7 +23,7 @@ const SignUp = () => {
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
     watch,
   } = useForm<FormState>();
@@ -53,7 +53,7 @@ const SignUp = () => {
         </p>
       </ModalWithPortal>
       <PageCenter title={t('회원가입')} icon="🔐">
-        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
+        <WarningMessage show={!isMutating}>{t(error?.message)}</WarningMessage>
 
         <form className="flex flex-col gap-3">
           <label>
@@ -115,7 +115,7 @@ const SignUp = () => {
             />
             <WarningMessage>{errors?.rpw?.message}</WarningMessage>
           </label>
-          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+          <Button smoothLoading onClick={formSubmit(handleSubmit)}>
             {t('회원가입')}
           </Button>
         </form>

@@ -1,4 +1,6 @@
+import { Auth } from '!/auth/domain';
 import { ROUTES_PATH } from '!/routes/domain';
+import { UserGrade } from '@package-backend/types';
 import { LazyExoticComponent, lazy } from 'react';
 
 // const Control = lazy(() => import('src/pages/OldControl/Page'));
@@ -10,10 +12,11 @@ const StatsSummary = lazy(() => import('src/pages/Stats/Summary/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
-const Setting = lazy(() => import('src/pages/Setting'));
+const Setting = lazy(() => import('src/pages/Setting/Page'));
 const Users = lazy(() => import('src/pages/Users/Page'));
 const UpdatePassword = lazy(() => import('src/pages/UpdatePassword'));
 export interface Group {
+  grade?: UserGrade;
   name: string;
   path: ROUTES_PATH;
   node: LazyExoticComponent<() => JSX.Element>;
@@ -47,6 +50,7 @@ export const authRoutes: Tab[] = [
     path: ROUTES_PATH['/users'],
     name: '유저관리',
     node: Users,
+    grade: UserGrade.ADMIN,
   },
   {
     icon: '🔏',
@@ -81,3 +85,4 @@ export const commonRoutes: Tab[] = [
     node: Help,
   },
 ];
+export const filterGradeRoute = (x: Group, auth?: Auth | null) => (x.grade ? !!auth && auth.grade! <= x.grade : true);

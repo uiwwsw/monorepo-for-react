@@ -1,7 +1,7 @@
 import { createLogger } from '@package-frontend/utils';
 import Portal from '@/Portal';
 import { MouseEvent, ReactNode, useMemo, useRef, useState } from 'react';
-import Smooth from '@/Smooth';
+import SmoothWrap from '@/Smooth/Wrap';
 import Button from '@/Button';
 import usePosition from '#/usePosition';
 
@@ -37,7 +37,7 @@ const Menu = ({
   const widthStyle = useMemo(() => (width ? width : 'initial'), [width]);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const { trigger, position } = usePosition({ targetRef: wrapRef });
+  const { trigger, position, size } = usePosition({ targetRef: wrapRef, withSize: true });
 
   /* ======   function    ====== */
   const handleOpen = (e: MouseEvent) => {
@@ -58,15 +58,15 @@ const Menu = ({
         {button}
       </span>
       <Portal>
-        <Smooth
+        <SmoothWrap
           value={open}
           onFinished={onFinished}
           className={contentClassName}
           data-position={position?.bottom === 'initial' ? 'top' : 'bottom'}
-          style={{ ...position, width: widthStyle, zIndex }}
+          style={{ ...position, width: size?.width, maxHeight: size?.maxHeight, zIndex }}
         >
           {children}
-        </Smooth>
+        </SmoothWrap>
         {isBodyClickClose && open && <i className="fixed top-0 left-0 w-full h-full" style={{ zIndex: zIndex - 1 }} />}
       </Portal>
     </div>

@@ -4,7 +4,7 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 body {
-  font-family: pretendard, noto-emoji;
+  font-family: pretendard;
 }
 .ripple {
   @apply absolute rounded-full pointer-events-none animate-ripple bg-white bg-opacity-60;

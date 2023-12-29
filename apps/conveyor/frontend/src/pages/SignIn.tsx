@@ -1,6 +1,6 @@
 import { useSignIn } from '!/auth/application/post-sign-in';
 import PageCenter from '@/PageCenter';
-import { Button, Input, ModalWithPortal, ToastWithPortal, useCounter } from '@library-frontend/ui';
+import { Button, Input, ModalWithPortal, useCounter, useToasts } from '@library-frontend/ui';
 import { createLogger } from '@package-frontend/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SIGN_IN_QUERY_PARAM_TOAST, SIGN_IN_QUERY_PARAM_TOAST_KEY } from '!/routes/domain';
 import WarningMessage from '@/Typography/WarningMessage';
-import { ModalResult } from '@library-frontend/ui/dist/src/components/Modal/Base';
+import { useGetAuth } from '!/auth/application/get-auth';
 
 /* ======   interface   ====== */
 interface FormState {
@@ -29,13 +29,15 @@ const SignIn = () => {
     ),
     [SIGN_IN_QUERY_PARAM_TOAST['success-sign-up']]: t('방금 가입한 아이디로 로그인 해보세요~'),
   };
+  const { data: auth } = useGetAuth();
+  const isLoggedIn = !!auth;
   const {
     register,
-    handleSubmit: handleAdapterSubmit,
+    handleSubmit: formSubmit,
     formState: { errors },
   } = useForm<FormState>();
   const { trigger, error, isMutating } = useSignIn();
-  const [toast, setToast] = useState<string>();
+  const { Toasts, showToast } = useToasts();
   const [success, setSuccess] = useState(false);
   const { onStart, decrease, done } = useCounter(3);
   const navigate = useNavigate();
@@ -44,8 +46,12 @@ const SignIn = () => {
   const urlFrom = useMemo(() => url.get('from'), [location]);
   const urlToast = useMemo(() => url.get('toast') as SIGN_IN_QUERY_PARAM_TOAST_KEY, [location]);
   const urlNextUrl = useMemo(() => (urlFrom?.startsWith('/sign') || !urlFrom ? '/control' : urlFrom), [location]);
+
+  const exPageBtn = t('이전 페이지로 이동하기');
+  const controlPageBtn = t('조작 페이지로 이동하기');
+  const closeBtn = t('닫기');
   /* ======   function    ====== */
-  const handleGoPage = async (e: ModalResult) => {
+  const handleGoPage = async (e?: typeof exPageBtn | typeof controlPageBtn | typeof closeBtn) => {
     setSuccess(false);
     if (e === '닫기') return;
     navigate(urlNextUrl);
@@ -61,8 +67,16 @@ const SignIn = () => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     logger('useEffect');
-
-    if (urlToast) setToast(queryParamToastMsgs[urlToast]);
+    if (isLoggedIn)
+      showToast({
+        notClose: true,
+        message: t('로그인 정보가 있습니다.'),
+      });
+    else if (urlToast)
+      showToast({
+        notClose: true,
+        message: queryParamToastMsgs[urlToast],
+      });
   }, [location]);
   useEffect(() => {
     if (!done) return;
@@ -70,23 +84,20 @@ const SignIn = () => {
   }, [done]);
   return (
     <>
-      <ToastWithPortal notClose open={!!toast}>
-        {toast}
-      </ToastWithPortal>
+      {Toasts}
       <ModalWithPortal
         onClose={handleGoPage}
         open={success}
         smoothLoading
         persist
-        hasButton={[urlFrom ? t('이전 페이지로 이동하기') : t('조작 페이지로 이동하기'), t('닫기')]}
+        hasButton={[urlFrom ? exPageBtn : controlPageBtn, closeBtn]}
       >
         <p className="whitespace-pre-line">
           {t('로그인이 완료됐어요.\n{{seconds}}초 뒤 자동으로 이동합니다.', { seconds: decrease })}
         </p>
       </ModalWithPortal>
       <PageCenter title={t('로그인')} icon="🗝️">
-        {!isMutating && <WarningMessage>{t(error?.message)}</WarningMessage>}
-
+        <WarningMessage show={!isMutating}>{t(error?.message)}</WarningMessage>
         <form className="flex flex-col gap-3">
           <label>
             <p className="font-medium">{t('아이디')}</p>
@@ -115,7 +126,7 @@ const SignIn = () => {
             />
             <WarningMessage>{errors?.pw?.message}</WarningMessage>
           </label>
-          <Button smoothLoading onClick={handleAdapterSubmit(handleSubmit)}>
+          <Button smoothLoading onClick={formSubmit(handleSubmit)}>
             {t('로그인')}
           </Button>
         </form>

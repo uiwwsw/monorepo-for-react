@@ -1,8 +1,8 @@
-import useSmooth from '#/useSmooth';
 // import { createLogger } from '@package-frontend/utils';
 import { HTMLAttributes, ReactNode, useMemo, useRef } from 'react';
+import Smooth from '.';
 /* ======   interface   ====== */
-export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {
+export interface SmoothWrapProps extends HTMLAttributes<HTMLDivElement> {
   value?: boolean;
   delay?: number;
   children?: ReactNode;
@@ -12,7 +12,7 @@ export interface SmoothProps extends HTMLAttributes<HTMLDivElement> {
 
 /* ======    global     ====== */
 // const logger = createLogger('components/Smooth');
-const Smooth = ({ onFinished, value, children, className, delay = 500, style, ...props }: SmoothProps) => {
+const SmoothWrap = ({ onFinished, value, children, className, delay = 500, style, ...props }: SmoothWrapProps) => {
   /* ======   variables   ====== */
   const elRef = useRef<HTMLDivElement>(null);
   const smoothClassName = useMemo(
@@ -24,20 +24,22 @@ const Smooth = ({ onFinished, value, children, className, delay = 500, style, ..
   );
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  useSmooth({ value, delay, ref: elRef, onFinished });
   return (
-    <div
-      {...props}
-      className={smoothClassName}
-      ref={elRef}
-      style={{
-        ...style,
-        animationDuration: `${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        {...props}
+        className={smoothClassName}
+        ref={elRef}
+        style={{
+          ...style,
+          animationDuration: `${delay}ms`,
+        }}
+      >
+        {children}
+      </div>
+      <Smooth value={value} delay={delay} itemRef={elRef} onFinished={onFinished} />
+    </>
   );
 };
 
-export default Smooth;
+export default SmoothWrap;

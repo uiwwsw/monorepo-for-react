@@ -2,6 +2,7 @@ import { ChangeEvent, InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 import Underbar from '$/Underbar';
 // import { createLogger } from '@package-frontend/utils';
 import useDebounce from '#/useDebounce';
+import Emoji from '@/Emoji';
 
 /* ======   interface   ====== */
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -33,13 +34,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
-        {type === 'search' ? <span className="ml-3 -mr-4 pr-2">🔍︎</span> : ''}
+        {type === 'search' ? <Emoji className="ml-3 -mr-4 pr-2">🔍︎</Emoji> : ''}
         <input
           {...props}
           type={type}
           ref={ref}
           placeholder={placeholder}
-          className={`w-full focus:outline-none p-3 bg-transparent outline-none text-ellipsis`}
+          className={`w-full focus:outline-none p-3 bg-transparent outline-none text-ellipsis [&[type="file"]]:leading-[1.125]`}
           onChange={handleChange}
         />
         {slots}

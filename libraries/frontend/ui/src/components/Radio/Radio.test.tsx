@@ -4,7 +4,7 @@ import RadioGroup from './Group'; // 경로는 실제 경로에 맞게 변경해
 
 describe('Radio component', () => {
   it('should change active radio button when clicked', async () => {
-    render(<RadioGroup labels={['A', 'B']}></RadioGroup>);
+    render(<RadioGroup id="a" labels={['A', 'B']}></RadioGroup>);
     const buttons = screen.queryAllByRole('radio');
     const button0 = buttons[0] as HTMLInputElement;
     const button1 = buttons[1] as HTMLInputElement;

@@ -1,9 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly API: string;
-  readonly WS_API: string;
-  readonly PORT: string;
+  readonly PACKAGE_VERSION: string;
 }
 
 interface ImportMeta {

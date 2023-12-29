@@ -9,14 +9,17 @@ export * from './components/Button';
 export { default as Calendar } from './components/Calendar';
 export * from './components/Calendar';
 
-export { default as Chip } from './components/Chip';
-export * from './components/Chip';
-
 export { default as Checkbox } from './components/Checkbox';
 export * from './components/Checkbox';
 
+export { default as CheckboxGroup } from './components/Checkbox/Group';
+export * from './components/Checkbox/Group';
+
 export { default as Combo } from './components/Combo';
 export * from './components/Combo';
+
+export { default as Emoji } from './components/Emoji';
+export * from './components/Emoji';
 
 export { default as Input } from './components/Input';
 export * from './components/Input';
@@ -55,6 +58,9 @@ export * from './components/Skeleton';
 export { default as Smooth } from './components/Smooth';
 export * from './components/Smooth';
 
+export { default as SmoothWrap } from './components/Smooth/Wrap';
+export * from './components/Smooth/Wrap';
+
 export { default as Spinner } from './styles/Spinner';
 export * from './styles/Spinner';
 
@@ -83,7 +89,6 @@ export { default as useAnimate } from './utils/useAnimate';
 export { default as useDebounce } from './utils/useDebounce';
 export { default as useCounter } from './utils/useCounter';
 export { default as usePosition } from './utils/usePosition';
-export { default as useSmooth } from './utils/useSmooth';
 export { default as useThrottle } from './utils/useThrottle';
 export { default as useToasts } from './utils/useToasts';
 export * from './utils/useToasts';

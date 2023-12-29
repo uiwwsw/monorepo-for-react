@@ -1,4 +1,4 @@
-import { Button, Input } from '@library-frontend/ui';
+import { Button, Input, ModalWithBtn } from '@library-frontend/ui';
 import { useState } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import { useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ const logger = createLogger('pages/Control/Upload');
 
 /* ======   interface   ====== */
 interface UploadProps {
+  disabled?: boolean;
   onSubmit: (file: File) => Promise<unknown>;
   onCancel?: () => unknown;
 }
@@ -16,20 +17,19 @@ interface FormState {
 }
 /* ======    global     ====== */
 
-const Upload = ({ onSubmit, onCancel }: UploadProps) => {
+const Upload = ({ onSubmit, onCancel, disabled }: UploadProps) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const {
     register,
-    handleSubmit,
+    handleSubmit: formSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormState>();
   const [loading, setLoading] = useState(false);
 
   /* ======   function    ====== */
-  const adapterSubmit = async ({ fileList }: FormState) => {
-    logger(fileList, '1234');
+  const submit = async ({ fileList }: FormState) => {
     const file = fileList[0];
     if (file) {
       setLoading(true);
@@ -43,22 +43,38 @@ const Upload = ({ onSubmit, onCancel }: UploadProps) => {
       setLoading(false);
     }
   };
+  const handleSubmit = formSubmit(submit);
   /* ======   useEffect   ====== */
   return (
     <div>
       <div className="flex items-center gap-2">
-        <form className="flex items-center gap-2">
+        <form className="flex items-center gap-2 flex-1">
           <Input
             {...register('fileList', {
               required: t('파일이 없어요'),
             })}
             type="file"
+            className="flex-1"
+            disabled={disabled}
           />
-          <Button themeSize={'sm'} disabled={loading} onClick={handleSubmit(adapterSubmit)}>
-            {loading ? 'Updating...' : 'Update'}
-          </Button>
+          <ModalWithBtn
+            hasButton={['OK', 'CANCEL']}
+            button={
+              <Button
+                type="button"
+                themeSize={'sm'}
+                disabled={!isValid || disabled || loading}
+                onClick={(e) => e.preventDefault()}
+              >
+                {loading ? 'Updating...' : 'Update'}
+              </Button>
+            }
+            onClose={(value) => value === 'OK' && handleSubmit()}
+          >
+            파일을 업데이트 하시겠습니까?
+          </ModalWithBtn>
         </form>
-        <Button themeSize={'sm'} onClick={onCancel} disabled={!loading}>
+        <Button themeSize={'sm'} themeColor={'secondary'} onClick={onCancel} disabled={disabled || !loading}>
           Stop
         </Button>
       </div>

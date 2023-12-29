@@ -18,7 +18,7 @@ const Error = () => {
   /* ======   useEffect   ====== */
   return (
     <>
-      <PageCenter icon="😧" title={t('오류가 발생했어요')}>
+      <PageCenter icon="😱" title={t('오류가 발생했어요')}>
         <Accordion title={t('오류 코드 또는 오류 메세지')}>{decodeURI(location.hash).replace('#', '')}</Accordion>
         <div className="gap-3 flex m-auto">
           <Button onClick={handleGoMain}>{t('메인으로 돌아가기')}</Button>

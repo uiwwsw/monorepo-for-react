@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useSmooth from '#/useSmooth';
 import useAnimate from '#/useAnimate';
 import ModalOverlay from './Overlay';
 import ModalClose from './Close';
@@ -8,6 +7,7 @@ import { createLogger, getScrollbarWidth } from '@package-frontend/utils';
 import { ButtonProps } from '@/Button';
 import Loading from '@/Loading';
 import ToastWithPortal from '@/Toast/WithPortal';
+import Smooth from '@/Smooth';
 
 /* ======   interface   ====== */
 export interface ModalError {
@@ -15,8 +15,7 @@ export interface ModalError {
   open: boolean;
 }
 export type ModalErrors = Record<string, ModalError>;
-export type ModalResult = string | undefined;
-export interface ModalBaseProps {
+export interface ModalBaseProps<T extends string> {
   hasToast?: boolean;
   children?: ReactNode;
   className?: string;
@@ -24,15 +23,15 @@ export interface ModalBaseProps {
   hasCloseBtn?: boolean;
   defaultLoading?: boolean;
   open?: boolean;
-  errorToastMsg?: (value: ModalResult) => string;
-  hasButton?: ModalResult[];
-  onClose?: (value?: ModalResult) => Promise<unknown> | unknown;
+  errorToastMsg?: (value: T) => string;
+  hasButton?: T[];
+  onClose?: (value?: T) => Promise<unknown> | unknown;
   onClosed?: () => void;
   smoothLoading?: ButtonProps['smoothLoading'];
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ModalBase');
-const ModalBase = ({
+const ModalBase = <T extends string>({
   errorToastMsg = (value) => `${value} 버튼 클릭 이벤트에 오류가 발생했습니다.`,
   open,
   persist = false,
@@ -43,15 +42,15 @@ const ModalBase = ({
   defaultLoading = false,
   onClosed,
   hasCloseBtn,
-  hasButton = ['OK', 'CANCEL'],
+  hasButton,
   smoothLoading = true,
-}: ModalBaseProps) => {
+}: ModalBaseProps<T>) => {
   /* ======   variables   ====== */
   const elRef = useRef<HTMLDivElement>(null);
   const [errors, setErrors] = useState<ModalErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
   const { animate, setAnimate } = useAnimate();
-  const hasFooter = useMemo(() => hasButton.length > 0, [hasButton]);
+  const hasFooter = useMemo(() => (hasButton ? hasButton.length > 0 : false), [hasButton]);
   const memoErrors: [string, ModalError][] = useMemo(() => {
     const arr = Object.entries(errors);
     if (open) return arr;
@@ -83,14 +82,9 @@ const ModalBase = ({
       init(false);
     };
   }, [open]);
-  useSmooth({
-    value: open,
-    delay: 500,
-    ref: elRef,
-    onFinished: handleClosed,
-  });
   return (
     <>
+      <Smooth value={open} delay={500} itemRef={elRef} onFinished={handleClosed} />
       <div
         className={`relative flex [&:not([data-smooth])]:hidden [&[data-smooth="HIDE"]]:hidden [&[data-smooth="HIDING"]]:pointer-events-none${
           className ? ` ${className}` : ''
@@ -102,7 +96,7 @@ const ModalBase = ({
       >
         <ModalOverlay onClose={adapterClose} />
         <div
-          className={`flex flex-col relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
+          className={`flex flex-col shadow-2xl relative bg-white m-auto self-center border border-slate-700 rounded-md p-4 min-w-[10rem] min-h-[10rem] [[data-smooth="SHOWING"]>&]:animate-modal-open [[data-smooth="HIDING"]>&]:animate-modal-close${
             animate ? ' animate-shake' : ''
           }`}
         >

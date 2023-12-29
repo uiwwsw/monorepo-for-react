@@ -14,31 +14,32 @@ import {
   Column,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect } from 'react';
+import { useMemo, useState, Fragment, ReactElement, ChangeEvent, cloneElement, useEffect, ReactNode } from 'react';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Button, Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
+import { Checkbox, Input, Pagination, Skeleton } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
-import { pageSizeOptions } from '#/constants';
-import useSetting from '#/useSetting';
-import Test from '@/Test';
+import Extender from './Expander';
 
 /* ======   interface   ====== */
 export interface TableProps<T> {
-  thead: string[];
+  thead: (keyof T)[];
   placeholder?: string;
-  fixHead?: Record<string, string>;
+  fixHead?: Partial<Record<keyof T, string>>;
+  mustHaveColumn?: Partial<keyof T | 'select' | 'expander'>[];
   data?: T[];
+  pageSize?: number;
   allRowSelectTick?: number;
   cacheColumnVisibility?: VisibilityState;
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
+  totalLength?: number;
+  pagination?: ReactNode;
   renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
   renderSelectComponent?: ReactElement<{ selectedRows: Row<T>[]; isAllSelected: boolean }>;
   renderSubComponent?: ReactElement<{ row: Row<T> }>;
-  onSearch?: (keyword: string) => Promise<unknown>;
 }
 
 /* ======    global     ====== */
@@ -46,15 +47,18 @@ const logger = createLogger('components/Table');
 
 const Table = <T,>({
   thead,
-  onSearch,
   fixHead,
+  mustHaveColumn,
   data,
+  pageSize,
   placeholder,
   allRowSelectTick,
   textAlignCenter = true,
   cacheColumnVisibility,
   setCacheColumnVisibility,
   makePagination = false,
+  pagination,
+  totalLength,
   renderSubComponent,
   renderSelectComponent,
   renderSelectComponentAtTop,
@@ -69,32 +73,28 @@ const Table = <T,>({
     );
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const { defaultPageSize } = useSetting();
+  const hasCheckbox = renderSelectComponent || renderSelectComponentAtTop;
 
   const defaultColumns = useMemo<ColumnDef<T>[]>(
     () => [
-      ...(renderSelectComponent || renderSelectComponentAtTop
+      ...(hasCheckbox
         ? [
             {
               id: 'select',
               header: ({ table }: { table: Table<T> }) => (
-                <div className="text-left">
-                  <Checkbox
-                    checked={table.getIsAllPageRowsSelected()}
-                    indeterminate={table.getIsSomePageRowsSelected()}
-                    onChange={table.getToggleAllPageRowsSelectedHandler()}
-                  />
-                </div>
+                <Checkbox
+                  checked={table.getIsAllPageRowsSelected()}
+                  indeterminate={table.getIsSomePageRowsSelected()}
+                  onChange={table.getToggleAllPageRowsSelectedHandler()}
+                />
               ),
               cell: ({ row }: { row: Row<T> }) => (
-                <div className="text-left">
-                  <Checkbox
-                    checked={row.getIsSelected()}
-                    disabled={!row.getCanSelect()}
-                    indeterminate={row.getIsSomeSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                  />
-                </div>
+                <Checkbox
+                  checked={row.getIsSelected()}
+                  disabled={!row.getCanSelect()}
+                  indeterminate={row.getIsSomeSelected()}
+                  onChange={row.getToggleSelectedHandler()}
+                />
               ),
             },
           ]
@@ -105,6 +105,7 @@ const Table = <T,>({
         header:
           fixHead?.[key] ??
           key
+            .toString()
             .replace(/([A-Z])/g, ' $1')
             .trim()
             .toLowerCase(),
@@ -115,20 +116,7 @@ const Table = <T,>({
             {
               id: 'expander',
               header: () => null,
-              cell: ({ row }: { row: Row<T> }) => {
-                return row.getCanExpand() ? (
-                  <Button
-                    themeColor={null}
-                    themeSize="xl"
-                    onClick={row.getToggleExpandedHandler()}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {row.getIsExpanded() ? '🗁' : '🗀'}
-                  </Button>
-                ) : (
-                  '🔵'
-                );
-              },
+              cell: Extender,
             },
           ]
         : []),
@@ -153,11 +141,11 @@ const Table = <T,>({
     },
     initialState: {
       pagination: {
-        pageSize: defaultPageSize,
+        pageSize: pageSize,
       },
     },
     onSortingChange: setSorting,
-    onGlobalFilterChange: onSearch ? () => null : setGlobalFilter,
+    onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
       const itemRank = rankItem(row.getValue(columnId), value);
       addMeta({
@@ -185,8 +173,7 @@ const Table = <T,>({
     t('페이지{{limit}}를 벗어나는 수{{newValue}}는 입력할 수 없습니다.', { newValue, limit });
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
-    if (onSearch) onSearch(keyword);
-    else setGlobalFilter(keyword);
+    setGlobalFilter(keyword);
   };
   const handleChangePage = (index: number) => table.setPageIndex(index);
   /* ======   useEffect   ====== */
@@ -210,44 +197,53 @@ const Table = <T,>({
       {cacheColumnVisibility && (
         <div className="border border-gray-300 rounded-lg">
           <div className="px-2 py-1 border-b border-gray-300 bg-gray-100">
-            <label className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 w-fit cursor-pointer">
               <Checkbox
                 checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
+                onChange={() =>
+                  table.getIsAllColumnsVisible()
+                    ? table.setColumnVisibility(
+                        thead.filter((x) => !mustHaveColumn?.includes(x)).reduce((a, v) => ({ ...a, [v]: false }), {}),
+                      )
+                    : table.setColumnVisibility(
+                        thead.filter((x) => !mustHaveColumn?.includes(x)).reduce((a, v) => ({ ...a, [v]: true }), {}),
+                      )
+                }
               />
               <span className="text-gray-700 font-medium">{t('전체 선택')}</span>
             </label>
           </div>
           <div className="py-1 flex flex-wrap">
-            {table.getAllLeafColumns().map((column) => {
-              return (
-                <label key={column.id} className="m-2">
-                  <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
-                    <span className="uppercase">
-                      {column.id
-                        .replace(/([A-Z])/g, ' $1')
-                        .trim()
-                        .toLowerCase()}
-                    </span>
-                  </Checkbox>
-                </label>
-              );
-            })}
+            {table
+              .getAllLeafColumns()
+              .filter((column) => !mustHaveColumn?.includes(column.id as keyof T))
+              .map((column) => {
+                return (
+                  <span key={column.id} className="m-2">
+                    <Checkbox checked={column.getIsVisible()} onChange={column.getToggleVisibilityHandler()}>
+                      <span className="uppercase">
+                        {fixHead?.[column.id as keyof T] ??
+                          column.id
+                            .replace(/([A-Z])/g, ' $1')
+                            .trim()
+                            .toLowerCase()}
+                      </span>
+                    </Checkbox>
+                  </span>
+                );
+              })}
           </div>
         </div>
       )}
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
-          {onSearch && <Test />}
-
           <Input
             type="search"
             autoComplete="table-search"
             defaultValue={globalFilter}
-            debounceTime={300}
             // debounceTime={onSearch ? 600 : 300}
             onChange={handleSearchChange}
-            placeholder={placeholder ?? onSearch ? t('검색어를 입력하세요.') : t('필터링할 키워드를 입력하세요.')}
+            placeholder={placeholder ?? t('필터링할 키워드를 입력하세요.')}
           />
         </div>
         {renderSelectComponent && (
@@ -266,7 +262,9 @@ const Table = <T,>({
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className={`px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider${
+                        header.id === 'select' ? ' w-0' : ''
+                      }`}
                     >
                       {header.isPlaceholder ? null : (
                         <div
@@ -287,13 +285,13 @@ const Table = <T,>({
             ))}
           </thead>
 
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 border-b border-b-gray-200">
             {data.length > 0 ? (
               table.getFilteredRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => {
                   return (
                     <Fragment key={row.id}>
-                      <tr>
+                      <tr className="relative">
                         {row.getVisibleCells().map((cell) => (
                           <Td textAlignCenter={textAlignCenter} key={cell.id} cell={cell} />
                         ))}
@@ -311,7 +309,7 @@ const Table = <T,>({
               ) : (
                 <tr>
                   <td colSpan={99} className="text-center py-8">
-                    <Empty>{onSearch ? t('검색 결과가 없습니다.') : t('필터링 결과가 없습니다.')}</Empty>
+                    <Empty>{t('필터링 결과가 없습니다.')}</Empty>
                   </td>
                 </tr>
               )
@@ -324,13 +322,12 @@ const Table = <T,>({
             )}
           </tbody>
           <tfoot className="bg-gray-50">
-            {renderSelectComponent && (
-              <tr>
-                <td colSpan={table.getAllFlatColumns().length} className="px-6 py-3 text-sm font-medium text-gray-500">
-                  {Object.keys(rowSelection).length} of {table.getPreFilteredRowModel().rows.length} 행이 선택되었습니다
-                </td>
-              </tr>
-            )}
+            <tr>
+              <td colSpan={table.getAllFlatColumns().length} className="px-6 py-3 text-sm font-medium text-gray-500">
+                {hasCheckbox ? `${Object.keys(rowSelection).length} / ` : ''}
+                {totalLength ?? table.getPreFilteredRowModel().rows.length}
+              </td>
+            </tr>
           </tfoot>
         </table>
       </div>
@@ -340,13 +337,12 @@ const Table = <T,>({
           onChange={handleChangePage}
           onChangePer={(index) => table.setPageSize(index)}
           max={table.getPageCount()}
-          per={defaultPageSize}
-          sizeOptions={pageSizeOptions}
+          per={pageSize}
           maxMessage={getNumericMsg}
           minMessage={getNumericMsg}
         />
       )}
-      <hr />
+      {pagination}
     </div>
   );
 };

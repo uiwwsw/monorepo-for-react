@@ -63,6 +63,7 @@ const Combo = ({
     <Menu
       width={width}
       onFinished={handleFinished}
+      className="overflow-auto"
       zIndex={50}
       button={
         <Input
@@ -80,15 +81,18 @@ const Combo = ({
       }
     >
       <div className="bg-white shadow-2xl">
-        <Input
-          type="search"
-          ref={ref}
-          error={error}
-          placeholder={searchPlaceholder}
-          onChange={handleChange}
-          onClick={handleInputClick}
-          role="search"
-        />
+        <div className="sticky top-0 z-10 bg-white">
+          <Input
+            type="search"
+            className="w-full"
+            ref={ref}
+            error={error}
+            placeholder={searchPlaceholder}
+            onChange={handleChange}
+            onClick={handleInputClick}
+            role="search"
+          />
+        </div>
         <div
           role="list"
           className="flex flex-col gap-1 after:block after:text-center [&:empty::after]:content-[attr(data-text)]"

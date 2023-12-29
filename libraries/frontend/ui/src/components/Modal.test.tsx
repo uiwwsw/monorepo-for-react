@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import Modal, { ModalResult } from './Modal/Base'; // 실제 경로에 맞게 변경해주세요
+import Modal from './Modal/Base'; // 실제 경로에 맞게 변경해주세요
 
 describe('Modal component', () => {
   it('should render modal when open prop is true', () => {
@@ -11,18 +11,18 @@ describe('Modal component', () => {
 
   it('should call onClose function when OK button is clicked', async () => {
     const mockOnEval = vi.fn();
-    render(<Modal open={true} onClose={mockOnEval} />);
+    render(<Modal open={true} onClose={mockOnEval} hasButton={['OK']} />);
     const okButton = screen.getByRole('button', { name: /ok/i });
     fireEvent.click(okButton);
-    expect(mockOnEval).toHaveBeenCalledWith('OK' as ModalResult);
+    expect(mockOnEval).toHaveBeenCalledWith('OK');
   });
 
   it('should call onClose function with CANCEL when Cancel button is clicked', () => {
     const mockOnEval = vi.fn();
-    render(<Modal open={true} onClose={mockOnEval} />);
+    render(<Modal open={true} onClose={mockOnEval} hasButton={['CANCEL']} />);
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     fireEvent.click(cancelButton);
-    expect(mockOnEval).toHaveBeenCalledWith('CANCEL' as ModalResult);
+    expect(mockOnEval).toHaveBeenCalledWith('CANCEL');
   });
 
   // it('hideClose props는 클로즈버튼을 노출하지 않습니다.', () => {
