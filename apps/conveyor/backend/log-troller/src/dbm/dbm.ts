@@ -195,7 +195,7 @@ export class DBM {
                     continue;
                 }
                 const begin = new Date();
-                const count = queueLen > 100 ? 100 : queueLen;
+                const count = queueLen > 1000 ? 1000 : queueLen;
                 this.transList = [];
                 this.tasktransferinfostatus = [];
                 this.zonedynamicattributes = [];
@@ -542,6 +542,8 @@ export class DBM {
                     }]));
                     */
                 }
+                break;
+            case 'himEquipmentStateInfo':
                 break;
             default:
                 logger.error(
