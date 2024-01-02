@@ -163,7 +163,7 @@ async function stressTest(data) {
             tasks[zoneIDFrom] = {};
 
             redis.publish(`TCMCmdCh:${Math.floor(zoneIDFrom / 100)}`, makeHimForceInstallCarrier(zoneIDFrom, carrierID));
-            let ttl = new Date().getTime() + 1000 * 5;
+            let ttl = new Date().getTime() + 1000 * 10;
             while(new Date().getTime() < ttl) {
                 await new Promise((resolve) => { setTimeout(() => { resolve(); }, 1000); });
                 if (tasks[zoneIDFrom].State === 'READY') {
