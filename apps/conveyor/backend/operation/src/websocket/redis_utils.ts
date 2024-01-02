@@ -93,7 +93,7 @@ const initializeAlarms = async (client:Client) => {
             if (alarmInfo[0]) {
                 alarms.push({
                     Object: {
-                        SerialNo: alarmInfo[0] ? +alarmInfo[0] : 0,
+                        SerialNumber: alarmInfo[0] ? +alarmInfo[0] : 0,
                         AlarmCode: alarmInfo[1],
                         TaskID: '',
                         Location: alarmInfo[2],
