@@ -24,11 +24,18 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
   const { t } = useTranslation();
   const fixedCalendar = useRef(storage.get<string[]>(STORAGE['stats/calendar']));
   const fixedKeyword = useRef(storage.get<string | undefined>(STORAGE['stats/keyword']));
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLSpanElement>(null);
+  const searchBoxRef = useRef<HTMLSpanElement>(null);
   const guides = [
     {
       ref: checkboxRef,
-      text: '달력을 고정하면 통계 요약, 알람, 케리어의 달력이 동기화 됩니다.\n동기화 하지 않으면 각각 오늘부터 1주일전까지의 데이터를 보여줍니다.',
+      text: t(
+        '달력을 고정하면 통계 요약, 알람, 케리어의 달력이 동기화 됩니다.\n동기화 하지 않으면 각각 오늘부터 1주일전까지의 데이터를 보여줍니다.',
+      ),
+    },
+    {
+      ref: searchBoxRef,
+      text: t('검색기능은 필터와 다르게 DB에서 검색합니다.'),
     },
   ];
 
@@ -104,7 +111,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
                 <Emoji className="lg:hidden">🔎</Emoji>
               </Checkbox>
             </span>
-            <span className="table-cell">
+            <span className="table-cell" ref={searchBoxRef}>
               <Test className="left-32">
                 <Input
                   type="search"
