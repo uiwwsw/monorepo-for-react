@@ -4,7 +4,7 @@ import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { SOCKET_MESSAGE, SOCKET_NAME, SocketData } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
-import { Alarm, ServerList, TcmList } from '!/control/domain';
+import { Alarm, SERVERS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
 import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
@@ -52,7 +52,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         .filter((x) => x.type === SOCKET_MESSAGE.INITIAL_MODULE_STATE)
         .reduce((a, v) => {
           const data = v.data as ModuleState;
-          a.set(`${data.ID ?? data.StateType}`, data);
+          a.set(`${data.ID || data.StateType}`, data);
           return a;
         }, new Map()),
     [data],
@@ -87,8 +87,7 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   const serverList: ServerList[] = useMemo(
     () =>
       Array.from(moduleState)
-        .filter(([_, x]) => ['HIM', 'DCM'].includes(x.StateType))
-        .reverse()
+        .filter(([_, x]) => SERVERS.includes(x.StateType as SERVER_TYPE))
         .map(([_, x]) => new ServerList(x)),
     [moduleState],
   );

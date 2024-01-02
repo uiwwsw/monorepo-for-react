@@ -5,7 +5,6 @@ import ControlFileUpload from '../FileUpload';
 import { useUploadFirm } from '!/control/application/put-upload-firmware';
 import { useUpdateFirm } from '!/control/application/post-update-firmware';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
-import Test from '@/Test';
 import { useFirmList } from '!/control/application/get-backup-firmware';
 import { useDeleteFirm } from '!/control/application/delete-upload-firmware';
 import { useTranslation } from 'react-i18next';
@@ -131,11 +130,9 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
         hasCloseBtn
         defaultLoading={isMutating}
         button={
-          <Test>
-            <Button onClick={handleFirmList} disabled={disabled} themeColor="tertiary">
-              {t('업데이트')}
-            </Button>
-          </Test>
+          <Button onClick={handleFirmList} disabled={disabled} themeColor="tertiary">
+            {t('업데이트')}
+          </Button>
         }
         hasButton={[cancelBtn]}
       >
