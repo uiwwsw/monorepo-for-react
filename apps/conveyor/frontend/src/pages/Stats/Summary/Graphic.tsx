@@ -5,6 +5,7 @@ import { LineProps } from '@nivo/line';
 import { Row } from '@tanstack/react-table';
 import { StatsSummaryDataRow } from '!/stats/domain';
 import { useMemo } from 'react';
+import { newDate } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 
@@ -18,7 +19,6 @@ export interface StatsSummaryGraphicProps<T> {
 const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphicProps<T>) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
-  const length = selectedRows?.length;
   const currentZones = selectedRows?.map((r) => statsData?.[+r.id]);
   const zoneId = useMemo(() => {
     const length = currentZones?.length ?? 0;
@@ -29,10 +29,19 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
 
     return t('{{id}} 외 {{length}}개', { id: currentZoneId, length: length - 1 });
   }, [selectedRows]);
+  const duration = currentZones
+    ?.reduce(
+      ([start, end], v) => {
+        const date = +(v?.date ?? 0);
+        return [Math.min(start, date), Math.max(end, date)];
+      },
+      [Infinity, 0],
+    )
+    .reduce((start, end) => newDate(`${end}`).diff(`${start}`, 'days'));
   const carrierTotal = currentZones?.reduce((a, v) => a + (v?.carrierNum ?? 0), 0);
-  const carrierAverage = Math.floor(!carrierTotal || !length ? 0 : carrierTotal / length);
+  const carrierAverage = Math.floor(!carrierTotal || !duration ? 0 : carrierTotal / duration);
   const alarmTotal = currentZones?.reduce((a, v) => a + (v?.alarmNum ?? 0), 0);
-  const alarmAverage = Math.floor(!alarmTotal || !length ? 0 : alarmTotal / length);
+  const alarmAverage = Math.floor(!alarmTotal || !duration ? 0 : alarmTotal / duration);
   const graphData: LineProps['data'] = useMemo(() => {
     if (!currentZones) return [];
     const alarm: { x: string; y: number }[] = [];

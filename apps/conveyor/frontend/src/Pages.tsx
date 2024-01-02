@@ -1,4 +1,5 @@
 import { useGetAuth } from '!/auth/application/get-auth';
+import { ROUTES_PATH } from '!/routes/domain';
 import { lazy, Fragment } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateLayout from 'src/layouts/PrivateLayout';
@@ -40,7 +41,7 @@ const Pages = () => {
           {commonRoutes.map((x) => (
             <Route key={x.name} path={x.path} element={<x.node />} />
           ))}
-          <Route path="/" element={<Main />} />
+          <Route path={ROUTES_PATH['/']} element={<Main />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="/error" element={<Error />} />
           <Route path="*" element={<NotFound />} />

@@ -114,6 +114,7 @@ const StatsAlarm = () => {
   return (
     <>
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
+
       <H1>{t('알람')}</H1>
 
       <Table
