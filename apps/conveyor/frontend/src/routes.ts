@@ -13,6 +13,7 @@ const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 const Help = lazy(() => import('src/pages/Help'));
 const Setting = lazy(() => import('src/pages/Setting/Page'));
+const Setup = lazy(() => import('src/pages/Setup'));
 const Users = lazy(() => import('src/pages/Users/Page'));
 const UpdatePassword = lazy(() => import('src/pages/UpdatePassword'));
 export interface Group {
@@ -50,6 +51,13 @@ export const authRoutes: Tab[] = [
     path: ROUTES_PATH['/users'],
     name: '유저관리',
     node: Users,
+    grade: UserGrade.ADMIN,
+  },
+  {
+    icon: '💾',
+    path: ROUTES_PATH['/setup'],
+    name: '셋업',
+    node: Setup,
     grade: UserGrade.ADMIN,
   },
   {
