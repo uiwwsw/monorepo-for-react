@@ -152,7 +152,7 @@ router.post('/set-equipment-value', verifyToken, asyncWrapper<ISetSystemEquipVal
     const result = await Service.Inst.Redis.hset('System:EquipmentValue', target, value);
 
     res.json({
-        message: result ? "OK" : "FAIL",
+        message: result ? "FAIL" : "OK",
         data: {}
     });
 }));
