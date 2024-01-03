@@ -9,6 +9,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   debounceTime?: number;
   slots?: ReactNode;
+  icon?: string;
 }
 /* ======    global     ====== */
 // const logger = createLogger('components/Input');
@@ -21,6 +22,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onChange,
       error,
       type,
+      icon,
       debounceTime = 0,
       slots = <Underbar error={error} />,
       ...props
@@ -34,7 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <label className={`inline-flex items-center relative${className ? ` ${className}` : ''}`}>
-        {type === 'search' ? <Emoji className="ml-3 -mr-4 pr-2">🔍︎</Emoji> : ''}
+        {type === 'search' || icon ? <Emoji className="ml-3 -mr-4 pr-2">{icon ?? '🔍︎'}</Emoji> : ''}
         <input
           {...props}
           type={type}

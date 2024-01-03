@@ -259,7 +259,7 @@ const Table = <T,>({
         <div className="flex justify-between items-center">
           <div className="flex gap-2" ref={filterBoxRef}>
             <Input
-              id="table-search"
+              icon="🏷️"
               type="search"
               autoComplete="table-search"
               defaultValue={globalFilter}

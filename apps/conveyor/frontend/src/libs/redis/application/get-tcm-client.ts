@@ -24,7 +24,6 @@ async function fetcher(url: string, { arg }: { arg: Arg }) {
     return undefined;
   }
 }
-
 export function useCheckTcmClient() {
   return useSWR('/api/redis/check-tcm-client', fetcher);
 }
