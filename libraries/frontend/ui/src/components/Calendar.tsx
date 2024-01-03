@@ -8,11 +8,14 @@ import Tooltip from './Tooltip';
 import Button from './Button';
 import { LooseValue } from 'node_modules/react-calendar/dist/esm/shared/types';
 import Emoji from './Emoji';
+import useToasts from '#/useToasts';
 /* ======   interface   ====== */
 export interface CalendarProps {
+  maxRange?: number;
   placeholder?: string;
   selectRangeHolder?: string;
   tooltipMsg?: string;
+  toastMsg?: string;
   selectRange?: boolean;
   defaultValue?: string | string[];
   onChange?: (value: Dayjs | Dayjs[]) => void;
@@ -20,21 +23,31 @@ export interface CalendarProps {
 }
 /* ======    global     ====== */
 const logger = createLogger('components/Calendar');
-const convertFromValueToDate = (value?: CalendarProps['defaultValue']) => {
+const convertFromValueToDate = (value?: CalendarProps['defaultValue'], maxRange?: number) => {
   logger('convertFromValueToDate');
-  return value ? (value instanceof Array ? value.map((x) => newDate(`${x}`)) : newDate(`${value}`)) : undefined;
+  if (value) {
+    if (value instanceof Array) {
+      const range = value.map((x) => newDate(`${x}`));
+      if (maxRange && range[1].diff(range[0], 'days') > maxRange) return undefined;
+      return range;
+    } else return newDate(`${value}`);
+  }
+  return undefined;
 };
 const Calendar = ({
   button = <Button className="w-[300px]" themeSize="sm" themeColor="primary"></Button>,
   selectRange,
+  maxRange,
   defaultValue,
   onChange,
+  toastMsg = 'maxRange를 넘어서서 입력할 수 없습니다.',
   placeholder = '날짜를 선택해주세요.',
   selectRangeHolder = '기간을 선택해 주세요.',
   tooltipMsg = '00시 00분 00초 ~ 23시 59분 59초는 생략됩니다.',
 }: CalendarProps) => {
   /* ======   variables   ====== */
   const fakeRef = useRef<HTMLElement>(null);
+  const { Toasts, showToast } = useToasts();
   const [refresh, setRefresh] = useState(false);
   const [value, setValue] = useState<undefined | Dayjs | Dayjs[]>(convertFromValueToDate(defaultValue));
   const memoValueForDisplay = useMemo(() => {
@@ -53,10 +66,15 @@ const Calendar = ({
     logger('handleClick');
   };
   const handleChange = (e: unknown) => {
-    const value = convertFromValueToDate(e as CalendarProps['defaultValue']);
-    setValue(value);
+    const newValue = convertFromValueToDate(e as CalendarProps['defaultValue'], maxRange);
+    if (maxRange && newValue === undefined) {
+      showToast({ message: toastMsg, type: 'fail' });
+      setValue(value);
+    } else {
+      setValue(newValue);
+    }
     fakeRef.current?.click();
-    onChange && onChange(value!);
+    onChange && onChange(newValue!);
     logger('handleChange');
   };
   const handleTooltipClick = (e: MouseEvent) => {
@@ -72,35 +90,38 @@ const Calendar = ({
     logger('useEffect');
   }, [defaultValue]);
   return (
-    <Menu
-      className="max-lg:!left-0 max-lg:!right-0 max-lg:!w-auto"
-      width="auto"
-      button={cloneElement(button, {
-        children: (
-          <span className="flex w-fit m-auto items-center">
-            <Emoji className="whitespace-nowrap lg:hidden">📅</Emoji>
-            <span className="whitespace-nowrap max-lg:hidden">{memoValueForDisplay}</span>
-            {selectRange && (
-              <span className="ml-3">
-                <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
-              </span>
-            )}
-          </span>
-        ),
-      })}
-    >
-      <i ref={fakeRef} />
-      <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-lg:!w-full">
-        {refresh ? (
-          <ReactCalendar
-            value={value as unknown as LooseValue}
-            defaultValue={defaultValue as unknown as LooseValue}
-            selectRange={selectRange}
-            onChange={handleChange}
-          />
-        ) : null}
-      </div>
-    </Menu>
+    <>
+      {Toasts}
+      <Menu
+        className="max-lg:!left-0 max-lg:!right-0 max-lg:!w-auto min-w-[300px]"
+        width="auto"
+        button={cloneElement(button, {
+          children: (
+            <span className="flex w-fit m-auto items-center">
+              <Emoji className="whitespace-nowrap lg:hidden">📅</Emoji>
+              <span className="whitespace-nowrap max-lg:hidden">{memoValueForDisplay}</span>
+              {selectRange && (
+                <span className="ml-3">
+                  <Tooltip onClick={handleTooltipClick}>{tooltipMsg}</Tooltip>
+                </span>
+              )}
+            </span>
+          ),
+        })}
+      >
+        <i ref={fakeRef} />
+        <div onClick={handleClick} aria-label="react-calendar" className="[&>*]:max-lg:!w-full">
+          {refresh ? (
+            <ReactCalendar
+              value={value as unknown as LooseValue}
+              defaultValue={defaultValue as unknown as LooseValue}
+              selectRange={selectRange}
+              onChange={handleChange}
+            />
+          ) : null}
+        </div>
+      </Menu>
+    </>
   );
 };
 

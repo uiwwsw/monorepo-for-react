@@ -93,6 +93,8 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
           </span>
           <span className="table-cell">
             <Calendar
+              maxRange={60}
+              toastMsg={t('60일을 초과할 수 없습니다.')}
               defaultValue={currentDuration}
               placeholder={t('날짜를 선택해 주세요.')}
               selectRangeHolder={t('기간을 선택해 주세요.')}
