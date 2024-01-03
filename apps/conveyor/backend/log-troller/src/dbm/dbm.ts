@@ -37,7 +37,7 @@ interface IMsgQueueRow {
 
 export class DBM {
     private subs!: Redis;
-    private queue!: Redis;
+    private queue:unknown[] = [];
     private transList: TransItem[] = [];
     private taskTransferInfos: { [key: number]: ITaskTransferInfoRow } = {};
     private completeCarriers: { [key: number]: ICompleteCarrierRow } = {};
@@ -48,10 +48,10 @@ export class DBM {
     private zoneoccupiedattributes: unknown[] = [];
     private logs: unknown[] = [];
     private e84JobStates: unknown[] = [];
+    private isRunning: boolean = false;
 
     public constructor(redis: Redis) {
         this.subs = redis;
-        this.queue = new Redis(16379); // Local Redis를 사용할 예정이라, 별도의 Redis를 사용
 
         process.nextTick(async () => {
             await this.checkSkip();
@@ -73,7 +73,7 @@ export class DBM {
                 this.onRecvMessage(channel, message);
             });
 
-            this.run();
+            setInterval(() => { this.run(); }, 100);
         });
     }
 
@@ -182,145 +182,149 @@ export class DBM {
     // Redis 메시지 수신 이벤트 처리
     private onRecvMessage(channel: string, message: string) {
         const body = { Date: new Date(), Channel: channel, Message: message };
-        this.queue.lpush("MsgQueue", JSON.stringify(body));
+        this.queue.push(JSON.stringify(body));
     }
 
     // 메시지 처리 루프
     private async run() {
-        while (Service.Inst.IsRun) {
-            try {
-                const queueLen = await this.queue.llen("MsgQueue");
-                if (queueLen < 1) {
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    continue;
-                }
-                const begin = new Date();
-                const count = queueLen > 1000 ? 1000 : queueLen;
-                this.transList = [];
-                this.tasktransferinfostatus = [];
-                this.zonedynamicattributes = [];
-                this.zoneoccupiedattributes = [];
-                this.e84JobStates = [];
-                this.logs = [];
-                const ins_stats: { [key: string]: number } = {};
-                for (let i = 0; i < count; i++) {
-                    const json = await this.queue.rpop("MsgQueue");
-                    if (!json) {
-                        break;
-                    }
-                    try {
-                        const row = JSON.parse(json) as IMsgQueueRow;
-                        row.Date = new Date(row.Date);
-                        this.processMessage(row);
-                    } catch (ex) {
-                        const err = ex as Error;
-                        logger.error(
-                            `run.processMessage. ${err.message}\n${err.stack}`
-                        );
-                    }
-                }
-                if (this.transList.length > 0) {
-                    const conn = await Service.Inst.LocalDB.getConnection();
-                    try {
-                        await conn.beginTransaction();
-                        for (
-                            let i = 0, iLen = this.transList.length;
-                            i < iLen;
-                            i++
-                        ) {
-                            const trans = this.transList[i];
-                            await conn.query(trans.Query, trans.Params);
-                            if (trans.Query.indexOf("insert into") === 0) {
-                                const ary = trans.Query.split(" ");
-                                const table = ary[2];
-                                ins_stats[table] = ins_stats[table]
-                                    ? ins_stats[table] + 1
-                                    : 1;
-                            }
-                        }
-                        await conn.commit();
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                        await conn.rollback();
-                    } finally {
-                        await conn.release();
-                    }
-                }
-                if (this.tasktransferinfostatus.length > 0) {
-                    try {
-                        await Service.Inst.LocalDB.query(
-                            "insert into tasktransferinfostatus (taskID, state, zoneIdCurrent, timeStamp) values ? ",
-                            [this.tasktransferinfostatus]
-                        );
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                    }
-                }
-                if (this.zonedynamicattributes.length > 0) {
-                    try {
-                        await Service.Inst.LocalDB.query(
-                            "insert into zonedynamicattributes (zoneId, state, prevState, motorState, timeStamp) values ? ",
-                            [this.zonedynamicattributes]
-                        );
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                    }
-                }
-                if (this.zoneoccupiedattributes.length > 0) {
-                    try {
-                        await Service.Inst.LocalDB.query(
-                            "insert into zoneoccupiedattributes (zoneId, reservedTaskId, occupiedSensor1, occupiedSensor2, occupiedSensor3, currentDirection, currentLevel, alarmSerialNumber, timeStamp) values ? ",
-                            [this.zoneoccupiedattributes]
-                        );
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                    }
-                }
-                if (this.e84JobStates.length > 0) {
-                    try {
-                        await Service.Inst.LocalDB.query(
-                            "insert into E84JobStates (e84JobId, sequenceState, L_REQ, U_REQ, READY, HO_AVBL, es, valid, cs_0, TR_REQ, busy, compt, timestamp) values ? ",
-                            [this.e84JobStates]
-                        );
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                    }
-                }
-                if (this.logs.length > 0) {
-                    try {
-                        await Service.Inst.LocalDB.query(
-                            "insert into logs (TimeStamp, Level, TCMID, TaskID, ZoneID, Comment) values ? ",
-                            [this.logs]
-                        );
-                    } catch (ex) {
-                        logger.error(ex as Error);
-                    }
-                }
-                const end = new Date();
-                const elapsed = end.getTime() - begin.getTime();
-                const queryNum =
-                    this.transList.length +
-                    this.tasktransferinfostatus.length +
-                    this.zonedynamicattributes.length +
-                    this.zoneoccupiedattributes.length +
-                    this.e84JobStates.length +
-                    this.logs.length;
-                logger.info(
-                    `run. message:${count}, query:${queryNum}, total:${queueLen} messages processed. ${elapsed}ms elapsed.`
-                );
-                if (Object.keys(ins_stats).length > 0) {
-                    console.log(JSON.stringify(ins_stats, null, 2));
-                }
-                // E84JobID가 있는 경우, 10분 이상 지난 경우 삭제
-                const now = new Date();
-                for (const key in this.e84jobs) {
-                    if (this.e84jobs[key].getTime() + 600000 < now.getTime()) {
-                        delete this.e84jobs[key];
-                    }
-                }
-            } catch (ex) {
-                logger.error(ex as Error);
+        try {
+            if (this.isRunning) {
+                return;
             }
+            this.isRunning = true;
+            const queueLen = await this.queue.length;
+            if (queueLen < 1) {
+                return;
+            }
+            const begin = new Date();
+            const count = queueLen > 1000 ? 1000 : queueLen;
+            this.transList = [];
+            this.tasktransferinfostatus = [];
+            this.zonedynamicattributes = [];
+            this.zoneoccupiedattributes = [];
+            this.e84JobStates = [];
+            this.logs = [];
+            const ins_stats: { [key: string]: number } = {};
+            const queue = this.queue.splice(0, count);
+            for (let i = 0; i < count; i++) {
+                const json = queue[0] as string;
+                if (!json) {
+                    break;
+                }
+                try {
+                    const row = JSON.parse(json) as IMsgQueueRow;
+                    row.Date = new Date(row.Date);
+                    this.processMessage(row);
+                } catch (ex) {
+                    const err = ex as Error;
+                    logger.error(
+                        `run.processMessage. ${err.message}\n${err.stack}`
+                    );
+                }
+            }
+            if (this.transList.length > 0) {
+                const conn = await Service.Inst.LocalDB.getConnection();
+                try {
+                    await conn.beginTransaction();
+                    for (
+                        let i = 0, iLen = this.transList.length;
+                        i < iLen;
+                        i++
+                    ) {
+                        const trans = this.transList[i];
+                        await conn.query(trans.Query, trans.Params);
+                        if (trans.Query.indexOf("insert into") === 0) {
+                            const ary = trans.Query.split(" ");
+                            const table = ary[2];
+                            ins_stats[table] = ins_stats[table]
+                                ? ins_stats[table] + 1
+                                : 1;
+                        }
+                    }
+                    await conn.commit();
+                } catch (ex) {
+                    logger.error(ex as Error);
+                    await conn.rollback();
+                } finally {
+                    await conn.release();
+                }
+            }
+            if (this.tasktransferinfostatus.length > 0) {
+                try {
+                    await Service.Inst.LocalDB.query(
+                        "insert into tasktransferinfostatus (taskID, state, zoneIdCurrent, timeStamp) values ? ",
+                        [this.tasktransferinfostatus]
+                    );
+                } catch (ex) {
+                    logger.error(ex as Error);
+                }
+            }
+            if (this.zonedynamicattributes.length > 0) {
+                try {
+                    await Service.Inst.LocalDB.query(
+                        "insert into zonedynamicattributes (zoneId, state, prevState, motorState, timeStamp) values ? ",
+                        [this.zonedynamicattributes]
+                    );
+                } catch (ex) {
+                    logger.error(ex as Error);
+                }
+            }
+            if (this.zoneoccupiedattributes.length > 0) {
+                try {
+                    await Service.Inst.LocalDB.query(
+                        "insert into zoneoccupiedattributes (zoneId, reservedTaskId, occupiedSensor1, occupiedSensor2, occupiedSensor3, currentDirection, currentLevel, alarmSerialNumber, timeStamp) values ? ",
+                        [this.zoneoccupiedattributes]
+                    );
+                } catch (ex) {
+                    logger.error(ex as Error);
+                }
+            }
+            if (this.e84JobStates.length > 0) {
+                try {
+                    await Service.Inst.LocalDB.query(
+                        "insert into E84JobStates (e84JobId, sequenceState, L_REQ, U_REQ, READY, HO_AVBL, es, valid, cs_0, TR_REQ, busy, compt, timestamp) values ? ",
+                        [this.e84JobStates]
+                    );
+                } catch (ex) {
+                    logger.error(ex as Error);
+                }
+            }
+            if (this.logs.length > 0) {
+                try {
+                    await Service.Inst.LocalDB.query(
+                        "insert into logs (TimeStamp, Level, TCMID, TaskID, ZoneID, Comment) values ? ",
+                        [this.logs]
+                    );
+                } catch (ex) {
+                    logger.error(ex as Error);
+                }
+            }
+            const end = new Date();
+            const elapsed = end.getTime() - begin.getTime();
+            const queryNum =
+                this.transList.length +
+                this.tasktransferinfostatus.length +
+                this.zonedynamicattributes.length +
+                this.zoneoccupiedattributes.length +
+                this.e84JobStates.length +
+                this.logs.length;
+            logger.info(
+                `run. message:${count}, query:${queryNum}, total:${queueLen} messages processed. ${elapsed}ms elapsed.`
+            );
+            if (Object.keys(ins_stats).length > 0) {
+                console.log(JSON.stringify(ins_stats, null, 2));
+            }
+            // E84JobID가 있는 경우, 10분 이상 지난 경우 삭제
+            const now = new Date();
+            for (const key in this.e84jobs) {
+                if (this.e84jobs[key].getTime() + 600000 < now.getTime()) {
+                    delete this.e84jobs[key];
+                }
+            }
+        } catch (ex) {
+            logger.error(ex);
+        } finally {
+            this.isRunning = false;
         }
     }
 
