@@ -19,10 +19,10 @@ const Setup = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
   const { Toasts, showToast } = useToasts();
-  const { register, handleSubmit: formSubmit, reset } = useForm<FormState>();
+  const { register, handleSubmit: formSubmit, reset, watch } = useForm<FormState>();
   const { data, mutate } = useGetEquipmentValue();
   const { trigger, isMutating, error } = useSetEquipmentValue();
-
+  const state = watch();
   /* ======   function    ====== */
   const handleSubmit = async (arg: FormState) => {
     Object.entries(arg)
@@ -56,7 +56,11 @@ const Setup = () => {
                 </label>
               ))}
 
-              <Button smoothLoading onClick={formSubmit(handleSubmit)}>
+              <Button
+                disabled={!Object.values(state).filter((x) => x).length}
+                smoothLoading
+                onClick={formSubmit(handleSubmit)}
+              >
                 {t('설정')}
               </Button>
             </form>
