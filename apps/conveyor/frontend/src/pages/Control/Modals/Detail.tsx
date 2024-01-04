@@ -1,6 +1,5 @@
 import { useCheckTcmClient } from '!/redis/application/get-tcm-client';
 import Empty from '@/Empty';
-import Test from '@/Test';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
 
@@ -24,11 +23,9 @@ const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <ModalWithBtn
         button={
-          <Test>
-            <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
-              Alive
-            </Button>
-          </Test>
+          <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
+            Alive
+          </Button>
         }
         hasButton={['CANCEL']}
         hasCloseBtn
