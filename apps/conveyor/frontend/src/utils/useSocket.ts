@@ -70,7 +70,10 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     [data],
   );
   const tcmList: TcmList[] = useMemo(
-    () => Array.from(tcmInfo).map(([id, x]) => new TcmList({ ...x, alive: moduleState.get(id)?.Alive ?? 0 })),
+    () =>
+      Array.from(tcmInfo)
+        .sort()
+        .map(([id, x]) => new TcmList({ ...x, alive: moduleState.get(id)?.Alive ?? 0 })),
     [moduleState, tcmInfo],
   );
   // const serverList: ServerList[] = useMemo(() => {
