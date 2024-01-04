@@ -35,27 +35,29 @@ const Header = (_: HeaderProps) => {
           <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
             {t('로그아웃')}
           </Button>
-          <ModalWithBtn
-            button={
-              <Button disabled={!alarm.length} themeColor={'quaternary'}>
-                알람 {alarm.length}
-              </Button>
-            }
-          >
-            <div>
-              <H3>이전 알람</H3>
-              {alarm.map((x) => (
-                <Accordion key={x.serialNo} title={x.eventCode + x.serialNo}>
-                  {Object.entries(x).map(([key, value]) => (
-                    <div className="flex justify-between">
-                      <span className="p-2">{key}:</span>
-                      <span className="p-2">{value}</span>
-                    </div>
-                  ))}
-                </Accordion>
-              ))}
-            </div>
-          </ModalWithBtn>
+          {false && (
+            <ModalWithBtn
+              button={
+                <Button disabled={!alarm.length} themeColor={'quaternary'}>
+                  알람 {alarm.length}
+                </Button>
+              }
+            >
+              <div>
+                <H3>이전 알람</H3>
+                {alarm.map((x) => (
+                  <Accordion key={x.serialNo} title={x.eventCode + x.serialNo}>
+                    {Object.entries(x).map(([key, value]) => (
+                      <div className="flex justify-between">
+                        <span className="p-2">{key}:</span>
+                        <span className="p-2">{value}</span>
+                      </div>
+                    ))}
+                  </Accordion>
+                ))}
+              </div>
+            </ModalWithBtn>
+          )}
         </div>
       </div>
     </header>
