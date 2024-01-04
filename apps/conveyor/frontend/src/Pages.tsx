@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateLayout from 'src/layouts/PrivateLayout';
 import PublicLayout from 'src/layouts/PublicLayout';
 import { authRoutes, commonRoutes, filterGradeRoute } from 'src/routes';
-const Main = lazy(() => import('./pages/Main'));
+const Main = lazy(() => import('src/pages/Main'));
 const NotFound = lazy(() => import('src/pages/NotFound'));
 const Loading = lazy(() => import('src/pages/Loading'));
 const Error = lazy(() => import('src/pages/Error'));

@@ -9,7 +9,7 @@ import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domai
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
-import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
+import { AlarmInfoObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
@@ -139,10 +139,14 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
         // case SOCKET_MESSAGE.HIM_EQUIPMENT_STATE_INFO:
         //   setEquipment(data.data as EquipmentStateObject);
         //   break;
+        // case SOCKET_MESSAGE.TCM_WARNING_SET:
+        //   const alarm = new Alarm(data.data as WarningInfo);
+        //   setAlarm((prev) => [...prev, alarm]);
+        //   break;
         case SOCKET_MESSAGE.TCM_EVENT_SET:
-          const alarm = Object.values(data.data as AlarmInfoObject).map((x) => new Alarm(x));
-          setAlarm(alarm);
-          alarm
+          const alarms = Object.values(data.data as WarningInfo[]).map((x) => new Alarm(x));
+          setAlarm((prev) => [...prev, ...alarms]);
+          alarms
             .filter((x) => x.eventCode && MODULE_STATE_CHANGE_MSGS.includes(x.eventCode))
             .forEach((x) => {
               switch (x.eventCode) {
