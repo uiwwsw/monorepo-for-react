@@ -10,20 +10,19 @@ export class TcmClient {
 }
 
 export class EquipmentValue {
-  model: string;
-  name: string;
-  defaultModel: string;
-  transferTimeout: number;
-  constructor({ model, name, default_model, transfer_timeout }: IGetSystemEquipValueResp) {
-    this.model = model;
-    this.name = name;
-    this.defaultModel = default_model;
-    this.transferTimeout = transfer_timeout;
+  equipmentModel: string;
+  equipmentName: string;
+  // defaultModel: string;
+  equipmentTransferTimeout: number;
+  constructor({ model, name, transfer_timeout }: IGetSystemEquipValueResp) {
+    this.equipmentModel = model;
+    this.equipmentName = name;
+    // this.defaultModel = default_model;
+    this.equipmentTransferTimeout = transfer_timeout;
   }
 }
 export enum EquipmentName {
-  'model' = 'EquipmentModel',
-  'name' = 'EquipmentName',
-  'defaultModel' = 'DefaultEquipmentModel',
-  'transferTimeout' = 'TransferTimeout',
+  'equipmentModel' = 'EquipmentModel',
+  'equipmentName' = 'EquipmentName',
+  'equipmentTransferTimeout' = 'TransferTimeout',
 }
