@@ -9,7 +9,6 @@ import { TcmList } from '!/control/domain';
 import { useProcessId } from '!/control/application/get-process';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
-import Test from '@/Test';
 import { createLogger } from '@package-frontend/utils';
 // import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
