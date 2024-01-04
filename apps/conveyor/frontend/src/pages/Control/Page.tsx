@@ -42,7 +42,7 @@ const Control = () => {
   };
   const { pageSizeForTcm } = useSetting();
 
-  const { tcmList, serverList, status, alarm } = useSocketDataContext();
+  const { tcmList, serverList, status } = useSocketDataContext();
   const { controlPagination } = useSetting();
   // if (status !== WS_STATUS.OPEN) return <Loading show />;
   // const { data: tcmData } = useTcmInfo();

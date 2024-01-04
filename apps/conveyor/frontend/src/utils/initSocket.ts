@@ -9,7 +9,7 @@ import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domai
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
-import { AlarmInfoObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
+import { ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
