@@ -13,7 +13,7 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   variables   ====== */
   const pageSize = storage.get<number>(STORAGE['setting/page-size']) ?? 10;
   const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
-  const tableFilter = storage.get<boolean>(STORAGE['setting/table/filter']) ?? false;
+  const tableFilter = storage.get<boolean>(STORAGE['setting/table/filter']) ?? true;
   const logBrowser = storage.get<boolean>(STORAGE['setting/log-browser']) ?? true;
   const logBrowserMultiple = storage.get<boolean>(STORAGE['setting/log-browser-multiple']) ?? true;
   const alarmSound = storage.get<boolean>(STORAGE['setting/alarm-sound']) ?? true;
