@@ -24,11 +24,9 @@ const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
       <ToastWithPortal open={error?.message}>{error?.message}</ToastWithPortal>
       <ModalWithBtn
         button={
-          <Test>
-            <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
-              Alive
-            </Button>
-          </Test>
+          <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
+            Alive
+          </Button>
         }
         hasButton={['CANCEL']}
         hasCloseBtn

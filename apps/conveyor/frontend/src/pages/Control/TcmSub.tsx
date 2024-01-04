@@ -55,7 +55,7 @@ const ControlTcmSub = ({ row }: ControlTcmSubProps) => {
       {Toasts}
       <div className="flex justify-end space-x-2 items-center p-2">
         <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
-          <Test className="left-0 top-0">Process Kill</Test>
+          Process Kill
         </Button>
 
         {/* <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} /> */}
