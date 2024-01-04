@@ -14,7 +14,7 @@ import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('utils/useSocket');
+const logger = createLogger('utils/initSocket');
 const parser = <T>(unknown: unknown): T => {
   // 배열인 경우, 배열의 각 요소를 재귀적으로 파싱합니다.
   logger(unknown, typeof unknown);
@@ -36,7 +36,7 @@ const parser = <T>(unknown: unknown): T => {
 let sto: NodeJS.Timeout;
 const limit = 5;
 let tryOut = 0;
-const useSocket = (type: SOCKET_NAME): ContextProps => {
+const initSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   variables   ====== */
   const { data: config } = useConfig();
   const { data: auth } = useGetAuth();
@@ -209,4 +209,4 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   };
 };
 
-export default useSocket;
+export default initSocket;

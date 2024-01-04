@@ -1,155 +1,66 @@
-import { createLogger, getScrollbarHeight } from '@package-frontend/utils';
+import { getScrollbarHeight } from '@package-frontend/utils';
 import logo from '$/logo.png';
 import GroupLink from './GroupLink';
 import Link from './Link';
-import { Button, Image, Tutorial, tutorialStorage } from '@library-frontend/ui';
-import { useEffect, useRef, useState } from 'react';
+import { Button, Image } from '@library-frontend/ui';
+import { useRef, useState } from 'react';
 import { authRoutes, commonRoutes } from 'src/routes';
 import Language from './Language';
 import Test from '@/Test';
-import { useTranslation } from 'react-i18next';
 import { Emoji } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface NavProps {}
 
 /* ======    global     ====== */
 
-const logger = createLogger('components/Nav');
+// const logger = createLogger('components/Nav');
 
 const Nav = (_: NavProps) => {
   /* ======   variables   ====== */
-  const { t } = useTranslation();
   const scrollBarHeight = getScrollbarHeight();
   const langRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
-  const guide = [
-    // {
-    //   text: '메인으로 이동합니다.',
-    //   position: {
-    //     top: '0',
-    //     left: '0',
-    //   },
-    //   size: {
-    //     width: '208px',
-    //     height: '70px',
-    //   },
-    // },
-    // {
-    //   text: '로그인 후 접근 가능한 영역입니다.',
-    //   position: {
-    //     top: '70px',
-    //     left: '0',
-    //   },
-    //   size: {
-    //     width: '208px',
-    //     height: '300px',
-    //   },
-    // },
-    {
-      text: t('조작페이지는 TCM장비를 조작하는 페이지입니다.'),
-      position: {
-        top: '82px',
-        left: '0',
-      },
-      size: {
-        width: '208px',
-        height: '50px',
-      },
-    },
-    {
-      text: t('통계페이지는 존, 알람, 케리어 페이지로\n 통계 데이터를 확인할 수 있습니다.'),
-      position: {
-        top: '124px',
-        left: '0',
-      },
-      size: {
-        width: '208px',
-        height: '110px',
-      },
-    },
-    // {
-    //   text: '로그인 필요없는 페이지입니다.',
-    //   position: {
-    //     bottom: '80px',
-    //     left: '0',
-    //   },
-    //   size: {
-    //     width: '208px',
-    //     height: '140px',
-    //   },
-    // },
-    {
-      ref: langRef,
-      text: t('언어 변경이 가능합니다.\n브라우저의 언어를 변경하면 좀 더 완벽한 언어 지원이 가능합니다.(캘린더 등)'),
-      button: (
-        <Button
-          themeColor={'secondary'}
-          onClick={() => {
-            window.open('https://www.google.com/search?q=How%20to%20change%20browser%20language');
-          }}
-        >
-          브라우저 언어 변경 방법
-        </Button>
-      ),
-    },
-    {
-      text: t('처음 접속하셨다면 회원가입 후 로그인해보세요~'),
-      position: {
-        bottom: '80px',
-        left: '0',
-      },
-      size: {
-        width: '208px',
-        height: '166px',
-      },
-    },
-  ];
+
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
-  useEffect(() => {
-    logger('useEffect');
-
-    const id = tutorialStorage.get(`tutorial-"${guide.map((x) => x.text.replace(/\n/g, '\\n')).join('/')}"`);
-    setOpen(!id);
-  }, []);
+  // useEffect(() => {
+  //   logger('useEffect');
+  // }, []);
   return (
-    <>
-      <div
-        className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 shadow-2xl${
-          open ? ' !translate-x-0' : ''
-        }`}
-        style={{ height: `calc(100vh - ${scrollBarHeight}px)` }}
+    <div
+      className={`transition-transform lg:sticky lg:translate-x-0 max-lg:fixed -translate-x-full z-20 flex flex-col top-0 flex-shrink-0 basis-52 bg-gray-700 text-slate-200 shadow-2xl${
+        open ? ' !translate-x-0' : ''
+      }`}
+      style={{ height: `calc(100vh - ${scrollBarHeight}px)` }}
+    >
+      <Button
+        onClick={() => setOpen(!open)}
+        className={`!fixed w-10 h-10 bg-gray-700 left-full lg:invisible`}
+        themeColor={null}
+        themeSize={null}
       >
-        <Button
-          onClick={() => setOpen(!open)}
-          className={`!fixed w-10 h-10 bg-gray-700 left-full lg:invisible`}
-          themeColor={null}
-          themeSize={null}
-        >
-          <Emoji>{open ? '🗞️' : '📰'}</Emoji>
-        </Button>
-        <nav className="flex flex-col flex-auto" onClick={() => setOpen(false)}>
-          <div className="flex-auto">
-            <Link to="/" className="flex p-4 h-20 justify-center">
-              <Image src={logo} alt="SEMI-TS" height={48} />
-            </Link>
-            <hr />
-            <GroupLink routes={authRoutes} />
-          </div>
-          <hr className="border-dashed" />
-          <GroupLink routes={commonRoutes} />
-        </nav>
+        <Emoji>{open ? '🗞️' : '📰'}</Emoji>
+      </Button>
+      <nav className="flex flex-col flex-auto" onClick={() => setOpen(false)}>
+        <div className="flex-auto">
+          <Link to="/" className="flex p-4 h-20 justify-center">
+            <Image src={logo} alt="SEMI-TS" height={48} />
+          </Link>
+          <hr />
+          <GroupLink routes={authRoutes} />
+        </div>
         <hr className="border-dashed" />
-        <span ref={langRef} className="flex">
-          <Test>
-            <Language />
-          </Test>
-        </span>
+        <GroupLink routes={commonRoutes} />
+      </nav>
+      <hr className="border-dashed" />
+      <span ref={langRef} className="flex">
+        <Test>
+          <Language />
+        </Test>
+      </span>
 
-        <footer className="text-white text-[10px] p-2 text-center">© 2023 SEMI-TS, Inc. all rights reserved.</footer>
-      </div>
-      <Tutorial guide={guide} />
-    </>
+      <footer className="text-white text-[10px] p-2 text-center">© 2023 SEMI-TS, Inc. all rights reserved.</footer>
+    </div>
   );
 };
 

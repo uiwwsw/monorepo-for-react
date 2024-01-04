@@ -51,6 +51,7 @@ const Setting = () => {
     columnForAlarm,
     columnForCarrier,
     columnForUsers,
+    tableFilter,
   } = useSetting();
 
   const { Toasts, showToast } = useToasts();
@@ -81,6 +82,11 @@ const Setting = () => {
           label={t('알람 소리')}
           checked={alarmSound}
           onChange={(e) => handleChange(STORAGE['setting/alarm-sound'], e.target.checked)}
+        />
+        <SettingCheckbox
+          label={t('테이블 필터기능')}
+          checked={tableFilter}
+          onChange={(e) => handleChange(STORAGE['setting/table/filter'], e.target.checked)}
         />
         <H2>{t('조작')}</H2>
         <SettingCheckbox

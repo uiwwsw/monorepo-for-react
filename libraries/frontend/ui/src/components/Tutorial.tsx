@@ -1,4 +1,4 @@
-import { Storage, createLogger } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { ReactNode, RefObject, createRef, useEffect, useMemo, useState } from 'react';
 import Portal from '@/Portal';
 import usePosition from '#/usePosition';
@@ -6,44 +6,30 @@ import Button from '@/Button';
 import SmoothWrap from './Smooth/Wrap';
 /* ======   interface   ====== */
 export interface TutorialProps {
-  onFinish?: () => void;
+  onFinish?: (text?: string) => void;
   btnName?: string;
-  delay?: number;
   guide: {
-    ref?: RefObject<HTMLElement>;
+    delay?: number;
+    ref: RefObject<HTMLElement>;
     button?: ReactNode;
-    position?: {
-      top?: string;
-      right?: string;
-      bottom?: string;
-      left?: string;
-    };
-    size?: {
-      width: string;
-      height: string;
-    };
     text: string;
     zIndex?: number;
   }[];
 }
 /* ======    global     ====== */
-export const tutorialStorage = new Storage<string>(localStorage);
 const logger = createLogger('components/Tutorial');
-const Tutorial = ({ guide, btnName = '확인', delay = 0, onFinish }: TutorialProps) => {
+const Tutorial = ({ guide, btnName = '확인', onFinish }: TutorialProps) => {
   /* ======   variables   ====== */
-  const id = useMemo(() => 'tutorial-' + JSON.stringify(guide.map((x) => x.text).join('/')), [guide]);
-  const didSee = typeof tutorialStorage.get(id) === 'string';
-  const [done, setDone] = useState(true);
-  const [step, setStep] = useState(0);
-  const text = useMemo(() => guide[step]?.text ?? null, [step, guide]);
-  const button = useMemo(() => guide[step]?.button ?? null, [step, guide]);
-  const ref = useMemo(() => guide[step]?.ref || createRef<HTMLElement>(), [step, guide]);
+  const step = guide.find((x) => x.ref.current);
+  const [visible, setVisible] = useState(false);
+  const text = useMemo(() => step?.text, [step]);
+  const button = useMemo(() => step?.button, [step]);
+  const delay = useMemo(() => step?.delay, [step]);
+  const ref = useMemo(() => step?.ref || createRef<HTMLElement>(), [step]);
 
-  const zIndex = useMemo(() => guide[step]?.zIndex ?? null, [step, guide]);
+  const zIndex = useMemo(() => step?.zIndex, [step]);
 
-  const { position: refPosition, trigger, size: refSize } = usePosition({ targetRef: ref, withSize: true });
-  const position = useMemo(() => guide[step]?.position ?? refPosition, [step, guide, refPosition]);
-  const size = useMemo(() => guide[step]?.size ?? refSize, [step, guide, refSize]);
+  const { position, trigger, size } = usePosition({ targetRef: ref, withSize: true });
   /* ======   function    ====== */
   const setStyle = () => {
     if (ref.current) {
@@ -53,29 +39,24 @@ const Tutorial = ({ guide, btnName = '확인', delay = 0, onFinish }: TutorialPr
     }
   };
   const handleClick = async () => {
-    const nextStep = step + 1;
-    if (nextStep < guide.length) setStep(step + 1);
-    else {
-      setDone(true);
-      onFinish && onFinish();
-      tutorialStorage.set(id, new Date().toISOString());
-    }
+    onFinish && onFinish(text);
     logger('handleClick');
   };
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (didSee) return;
-    setTimeout(() => {
-      setDone(false);
-      setStyle();
-      trigger();
-      logger('useEffect');
-    }, delay);
-  }, [step]);
-
-  return !didSee ? (
+    if (ref.current) {
+      setTimeout(() => {
+        setVisible(true);
+        setStyle();
+        trigger();
+      }, delay);
+    }
+    logger('useEffect');
+    return () => setVisible(false);
+  }, [guide]);
+  return guide.length ? (
     <Portal>
-      <SmoothWrap value={!done} className="tutorial">
+      <SmoothWrap value={visible} className="tutorial">
         <div
           className="fixed inset-0 overflow-hidden cursor-not-allowed"
           style={{
