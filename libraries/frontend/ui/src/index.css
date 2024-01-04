@@ -9,7 +9,7 @@ body {
 .ripple {
   @apply absolute rounded-full pointer-events-none animate-ripple bg-white bg-opacity-60;
 }
-.tutorial > * {
+/* .tutorial > * {
   @apply transition;
 }
 .tutorial ~ .tutorial > * {
@@ -20,7 +20,7 @@ body {
 }
 .tutorial[data-smooth='HIDE'] + .tutorial > * {
   @apply !translate-x-0;
-}
+} */
 #toast {
   @apply z-40 pointer-events-none fixed right-7 bottom-4 pl-3 [&>*]:m-3 [&>*]:ml-auto [&>*]:w-fit [&>*]:pointer-events-auto;
 }

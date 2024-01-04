@@ -9,12 +9,12 @@ import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domai
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
-import { AlarmInfoObject, ModuleState, TCMInfo } from '@package-backend/types';
+import { ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 
 /* ======   interface   ====== */
 /* ======    global     ====== */
-const logger = createLogger('utils/useSocket');
+const logger = createLogger('utils/initSocket');
 const parser = <T>(unknown: unknown): T => {
   // 배열인 경우, 배열의 각 요소를 재귀적으로 파싱합니다.
   logger(unknown, typeof unknown);
@@ -36,7 +36,7 @@ const parser = <T>(unknown: unknown): T => {
 let sto: NodeJS.Timeout;
 const limit = 5;
 let tryOut = 0;
-const useSocket = (type: SOCKET_NAME): ContextProps => {
+const initSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   variables   ====== */
   const { data: config } = useConfig();
   const { data: auth } = useGetAuth();
@@ -70,7 +70,10 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
     [data],
   );
   const tcmList: TcmList[] = useMemo(
-    () => Array.from(tcmInfo).map(([id, x]) => new TcmList({ ...x, alive: moduleState.get(id)?.Alive ?? 0 })),
+    () =>
+      Array.from(tcmInfo)
+        .sort()
+        .map(([id, x]) => new TcmList({ ...x, alive: moduleState.get(id)?.Alive ?? 0 })),
     [moduleState, tcmInfo],
   );
   // const serverList: ServerList[] = useMemo(() => {
@@ -136,10 +139,14 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
         // case SOCKET_MESSAGE.HIM_EQUIPMENT_STATE_INFO:
         //   setEquipment(data.data as EquipmentStateObject);
         //   break;
+        // case SOCKET_MESSAGE.TCM_WARNING_SET:
+        //   const alarm = new Alarm(data.data as WarningInfo);
+        //   setAlarm((prev) => [...prev, alarm]);
+        //   break;
         case SOCKET_MESSAGE.TCM_EVENT_SET:
-          const alarm = Object.values(data.data as AlarmInfoObject).map((x) => new Alarm(x));
-          setAlarm(alarm);
-          alarm
+          const alarms = Object.values(data.data as WarningInfo[]).map((x) => new Alarm(x));
+          setAlarm((prev) => [...prev, ...alarms]);
+          alarms
             .filter((x) => x.eventCode && MODULE_STATE_CHANGE_MSGS.includes(x.eventCode))
             .forEach((x) => {
               switch (x.eventCode) {
@@ -206,4 +213,4 @@ const useSocket = (type: SOCKET_NAME): ContextProps => {
   };
 };
 
-export default useSocket;
+export default initSocket;

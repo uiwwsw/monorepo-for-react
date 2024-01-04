@@ -13,6 +13,9 @@ const resources = {
       USER_NOT_AUTHORIZED: '계정이 인증되지 않았습니다.',
       ALREADY_EXISTED_USER_ID: '이미 동일한 아이디가 존재합니다.',
       NO_PERMISSION: '권한이 없습니다.',
+      equipmentModel: '장비 모델',
+      equipmentName: '장비 이름',
+      equipmentTransferTimeout: '전송 시간 제한(ms)',
     },
   },
   en: {

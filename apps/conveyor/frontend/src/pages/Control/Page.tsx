@@ -76,6 +76,9 @@ const Control = () => {
   //   });
 
   /* ======   useEffect   ====== */
+  // useEffect(() => {
+  //   addGuides([{ text: 'dawd' }]);
+  // }, []);
   return (
     <>
       <Loading show={status !== WS_STATUS.OPEN} />

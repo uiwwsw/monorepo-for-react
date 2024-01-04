@@ -1,5 +1,5 @@
 import { convertAlarmToMessage } from '!/alarm/domain';
-import useSocket from '#/useSocket';
+import initSocket from '#/initSocket';
 import SocketDataContext from '@/SocketDataContext';
 import { useEffect, useState } from 'react';
 import Pages from 'src/Pages';
@@ -9,12 +9,15 @@ import { SOCKET_NAME } from '!/socket/domain';
 import useSetting from '#/useSetting';
 import { storage } from '#/storage';
 import { STORAGE } from '!/storage/domain';
-import { ModalWithPortal } from '@library-frontend/ui';
+import { ModalWithPortal, Tutorial } from '@library-frontend/ui';
 import { useTranslation } from 'react-i18next';
 import { CHANGE_VERSION, getChangeVersion } from '!/version/domain';
+import initTutorial from '#/initTutorial';
+import TutorialContext from '@/TutorialContext';
+import { createLogger } from '@package-frontend/utils';
 /* ======   interface   ====== */
 /* ======    global     ====== */
-// const logger = createLogger('App');
+const logger = createLogger('App');
 
 const App = () => {
   /* ======   variables   ====== */
@@ -24,7 +27,8 @@ const App = () => {
   const exVersion = storage.get(STORAGE.version);
   const [changeVersion, setChangeVersion] = useState(CHANGE_VERSION.SAME);
   const { alarmSound } = useSetting();
-  const { tcmList, serverList, alarm, status } = useSocket(SOCKET_NAME.ZONE_GET_INFO);
+  const { tcmList, serverList, alarm, status } = initSocket(SOCKET_NAME.ZONE_GET_INFO);
+  const { guides, addGuides, onFinish, setGuides } = initTutorial();
   const { Toasts, showToast } = useToastsForAlarm();
   // const t = import.meta.env.VITE_APP
   /* ======   function    ====== */
@@ -42,6 +46,7 @@ const App = () => {
     }
   };
   /* ======   useEffect   ====== */
+  logger(guides);
   useEffect(() => {
     if (!exVersion) return storage.set(STORAGE.version, import.meta.env.PACKAGE_VERSION);
 
@@ -103,8 +108,11 @@ const App = () => {
           )}
         </p>
       </ModalWithPortal>
+      <Tutorial guide={guides} onFinish={onFinish} />
       <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status }}>
-        <Pages />
+        <TutorialContext.Provider value={{ addGuides, guides, onFinish, setGuides }}>
+          <Pages />
+        </TutorialContext.Provider>
       </SocketDataContext.Provider>
     </>
   );

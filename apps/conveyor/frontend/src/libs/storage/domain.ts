@@ -1,6 +1,7 @@
 export const enum STORAGE {
   'auth' = 'auth',
   'version' = 'version',
+  'tutorial' = 'tutorial',
   'stats/calendar' = 'stats/calendar',
   'stats/keyword' = 'stats/keyword',
 
@@ -10,6 +11,7 @@ export const enum STORAGE {
   'stats/alarm/column' = 'stats/alarm/column',
   'i18nextLng' = 'i18nextLng',
 
+  'setting/table/filter' = 'setting/table/filter',
   'setting/page-size' = 'setting/page-size',
   'setting/duration' = 'setting/duration',
   'setting/log-browser' = 'setting/log-browser',

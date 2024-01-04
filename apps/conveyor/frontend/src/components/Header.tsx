@@ -1,9 +1,10 @@
 import { createLogger } from '@package-frontend/utils';
-import { useHeaderContext } from './HeaderContext';
-import { Button } from '@library-frontend/ui';
+import { useHeaderContext } from '@/HeaderContext';
+import { Button, ModalWithBtn } from '@library-frontend/ui';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGetAuth } from '!/auth/application/get-auth';
+import { useSocketDataContext } from '@/SocketDataContext';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 
@@ -15,7 +16,9 @@ const Header = (_: HeaderProps) => {
   const navigate = useNavigate();
   const { data } = useGetAuth();
   const { children } = useHeaderContext();
-
+  const { alarm } = useSocketDataContext();
+  // "{\"CommandID\":\"N/A\",\"CarrierID\":\"N/A\",\"Time\":\"2024010414092554\",\"TaskID\":\"-1\",\"SerialNo\":\"2343\",\"EventCode\":\"31110\",\"Location\":\"106\",\"Reason\":\"0\",\"BaseTime\":\"2024010414092554\"}"
+  // "[{\"CommandID\":\"N/A\",\"CarrierID\":\"N/A\",\"Time\":\"2024010414092554\",\"TaskID\":\"-1\",\"SerialNo\":\"2342\",\"EventCode\":\"24020\",\"Location\":\"106\",\"Reason\":\"0\",\"BaseTime\":\"2024010414092554\"}]"
   /* ======   function    ====== */
   const handleLogout = () => {
     navigate('/sign-out');
@@ -31,6 +34,26 @@ const Header = (_: HeaderProps) => {
           <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
             {t('로그아웃')}
           </Button>
+          <ModalWithBtn
+            button={
+              <Button disabled={!alarm.length} themeColor={'quaternary'}>
+                알람 {alarm.length}
+              </Button>
+            }
+          >
+            <div className="-my-3">
+              {alarm.map((x) => (
+                <div className="border my-3">
+                  {Object.entries(x).map(([key, value]) => (
+                    <div className="flex justify-between">
+                      <span className="p-2">{key}:</span>
+                      <span className="p-2">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </ModalWithBtn>
         </div>
       </div>
     </header>
