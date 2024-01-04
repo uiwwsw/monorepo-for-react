@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import H1 from './Typography/H1';
+import H1 from '@/Typography/H1';
 import { Emoji } from '@library-frontend/ui';
 /* ======   interface   ====== */
 export interface PageCenterProps {

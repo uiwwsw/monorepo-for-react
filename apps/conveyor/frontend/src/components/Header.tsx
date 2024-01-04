@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { useSocketDataContext } from '@/SocketDataContext';
+import H3 from '@/Typography/H3';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 
@@ -42,6 +43,7 @@ const Header = (_: HeaderProps) => {
             }
           >
             <div>
+              <H3>이전 알람</H3>
               {alarm.map((x) => (
                 <Accordion key={x.serialNo} title={x.eventCode + x.serialNo}>
                   {Object.entries(x).map(([key, value]) => (
