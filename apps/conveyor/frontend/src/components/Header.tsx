@@ -1,10 +1,11 @@
 import { createLogger } from '@package-frontend/utils';
 import { useHeaderContext } from '@/HeaderContext';
-import { Button, ModalWithBtn } from '@library-frontend/ui';
+import { Accordion, Button, ModalWithBtn } from '@library-frontend/ui';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { useSocketDataContext } from '@/SocketDataContext';
+import H3 from '@/Typography/H3';
 /* ======   interface   ====== */
 export interface HeaderProps {}
 
@@ -41,16 +42,17 @@ const Header = (_: HeaderProps) => {
               </Button>
             }
           >
-            <div className="-my-3">
+            <div>
+              <H3>이전 알람</H3>
               {alarm.map((x) => (
-                <div className="border my-3">
+                <Accordion key={x.serialNo} title={x.eventCode + x.serialNo}>
                   {Object.entries(x).map(([key, value]) => (
                     <div className="flex justify-between">
                       <span className="p-2">{key}:</span>
                       <span className="p-2">{value}</span>
                     </div>
                   ))}
-                </div>
+                </Accordion>
               ))}
             </div>
           </ModalWithBtn>
