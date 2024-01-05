@@ -187,7 +187,7 @@ const Table = <T,>({
 
   const selectedRows = useMemo(
     () => table.getRowModel().rows.filter((row) => rowSelection[row.id]),
-    [table, rowSelection],
+    [table, rowSelection, data],
   );
   /* ======   function    ====== */
   const getNumericMsg = (newValue: number, limit: number) =>
