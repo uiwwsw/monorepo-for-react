@@ -33,11 +33,14 @@ const ModalWithPortal = <T extends string>({
 
   /* ======   useEffect   ====== */
   useEffect(() => {
-    if (!defaultOpen) return;
+    if (defaultOpen === undefined) return;
+    if (defaultOpen) {
+      setOpen(true);
+      setVisible(true);
+    } else {
+      setOpen(false);
+    }
     logger('useEffect');
-
-    setOpen(true);
-    setVisible(true);
   }, [defaultOpen]);
 
   return visible ? (

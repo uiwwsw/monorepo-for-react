@@ -12,6 +12,7 @@ export interface ContextProps {
   tcmList: TcmList[];
   serverList: ServerList[];
   alarm: Alarm[];
+  clearAlarm: (alarm?: Alarm) => void;
 }
 const SocketDataContext = createContext<ContextProps>({
   status: WS_STATUS.CONNECTING,
@@ -19,6 +20,7 @@ const SocketDataContext = createContext<ContextProps>({
   tcmList: [],
   serverList: [],
   alarm: [],
+  clearAlarm: () => null,
 });
 export const useSocketDataContext = () => useContext(SocketDataContext);
 
