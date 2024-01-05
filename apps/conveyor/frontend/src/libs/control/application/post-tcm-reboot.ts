@@ -1,4 +1,4 @@
-import { http, toJson } from '#/http';
+import { http } from '#/http';
 import { createLogger } from '@package-frontend/utils';
 import useSWR from 'swr/mutation';
 
