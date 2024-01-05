@@ -27,7 +27,7 @@ const App = () => {
   const exVersion = storage.get(STORAGE.version);
   const [changeVersion, setChangeVersion] = useState(CHANGE_VERSION.SAME);
   const { alarmSound } = useSetting();
-  const { tcmList, serverList, alarm, status } = initSocket(SOCKET_NAME.ZONE_GET_INFO);
+  const { tcmList, serverList, alarm, status, clearAlarm } = initSocket(SOCKET_NAME.ZONE_GET_INFO);
   const { guides, addGuides, onFinish, setGuides } = initTutorial();
   const { Toasts, showToast } = useToastsForAlarm();
   // const t = import.meta.env.VITE_APP
@@ -109,7 +109,7 @@ const App = () => {
         </p>
       </ModalWithPortal>
       <Tutorial guide={guides} onFinish={onFinish} />
-      <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status }}>
+      <SocketDataContext.Provider value={{ tcmList, serverList, alarm, status, clearAlarm }}>
         <TutorialContext.Provider value={{ addGuides, guides, onFinish, setGuides }}>
           <Pages />
         </TutorialContext.Provider>

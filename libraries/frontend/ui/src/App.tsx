@@ -1,15 +1,20 @@
 /* ======   interface   ====== */
 
-import Calendar from '@/Calendar';
+import Button from '@/Button';
+import ModalWithBtn from '@/Modal/WithBtn';
+import { useState } from 'react';
 
 /* ======    global     ====== */
 const App = () => {
   /* ======   variables   ====== */
+  const [open, setOpen] = useState(0);
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (
     <>
-      <Calendar maxRange={10} selectRange onChange={(e) => console.log(e)}></Calendar>
+      <ModalWithBtn closeTick={open}>
+        <Button onClick={() => setOpen(open + 1)}>dawdawd</Button>
+      </ModalWithBtn>
     </>
   );
 };

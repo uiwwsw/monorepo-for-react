@@ -1,17 +1,19 @@
 import { createLogger } from '@package-frontend/utils';
 import { ModalBaseProps } from './Base';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Button from '@/Button';
 import ModalWithPortal from './WithPortal';
 
 /* ======   interface   ====== */
 export interface ModalWithBtnProps<T extends string> extends ModalBaseProps<T> {
   button?: ReactNode;
+  closeTick?: number;
 }
 /* ======    global     ====== */
 const logger = createLogger('components/ModalWithBtn');
 const ModalWithBtn = <T extends string>({
   button = <Button>팝업</Button>,
+  closeTick,
   onClose,
   ...props
 }: ModalWithBtnProps<T>) => {
@@ -28,6 +30,9 @@ const ModalWithBtn = <T extends string>({
   };
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
+  useEffect(() => {
+    if (closeTick) handleClose();
+  }, [closeTick]);
   return (
     <>
       <div onClick={handleOpen}>{button}</div>

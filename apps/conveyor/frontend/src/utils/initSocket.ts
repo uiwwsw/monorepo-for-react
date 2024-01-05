@@ -107,6 +107,10 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
   const send = <T>(type: SOCKET_NAME, data: T | null = null) =>
     ws.current?.send(JSON.stringify({ type, compress: 0, data: JSON.stringify(data) }));
   const init = useDebounce<void>(() => send(type));
+  const clearAlarm = (alarm?: Alarm) => {
+    if (alarm) setAlarm((prev) => prev.filter((x) => x.serialNo !== alarm.serialNo));
+    else setAlarm([]);
+  };
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!auth?.token || !config?.WS_API) return;
@@ -210,6 +214,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
     tcmList,
     serverList,
     alarm,
+    clearAlarm,
   };
 };
 
