@@ -37,49 +37,51 @@ const Header = (_: HeaderProps) => {
         <div className="flex-auto">{children}</div>
         <div className="flex gap-2 items-center">
           <div>{data?.userName}</div>
-          <ModalWithBtn
-            hasCloseBtn
-            closeTick={tick}
-            button={
-              <Button disabled={!alarm.length} themeColor={'tertiary'}>
-                알람 {alarm.length}
-              </Button>
-            }
-          >
-            <div>
-              <H3>
-                <div className="flex justify-between gap-3">
-                  이전 알람
-                  <Button
-                    themeSize={'sm'}
-                    onClick={() => {
-                      clearAlarm();
-                      setClose(tick + 1);
-                    }}
-                  >
-                    <span ref={btnRef}>전부 지우기</span>
-                  </Button>
-                </div>
-              </H3>
-              {alarm.length ? (
-                alarm.map((x) => (
-                  <Accordion key={x.time + x.serialNo} title={convertAlarmToMessage(x)}>
-                    {Object.entries(x).map(([key, value]) => (
-                      <div className="flex justify-between">
-                        <span className="p-2">{key}:</span>
-                        <span className="p-2">{value}</span>
-                      </div>
-                    ))}
-                    <Button themeSize={'xs'} onClick={() => clearAlarm(x)}>
-                      알람 지우기
+          {false && (
+            <ModalWithBtn
+              hasCloseBtn
+              closeTick={tick}
+              button={
+                <Button disabled={!alarm.length} themeColor={'tertiary'}>
+                  알람 {alarm.length}
+                </Button>
+              }
+            >
+              <div>
+                <H3>
+                  <div className="flex justify-between gap-3">
+                    이전 알람
+                    <Button
+                      themeSize={'sm'}
+                      onClick={() => {
+                        clearAlarm();
+                        setClose(tick + 1);
+                      }}
+                    >
+                      <span ref={btnRef}>전부 지우기</span>
                     </Button>
-                  </Accordion>
-                ))
-              ) : (
-                <Empty className="block py-10 m-auto w-fit" />
-              )}
-            </div>
-          </ModalWithBtn>
+                  </div>
+                </H3>
+                {alarm.length ? (
+                  alarm.map((x) => (
+                    <Accordion key={x.time + x.serialNo} title={convertAlarmToMessage(x)}>
+                      {Object.entries(x).map(([key, value]) => (
+                        <div className="flex justify-between">
+                          <span className="p-2">{key}:</span>
+                          <span className="p-2">{value}</span>
+                        </div>
+                      ))}
+                      <Button themeSize={'xs'} onClick={() => clearAlarm(x)}>
+                        알람 지우기
+                      </Button>
+                    </Accordion>
+                  ))
+                ) : (
+                  <Empty className="block py-10 m-auto w-fit" />
+                )}
+              </div>
+            </ModalWithBtn>
+          )}
           <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
             {t('로그아웃')}
           </Button>
