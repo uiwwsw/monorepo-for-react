@@ -307,11 +307,11 @@ router.get('/user-list', verifyToken, asyncWrapper<UserListRequest, UserListResp
 router.post('/sign-up', asyncWrapper<SignUpRequest, SignUpResponse>(async (req, res) => {
     const { user_id, username, password } = req.body;
     const [rows] = await Service.Inst.MySQL.query<UserRow[]>('SELECT uid FROM users WHERE user_id = ?', [user_id]);
-    const grade = UserGrade.OPERATOR;
     if (rows.length > 0) {
         throw new Error('ALREADY_EXISTED_USER_ID');
     }
 
+    const grade = UserGrade.PENDING;
     await Service.Inst.MySQL.query('INSERT INTO users (user_id, user_name, password, grade, created_date, last_access) VALUES (?, ?, ?, ?, now(), now())', [user_id, username, password, grade]);
     res.json({
         message: "OK",
@@ -507,7 +507,7 @@ router.put('/user-password', verifyToken, asyncWrapper<UserPasswordRequest, User
  *             server_time:
  *               type: Date
  */
-router.get('/heartbeat', asyncWrapper<HeartBeatRequest, HeartBeatResponse>(async (req, res) => {
+router.get('/heartbeat', verifyToken, asyncWrapper<HeartBeatRequest, HeartBeatResponse>(async (req, res) => {
     res.json({
         message: "OK",
         data: {

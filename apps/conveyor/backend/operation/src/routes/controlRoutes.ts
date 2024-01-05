@@ -94,6 +94,12 @@ router.post('/processing-state/set', verifyToken, asyncWrapper<ProcessingStateRe
 
     await Service.Inst.Redis.hset('System:EquipmentState', 'ProcessingState2', state);
 
+    if (state === '1') {
+        Service.Inst.Redis.publish('FromUIMCh', MsgUtils.makeUimLocalPause());
+    } else {
+        Service.Inst.Redis.publish('FromUIMCh', MsgUtils.makeUimLocalResume());
+    }
+
     res.json({
         message: "OK",
         data: {}

@@ -39,6 +39,8 @@ export enum MessageID {
     DcmAirShowerCmd = 'dcmAirShowerCmd',
     UimZoneAirShowerAttributes = 'uimZoneAirShowerAttributes',
     HimControlSignal = 'himControlSignal',
+    UimLocalPause = 'uimLocalPause',
+    UimLocalResume = 'uimLocalResume',
 }
 
 export interface TcmMotionCommand {
@@ -457,6 +459,24 @@ export function makeHimControlSignal(onOff: number) {
     const msg: msg = {
         MessageID: MessageID.HimControlSignal,
         MessageData: data,
+    };
+
+    return JSON.stringify(msg);
+}
+
+export function makeUimLocalPause() {
+    const msg: msg = {
+        MessageID: MessageID.UimLocalPause,
+        MessageData: {},
+    };
+
+    return JSON.stringify(msg);
+}
+
+export function makeUimLocalResume() {
+    const msg: msg = {
+        MessageID: MessageID.UimLocalPause,
+        MessageData: {},
     };
 
     return JSON.stringify(msg);
