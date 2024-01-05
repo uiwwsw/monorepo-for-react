@@ -63,7 +63,7 @@ const Header = (_: HeaderProps) => {
               </H3>
               {alarm.length ? (
                 alarm.map((x) => (
-                  <Accordion key={x.serialNo} title={convertAlarmToMessage(x)}>
+                  <Accordion key={x.time + x.serialNo} title={convertAlarmToMessage(x)}>
                     {Object.entries(x).map(([key, value]) => (
                       <div className="flex justify-between">
                         <span className="p-2">{key}:</span>

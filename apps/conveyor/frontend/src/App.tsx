@@ -70,6 +70,7 @@ const App = () => {
       }),
     [alarm],
   );
+
   return (
     <>
       {Toasts}

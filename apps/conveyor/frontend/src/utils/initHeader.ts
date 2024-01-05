@@ -4,7 +4,7 @@ import { ContextProps } from '@/HeaderContext';
 /* ======   interface   ====== */
 
 /* ======    global     ====== */
-const useHeader = (): ContextProps => {
+const initHeader = (): ContextProps => {
   /* ======   variables   ====== */
   const [children, setChildren] = useState<ReactNode>(undefined);
   /* ======   function    ====== */
@@ -15,4 +15,4 @@ const useHeader = (): ContextProps => {
   };
 };
 
-export default useHeader;
+export default initHeader;
