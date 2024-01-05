@@ -37,11 +37,11 @@ const Help = () => {
           <Button onClick={() => (location.href = ROUTES_PATH['/sign-up'])}>{ROUTES_PATH['/sign-up']}</Button>
           <span className="ml-3">{t('회원가입을 진행해 주세요.')}</span>
         </Accordion>
-        <Accordion title={t('통계 페이지의 검색기능')}>
+        {/* <Accordion title={t('통계 페이지의 검색기능')}>
           {t(
             '검색기능은 두가지가 있습니다. 필터는 현재 화면에 보여지는 데이터중 동일한 행만 남기는 기능으로, 화면에서 찾기 기능과 유사합니다. 검색 기능은 실제 DB에서 검색하는 기능입니다.',
           )}
-        </Accordion>
+        </Accordion> */}
       </div>
     </PageCenter>
     // <>

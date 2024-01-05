@@ -24,7 +24,7 @@ const StatsAlarm = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
-  const { pageSizeForAlarm, durationForAlarm, columnForAlarm } = useSetting();
+  const { pageSizeForAlarm, durationForAlarm, columnForAlarm, tableFilterAlarm } = useSetting();
   const thead = Object.entries(columnForAlarm)
     .filter(([_, val]) => val)
     .map(([key]) => key) as TheadAlarm[];
@@ -118,6 +118,7 @@ const StatsAlarm = () => {
       <H1>{t('알람')}</H1>
 
       <Table
+        tableFilter={tableFilterAlarm}
         thead={thead}
         mustHaveColumn={mustHaveColumnAlarm}
         fixHead={fixHeadAlarm}

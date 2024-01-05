@@ -31,7 +31,6 @@ import { useTranslation } from 'react-i18next';
 import Td from './Td';
 import Empty from '@/Empty';
 import Extender from './Expander';
-import useSetting from '#/useSetting';
 import { useTutorialContext } from '@/TutorialContext';
 
 /* ======   interface   ====== */
@@ -47,6 +46,7 @@ export interface TableProps<T> {
   setCacheColumnVisibility?: (value: VisibilityState) => unknown;
   textAlignCenter?: boolean;
   makePagination?: boolean;
+  tableFilter?: boolean;
   totalLength?: number;
   pagination?: ReactNode;
   renderSelectComponentAtTop?: ReactElement<{ selectedRows: Row<T>[] }>;
@@ -62,6 +62,7 @@ const Table = <T,>({
   fixHead,
   mustHaveColumn,
   data,
+  tableFilter = true,
   pageSize,
   placeholder,
   allRowSelectTick,
@@ -144,7 +145,6 @@ const Table = <T,>({
     ],
     [thead, renderSelectComponent, renderSubComponent, renderSelectComponentAtTop],
   );
-  const { tableFilter } = useSetting();
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<{ [key: string]: boolean }>({});
@@ -260,8 +260,8 @@ const Table = <T,>({
         </div>
       )}
       <div className="flex justify-between items-center">
-        {tableFilter && (
-          <div className="flex gap-2" ref={filterBoxRef}>
+        <div className="flex gap-2" ref={filterBoxRef}>
+          {tableFilter && (
             <Input
               icon="🏷️"
               type="search"
@@ -271,8 +271,8 @@ const Table = <T,>({
               onChange={handleSearchChange}
               placeholder={placeholder ?? t('필터링할 키워드를 입력하세요.')}
             />
-          </div>
-        )}
+          )}
+        </div>
         {renderSelectComponent && (
           <div className="flex items-center">
             {cloneElement(renderSelectComponent, { selectedRows, isAllSelected: table.getIsAllPageRowsSelected() })}

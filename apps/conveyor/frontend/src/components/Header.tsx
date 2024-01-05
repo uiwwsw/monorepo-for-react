@@ -37,9 +37,6 @@ const Header = (_: HeaderProps) => {
         <div className="flex-auto">{children}</div>
         <div className="flex gap-2 items-center">
           <div>{data?.userName}</div>
-          <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
-            {t('로그아웃')}
-          </Button>
           <ModalWithBtn
             hasCloseBtn
             closeTick={tick}
@@ -83,6 +80,9 @@ const Header = (_: HeaderProps) => {
               )}
             </div>
           </ModalWithBtn>
+          <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
+            {t('로그아웃')}
+          </Button>
         </div>
       </div>
     </header>

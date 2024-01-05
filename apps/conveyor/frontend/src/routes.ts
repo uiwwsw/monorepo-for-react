@@ -86,11 +86,11 @@ export const commonRoutes: Tab[] = [
     name: '설정',
     node: Setting,
   },
-  {
-    icon: '💊',
-    path: ROUTES_PATH['/help'],
-    name: '도움말',
-    node: Help,
-  },
+  // {
+  //   icon: '💊',
+  //   path: ROUTES_PATH['/help'],
+  //   name: '도움말',
+  //   node: Help,
+  // },
 ];
 export const filterGradeRoute = (x: Group, auth?: Auth | null) => (x.grade ? !!auth && auth.grade! <= x.grade : true);
