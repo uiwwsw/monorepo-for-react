@@ -55,7 +55,6 @@ const ControlModalLogsServer = ({ stateType }: ControlModalLogsServerProps) => {
             {t('Logs')}
           </Button>
         }
-        hasButton={['CANCEL']}
         defaultLoading={isLogListMutating}
         hasCloseBtn
       >

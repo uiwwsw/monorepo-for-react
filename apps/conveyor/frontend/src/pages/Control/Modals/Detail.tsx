@@ -27,7 +27,6 @@ const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
             Alive
           </Button>
         }
-        hasButton={['CANCEL']}
         hasCloseBtn
       >
         <H2>TCM {tid} 연결상태</H2>

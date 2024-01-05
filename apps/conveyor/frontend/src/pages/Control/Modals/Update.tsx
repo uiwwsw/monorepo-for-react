@@ -8,6 +8,8 @@ import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { useFirmList } from '!/control/application/get-backup-firmware';
 import { useDeleteFirm } from '!/control/application/delete-upload-firmware';
 import { useTranslation } from 'react-i18next';
+import H2 from '@/Typography/H2';
+import { useTcmReboot } from '!/control/application/post-tcm-reboot';
 
 /* ======   interface   ====== */
 export interface ControlModalUpdateProps {
@@ -37,11 +39,23 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
   const { trigger: firmListTrigger, isMutating } = useFirmList();
   const { trigger: uploadTrigger, process } = useUploadFirm();
   const { trigger: networkTrigger } = useTcmNetwork();
+  const { trigger: rebootTrigger } = useTcmReboot();
 
   const [status, setStatus] = useState<UPLOAD_STATUS[]>([]);
   const continueUpdatingRef = useRef(true);
   const hasBackup = useMemo(() => !(selectedFile !== newFile && !!selectedFile), [selectedFile]);
   /* ======   function    ====== */
+  const handleReboot = async () => {
+    if (!selectedRows || !selectedAdds) return;
+    selectedRows.forEach(async (tcmId, index) => {
+      const address = selectedAdds[index];
+      const port = await networkTrigger({ tcm_id: tcmId });
+      await rebootTrigger({
+        address,
+        port,
+      });
+    });
+  };
   const handleFileDelete = async () => {
     if (!selectedRows || !selectedAdds) return;
     selectedRows.forEach(async (tcmId, index) => {
@@ -134,10 +148,22 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
             {t('업데이트')}
           </Button>
         }
-        hasButton={[cancelBtn]}
       >
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">{t('TCM 펌웨어 업데이트')}</h2>
+          <div className="flex justify-between items-center">
+            <H2>{t('TCM 펌웨어 업데이트')}</H2>
+            <ModalWithBtn
+              hasButton={[okBtn, cancelBtn]}
+              button={
+                <Button smoothLoading themeColor="quaternary" themeSize="sm">
+                  <span className="whitespace-nowrap">{t('리붓')}</span>
+                </Button>
+              }
+              onClose={(value) => value === okBtn && handleReboot()}
+            >
+              {t('리붓하겠습니까?')}
+            </ModalWithBtn>
+          </div>
           <div className="flex items-center gap-2 w-[400px]">
             <Combo
               width="100%"

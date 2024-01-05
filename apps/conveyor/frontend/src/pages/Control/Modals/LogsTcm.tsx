@@ -58,7 +58,6 @@ const ControlModalLogsTcm = ({ tcmId, address }: ControlModalLogsTcmProps) => {
             {t('Logs')}
           </Button>
         }
-        hasButton={['CANCEL']}
         defaultLoading={isLogListMutating}
         hasCloseBtn
       >
