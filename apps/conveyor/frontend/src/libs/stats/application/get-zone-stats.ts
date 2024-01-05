@@ -25,6 +25,30 @@ async function fetcher(
   });
   logger(url, arg, res);
   const json = await toJson<ZoneStatsResponse>(res);
+  // const json = [
+  //   {
+  //     date: newDate('2023-12-28').toISOString(),
+  //     zoneId: 31311,
+  //     carrierNum: 4,
+  //     alarmNum: 1,
+  //     warningNum: 2,
+  //   },
+  //   {
+  //     date: newDate('2024-01-03').toISOString(),
+  //     zoneId: 31311,
+  //     carrierNum: 3,
+  //     alarmNum: 1,
+  //     warningNum: 2,
+  //   },
+  //   {
+  //     date: newDate().toISOString(),
+  //     zoneId: 21618,
+  //     carrierNum: 1,
+  //     alarmNum: 1,
+  //     warningNum: 2,
+  //   },
+  // ];
+  // return json ? new StatsSummaryData({ rows: json }) : undefined;
   return json ? new StatsSummaryData(json) : undefined;
 }
 

@@ -32,16 +32,16 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
   const duration = currentZones
     ?.reduce(
       ([start, end], v) => {
-        const date = +(v?.date ?? 0);
+        const date = +(newDate(v?.date).valueOf() ?? 0);
         return [Math.min(start, date), Math.max(end, date)];
       },
       [Infinity, 0],
     )
-    .reduce((start, end) => newDate(`${end}`).diff(`${start}`, 'days'));
+    .reduce((start, end) => newDate(new Date(end)).diff(new Date(start), 'day') + 1);
   const carrierTotal = currentZones?.reduce((a, v) => a + (v?.carrierNum ?? 0), 0);
-  const carrierAverage = Math.floor(!carrierTotal || !duration ? 0 : carrierTotal / duration);
+  const carrierAverage = +(!carrierTotal || !duration ? 0 : carrierTotal / duration).toFixed(2);
   const alarmTotal = currentZones?.reduce((a, v) => a + (v?.alarmNum ?? 0), 0);
-  const alarmAverage = Math.floor(!alarmTotal || !duration ? 0 : alarmTotal / duration);
+  const alarmAverage = +(!alarmTotal || !duration ? 0 : alarmTotal / duration).toFixed(2);
   const graphData: LineProps['data'] = useMemo(() => {
     if (!currentZones) return [];
     const alarm: { x: string; y: number }[] = [];
@@ -50,12 +50,12 @@ const StatsSummaryGraphic = <T,>({ statsData, selectedRows }: StatsSummaryGraphi
 
     currentZones.forEach((zone) => {
       if (!zone || !zone.date) return;
-      const { date, alarmNum, carrierNum } = zone;
+      const { dateFormat, alarmNum, carrierNum } = zone;
 
-      if (!dataAggregator[date]) dataAggregator[date] = { alarm: 0, carrier: 0 };
+      if (!dataAggregator[dateFormat]) dataAggregator[dateFormat] = { alarm: 0, carrier: 0 };
 
-      dataAggregator[date].alarm += alarmNum ?? 0;
-      dataAggregator[date].carrier += carrierNum ?? 0;
+      dataAggregator[dateFormat].alarm += alarmNum ?? 0;
+      dataAggregator[dateFormat].carrier += carrierNum ?? 0;
     });
     Object.keys(dataAggregator)
       .sort()

@@ -20,12 +20,14 @@ export class StatsSummaryData {
 }
 export class StatsSummaryDataRow {
   date: string;
+  dateFormat: string;
   zoneId?: number;
   alarmNum?: number;
   carrierNum?: number;
   warningNum?: number;
   constructor({ date, zoneId, carrierNum, alarmNum, warningNum }: ZoneStatsItem) {
-    this.date = date ? newDate(date).format(FORMAT_WITHOUT_TIME) : '';
+    this.date = date ? newDate(date).toISOString() : '';
+    this.dateFormat = date ? newDate(date).format(FORMAT_WITHOUT_TIME) : '';
     this.zoneId = zoneId;
     this.alarmNum = alarmNum;
     this.carrierNum = carrierNum;
@@ -201,10 +203,10 @@ export const fixHeadCarrier: Partial<Record<TheadCarrier, string>> = {
   endTime: t('종료 시간'),
   startTime: t('시작 시간'),
   taskId: t('작업 아이디'),
-  zoneIdFrom: t('출발 지역 아이디'),
-  zoneIdFromName: t('출발 지역 이름'),
-  zoneIdTo: t('도착 지역 아이디'),
-  zoneIdToName: t('도착 지역 이름'),
+  zoneIdFrom: t('출발 존 아이디'),
+  zoneIdFromName: t('출발 존 이름'),
+  zoneIdTo: t('도착 존 아이디'),
+  zoneIdToName: t('도착 존 이름'),
 };
 
 export type TheadSummary = keyof StatsSummaryDataRow | keyof ZoneListZone;
@@ -214,7 +216,7 @@ export const theadSummary: TheadSummary[] = [
   'zoneId',
   'displayName',
   'physicalType',
-  'date',
+  'dateFormat',
   'alarmNum',
   'carrierNum',
   'warningNum',
@@ -227,10 +229,10 @@ export const columnSummaryDisabled = mustHaveColumnSummary.reduce(
 
 export const fixHeadSummary: Partial<Record<TheadSummary, string>> = {
   level: t('레벨'),
-  zoneId: t('지역 아이디'),
+  zoneId: t('존 아이디'),
   displayName: t('표시 이름'),
   physicalType: t('물리적 유형'),
-  date: t('날짜'),
+  dateFormat: t('날짜'),
   alarmNum: t('알람 번호'),
   carrierNum: t('캐리어 번호'),
   warningNum: t('경고 번호'),
