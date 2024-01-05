@@ -1,5 +1,5 @@
 import { useToasts } from '@library-frontend/ui';
-import { createLogger, wait } from '@package-frontend/utils';
+import { createLogger } from '@package-frontend/utils';
 import { useTranslation } from 'react-i18next';
 /* ======   interface   ====== */
 export interface UseToastProps<T> {
@@ -11,7 +11,7 @@ export interface UseToastError<T> {
 }
 /* ======    global     ====== */
 const logger = createLogger('utils/useToastsForControl');
-const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
+const useToastsForControl = <T>({ selectedRows }: UseToastProps<T>) => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
@@ -33,11 +33,11 @@ const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
     if (!selectedRows) return showToast({ message: t('선택되지 않았습니다.') });
     const onlyStartMsg = !failMsg || !successMsg;
     logger(selectedRows + '이벤트 시작');
-    if (onlyStartMsg) showToast({ message: startMsg, duration: duration * selectedRows.length });
+    if (onlyStartMsg) showToast({ message: startMsg, duration });
     else
       showToast({
         message: startMsg,
-        duration: duration * selectedRows.length,
+        duration,
         hasClose: false,
         notClose: true,
         hasGauge: true,
@@ -48,7 +48,6 @@ const useToastsForControl = <T,>({ selectedRows }: UseToastProps<T>) => {
     for (const id of selectedRows) {
       try {
         await event(id);
-        if (onlyStartMsg) await wait(duration);
       } catch (e) {
         if (onlyStartMsg) return;
         const { message } = e as Error;
