@@ -37,9 +37,6 @@ const Header = (_: HeaderProps) => {
         <div className="flex-auto">{children}</div>
         <div className="flex gap-2 items-center">
           <div>{data?.userName}</div>
-          <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
-            {t('로그아웃')}
-          </Button>
           <ModalWithBtn
             hasCloseBtn
             closeTick={tick}
@@ -66,7 +63,7 @@ const Header = (_: HeaderProps) => {
               </H3>
               {alarm.length ? (
                 alarm.map((x) => (
-                  <Accordion key={x.serialNo} title={convertAlarmToMessage(x)}>
+                  <Accordion key={x.time + x.serialNo} title={convertAlarmToMessage(x)}>
                     {Object.entries(x).map(([key, value]) => (
                       <div className="flex justify-between">
                         <span className="p-2">{key}:</span>
@@ -83,6 +80,9 @@ const Header = (_: HeaderProps) => {
               )}
             </div>
           </ModalWithBtn>
+          <Button smoothLoading themeColor={'secondary'} onClick={handleLogout}>
+            {t('로그아웃')}
+          </Button>
         </div>
       </div>
     </header>

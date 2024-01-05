@@ -13,7 +13,6 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   variables   ====== */
   const pageSize = storage.get<number>(STORAGE['setting/page-size']) ?? 10;
   const duration = storage.get<number>(STORAGE['setting/duration']) ?? 7;
-  const tableFilter = storage.get<boolean>(STORAGE['setting/table/filter']) ?? true;
   const logBrowser = storage.get<boolean>(STORAGE['setting/log-browser']) ?? true;
   const logBrowserMultiple = storage.get<boolean>(STORAGE['setting/log-browser-multiple']) ?? true;
   const alarmSound = storage.get<boolean>(STORAGE['setting/alarm-sound']) ?? true;
@@ -22,6 +21,8 @@ const useSetting = (_?: useSettingProps) => {
   const pageSizeForTcm = storage.get<number>(STORAGE['setting/control/tcm/page-size']) ?? undefined;
   const pageSizeForSummary = storage.get<number>(STORAGE['setting/stats/summary/page-size']) ?? undefined;
   const pageSizeForAlarm = storage.get<number>(STORAGE['setting/stats/alarm/page-size']) ?? undefined;
+  const tableFilterAlarm = storage.get<boolean>(STORAGE['setting/stats/alarm/table/filter']) ?? false;
+  const tableFilterCarrier = storage.get<boolean>(STORAGE['setting/stats/carrier/table/filter']) ?? false;
   const pageSizeForCarrier = storage.get<number>(STORAGE['setting/stats/carrier/page-size']) ?? undefined;
   const pageSizeForUsers = storage.get<number>(STORAGE['setting/users/page-size']) ?? undefined;
 
@@ -45,7 +46,8 @@ const useSetting = (_?: useSettingProps) => {
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return {
-    tableFilter,
+    tableFilterAlarm,
+    tableFilterCarrier,
     logBrowser,
     logBrowserMultiple,
     pageSize,

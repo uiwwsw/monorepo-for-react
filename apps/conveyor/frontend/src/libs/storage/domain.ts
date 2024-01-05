@@ -11,7 +11,6 @@ export const enum STORAGE {
   'stats/alarm/column' = 'stats/alarm/column',
   'i18nextLng' = 'i18nextLng',
 
-  'setting/table/filter' = 'setting/table/filter',
   'setting/page-size' = 'setting/page-size',
   'setting/duration' = 'setting/duration',
   'setting/log-browser' = 'setting/log-browser',
@@ -23,10 +22,13 @@ export const enum STORAGE {
   'setting/stats/summary/page-size' = 'setting/stats/summary/page-size',
   'setting/stats/alarm/page-size' = 'setting/stats/alarm/page-size',
   'setting/stats/carrier/page-size' = 'setting/stats/carrier/page-size',
+  'setting/stats/carrier/table/filter' = 'setting/stats/carrier/table/filter',
+
   'setting/users/page-size' = 'setting/users/page-size',
 
   'setting/stats/summary/duration' = 'setting/stats/summary/duration',
   'setting/stats/alarm/duration' = 'setting/stats/alarm/duration',
+  'setting/stats/alarm/table/filter' = 'setting/stats/alarm/table/filter',
   'setting/stats/carrier/duration' = 'setting/stats/carrier/duration',
 
   'setting/stats/summary/column' = 'setting/stats/summary/column',

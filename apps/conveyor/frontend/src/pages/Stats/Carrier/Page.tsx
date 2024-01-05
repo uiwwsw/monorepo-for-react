@@ -23,7 +23,7 @@ const StatsCarrier = () => {
   /* ======   variables   ====== */
   const { t } = useTranslation();
 
-  const { pageSizeForCarrier, durationForCarrier, columnForCarrier } = useSetting();
+  const { pageSizeForCarrier, durationForCarrier, columnForCarrier, tableFilterCarrier } = useSetting();
   const thead = Object.entries(columnForCarrier)
     .filter(([_, val]) => val)
     .map(([key]) => key) as TheadCarrier[];
@@ -119,6 +119,7 @@ const StatsCarrier = () => {
       <H1>{t('케리어')}</H1>
 
       <Table
+        tableFilter={tableFilterCarrier}
         thead={thead}
         mustHaveColumn={mustHaveColumnCarrier}
         fixHead={fixHeadCarrier}

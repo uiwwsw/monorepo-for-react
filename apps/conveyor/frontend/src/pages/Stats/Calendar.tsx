@@ -79,7 +79,9 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
         },
         {
           ref: searchBoxRef,
-          text: t('검색기능은 필터와 다르게 DB에서 검색합니다.'),
+          text: t(
+            '검색기능은 필터와 다르게 DB에서 검색합니다. 알람, 케리어 페이지에서 필터 기능이 필요하다면 설정에서 활성화해 주세요.',
+          ),
         },
       ]);
     }, 0);

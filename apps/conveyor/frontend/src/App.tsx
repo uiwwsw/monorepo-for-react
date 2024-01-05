@@ -15,12 +15,14 @@ import { CHANGE_VERSION, getChangeVersion } from '!/version/domain';
 import initTutorial from '#/initTutorial';
 import TutorialContext from '@/TutorialContext';
 import { createLogger } from '@package-frontend/utils';
+import { useCheckAuth } from '!/auth/application/get-check-auth';
 /* ======   interface   ====== */
 /* ======    global     ====== */
 const logger = createLogger('App');
 
 const App = () => {
   /* ======   variables   ====== */
+  useCheckAuth();
   const { t } = useTranslation();
   const closeBtn = t('닫기');
   const resetBtn = t('리셋');
@@ -68,6 +70,7 @@ const App = () => {
       }),
     [alarm],
   );
+
   return (
     <>
       {Toasts}

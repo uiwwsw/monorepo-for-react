@@ -11,7 +11,7 @@ const Stats = lazy(() => import('src/pages/Stats/Page'));
 const StatsSummary = lazy(() => import('src/pages/Stats/Summary/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
-const Help = lazy(() => import('src/pages/Help'));
+// const Help = lazy(() => import('src/pages/Help'));
 const Setting = lazy(() => import('src/pages/Setting/Page'));
 const Setup = lazy(() => import('src/pages/Setup'));
 const Users = lazy(() => import('src/pages/Users/Page'));
@@ -86,11 +86,11 @@ export const commonRoutes: Tab[] = [
     name: '설정',
     node: Setting,
   },
-  {
-    icon: '💊',
-    path: ROUTES_PATH['/help'],
-    name: '도움말',
-    node: Help,
-  },
+  // {
+  //   icon: '💊',
+  //   path: ROUTES_PATH['/help'],
+  //   name: '도움말',
+  //   node: Help,
+  // },
 ];
 export const filterGradeRoute = (x: Group, auth?: Auth | null) => (x.grade ? !!auth && auth.grade! <= x.grade : true);

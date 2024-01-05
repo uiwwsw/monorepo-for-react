@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { HttpError } from '#/http';
-import useHeader from '#/useHeader';
+import initHeader from '#/initHeader';
 import { useTranslation } from 'react-i18next';
 import LayoutWrap from '@/Layout/Wrap';
 import LayoutMain from '@/Layout/Main';
@@ -19,7 +19,7 @@ const PrivateLayout = () => {
 
   // const navigate = useNavigate();
   // const location = useLocation();
-  const { children, setChildren } = useHeader();
+  const { children, setChildren } = initHeader();
   const { data } = useGetAuth();
   /* ======   function    ====== */
   /* ======   useEffect   ====== */

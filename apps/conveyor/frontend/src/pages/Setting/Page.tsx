@@ -51,7 +51,8 @@ const Setting = () => {
     columnForAlarm,
     columnForCarrier,
     columnForUsers,
-    tableFilter,
+    tableFilterAlarm,
+    tableFilterCarrier,
   } = useSetting();
 
   const { Toasts, showToast } = useToasts();
@@ -83,11 +84,7 @@ const Setting = () => {
           checked={alarmSound}
           onChange={(e) => handleChange(STORAGE['setting/alarm-sound'], e.target.checked)}
         />
-        <SettingCheckbox
-          label={t('테이블 필터기능')}
-          checked={tableFilter}
-          onChange={(e) => handleChange(STORAGE['setting/table/filter'], e.target.checked)}
-        />
+
         <H2>{t('조작')}</H2>
         <SettingCheckbox
           label={t('조작 테이블 페이지네이션 적용')}
@@ -111,6 +108,7 @@ const Setting = () => {
           />
         )}
         <H2>{t('통계')}</H2>
+
         <SettingCheckbox
           label={t('로그 뷰어 새창')}
           checked={logBrowser}
@@ -165,6 +163,11 @@ const Setting = () => {
         <div className="pl-2">
           <H3>{t('알람')}</H3>
           <SettingCheckbox
+            label={t('테이블 필터기능')}
+            checked={tableFilterAlarm}
+            onChange={(e) => handleChange(STORAGE['setting/stats/alarm/table/filter'], e.target.checked)}
+          />
+          <SettingCheckbox
             label={t('알람 페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForAlarmSetting}
             onChange={() =>
@@ -203,6 +206,11 @@ const Setting = () => {
         </div>
         <div className="pl-2">
           <H3>{t('케리어')}</H3>
+          <SettingCheckbox
+            label={t('테이블 필터기능')}
+            checked={tableFilterCarrier}
+            onChange={(e) => handleChange(STORAGE['setting/stats/carrier/table/filter'], e.target.checked)}
+          />
           <SettingCheckbox
             label={t('케리어 페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForCarrierSetting}
