@@ -1,6 +1,6 @@
 import { Auth } from '!/auth/domain';
 import { STORAGE } from '!/storage/domain';
-import { SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
+import { ROUTES_PATH, SIGN_IN_QUERY_PARAM_TOAST } from '!/routes/domain';
 import { STResponse, STResponseFailed, STResponseSuccess } from '@package-backend/types';
 import { createLogger } from '@package-frontend/utils';
 import { t } from 'src/i18n';
@@ -11,12 +11,14 @@ export const http = async <T = unknown>({
   url,
   arg,
   param,
+  autoCatch = true,
   method = 'GET',
   contentType = 'application/json',
   timeout = 60000,
 }: {
   timeout?: number;
   url: string;
+  autoCatch?: boolean;
   contentType?: string;
   arg?: T;
   param?: T;
@@ -49,6 +51,8 @@ export const http = async <T = unknown>({
     signal: controller.signal,
   });
   clearTimeout(sti);
+  if (!autoCatch) return res;
+
   if (res.ok) return res;
   const message = await res.text();
   throw new HttpError(message, res);
@@ -124,7 +128,7 @@ export class HttpError extends Error implements STResponseFailed {
 
     if (this.isUnAuth.includes(this.status)) {
       storage.set(STORAGE['auth']);
-      location.replace(`/sign-in${this.query}`);
+      location.replace(`${ROUTES_PATH['/sign-in']}${this.query}`);
     }
   }
 }
