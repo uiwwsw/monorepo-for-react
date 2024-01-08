@@ -16,5 +16,6 @@ export function useCheckAuth() {
   return useSWR('/api/users/heartbeat', fetcher, {
     revalidateOnFocus: true,
     revalidateOnMount: true,
+    revalidateIfStale: true,
   });
 }

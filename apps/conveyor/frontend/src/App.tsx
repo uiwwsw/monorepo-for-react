@@ -21,6 +21,7 @@ const logger = createLogger('App');
 
 const App = () => {
   /* ======   variables   ====== */
+
   const { t } = useTranslation();
   const closeBtn = t('닫기');
   const resetBtn = t('리셋');

@@ -9,6 +9,7 @@ export interface LayoutMainProps {}
 // const logger = createLogger('components/Layout/Main');
 const LayoutMain = (_: LayoutMainProps) => {
   /* ======   variables   ====== */
+
   /* ======   function    ====== */
   /* ======   useEffect   ====== */
   return (

@@ -92,6 +92,9 @@ export const toJson = async <T>(res: Response) => {
 export class HttpError extends Error implements STResponseFailed {
   status: number;
   statusText: string;
+  static unAuth(status: number) {
+    return [401, 403].includes(status);
+  }
   get type() {
     switch (this.status) {
       case 404:
@@ -116,9 +119,7 @@ export class HttpError extends Error implements STResponseFailed {
 
     return `?${url.toString()}`;
   }
-  get isUnAuth() {
-    return [401, 403];
-  }
+
   constructor(msg: string, res: Partial<Response>) {
     super(msg);
     this.status = res?.status ?? 0;
@@ -126,7 +127,7 @@ export class HttpError extends Error implements STResponseFailed {
     if (5 === this.type) msg = '서버에 문제가 발생한 것 같아요.🤦‍♂️';
     this.message = t(msg);
 
-    if (this.isUnAuth.includes(this.status)) {
+    if (HttpError.unAuth(this.status)) {
       storage.set(STORAGE['auth']);
       location.replace(`${ROUTES_PATH['/sign-in']}${this.query}`);
     }
