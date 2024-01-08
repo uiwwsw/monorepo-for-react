@@ -152,17 +152,19 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
           <div className="flex justify-between items-center">
             <H2>{t('TCM 펌웨어 업데이트')}</H2>
-            <ModalWithBtn
-              hasButton={[okBtn, cancelBtn]}
-              button={
-                <Button smoothLoading themeColor="quaternary" themeSize="sm">
-                  <span className="whitespace-nowrap">{t('리붓')}</span>
-                </Button>
-              }
-              onClose={(value) => value === okBtn && handleReboot()}
-            >
-              {t('리붓하겠습니까?')}
-            </ModalWithBtn>
+            {false && (
+              <ModalWithBtn
+                hasButton={[okBtn, cancelBtn]}
+                button={
+                  <Button smoothLoading themeColor="quaternary" themeSize="sm">
+                    <span className="whitespace-nowrap">{t('리붓')}</span>
+                  </Button>
+                }
+                onClose={(value) => value === okBtn && handleReboot()}
+              >
+                {t('리붓하겠습니까?')}
+              </ModalWithBtn>
+            )}
           </div>
           <div className="flex items-center gap-2 w-[400px]">
             <Combo
@@ -214,22 +216,26 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
               />
             </div>
           </div>
-          <div className="h-6 bg-slate-100 mt-3">
-            <i
-              className="text-right text-white not-italic block h-full w-full transition-all bg-gradient-to-r from-cyan-500 to-blue-500"
-              style={{ width: `${process}%` }}
-            >
-              {process}%
-            </i>
-          </div>
-          <div className="grid grid-cols-2 mt-6">
-            {selectedRows?.map((row, index) => (
-              <div key={index} className="mb-4 flex items-center">
-                <span className="text-sm font-medium text-gray-700 w-12">{row}:</span>
-                <span>{UPLOAD_STATUS[status[index]]}</span>
-              </div>
-            ))}
-          </div>
+          {process ? (
+            <div className="h-6 bg-slate-100 mt-3">
+              <i
+                className="text-right text-white not-italic block h-full w-full transition-all bg-gradient-to-r from-cyan-500 to-blue-500"
+                style={{ width: `${process}%` }}
+              >
+                {process}%
+              </i>
+            </div>
+          ) : null}
+          {status.length ? (
+            <div className="grid grid-cols-2 mt-6">
+              {selectedRows?.map((row, index) => (
+                <div key={index} className="mb-4 flex items-center">
+                  <span className="text-sm font-medium text-gray-700 w-12">{row}:</span>
+                  <span>{UPLOAD_STATUS[status[index]]}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </ModalWithBtn>
     </>
