@@ -152,19 +152,17 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
           <div className="flex justify-between items-center">
             <H2>{t('TCM 펌웨어 업데이트')}</H2>
-            {false && (
-              <ModalWithBtn
-                hasButton={[okBtn, cancelBtn]}
-                button={
-                  <Button smoothLoading themeColor="quaternary" themeSize="sm">
-                    <span className="whitespace-nowrap">{t('리붓')}</span>
-                  </Button>
-                }
-                onClose={(value) => value === okBtn && handleReboot()}
-              >
-                {t('리붓하겠습니까?')}
-              </ModalWithBtn>
-            )}
+            <ModalWithBtn
+              hasButton={[okBtn, cancelBtn]}
+              button={
+                <Button smoothLoading themeColor="quaternary" themeSize="sm">
+                  <span className="whitespace-nowrap">{t('리붓')}</span>
+                </Button>
+              }
+              onClose={(value) => value === okBtn && handleReboot()}
+            >
+              {t('리붓하겠습니까?')}
+            </ModalWithBtn>
           </div>
           <div className="flex items-center gap-2 w-[400px]">
             <Combo
