@@ -175,7 +175,7 @@ export function makeAirShowerCmd(zoneID: number, power: boolean) {
 export interface HimForceInstallCarrier {
     BaseTime: string;
     ZoneID: number;
-    CarrierID: string;
+    CarrierID?: string;
     IsAuto: number;
 }
 export function makeHimForceInstallCarrier(zoneID: number, carrierID:string) {
@@ -186,6 +186,9 @@ export function makeHimForceInstallCarrier(zoneID: number, carrierID:string) {
         CarrierID: carrierID,
         IsAuto: 0
     };
+    if (carrierID === '' || !carrierID) {
+        delete data.CarrierID;
+    }
 
     const msg: msg = {
         MessageID: MessageID.HimForceInstallCarrier,
