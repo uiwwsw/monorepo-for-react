@@ -207,9 +207,9 @@ export class DBM {
             const ins_stats: { [key: string]: number } = {};
             const queue = this.queue.splice(0, count);
             for (let i = 0; i < count; i++) {
-                const json = queue[0] as string;
+                const json = queue[i] as string;
                 if (!json) {
-                    break;
+                    continue;
                 }
                 try {
                     const row = JSON.parse(json) as IMsgQueueRow;
@@ -548,6 +548,9 @@ export class DBM {
                 }
                 break;
             case 'himEquipmentStateInfo':
+                break;
+            case 'himAlarmInfo':
+                logger.info(`processMessage. ${row.Message}`);
                 break;
             default:
                 logger.error(
