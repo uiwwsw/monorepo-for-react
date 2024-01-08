@@ -168,7 +168,7 @@ const Table = <T,>({
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: (row, columnId, value, addMeta) => {
-      const itemRank = rankItem(row.getValue(columnId), value, { threshold: 4 });
+      const itemRank = rankItem(row.getValue(columnId), value, { threshold: 3 });
       addMeta({
         itemRank,
       });
