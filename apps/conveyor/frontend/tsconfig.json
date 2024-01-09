@@ -21,6 +21,7 @@
     "baseUrl": ".",
     "moduleResolution": "bundler",
     "paths": {
+      "$/*": ["./src/assets/*"],
       "!/*": ["./src/libs/*"],
       "@/*": ["./src/components/*"],
       "#/*": ["./src/utils/*"],

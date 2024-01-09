@@ -55,13 +55,15 @@ const ControlModalLogsTcm = ({ tcmId, address }: ControlModalLogsTcmProps) => {
       <ModalWithBtn
         button={
           <Button themeSize="sm" themeColor={'tertiary'} onClick={handleOpenLogModal}>
-            {t('Logs')}
+            {t('로그')}
           </Button>
         }
         defaultLoading={isLogListMutating}
         hasCloseBtn
       >
-        <H2>{t('TCM {{tcmId}} 로그', { tcmId })}</H2>
+        <H2>
+          TCM {tcmId} {t('로그')}
+        </H2>
         <ControlLogs list={logListData} onDownload={handleDownload} onView={handleView} />
       </ModalWithBtn>
     </>

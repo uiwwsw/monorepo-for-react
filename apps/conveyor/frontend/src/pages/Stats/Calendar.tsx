@@ -124,7 +124,7 @@ const StatsCalendar = ({ currentDuration, onChange, onChangeKeyword }: StatsCale
                 type="search"
                 className="max-lg:w-32"
                 value={keyword}
-                placeholder="검색어를 입력하세요."
+                placeholder={t('검색어를 입력하세요.')}
                 onChange={handleChangeKeyword}
               />
             </Test>

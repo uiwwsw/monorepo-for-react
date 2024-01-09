@@ -20,6 +20,7 @@ export const enum ROUTES_PATH {
   '/stats/summary' = '/stats/summary',
   '/stats/alarm' = '/stats/alarm',
   '/stats/carrier' = '/stats/carrier',
+  '/stats/warning' = '/stats/warning',
   '/users' = '/users',
   '/update-password' = '/update-password',
   '/sign-in' = '/sign-in',

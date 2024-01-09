@@ -2,6 +2,7 @@ import { useCheckTcmClient } from '!/redis/application/get-tcm-client';
 import Empty from '@/Empty';
 import H2 from '@/Typography/H2';
 import { Button, ModalWithBtn, ToastWithPortal } from '@library-frontend/ui';
+import { useTranslation } from 'react-i18next';
 
 interface ControlModalDetailProps {
   tid?: number;
@@ -11,6 +12,8 @@ interface ControlModalDetailProps {
 
 const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   const { trigger, data, error } = useCheckTcmClient();
   /* ======   function    ====== */
   const handleGetTcmStatus = async () => {
@@ -24,12 +27,14 @@ const ControlModalDetail = ({ tid }: ControlModalDetailProps) => {
       <ModalWithBtn
         button={
           <Button onClick={handleGetTcmStatus} themeSize="sm" themeColor={'tertiary'}>
-            Alive
+            {t('연결상태')}
           </Button>
         }
         hasCloseBtn
       >
-        <H2>TCM {tid} 연결상태</H2>
+        <H2>
+          TCM {tid} {t('연결상태')}
+        </H2>
         <div className={data?.state.length ? 'grid grid-cols-2 gap-4 pt-4' : 'grid'}>
           {data?.state.length ? (
             data.state.map((status, index) => (

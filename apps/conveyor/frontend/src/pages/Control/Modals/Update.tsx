@@ -150,7 +150,7 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
         }
       >
         <div className="p-5 bg-white rounded-lg shadow-lg max-w-lg mx-auto">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
             <H2>{t('TCM 펌웨어 업데이트')}</H2>
             {false && (
               <ModalWithBtn
@@ -166,11 +166,12 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
               </ModalWithBtn>
             )}
           </div>
-          <div className="flex items-center gap-2 w-[400px]">
+          <div className="flex items-center gap-2 w-full">
             <Combo
               width="100%"
               onChange={handleFileSelect}
               placeholder={t('펌웨어')}
+              searchPlaceholder={t('검색어를 입력하세요.')}
               options={[newFile].concat(fileList).map((x) => ({ value: x, label: x }))}
             ></Combo>
             <ModalWithBtn
@@ -208,7 +209,7 @@ const ControlModalUpdate = ({ selectedRows, disabled, selectedAdds }: ControlMod
             </ModalWithBtn>
           </div>
           <div>
-            <div className="w-[400px]">
+            <div className="w-full">
               <ControlFileUpload
                 disabled={selectedFile !== newFile}
                 onSubmit={handleUpload}

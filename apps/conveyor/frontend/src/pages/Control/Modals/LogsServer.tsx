@@ -52,13 +52,15 @@ const ControlModalLogsServer = ({ stateType }: ControlModalLogsServerProps) => {
       <ModalWithBtn
         button={
           <Button themeSize="sm" themeColor={'tertiary'} onClick={handleOpenLogModal}>
-            {t('Logs')}
+            {t('로그')}
           </Button>
         }
         defaultLoading={isLogListMutating}
         hasCloseBtn
       >
-        <H2>{t('{{stateType}} 로그', { stateType })}</H2>
+        <H2>
+          {stateType} {t('로그')}
+        </H2>
         <ControlLogs list={logListData} onDownload={handleDownload} onView={handleView} />
       </ModalWithBtn>
     </>

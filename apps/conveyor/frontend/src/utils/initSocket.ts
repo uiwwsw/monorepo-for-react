@@ -4,8 +4,8 @@ import { createLogger } from '@package-frontend/utils';
 import { useGetAuth } from '!/auth/application/get-auth';
 import { SOCKET_MESSAGE, SOCKET_NAME, SocketData } from '!/socket/domain';
 import { useDebounce } from '@library-frontend/ui';
-import { Alarm, SERVERS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
-import { MODULE_STATE_CHANGE_MSGS, TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
+import { AdapterModuleState, Alarm, SERVERS, SERVER_TYPE, ServerList, TcmList } from '!/control/domain';
+import { MODULE_STATE_CHANGE_MSGS, ALARM_CODE } from '!/alarm/domain';
 import { ContextProps, WS_STATUS } from '@/SocketDataContext';
 import { HttpError } from '#/http';
 import { useConfig } from '!/config/application/get-config';
@@ -51,7 +51,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
       data
         .filter((x) => x.type === SOCKET_MESSAGE.INITIAL_MODULE_STATE)
         .reduce((a, v) => {
-          const data = v.data as ModuleState;
+          const data = v.data as AdapterModuleState;
           a.set(`${data.ID || data.StateType}`, data);
           return a;
         }, new Map()),
@@ -114,18 +114,26 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
   /* ======   useEffect   ====== */
   useEffect(() => {
     if (!auth?.token || !config?.WS_API) return;
+    logger(status, '블라블라');
     if (status === WS_STATUS.OPEN) init();
 
     if (ws.current) return;
     ws.current = new WebSocket(`${config?.WS_API}/ws/?token=${auth.token}`);
     ws.current.onopen = () => {
+      logger('연결됨');
+
       window.send = send;
       setStatus(WS_STATUS.OPEN);
       clearTimeout(sto);
       sto = setTimeout(() => (tryOut = limit), 1000);
     };
+    ws.current.onerror = () => {
+      logger('오류');
+    };
     ws.current.onclose = () => {
+      logger('연결끊김');
       clearTimeout(sto);
+      window.send = () => undefined;
       // TODO 인증정보 체크하는 api 가 필요한 부분
       // 소켓이라 인증 정보가 유효한지 체크하지 못함
       if (++tryOut > limit) throw new HttpError(SIGN_IN_QUERY_PARAM_TOAST['invalid-session'], { status: 403 });
@@ -154,7 +162,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
             .filter((x) => x.eventCode && MODULE_STATE_CHANGE_MSGS.includes(x.eventCode))
             .forEach((x) => {
               switch (x.eventCode) {
-                case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_DCM:
+                case ALARM_CODE.EVENT_CONNECTED_DCM:
                   setData((prev) => [
                     ...prev,
                     {
@@ -166,7 +174,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
                     },
                   ]);
                   break;
-                case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_DCM:
+                case ALARM_CODE.EVENT_DISCONNECTED_DCM:
                   setData((prev) => [
                     ...prev,
                     {
@@ -178,7 +186,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
                     },
                   ]);
                   break;
-                case TITAN_INTERNAL_EVENT_ID.EVENT_CONNECTED_HIM:
+                case ALARM_CODE.EVENT_CONNECTED_HIM:
                   setData((prev) => [
                     ...prev,
                     {
@@ -190,7 +198,7 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
                     },
                   ]);
                   break;
-                case TITAN_INTERNAL_EVENT_ID.EVENT_DISCONNECTED_HIM:
+                case ALARM_CODE.EVENT_DISCONNECTED_HIM:
                   setData((prev) => [
                     ...prev,
                     {

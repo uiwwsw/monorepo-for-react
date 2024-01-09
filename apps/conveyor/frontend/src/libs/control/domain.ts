@@ -1,4 +1,4 @@
-import { TITAN_INTERNAL_EVENT_ID } from '!/alarm/domain';
+import { ALARM_CODE } from '!/alarm/domain';
 import { EquipmentStateObject, ModuleState, TCMInfo, WarningInfo } from '@package-backend/types';
 import { FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 export const SERVERS = ['DCM', 'HIM'] as const;
@@ -9,6 +9,10 @@ export enum ALIVE {
 }
 export const COMMUNICATION_KEYS = ['MCS1', 'MCS2'] as const;
 export type COMMUNICATION_TYPE = (typeof COMMUNICATION_KEYS)[number];
+export type AdapterModuleState = ModuleState & {
+  BuildNum?: string;
+  BuildDate?: string;
+};
 export class CommunicationList {
   type: COMMUNICATION_TYPE;
   commState: string;
@@ -26,11 +30,15 @@ export class ServerList {
   stateType: SERVER_TYPE;
   id?: number;
   alive: number;
-  constructor({ StateType, ID, Alive }: ModuleState) {
+  buildNum: string;
+  buildDate: string;
+  constructor({ StateType, ID, Alive, BuildDate, BuildNum }: AdapterModuleState) {
     this.stateType = StateType as SERVER_TYPE;
     this.id = Number(ID);
     this.alive = Alive;
     this.status = ALIVE[Alive] as keyof typeof ALIVE;
+    this.buildNum = BuildNum ?? '';
+    this.buildDate = BuildDate ? newDate(BuildDate).format(FORMAT_WITHOUT_TIME) : '';
   }
 }
 export class TcmList {
@@ -51,16 +59,16 @@ export class TcmList {
 }
 
 export class Alarm {
-  eventCode: TITAN_INTERNAL_EVENT_ID;
+  eventCode: ALARM_CODE;
   carrierId: string;
   commandId: string;
   location?: unknown;
-  reason: string;
+  reason: unknown;
   serialNo: number;
   taskId: string;
   time: string;
   constructor({ SerialNo, EventCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: WarningInfo) {
-    this.eventCode = EventCode as TITAN_INTERNAL_EVENT_ID;
+    this.eventCode = EventCode as ALARM_CODE;
     this.carrierId = CarrierID;
     this.commandId = CommandID;
     this.location = Location;
@@ -70,3 +78,24 @@ export class Alarm {
     this.time = Time;
   }
 }
+
+// export class Warning {
+//   eventCode: ALARM_CODE;
+//   carrierId: string;
+//   commandId: string;
+//   location?: unknown;
+//   reason: unknown;
+//   serialNo: number;
+//   taskId: string;
+//   time: string;
+//   constructor({ SerialNo, EventCode, TaskID, Location, Reason, CommandID, CarrierID, Time }: WarningInfo) {
+//     this.eventCode = EventCode as ALARM_CODE;
+//     this.carrierId = CarrierID;
+//     this.commandId = CommandID;
+//     this.location = Location;
+//     this.reason = Reason;
+//     this.serialNo = SerialNo;
+//     this.taskId = TaskID;
+//     this.time = Time;
+//   }
+// }

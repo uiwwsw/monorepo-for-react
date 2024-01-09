@@ -3,7 +3,16 @@
 
 import { STORAGE } from '!/storage/domain';
 import { storage } from '#/storage';
-import { TheadAlarm, TheadCarrier, TheadSummary, theadAlarm, theadCarrier, theadSummary } from '!/stats/domain';
+import {
+  TheadAlarm,
+  TheadCarrier,
+  TheadSummary,
+  TheadWarning,
+  theadAlarm,
+  theadCarrier,
+  theadSummary,
+  theadWarning,
+} from '!/stats/domain';
 import { TheadUsers, theadUsers } from '!/auth/domain';
 
 export interface useSettingProps {}
@@ -22,12 +31,15 @@ const useSetting = (_?: useSettingProps) => {
   const pageSizeForSummary = storage.get<number>(STORAGE['setting/stats/summary/page-size']) ?? undefined;
   const pageSizeForAlarm = storage.get<number>(STORAGE['setting/stats/alarm/page-size']) ?? undefined;
   const tableFilterAlarm = storage.get<boolean>(STORAGE['setting/stats/alarm/table/filter']) ?? false;
+  const pageSizeForWarning = storage.get<number>(STORAGE['setting/stats/warning/page-size']) ?? undefined;
+  const tableFilterWarning = storage.get<boolean>(STORAGE['setting/stats/warning/table/filter']) ?? false;
   const tableFilterCarrier = storage.get<boolean>(STORAGE['setting/stats/carrier/table/filter']) ?? false;
   const pageSizeForCarrier = storage.get<number>(STORAGE['setting/stats/carrier/page-size']) ?? undefined;
   const pageSizeForUsers = storage.get<number>(STORAGE['setting/users/page-size']) ?? undefined;
 
   const durationForSummary = storage.get<number>(STORAGE['setting/stats/summary/duration']) ?? undefined;
   const durationForAlarm = storage.get<number>(STORAGE['setting/stats/alarm/duration']) ?? undefined;
+  const durationForWarning = storage.get<number>(STORAGE['setting/stats/warning/duration']) ?? undefined;
   const durationForCarrier = storage.get<number>(STORAGE['setting/stats/carrier/duration']) ?? undefined;
 
   const columnForSummary =
@@ -39,6 +51,9 @@ const useSetting = (_?: useSettingProps) => {
   const columnForCarrier =
     storage.get<Record<TheadCarrier, boolean>>(STORAGE['setting/stats/carrier/column']) ??
     theadCarrier.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadCarrier, boolean>);
+  const columnForWarning =
+    storage.get<Record<TheadWarning, boolean>>(STORAGE['setting/stats/warning/column']) ??
+    theadWarning.reduce((a, v) => ({ ...a, [v]: true }), {} as Record<TheadWarning, boolean>);
 
   const columnForUsers =
     storage.get<Record<TheadUsers, boolean>>(STORAGE['setting/users/column']) ??
@@ -48,6 +63,7 @@ const useSetting = (_?: useSettingProps) => {
   return {
     tableFilterAlarm,
     tableFilterCarrier,
+    tableFilterWarning,
     logBrowser,
     logBrowserMultiple,
     pageSize,
@@ -60,6 +76,8 @@ const useSetting = (_?: useSettingProps) => {
     pageSizeForSummarySetting: pageSizeForSummary,
     pageSizeForAlarm: pageSizeForAlarm ?? pageSize,
     pageSizeForAlarmSetting: pageSizeForAlarm,
+    pageSizeForWarning: pageSizeForWarning ?? pageSize,
+    pageSizeForWarningSetting: pageSizeForWarning,
     pageSizeForCarrier: pageSizeForCarrier ?? pageSize,
     pageSizeForCarrierSetting: pageSizeForCarrier,
     pageSizeForUsers: pageSizeForUsers ?? pageSize,
@@ -70,6 +88,9 @@ const useSetting = (_?: useSettingProps) => {
     durationForAlarmSetting: durationForAlarm,
     durationForCarrier: durationForCarrier ?? duration,
     durationForCarrierSetting: durationForCarrier,
+    durationForWarning: durationForWarning ?? duration,
+    durationForWarningSetting: durationForWarning,
+    columnForWarning,
     columnForSummary,
     columnForAlarm,
     columnForCarrier,
