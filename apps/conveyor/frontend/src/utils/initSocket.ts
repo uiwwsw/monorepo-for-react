@@ -52,7 +52,15 @@ const initSocket = (type: SOCKET_NAME): ContextProps => {
         .filter((x) => x.type === SOCKET_MESSAGE.INITIAL_MODULE_STATE)
         .reduce((a, v) => {
           const data = v.data as AdapterModuleState;
-          a.set(`${data.ID || data.StateType}`, data);
+          if (data.StateType) {
+            const currentServer = a.get(data.StateType);
+            a.set(`${data.StateType}`, {
+              ...currentServer,
+              ...data,
+            });
+          } else {
+            a.set(`${data.ID}`, data);
+          }
           return a;
         }, new Map()),
     [data],
