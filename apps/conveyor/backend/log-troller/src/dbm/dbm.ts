@@ -646,10 +646,7 @@ export class DBM {
                 this.transList.push(
                     new TransItem("insert into completecarriercount set ?", [
                         {
-                            carrierId: this.taskTransferInfos[tcmEvent.TaskID]
-                                ? this.taskTransferInfos[tcmEvent.TaskID]
-                                      .CarrierID
-                                : "UNKNOWN",
+                            carrierId: this.taskTransferInfos[tcmEvent.TaskID] ? this.taskTransferInfos[tcmEvent.TaskID].CarrierID : "UNKNOWN",
                             zoneId: tcmEvent.Location,
                             timeStamp: row.Date,
                         },

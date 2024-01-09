@@ -1,4 +1,4 @@
-import { IAlarminfoRow } from "../data";
+import { IAlarminfoRow, IWarningInfoRow } from "../data";
 
 // 반송 지표 요청
 export interface CarrierStatsInRequest {
@@ -41,6 +41,19 @@ export interface AlarmStatsResponse {
     total_count : number;
 }
 
+// 경고 지표 요청
+export interface WarningStatsInRequest {
+    start_time : Date;
+    end_time : Date;
+    page : number;
+    page_size? : number; // default 30
+    find_key? : string;
+}
+// 경고 지표 응답
+export interface WarningStatsResponse {
+    rows : IWarningInfoRow[];
+    total_count : number;
+}
 
 // Zone 지표 요청
 export interface ZoneStatsInRequest {

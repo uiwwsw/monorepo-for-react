@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Service } from '../service';
 import { verifyToken } from './session';       //verifyToken
 import { asyncWrapper } from './error';
-import { CountRow, TaskTransferInfoRow, AlarmCodeInfoRow, ZoneStatsRow } from '../models/R301';
+import { CountRow, TaskTransferInfoRow, AlarminfoRow, WarningInfoRow, ZoneStatsRow } from '../models/R301';
 import { 
     CarrierStatsRow, CarrierStatsInRequest, CarrierStatsResponse,
     AlarmStatsInRequest, AlarmStatsResponse,
@@ -268,7 +268,7 @@ router.post('/carrier-stats', verifyToken, asyncWrapper<CarrierStatsInRequest, C
 router.post('/alarm-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, AlarmStatsResponse>(async (req, res) => {
     const { start_time, end_time, page, page_size } = req.body;
     const sql = `SELECT * FROM alarminfo where SetTime between ? and ? order by No desc limit ? offset ?`;
-    const [rows] = await Service.Inst.MySQL.query<AlarmCodeInfoRow[]>(sql, [start_time, end_time, page_size || 30, (page_size || 30) * (page - 1)]);
+    const [rows] = await Service.Inst.MySQL.query<AlarminfoRow[]>(sql, [start_time, end_time, page_size || 30, (page_size || 30) * (page - 1)]);
 
     const sql2 = `SELECT count(1) as count FROM alarminfo where SetTime between ? and ?`;
     const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [start_time, end_time]);
@@ -282,6 +282,123 @@ router.post('/alarm-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, Alarm
         }
     });
 }));
+
+
+/**
+ * @swagger
+ * /warning-stats:
+ *   post:
+ *     summary: 경고 지표 요청
+ *     description: 지정된 기간 동안의 경고 지표를 조회합니다.
+ *     tags: [Warning Statistics]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/WarningStatsInRequest'
+ *     responses:
+ *       200:
+ *         description: 경고 지표 데이터를 성공적으로 반환함.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WarningStatsResponse'
+ *       401:
+ *         description: 인증되지 않은 사용자.
+ *       500:
+ *         description: 서버 오류.
+ * 
+ * components:
+ *   schemas:
+ *     WarningStatsInRequest:
+ *       type: object
+ *       required:
+ *         - start_time
+ *         - end_time
+ *         - page
+ *       properties:
+ *         start_time:
+ *           type: string
+ *           format: date-time
+ *         end_time:
+ *           type: string
+ *           format: date-time
+ *         page:
+ *           type: number
+ *         page_size:
+ *           type: number
+ *           default: 30
+ *           nullable: true
+ *         find_key:
+ *           type: string
+ *           nullable: true
+ *     IWarningInfoRow:
+ *       type: object
+ *       properties:
+ *         No:
+ *           type: number
+ *           nullable: true
+ *         SerialNo:
+ *           type: number
+ *           nullable: true
+ *         WarningCode:
+ *           type: number
+ *           nullable: true
+ *         TaskID:
+ *           type: number
+ *           nullable: true
+ *         Location:
+ *           type: number
+ *           nullable: true
+ *         Reason:
+ *           type: number
+ *           nullable: true
+ *         CommandID:
+ *           type: string
+ *           nullable: true
+ *         CarrierID:
+ *           type: string
+ *           nullable: true
+ *         SetTime:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *     WarningStatsResponse:
+ *       type: object
+ *       properties:
+ *         rows:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/IWarningInfoRow'
+ *         total_count:
+ *           type: number
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+router.post('/warning-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, AlarmStatsResponse>(async (req, res) => {
+    const { start_time, end_time, page, page_size } = req.body;
+    const sql = `SELECT * FROM warninginfo where SetTime between ? and ? order by No desc limit ? offset ?`;
+    const [rows] = await Service.Inst.MySQL.query<WarningInfoRow[]>(sql, [start_time, end_time, page_size || 30, (page_size || 30) * (page - 1)]);
+
+    const sql2 = `SELECT count(1) as count FROM warninginfo where SetTime between ? and ?`;
+    const [total] = await Service.Inst.MySQL.query<CountRow[]>(sql2, [start_time, end_time]);
+    const total_count = total[0].count;
+
+    res.json({
+        message: "OK",
+        data: {
+            total_count : total_count,
+            rows : rows
+        }
+    });
+}));
+
 
 /**
  * @swagger
