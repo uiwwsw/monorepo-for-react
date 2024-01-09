@@ -15,14 +15,17 @@ import SettingCheckbox from './Checkbox';
 import SettingCheckGroup from './CheckboxGroup';
 import {
   columnAlarmDisabled,
+  columnWarningDisabled,
   columnCarrierDisabled,
   columnSummaryDisabled,
   fixHeadAlarm,
   fixHeadCarrier,
   fixHeadSummary,
+  fixHeadWarning,
   theadAlarm,
   theadCarrier,
   theadSummary,
+  theadWarning,
 } from '!/stats/domain';
 import { columnUsersDisabled, fixHeadUsers, theadUsers } from '!/auth/domain';
 
@@ -42,15 +45,19 @@ const Setting = () => {
     pageSizeForTcmSetting,
     pageSizeForSummarySetting,
     pageSizeForAlarmSetting,
+    pageSizeForWarningSetting,
     pageSizeForCarrierSetting,
     pageSizeForUsersSetting,
     durationForAlarmSetting,
+    durationForWarningSetting,
     durationForCarrierSetting,
     durationForSummarySetting,
     columnForSummary,
     columnForAlarm,
+    columnForWarning,
     columnForCarrier,
     columnForUsers,
+    tableFilterWarning,
     tableFilterAlarm,
     tableFilterCarrier,
   } = useSetting();
@@ -87,13 +94,13 @@ const Setting = () => {
 
         <H2>{t('조작')}</H2>
         <SettingCheckbox
-          label={t('조작 테이블 페이지네이션 적용')}
+          label={t('테이블 페이지네이션 적용')}
           checked={controlPagination}
           onChange={(e) => handleChange(STORAGE['setting/control-pagination'], e.target.checked)}
         />
         {controlPagination && (
           <SettingCheckbox
-            label={t('TCM 페이지당 리스트 수 커스텀')}
+            label={t('페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForTcmSetting}
             onChange={() =>
               handleChange(STORAGE['setting/control/tcm/page-size'], pageSizeForTcmSetting ? '' : pageSize)
@@ -102,7 +109,7 @@ const Setting = () => {
         )}
         {!!pageSizeForTcmSetting && (
           <SettingPagination
-            label={t('TCM 페이지당 리스트 수')}
+            label={t('페이지당 리스트 수')}
             value={pageSizeForTcmSetting}
             onChange={(e) => handleChange(STORAGE['setting/control/tcm/page-size'], e.target.value)}
           />
@@ -124,7 +131,7 @@ const Setting = () => {
         <div className="pl-2">
           <H3>{t('요약')}</H3>
           <SettingCheckbox
-            label={t('요약 페이지당 리스트 수 커스텀')}
+            label={t('페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForSummarySetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/summary/page-size'], pageSizeForSummarySetting ? '' : pageSize)
@@ -132,13 +139,13 @@ const Setting = () => {
           />
           {!!pageSizeForSummarySetting && (
             <SettingPagination
-              label={t('요약 페이지당 리스트 수')}
+              label={t('페이지당 리스트 수')}
               value={pageSizeForSummarySetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/summary/page-size'], e.target.value)}
             />
           )}
           <SettingCheckbox
-            label={t('요약 달력 기간 커스텀')}
+            label={t('달력 기간 커스텀')}
             checked={!!durationForSummarySetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/summary/duration'], durationForSummarySetting ? '' : duration)
@@ -146,13 +153,13 @@ const Setting = () => {
           />
           {!!durationForSummarySetting && (
             <SettingDuration
-              label={t('요약 달력 기간')}
+              label={t('달력 기간')}
               value={durationForSummarySetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/summary/duration'], e.target.value)}
             />
           )}
           <SettingCheckGroup
-            label={t('요약 테이블 헤더')}
+            label={t('테이블 헤더')}
             labels={theadSummary}
             fixHead={fixHeadSummary}
             disabled={columnSummaryDisabled}
@@ -168,7 +175,7 @@ const Setting = () => {
             onChange={(e) => handleChange(STORAGE['setting/stats/alarm/table/filter'], e.target.checked)}
           />
           <SettingCheckbox
-            label={t('알람 페이지당 리스트 수 커스텀')}
+            label={t('페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForAlarmSetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/alarm/page-size'], pageSizeForAlarmSetting ? '' : pageSize)
@@ -176,13 +183,13 @@ const Setting = () => {
           />
           {!!pageSizeForAlarmSetting && (
             <SettingPagination
-              label={t('알람 페이지당 리스트 수')}
+              label={t('페이지당 리스트 수')}
               value={pageSizeForAlarmSetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/alarm/page-size'], e.target.value)}
             />
           )}
           <SettingCheckbox
-            label={t('알람 달력 기간 커스텀')}
+            label={t('달력 기간 커스텀')}
             checked={!!durationForAlarmSetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/alarm/duration'], durationForAlarmSetting ? '' : duration)
@@ -190,13 +197,13 @@ const Setting = () => {
           />
           {!!durationForAlarmSetting && (
             <SettingDuration
-              label={t('알람 달력 기간')}
+              label={t('달력 기간')}
               value={durationForAlarmSetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/alarm/duration'], e.target.value)}
             />
           )}
           <SettingCheckGroup
-            label={t('알람 테이블 헤더')}
+            label={t('테이블 헤더')}
             labels={theadAlarm}
             fixHead={fixHeadAlarm}
             defaultChecks={columnForAlarm}
@@ -212,7 +219,7 @@ const Setting = () => {
             onChange={(e) => handleChange(STORAGE['setting/stats/carrier/table/filter'], e.target.checked)}
           />
           <SettingCheckbox
-            label={t('케리어 페이지당 리스트 수 커스텀')}
+            label={t('페이지당 리스트 수 커스텀')}
             checked={!!pageSizeForCarrierSetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/carrier/page-size'], pageSizeForCarrierSetting ? '' : pageSize)
@@ -220,13 +227,13 @@ const Setting = () => {
           />
           {!!pageSizeForCarrierSetting && (
             <SettingPagination
-              label={t('케리어 페이지당 리스트 수')}
+              label={t('페이지당 리스트 수')}
               value={pageSizeForCarrierSetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/carrier/page-size'], e.target.value)}
             />
           )}
           <SettingCheckbox
-            label={t('케리어 달력 기간 커스텀')}
+            label={t('달력 기간 커스텀')}
             checked={!!durationForCarrierSetting}
             onChange={() =>
               handleChange(STORAGE['setting/stats/carrier/duration'], durationForCarrierSetting ? '' : duration)
@@ -234,13 +241,13 @@ const Setting = () => {
           />
           {!!durationForCarrierSetting && (
             <SettingDuration
-              label={t('케리어 달력 기간')}
+              label={t('달력 기간')}
               value={durationForCarrierSetting}
               onChange={(e) => handleChange(STORAGE['setting/stats/carrier/duration'], e.target.value)}
             />
           )}
           <SettingCheckGroup
-            label={t('케리어 테이블 헤더')}
+            label={t('테이블 헤더')}
             labels={theadCarrier}
             fixHead={fixHeadCarrier}
             defaultChecks={columnForCarrier}
@@ -248,21 +255,65 @@ const Setting = () => {
             onChange={(e) => handleChange(STORAGE['setting/stats/carrier/column'], e)}
           />
         </div>
+        <div className="pl-2">
+          <H3>{t('워닝')}</H3>
+          <SettingCheckbox
+            label={t('테이블 필터기능')}
+            checked={tableFilterWarning}
+            onChange={(e) => handleChange(STORAGE['setting/stats/warning/table/filter'], e.target.checked)}
+          />
+          <SettingCheckbox
+            label={t('페이지당 리스트 수 커스텀')}
+            checked={!!pageSizeForWarningSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/warning/page-size'], pageSizeForWarningSetting ? '' : pageSize)
+            }
+          />
+          {!!pageSizeForWarningSetting && (
+            <SettingPagination
+              label={t('페이지당 리스트 수')}
+              value={pageSizeForWarningSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/warning/page-size'], e.target.value)}
+            />
+          )}
+          <SettingCheckbox
+            label={t('달력 기간 커스텀')}
+            checked={!!durationForWarningSetting}
+            onChange={() =>
+              handleChange(STORAGE['setting/stats/alarm/duration'], durationForWarningSetting ? '' : duration)
+            }
+          />
+          {!!durationForWarningSetting && (
+            <SettingDuration
+              label={t('달력 기간')}
+              value={durationForWarningSetting}
+              onChange={(e) => handleChange(STORAGE['setting/stats/warning/duration'], e.target.value)}
+            />
+          )}
+          <SettingCheckGroup
+            label={t('테이블 헤더')}
+            labels={theadWarning}
+            fixHead={fixHeadWarning}
+            defaultChecks={columnForWarning}
+            disabled={columnWarningDisabled}
+            onChange={(e) => handleChange(STORAGE['setting/stats/warning/column'], e)}
+          />
+        </div>
         <H2>{t('유저관리')}</H2>
         <SettingCheckbox
-          label={t('유저관리 페이지당 리스트 수 커스텀')}
+          label={t('페이지당 리스트 수 커스텀')}
           checked={!!pageSizeForUsersSetting}
           onChange={() => handleChange(STORAGE['setting/users/page-size'], pageSizeForUsersSetting ? '' : pageSize)}
         />
         {!!pageSizeForUsersSetting && (
           <SettingPagination
-            label={t('유저관리 페이지당 리스트 수')}
+            label={t('페이지당 리스트 수')}
             value={pageSizeForUsersSetting}
             onChange={(e) => handleChange(STORAGE['setting/users/page-size'], e.target.value)}
           />
         )}
         <SettingCheckGroup
-          label={t('유저관리 테이블 헤더')}
+          label={t('테이블 헤더')}
           labels={theadUsers}
           fixHead={fixHeadUsers}
           defaultChecks={columnForUsers}

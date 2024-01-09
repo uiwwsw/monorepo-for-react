@@ -3,14 +3,14 @@ import ChartLine from '@/Chart/Line';
 import { useTranslation } from 'react-i18next';
 import { LineProps } from '@nivo/line';
 import { Row } from '@tanstack/react-table';
-import { StatsSummaryDataRow } from '!/stats/domain';
+import { StatsSummaryData } from '!/stats/domain';
 import { useMemo } from 'react';
 import { newDate } from '@package-frontend/utils';
 
 /* ======   interface   ====== */
 
 export interface StatsSummaryGraphicProps<T> {
-  statsData?: StatsSummaryDataRow[];
+  statsData?: StatsSummaryData['rows'];
   selectedRows?: Row<T>[];
 }
 /* ======    global     ====== */

@@ -1,9 +1,12 @@
-import { TITAN_INTERNAL_EVENT_ID, convertAlarmToMessage } from '!/alarm/domain';
+import { ALARM_CODE, convertAlarmToMessage } from '!/alarm/domain';
+import { WARNING_CODE, convertWarningToMessage } from '!/warning/domain';
 import {
   AlarmStatsResponse,
   CarrierStatsResponse,
   CarrierStatsRow,
   IAlarminfoRow,
+  IWarningInfoRow,
+  // WarningStatsResponse,
   Zone,
   ZoneListResponse,
   ZoneStatsItem,
@@ -12,13 +15,27 @@ import {
 import { FORMAT, FORMAT_WITHOUT_TIME, newDate } from '@package-frontend/utils';
 import { t } from 'src/i18n';
 
+// 경고 지표 요청
+export interface WarningStatsInRequest {
+  start_time: Date;
+  end_time: Date;
+  page: number;
+  page_size?: number; // default 30
+  find_key?: string;
+}
+// 경고 지표 응답
+export interface WarningStatsResponse {
+  rows: IWarningInfoRow[];
+  total_count: number;
+}
+
 export class StatsSummaryData {
   rows: StatsSummaryDataRow[];
   constructor({ rows }: ZoneStatsResponse) {
     this.rows = rows.map((x) => new StatsSummaryDataRow(x));
   }
 }
-export class StatsSummaryDataRow {
+class StatsSummaryDataRow {
   date: string;
   dateFormat: string;
   zoneId?: number;
@@ -35,14 +52,14 @@ export class StatsSummaryDataRow {
   }
 }
 
-export class StatsAlarmDataRow {
+class StatsAlarmDataRow {
   no?: number;
   serialNo?: number;
-  alarmCode?: number;
+  alarmCode?: ALARM_CODE;
   alarmDescription?: string;
   taskId?: number;
   location?: number;
-  reason?: number;
+  reason?: unknown;
   tcmId?: number;
   // commandId?: string;
   carrierId?: string;
@@ -61,15 +78,18 @@ export class StatsAlarmDataRow {
     SetTime,
     ClearTime,
   }: IAlarminfoRow) {
+    if (TaskID === -1) TaskID = undefined;
+    // if (Reason === 0) Reason = undefined;
     this.no = No;
     this.serialNo = SerialNo;
-    this.alarmCode = AlarmCode;
+    this.alarmCode = `${AlarmCode}` as ALARM_CODE;
     this.alarmDescription = convertAlarmToMessage({
-      eventCode: `${AlarmCode}` as TITAN_INTERNAL_EVENT_ID,
+      eventCode: this.alarmCode,
       carrierId: CarrierID,
-      reason: `${Reason}`,
+      reason: Reason,
       location: Location,
     });
+
     this.taskId = TaskID;
     this.location = Location;
     this.reason = Reason;
@@ -78,6 +98,13 @@ export class StatsAlarmDataRow {
     this.carrierId = CarrierID;
     this.setTime = SetTime ? newDate(SetTime).format(FORMAT) : '';
     this.clearTime = ClearTime ? newDate(ClearTime).format(FORMAT) : '';
+
+    // switch (this.alarmCode) {
+    //   case ALARM_CODE.ALARM_ABNORMAL_TCM_DISCONNECTED:
+    //     this.tcmId = this.location;
+    //     this.location = undefined;
+    //     break;
+    // }
   }
 }
 
@@ -90,7 +117,7 @@ export class StatsAlarmData {
   }
 }
 
-export class StatsCarrierDataRow {
+class StatsCarrierDataRow {
   // commandId?: string;
   carrierId?: string;
   endTime: string;
@@ -111,6 +138,7 @@ export class StatsCarrierDataRow {
     ZoneIDToName,
     ZoneIDFromName,
   }: CarrierStatsRow) {
+    // if (CarrierID === 'null') CarrierID = undefined;
     // this.commandId = CommandID;
     this.carrierId = CarrierID;
     this.endTime = EndTime ? newDate(EndTime).format(FORMAT) : '';
@@ -131,13 +159,55 @@ export class StatsCarrierData {
     this.totalCount = total_count;
   }
 }
+
+class StatsWarningDataRow {
+  no?: number;
+  serialNo?: number;
+  warningCode?: WARNING_CODE;
+  taskId?: number;
+  location?: number;
+  reason?: unknown;
+  carrierId?: string;
+  setTime?: string;
+  alarmDescription?: string;
+  constructor({ No, SerialNo, WarningCode, TaskID, Location, Reason, CarrierID, SetTime }: IWarningInfoRow) {
+    if (TaskID === -1) TaskID = undefined;
+    // if (Reason === 0) Reason = undefined;
+    this.no = No;
+    this.serialNo = SerialNo;
+    this.warningCode = `${WarningCode}` as WARNING_CODE;
+    this.alarmDescription = convertWarningToMessage({
+      warningCode: this.warningCode,
+      carrierId: CarrierID,
+      reason: Reason,
+      location: Location,
+      taskId: TaskID,
+    });
+    this.taskId = TaskID;
+    this.location = Location;
+    this.reason = Reason;
+    // this.commandId = CommandID;
+    this.carrierId = CarrierID;
+    this.setTime = SetTime ? newDate(SetTime).format(FORMAT) : '';
+  }
+}
+
+export class StatsWarningData {
+  rows: StatsWarningDataRow[];
+  totalCount: number;
+  constructor({ rows, total_count }: WarningStatsResponse) {
+    this.rows = rows.map((x) => new StatsWarningDataRow(x));
+    this.totalCount = total_count;
+  }
+}
+
 export class ZoneList {
   zones: ZoneListZone[];
   constructor({ zones }: ZoneListResponse) {
     this.zones = zones.map((x) => new ZoneListZone(x));
   }
 }
-export class ZoneListZone {
+class ZoneListZone {
   level: number;
   zoneId: number;
   displayName?: string;
@@ -149,6 +219,34 @@ export class ZoneListZone {
     this.physicalType = PhysicalType;
   }
 }
+export type TheadWarning = keyof StatsWarningDataRow;
+export const theadWarning: TheadWarning[] = [
+  'no',
+  'serialNo',
+  'alarmDescription',
+  'carrierId',
+  'location',
+  'reason',
+  'warningCode',
+  'taskId',
+  'setTime',
+];
+export const mustHaveColumnWarning: TheadWarning[] = ['no'];
+export const fixHeadWarning: Partial<Record<TheadWarning, string>> = {
+  no: t('번호'),
+  serialNo: t('시리얼번호'),
+  warningCode: t('워닝코드'),
+  alarmDescription: t('알람설명'),
+  taskId: t('작업 아이디'),
+  location: t('위치'),
+  reason: t('이유'),
+  carrierId: t('캐리어 아이디'),
+  setTime: t('설정 시간'),
+};
+export const columnWarningDisabled = mustHaveColumnWarning.reduce(
+  (a, v) => ({ ...a, [v]: true }),
+  {} as Partial<Record<TheadWarning, boolean>>,
+);
 export type TheadAlarm = keyof StatsAlarmDataRow;
 export const theadAlarm: TheadAlarm[] = [
   'no',
@@ -168,7 +266,6 @@ export const columnAlarmDisabled = mustHaveColumnAlarm.reduce(
   (a, v) => ({ ...a, [v]: true }),
   {} as Partial<Record<TheadAlarm, boolean>>,
 );
-export type TheadCarrier = keyof StatsCarrierDataRow;
 export const fixHeadAlarm: Partial<Record<TheadAlarm, string>> = {
   no: t('번호'),
   serialNo: t('시리얼번호'),
@@ -182,6 +279,8 @@ export const fixHeadAlarm: Partial<Record<TheadAlarm, string>> = {
   setTime: t('설정 시간'),
   clearTime: t('해제 시간'),
 };
+export type TheadCarrier = keyof StatsCarrierDataRow;
+
 export const theadCarrier: TheadCarrier[] = [
   'carrierId',
   'endTime',

@@ -55,7 +55,7 @@ const ControlLogs = ({ list, onView, onDownload }: ControlLogsProps) => {
               className="bg-green-200 text-black p-3 rounded-lg flex flex-col md:flex-row justify-between space-y-2 md:space-y-0 md:items-center"
             >
               <div className="truncate">
-                <div className="font-medium">테스트</div>
+                <div className="font-medium">{t('테스트')}</div>
               </div>
               <div className="flex space-x-2">
                 <Button smoothLoading themeSize="sm" themeColor="secondary">

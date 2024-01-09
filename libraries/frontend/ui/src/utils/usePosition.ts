@@ -33,14 +33,14 @@ const usePosition = ({ targetRef, withSize }: UsePositionProps) => {
     let top, left, bottom, right;
 
     if (targetRefRect) {
-      if (targetRefRect.left + targetRefRect.width / 2 < windowWidth / 2) {
+      if (targetRefRect.left + targetRefRect.width / 2 < windowWidth / 1.5) {
         left = targetRefRect.left + scrollX; // 툴팁을 요소의 오른쪽에 위치시킴
       } else {
         right = windowWidth - targetRefRect.right - scrollX - scrollbarWidth; // 툴팁을 요소의 왼쪽에 위치시킴
       }
 
       // 화면의 상단과 하단을 기준으로 툴팁 위치 결정
-      if (targetRefRect.top + targetRefRect.height / 2 < windowHeight / 2) {
+      if (targetRefRect.top + targetRefRect.height / 2 < windowHeight / 1.5) {
         top = targetRefRect.top + scrollY; // 툴팁을 요소의 아래쪽에 위치시킴
       } else {
         bottom = windowHeight - targetRefRect.bottom - scrollY; // 툴팁을 요소의 위쪽에 위치시킴

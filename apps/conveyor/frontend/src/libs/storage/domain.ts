@@ -8,6 +8,7 @@ export const enum STORAGE {
   'users/column' = 'users/column',
   'stats/summary/column' = 'stats/summary/column',
   'stats/carrier/column' = 'stats/carrier/column',
+  'stats/warning/column' = 'stats/warning/column',
   'stats/alarm/column' = 'stats/alarm/column',
   'i18nextLng' = 'i18nextLng',
 
@@ -22,18 +23,23 @@ export const enum STORAGE {
   'setting/stats/summary/page-size' = 'setting/stats/summary/page-size',
   'setting/stats/alarm/page-size' = 'setting/stats/alarm/page-size',
   'setting/stats/carrier/page-size' = 'setting/stats/carrier/page-size',
-  'setting/stats/carrier/table/filter' = 'setting/stats/carrier/table/filter',
+  'setting/stats/warning/page-size' = 'setting/stats/warning/page-size',
 
   'setting/users/page-size' = 'setting/users/page-size',
 
   'setting/stats/summary/duration' = 'setting/stats/summary/duration',
   'setting/stats/alarm/duration' = 'setting/stats/alarm/duration',
-  'setting/stats/alarm/table/filter' = 'setting/stats/alarm/table/filter',
   'setting/stats/carrier/duration' = 'setting/stats/carrier/duration',
+  'setting/stats/warning/duration' = 'setting/stats/warning/duration',
 
   'setting/stats/summary/column' = 'setting/stats/summary/column',
   'setting/stats/alarm/column' = 'setting/stats/alarm/column',
   'setting/stats/carrier/column' = 'setting/stats/carrier/column',
+  'setting/stats/warning/column' = 'setting/stats/warning/column',
+
+  'setting/stats/warning/table/filter' = 'setting/stats/warning/table/filter',
+  'setting/stats/alarm/table/filter' = 'setting/stats/alarm/table/filter',
+  'setting/stats/carrier/table/filter' = 'setting/stats/carrier/table/filter',
 
   'setting/users/column' = 'setting/users/column',
 }

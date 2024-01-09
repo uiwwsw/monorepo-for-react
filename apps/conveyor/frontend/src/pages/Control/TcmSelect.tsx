@@ -37,12 +37,12 @@ const ControlTcmSelect = ({ selectedRows, isAllSelected }: ControlTcmSelectProps
     [disabled, selectedRows],
   );
   const chooseName = selectedTids.join(', ');
+  /* ======   function    ====== */
   const displayName = isAllSelected
     ? (order: string) => t('모든 TCM으로 {{order}} 명령어 전송', { order })
     : chooseName.length > 20
     ? (order: string) => t('{{length}}개의 TCM로 {{order}} 명령어 전송', { order, length: selectedTids.length })
     : (order: string) => t('TCM {{chooseName}}로 {{order}} 명령어 전송', { order, chooseName });
-  /* ======   function    ====== */
   const handleStartClick = () =>
     adapterEvent({
       startMsg: displayName('START'),

@@ -10,6 +10,8 @@ import { useProcessId } from '!/control/application/get-process';
 import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 import { useTcmKill } from '!/control/application/post-tcm-kill';
 import { createLogger } from '@package-frontend/utils';
+import { useTranslation } from 'react-i18next';
+
 // import { useTcmNetwork } from '!/redis/application/get-tcm-network';
 /* ======   interface   ====== */
 export interface ControlTcmSubProps {
@@ -19,23 +21,24 @@ export interface ControlTcmSubProps {
 const logger = createLogger('pages/Control/ControlTcmSub');
 const ControlTcmSub = ({ row }: ControlTcmSubProps) => {
   /* ======   variables   ====== */
+  const { t } = useTranslation();
+
   // const [toastMessages, setToastMessages] = useState<string[]>([]);
   const { trigger: killTrigger } = useTcmKill();
   const { trigger: processTrigger } = useProcessId();
   const { trigger: networkTrigger } = useTcmNetwork();
 
   const { Toasts, adapterEvent } = useToastsForControl({ selectedRows: [row?.original.tcmId] });
-
+  const startMsg = t('TCM {{tcmId}} 프로세스 Kill 중입니다.', { tcmId: row?.original.tcmId });
+  const successMsg = t('TCM {{tcmId}} 프로세스 Kill 성공 하였습니다.', { tcmId: row?.original.tcmId });
   /* ======   function    ====== */
-
+  const failMsg = () => t('TCM {{tcmId}} 프로세스 Kill 실패 하였습니다.', { tcmId: row?.original.tcmId });
   // const showToast = (msg: string) => setToastMessages((prev) => [...prev, msg]);
   const handleKillClick = () =>
     adapterEvent({
-      startMsg: 'TCM 프로세스 Kill 중입니다.',
-      failMsg() {
-        return `TCM 프로세스 Kill 실패 하였습니다.`;
-      },
-      successMsg: 'TCM 프로세스 Kill 성공 하였습니다.',
+      startMsg,
+      failMsg,
+      successMsg,
       async event(tcmId) {
         if (!tcmId) return;
         const address = row?.original.ipAddress;
@@ -54,7 +57,7 @@ const ControlTcmSub = ({ row }: ControlTcmSubProps) => {
       {Toasts}
       <div className="flex justify-end space-x-2 items-center p-2">
         <Button themeSize="sm" onClick={handleKillClick} smoothLoading>
-          Process Kill
+          {t('프로세스 킬')}
         </Button>
 
         {/* <ModalFirmware tcmId={row?.original.tcmId} address={row?.original.ipAddress} /> */}

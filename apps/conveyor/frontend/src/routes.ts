@@ -10,6 +10,7 @@ const SignIn = lazy(() => import('src/pages/SignIn'));
 const Stats = lazy(() => import('src/pages/Stats/Page'));
 const StatsSummary = lazy(() => import('src/pages/Stats/Summary/Page'));
 const StatsAlarm = lazy(() => import('src/pages/Stats/Alarm/Page'));
+const StatsWarning = lazy(() => import('src/pages/Stats/Warning/Page'));
 const StatsCarrier = lazy(() => import('src/pages/Stats/Carrier/Page'));
 // const Help = lazy(() => import('src/pages/Help'));
 const Setting = lazy(() => import('src/pages/Setting/Page'));
@@ -44,6 +45,7 @@ export const authRoutes: Tab[] = [
       { path: ROUTES_PATH['/stats/summary'], name: '요약', node: StatsSummary },
       { path: ROUTES_PATH['/stats/alarm'], name: '알람', node: StatsAlarm },
       { path: ROUTES_PATH['/stats/carrier'], name: '케리어', node: StatsCarrier },
+      { path: ROUTES_PATH['/stats/warning'], name: '워닝', node: StatsWarning },
     ],
   },
   {
