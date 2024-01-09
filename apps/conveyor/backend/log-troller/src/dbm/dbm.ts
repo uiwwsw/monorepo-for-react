@@ -226,11 +226,7 @@ export class DBM {
                 const conn = await Service.Inst.LocalDB.getConnection();
                 try {
                     await conn.beginTransaction();
-                    for (
-                        let i = 0, iLen = this.transList.length;
-                        i < iLen;
-                        i++
-                    ) {
+                    for (let i = 0, iLen = this.transList.length; i < iLen; i++ ) {
                         const trans = this.transList[i];
                         await conn.query(trans.Query, trans.Params);
                         if (trans.Query.indexOf("insert into") === 0) {
@@ -368,23 +364,29 @@ export class DBM {
         const msg = obj.MessageData;
         switch (obj.MessageID) {
             case "tcmAlarmSet":
-                this.transList.push(
-                    new TransItem("insert into alarminfo set ?", [
-                        {
-                            serialNo: msg.SerialNumber,
-                            alarmCode: msg.AlarmCode,
-                            taskId: msg.TaskID,
-                            location: msg.Location,
-                            reason: msg.Reason,
-                            commandId: msg.CommandID,
-                            tcmid: msg.Location
-                                ? Math.floor(msg.Location / 100)
-                                : -1,
-                            carrierId: msg.CarrierID,
-                            setTime: row.Date,
-                        },
-                    ])
-                );
+                {
+                    let tcmID = msg.Location ? Math.floor(msg.Location / 100) : -1;
+                    let location = msg.Location;
+                    if (msg.AlarmCode === '12500') {
+                        tcmID = msg.Location;
+                        location = 0;
+                    }
+                    this.transList.push(
+                        new TransItem("insert into alarminfo set ?", [
+                            {
+                                serialNo: msg.SerialNumber,
+                                alarmCode: msg.AlarmCode,
+                                taskId: msg.TaskID,
+                                location: location,
+                                reason: msg.Reason,
+                                commandId: msg.CommandID,
+                                tcmid: tcmID,
+                                carrierId: msg.CarrierID,
+                                setTime: row.Date,
+                            },
+                        ])
+                    );
+                }
                 break;
             case "tcmAlarmCleared":
                 this.transList.push(
@@ -646,7 +648,7 @@ export class DBM {
                 this.transList.push(
                     new TransItem("insert into completecarriercount set ?", [
                         {
-                            carrierId: this.taskTransferInfos[tcmEvent.TaskID] ? this.taskTransferInfos[tcmEvent.TaskID].CarrierID : "UNKNOWN",
+                            carrierId: this.taskTransferInfos[tcmEvent.TaskID] ? this.taskTransferInfos[tcmEvent.TaskID].CarrierID || 'UNKNOWN' : "UNKNOWN",
                             zoneId: tcmEvent.Location,
                             timeStamp: row.Date,
                         },

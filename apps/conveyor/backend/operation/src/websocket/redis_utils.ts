@@ -199,18 +199,24 @@ async function initializeModuleState(client:Client) {
     const redis = Service.Inst.Redis;
     {
         const Alive = await redis.hmget(`HIMInfo:Alive`, 'Alive');
+        const Version = await redis.hmget(`HIMInfo:Version`, 'BuildNum', 'BuildDate');
         const data = {
             StateType: 'HIM',
             Alive: Alive[0] !== null ? Alive[0] : '0',
+            BuildNum: Version && Version[0],
+            BuildDate: Version && Version[1],
         }
         client.send('initialmodulestate', data);
     }
 
     {
         const Alive = await redis.hmget(`DCMInfo:Alive`, 'Alive');
+        const Version = await redis.hmget(`DCMInfo:Version`, 'BuildNum', 'BuildDate');
         const data = {
             StateType: 'DCM',
             Alive: Alive[0] !== null ? Alive[0] : '0',
+            BuildNum: Version && Version[0],
+            BuildDate: Version && Version[1],
         }
         client.send('initialmodulestate', data);
     }
