@@ -4,4 +4,5 @@ export interface ProcessingStateRequest {
 }
 
 export interface ProcessingStateResponse {
+    state : string;         // 1: Paused, 2: Auto
 }

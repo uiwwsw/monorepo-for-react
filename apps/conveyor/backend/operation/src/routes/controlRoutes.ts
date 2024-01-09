@@ -7,6 +7,7 @@ import {
 } from '@package-backend/types';
 import { UserRow } from '../models/R301';
 import * as MsgUtils from '../websocket/message';
+import { TaskCommnds } from '../websocket/task_commands';
 import { verifyToken } from './session';       //verifyToken
 import logger from '../libs/logger';
 
@@ -79,6 +80,14 @@ router.post('/processing-state/set', verifyToken, asyncWrapper<ProcessingStateRe
         throw new Error('Invalid password');
     }
 
+    if (state === '1') {
+        Service.Inst.Redis.publish('FromUIMCh', MsgUtils.makeUimLocalPause());
+        Service.Inst.Redis.rpush('DCMCmdList', MsgUtils.makeHimChangeCmdReq(0, TaskCommnds.TASK_PAUSE_ALL));
+
+        // 1초 Sleep
+        await new Promise((resolve) => { setTimeout(resolve, 3000); });
+    }
+
     const zones = Service.Inst.Zones;
     const zoneState = state === '2' ? 'InService' : 'Offline';
     for (const pair of zones) {
@@ -87,22 +96,23 @@ router.post('/processing-state/set', verifyToken, asyncWrapper<ProcessingStateRe
             Service.Inst.Redis.publish(`TCMCmdCh:${Math.floor(zone.ZoneID / 100)}`, MsgUtils.makeUimZoneStateChangeReq(zone.ZoneID, zoneState));
             logger.info(`processing-state/set. zone:${zone.ZoneID}, physicalType:${zone.PhysicalType}, state:${zoneState}`);
             await new Promise((resolve) => {
-                setTimeout(resolve, 100);
+                setTimeout(resolve, 10);
             });
         }
     }
 
-    await Service.Inst.Redis.hset('System:EquipmentState', 'ProcessingState2', state);
-
-    if (state === '1') {
-        Service.Inst.Redis.publish('FromUIMCh', MsgUtils.makeUimLocalPause());
-    } else {
+    if (state === '2') {
         Service.Inst.Redis.publish('FromUIMCh', MsgUtils.makeUimLocalResume());
+        Service.Inst.Redis.rpush('DCMCmdList', MsgUtils.makeHimChangeCmdReq(0, TaskCommnds.TASK_RESUME_ALL));
     }
+
+    await Service.Inst.Redis.hset('System:EquipmentState', 'ProcessingState2', state);
 
     res.json({
         message: "OK",
-        data: {}
+        data: {
+            state : state
+        }
     });
 }));
 
