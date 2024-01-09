@@ -286,7 +286,7 @@ router.post('/alarm-stats', verifyToken, asyncWrapper<AlarmStatsInRequest, Alarm
 
 /**
  * @swagger
- * /warning-stats:
+ * /stats/warning-stats:
  *   post:
  *     summary: 경고 지표 요청
  *     description: 지정된 기간 동안의 경고 지표를 조회합니다.
